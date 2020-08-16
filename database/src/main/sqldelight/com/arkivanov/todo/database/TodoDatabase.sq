@@ -1,0 +1,32 @@
+CREATE TABLE todo (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    isDone INTEGER AS Boolean NOT NULL DEFAULT 0
+);
+
+selectAll:
+SELECT *
+FROM todo;
+
+select:
+SELECT *
+FROM todo
+WHERE id = :id;
+
+add:
+INSERT INTO todo (timestamp, text)
+VALUES (:timestamp, :text);
+
+setText:
+UPDATE todo
+SET text = :text
+WHERE id = :id;
+
+setDone:
+UPDATE todo
+SET isDone = :isDone
+WHERE id = :id;
+
+getLastInsertId:
+SELECT last_insert_rowid();

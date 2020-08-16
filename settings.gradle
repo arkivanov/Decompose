@@ -1,0 +1,10 @@
+rootProject.name = "ComposeApp"
+include ':app'
+include ':utils'
+include ':database'
+include ':add'
+include ':list'
+include ':edit'
+include ':main'
+include ':root'
+include ':router'
