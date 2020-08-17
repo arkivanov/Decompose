@@ -1,20 +1,20 @@
 package com.arkivanov.todo.list
 
-import androidx.compose.Composable
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.clickable
-import androidx.ui.foundation.lazy.LazyColumnItems
-import androidx.ui.layout.Row
-import androidx.ui.layout.RowScope.weight
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.padding
-import androidx.ui.layout.width
-import androidx.ui.material.Checkbox
-import androidx.ui.material.Divider
-import androidx.ui.text.AnnotatedString
-import androidx.ui.text.style.TextOverflow
-import androidx.ui.unit.dp
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope.weight
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.material.Checkbox
+import androidx.compose.material.Divider
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.core.lifecycle.Lifecycle
 import com.arkivanov.mvikotlin.core.lifecycle.doOnDestroy
@@ -53,7 +53,7 @@ class TodoListComponent(
     override fun content() {
         val state = store.observableState()
 
-        LazyColumnItems(items = state.value.items, modifier = Modifier.weight(1F)) { item ->
+        LazyColumnFor(items = state.value.items, modifier = Modifier.weight(1F)) { item ->
             Row(modifier = Modifier.clickable(onClick = { output.onNext(Output.Selected(id = item.id)) }) + Modifier.padding(8.dp)) {
                 Text(
                     text = AnnotatedString(item.text),
@@ -69,6 +69,7 @@ class TodoListComponent(
                     onCheckedChange = { store.accept(Intent.SetDone(id = item.id, isDone = !item.isDone)) }
                 )
             }
+
             Divider()
         }
     }

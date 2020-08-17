@@ -2,9 +2,9 @@ package com.arkivanov.todo.app
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.ui.core.setContent
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Surface
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.ui.platform.setContent
 import com.arkivanov.todo.app.ui.ComposeAppTheme
 import com.arkivanov.todo.root.TodoRootComponent
 

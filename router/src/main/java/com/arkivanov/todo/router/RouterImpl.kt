@@ -2,8 +2,8 @@ package com.arkivanov.todo.router
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
-import androidx.compose.Composable
-import androidx.compose.MutableState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.Lifecycle
 
 internal class RouterImpl<in C>(

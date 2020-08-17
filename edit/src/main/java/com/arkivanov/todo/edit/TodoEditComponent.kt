@@ -1,27 +1,28 @@
 package com.arkivanov.todo.edit
 
-import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.TextField
-import androidx.ui.input.TextFieldValue
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
-import androidx.ui.layout.width
-import androidx.ui.material.Checkbox
-import androidx.ui.material.IconButton
-import androidx.ui.material.TopAppBar
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.filled.ArrowBack
-import androidx.ui.unit.dp
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.Checkbox
+import androidx.compose.material.IconButton
+import androidx.compose.material.TextField
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.state
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.core.lifecycle.Lifecycle
 import com.arkivanov.mvikotlin.core.lifecycle.doOnDestroy
@@ -57,6 +58,29 @@ class TodoEditComponent(
     }
 
     @Composable
+    private fun String.asTextFieldValue(): TextFieldValue {
+        var textFieldValue by state { TextFieldValue() }
+
+        if (textFieldValue.text != this) {
+            textFieldValue = TextFieldValue(
+                text = this,
+                selection = textFieldValue.selection.constrain(0, length)
+            )
+        }
+
+        return textFieldValue
+    }
+
+    private fun TextRange.constrain(minimumValue: Int, maximumValue: Int): TextRange {
+        val newStart = start.coerceIn(minimumValue, maximumValue)
+        val newEnd = end.coerceIn(minimumValue, maximumValue)
+        if (newStart != start || newEnd != end) {
+            return TextRange(newStart, newEnd)
+        }
+        return this
+    }
+
+    @Composable
     override fun content() {
         val state = store.observableState().value
 
@@ -70,14 +94,12 @@ class TodoEditComponent(
                 }
             )
 
-            var text by state { TextFieldValue() }
-
             TextField(
-                value = text.copy(text = state.text),
+                value = state.text,
                 modifier = Modifier.weight(1F) + Modifier.fillMaxWidth() + Modifier.padding(8.dp),
+                label = { Text("Todo text") },
                 onValueChange = {
-                    text = it
-                    store.accept(Intent.SetText(text = it.text))
+                    store.accept(Intent.SetText(text = it))
                 }
             )
 

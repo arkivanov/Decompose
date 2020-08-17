@@ -1,9 +1,9 @@
 package com.arkivanov.todo.main
 
-import androidx.compose.Composable
-import androidx.ui.foundation.Text
-import androidx.ui.layout.Column
-import androidx.ui.material.TopAppBar
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.Composable
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.core.lifecycle.Lifecycle
 import com.arkivanov.mvikotlin.core.store.StoreFactory

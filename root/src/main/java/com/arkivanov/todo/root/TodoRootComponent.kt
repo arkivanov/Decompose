@@ -2,8 +2,8 @@ package com.arkivanov.todo.root
 
 import android.content.Context
 import androidx.activity.OnBackPressedDispatcher
-import androidx.compose.Composable
-import androidx.ui.layout.Column
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.core.lifecycle.Lifecycle
 import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
