@@ -14,7 +14,7 @@ import com.arkivanov.todo.list.TodoListComponent
 import com.arkivanov.todo.main.integration.addOutputToListInput
 import com.arkivanov.todo.main.integration.inputToListInput
 import com.arkivanov.todo.main.integration.listOutputToOutput
-import com.arkivanov.todo.router.ComposableComponent
+import com.arkivanov.todo.router.Component
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.mapNotNull
@@ -29,7 +29,7 @@ class TodoMainComponent(
     lifecycle: Lifecycle,
     input: Observable<Input>,
     private val output: Consumer<Output>
-) : ComposableComponent {
+) : Component {
 
     private val addOutput = PublishSubject<AddOutput>()
     private val listOutput = PublishSubject<ListOutput>()

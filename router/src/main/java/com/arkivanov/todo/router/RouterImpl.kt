@@ -11,7 +11,7 @@ internal class RouterImpl<in C>(
     private val stackState: MutableState<BackStack<C>>,
     private val stateKeeper: RouterStateKeeper<C>?,
     backPressedDispatcher: OnBackPressedDispatcher?,
-    private val resolve: Router<C>.(configuration: C, Lifecycle) -> ComposableComponent
+    private val resolve: Router<C>.(configuration: C, Lifecycle) -> Component
 ) : Router<C> {
 
     private val backPressedCallback = BackPressedCallback()

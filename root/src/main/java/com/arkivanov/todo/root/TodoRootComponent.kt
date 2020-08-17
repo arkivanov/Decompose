@@ -15,7 +15,7 @@ import com.arkivanov.todo.database.TodoDatabase
 import com.arkivanov.todo.edit.TodoEditComponent
 import com.arkivanov.todo.main.TodoMainComponent
 import com.arkivanov.todo.root.integration.editOutputToListInput
-import com.arkivanov.todo.router.ComposableComponent
+import com.arkivanov.todo.router.Component
 import com.arkivanov.todo.router.ParcelableRouterStateKeeper
 import com.arkivanov.todo.router.Router
 import com.arkivanov.todo.router.RouterParams
@@ -33,7 +33,7 @@ class TodoRootComponent(
     context: Context,
     private val savedStateRegistry: SavedStateRegistry,
     private val onBackPressedDispatcher: OnBackPressedDispatcher
-) : ComposableComponent {
+) : Component {
 
     private val storeFactory = DefaultStoreFactory
     private val database = TodoDatabase(AndroidSqliteDriver(TodoDatabase.Schema, context, "TodoDatabase"))

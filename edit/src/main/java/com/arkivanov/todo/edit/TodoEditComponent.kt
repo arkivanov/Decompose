@@ -34,7 +34,7 @@ import com.arkivanov.todo.edit.integration.EditStoreDatabase
 import com.arkivanov.todo.edit.integration.mappings.labelToOutput
 import com.arkivanov.todo.edit.store.EditStore.Intent
 import com.arkivanov.todo.edit.store.EditStoreFactory
-import com.arkivanov.todo.router.ComposableComponent
+import com.arkivanov.todo.router.Component
 import com.arkivanov.todo.utils.observableState
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.observable.mapNotNull
@@ -45,7 +45,7 @@ class TodoEditComponent(
     id: Long,
     lifecycle: Lifecycle,
     private val output: Consumer<Output>
-) : ComposableComponent {
+) : Component {
 
     private val store = EditStoreFactory(storeFactory, EditStoreDatabase(queries), id = id).create()
 
