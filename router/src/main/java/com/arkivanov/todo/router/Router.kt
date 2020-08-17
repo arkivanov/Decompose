@@ -17,7 +17,7 @@ interface Router<in C> {
 @Composable
 fun <C> Router(
     params: () -> RouterParams<C>,
-    resolve: Router<C>.(configuration: C, Lifecycle) -> ComposableComponent
+    resolve: Router<C>.(configuration: C, Lifecycle) -> Component
 ) {
     val stack = state<BackStack<C>> { BackStack() }
 

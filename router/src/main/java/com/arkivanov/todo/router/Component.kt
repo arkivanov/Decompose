@@ -2,7 +2,7 @@ package com.arkivanov.todo.router
 
 import androidx.compose.runtime.Composable
 
-interface ComposableComponent {
+interface Component {
 
     @Composable
     fun content()

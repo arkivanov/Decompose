@@ -25,7 +25,7 @@ import com.arkivanov.todo.list.integration.ListStoreDatabase
 import com.arkivanov.todo.list.integration.inputToIntent
 import com.arkivanov.todo.list.store.ListStore.Intent
 import com.arkivanov.todo.list.store.ListStoreFactory
-import com.arkivanov.todo.router.ComposableComponent
+import com.arkivanov.todo.router.Component
 import com.arkivanov.todo.utils.observableState
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.observable.Observable
@@ -37,7 +37,7 @@ class TodoListComponent(
     lifecycle: Lifecycle,
     input: Observable<Input>,
     private val output: Consumer<Output>
-) : ComposableComponent {
+) : Component {
 
     private val store = ListStoreFactory(storeFactory, ListStoreDatabase(queries)).create()
 

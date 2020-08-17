@@ -12,7 +12,7 @@ internal class BackStack<out C>(
 
         class Created<out C>(
             override val configuration: C,
-            val component: ComposableComponent,
+            val component: Component,
             @Suppress("CanBeParameter") // Must be val
             private val lifecycleHolder: LifecycleHolder,
         ) : Entry<C>() {
