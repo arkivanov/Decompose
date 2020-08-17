@@ -1,4 +1,4 @@
-package com.arkivanov.todo.router
+package com.arkivanov.decompose
 
 import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.runtime.Composable

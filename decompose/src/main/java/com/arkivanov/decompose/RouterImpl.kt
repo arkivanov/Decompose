@@ -1,11 +1,11 @@
-package com.arkivanov.todo.router
+package com.arkivanov.decompose
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.Lifecycle
-import com.arkivanov.todo.router.BackStack.Entry
+import com.arkivanov.decompose.BackStack.Entry
 
 internal class RouterImpl<in C>(
     private val stackState: MutableState<BackStack<C>>,

@@ -20,7 +20,7 @@ import com.arkivanov.todo.add.integration.mappings.labelToOutput
 import com.arkivanov.todo.add.store.AddStore.Intent
 import com.arkivanov.todo.add.store.AddStoreFactory
 import com.arkivanov.todo.database.TodoDatabaseQueries
-import com.arkivanov.todo.router.Component
+import com.arkivanov.decompose.Component
 import com.arkivanov.todo.utils.observableState
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.observable.mapNotNull

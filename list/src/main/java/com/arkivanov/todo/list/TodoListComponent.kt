@@ -25,7 +25,7 @@ import com.arkivanov.todo.list.integration.ListStoreDatabase
 import com.arkivanov.todo.list.integration.inputToIntent
 import com.arkivanov.todo.list.store.ListStore.Intent
 import com.arkivanov.todo.list.store.ListStoreFactory
-import com.arkivanov.todo.router.Component
+import com.arkivanov.decompose.Component
 import com.arkivanov.todo.utils.observableState
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.observable.Observable

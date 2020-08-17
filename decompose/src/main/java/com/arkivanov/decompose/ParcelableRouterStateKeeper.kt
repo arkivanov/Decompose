@@ -1,4 +1,4 @@
-package com.arkivanov.todo.router
+package com.arkivanov.decompose
 
 import android.os.Bundle
 import android.os.Parcelable

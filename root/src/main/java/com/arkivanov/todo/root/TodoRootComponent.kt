@@ -15,10 +15,10 @@ import com.arkivanov.todo.database.TodoDatabase
 import com.arkivanov.todo.edit.TodoEditComponent
 import com.arkivanov.todo.main.TodoMainComponent
 import com.arkivanov.todo.root.integration.editOutputToListInput
-import com.arkivanov.todo.router.Component
-import com.arkivanov.todo.router.ParcelableRouterStateKeeper
-import com.arkivanov.todo.router.Router
-import com.arkivanov.todo.router.RouterParams
+import com.arkivanov.decompose.Component
+import com.arkivanov.decompose.ParcelableRouterStateKeeper
+import com.arkivanov.decompose.Router
+import com.arkivanov.decompose.RouterParams
 import com.arkivanov.todo.utils.Consumer
 import com.badoo.reaktive.observable.mapNotNull
 import com.badoo.reaktive.observable.ofType

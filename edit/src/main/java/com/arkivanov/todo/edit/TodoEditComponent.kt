@@ -34,7 +34,7 @@ import com.arkivanov.todo.edit.integration.EditStoreDatabase
 import com.arkivanov.todo.edit.integration.mappings.labelToOutput
 import com.arkivanov.todo.edit.store.EditStore.Intent
 import com.arkivanov.todo.edit.store.EditStoreFactory
-import com.arkivanov.todo.router.Component
+import com.arkivanov.decompose.Component
 import com.arkivanov.todo.utils.observableState
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.observable.mapNotNull
