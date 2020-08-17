@@ -47,7 +47,9 @@ dependencies {
     implementation "com.arkivanov.mvikotlin:mvikotlin-main:2.0.0-rc2"
     implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-reaktive:2.0.0-rc2"
     implementation "com.badoo.reaktive:reaktive:1.1.16"
-    implementation project(":database")
-    implementation project(":utils")
+    implementation project(":sample:list")
+    implementation project(":sample:add")
+    implementation project(":sample:database")
+    implementation project(":sample:utils")
     implementation project(':decompose')
 }

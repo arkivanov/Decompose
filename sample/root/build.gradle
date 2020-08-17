@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'kotlin-android-extensions'
 }
 
 android {
@@ -39,15 +40,22 @@ android {
     }
 }
 
+androidExtensions {
+    features = ['parcelize']
+}
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
     implementation "com.arkivanov.mvikotlin:mvikotlin:2.0.0-rc2"
     implementation "com.arkivanov.mvikotlin:mvikotlin-main:2.0.0-rc2"
     implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-reaktive:2.0.0-rc2"
+    implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-androidx:2.0.0-rc2"
     implementation "com.badoo.reaktive:reaktive:1.1.16"
-    implementation project(":database")
-    implementation project(":utils")
+    implementation "com.squareup.sqldelight:android-driver:1.4.0"
+    implementation project(":sample:main")
+    implementation project(":sample:edit")
+    implementation project(":sample:database")
+    implementation project(":sample:utils")
     implementation project(':decompose')
 }
