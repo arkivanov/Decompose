@@ -5,9 +5,10 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.Lifecycle
+import com.arkivanov.todo.router.BackStack.Entry
 
 internal class RouterImpl<in C>(
-    private val stack: MutableState<List<StackEntry>>,
+    private val stack: MutableState<BackStack<C>>,
     backPressedDispatcher: OnBackPressedDispatcher,
     private val resolve: Router<C>.(configuration: C, Lifecycle) -> ComposableComponent
 ) : Router<C> {
@@ -18,48 +19,65 @@ internal class RouterImpl<in C>(
         backPressedDispatcher.addCallback(backPressedCallback)
     }
 
-    fun dispose() {
-        backPressedCallback.remove()
+    @Composable
+    fun content() {
+        stack.value.top?.component?.content()
+    }
 
-        while (stack.value.isNotEmpty()) {
+    fun dispose() {
+        while (stack.value.top != null) {
             pop()
         }
     }
 
     override fun push(configuration: C) {
-        val last: StackEntry? = stack.value.lastOrNull()
-        last?.lifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        val oldStack = stack.value
+        val newEntry = createBackStackEntry(configuration)
 
-        val lifecycle = LifecycleHolder()
-        val component = resolve(configuration, lifecycle.registry)
-        stack.value = stack.value + StackEntry(component, lifecycle)
-        lifecycle.registry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-        lifecycle.registry.handleLifecycleEvent(Lifecycle.Event.ON_START)
-        lifecycle.registry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        val oldLifecycle = oldStack.top?.lifecycle
+        val newLifecycle = newEntry.lifecycle
 
-        last?.lifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+        oldLifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
 
-        backPressedCallback.isEnabled = stack.value.size > 1
+        newLifecycle.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        newLifecycle.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        newLifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+
+        oldLifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+
+        val newStack = oldStack.push(newEntry)
+        stack.value = newStack
+        backPressedCallback.isEnabled = newStack.stack.isNotEmpty()
     }
 
     override fun pop() {
-        val current = stack.value.last()
-        stack.value = stack.value.dropLast(1)
-        current.lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        val oldStack = stack.value
+        val newStack = oldStack.pop(::createBackStackEntry)
 
-        val previous: StackEntry? = stack.value.lastOrNull()
-        previous?.lifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_START)
-        previous?.lifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        val oldLifecycle = oldStack.top?.lifecycle
+        val newLifecycle = newStack.top?.lifecycle
 
-        current.lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-        current.lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        oldLifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
 
-        backPressedCallback.isEnabled = stack.value.size > 1
+        newLifecycle?.takeUnless { it.currentState == Lifecycle.State.INITIALIZED }?.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        newLifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        newLifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+
+        oldLifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+        oldLifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+
+        stack.value = newStack
+        backPressedCallback.isEnabled = newStack.stack.isNotEmpty()
     }
 
-    @Composable
-    fun content() {
-        stack.value.lastOrNull()?.component?.content()
+    private fun createBackStackEntry(configuration: C): Entry.Created<C> {
+        val lifecycleHolder = LifecycleHolder()
+
+        return Entry.Created(
+            configuration = configuration,
+            component = resolve(configuration, lifecycleHolder.registry),
+            lifecycleHolder = lifecycleHolder
+        )
     }
 
     private inner class BackPressedCallback : OnBackPressedCallback(false) {
