@@ -15,7 +15,7 @@ Each `Component` is created based on an associated `Configuration`. `Configurati
 
 ### Sample app
 
-The sample app is a simple todo list.
+The sample app is a simple todo list. An example of using the `Router` can be found in the [TodoRootComponent](https://github.com/arkivanov/Decompose/blob/master/sample/root/src/main/java/com/arkivanov/todo/root/TodoRootComponent.kt).
 
 #### Sample app Component structure
 
