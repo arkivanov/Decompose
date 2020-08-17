@@ -9,16 +9,16 @@ import androidx.lifecycle.Lifecycle
 
 @Composable
 fun <C> Router(
-    initialConfiguration: C,
-    onBackPressedDispatcher: OnBackPressedDispatcher,
+    params: () -> RouterParams<C>,
     resolve: Router<C>.(configuration: C, Lifecycle) -> ComposableComponent
 ) {
-    val stack = state<List<StackEntry>> { emptyList() }
+    val stack = state<BackStack<C>> { BackStack() }
 
     val router =
         remember {
-            val router = RouterImpl(stack, onBackPressedDispatcher, resolve)
-            router.push(initialConfiguration)
+            val routerParams = params()
+            val router = RouterImpl(stack, routerParams.stateKeeper, routerParams.onBackPressedDispatcher, resolve)
+            router.push(routerParams.initialConfiguration)
             router
         }
 
@@ -26,3 +26,9 @@ fun <C> Router(
 
     router.content()
 }
+
+class RouterParams<C>(
+    val initialConfiguration: C,
+    val stateKeeper: RouterStateKeeper<C>? = null,
+    val onBackPressedDispatcher: OnBackPressedDispatcher? = null,
+)

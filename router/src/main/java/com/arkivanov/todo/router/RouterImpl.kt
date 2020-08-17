@@ -8,30 +8,53 @@ import androidx.lifecycle.Lifecycle
 import com.arkivanov.todo.router.BackStack.Entry
 
 internal class RouterImpl<in C>(
-    private val stack: MutableState<BackStack<C>>,
-    backPressedDispatcher: OnBackPressedDispatcher,
+    private val stackState: MutableState<BackStack<C>>,
+    private val stateKeeper: RouterStateKeeper<C>?,
+    backPressedDispatcher: OnBackPressedDispatcher?,
     private val resolve: Router<C>.(configuration: C, Lifecycle) -> ComposableComponent
 ) : Router<C> {
 
     private val backPressedCallback = BackPressedCallback()
 
     init {
-        backPressedDispatcher.addCallback(backPressedCallback)
+        stateKeeper?.register(::saveState)
+        backPressedDispatcher?.addCallback(backPressedCallback)
+    }
+
+    private fun saveState(): List<C> {
+        val stack = stackState.value
+        val entries = if (stack.top == null) stack.stack else stack.stack + stack.top
+
+        return entries.map(Entry<C>::configuration)
+    }
+
+    private fun restoreStateIfNeeded() {
+        val configurations = stateKeeper?.consume() ?: return
+
+        applyBackStack(
+            BackStack(
+                top = configurations.lastOrNull()?.let(::createBackStackEntry),
+                stack = configurations.dropLast(1).map { Entry.Destroyed(it) }
+            )
+        )
     }
 
     @Composable
     fun content() {
-        stack.value.top?.component?.content()
+        restoreStateIfNeeded()
+        stackState.value.top?.component?.content()
     }
 
     fun dispose() {
-        while (stack.value.top != null) {
+        while (stackState.value.top != null) {
             pop()
         }
+
+        stateKeeper?.unregister()
     }
 
     override fun push(configuration: C) {
-        val oldStack = stack.value
+        val oldStack = stackState.value
         val newEntry = createBackStackEntry(configuration)
 
         val oldLifecycle = oldStack.top?.lifecycle
@@ -45,13 +68,11 @@ internal class RouterImpl<in C>(
 
         oldLifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
 
-        val newStack = oldStack.push(newEntry)
-        stack.value = newStack
-        backPressedCallback.isEnabled = newStack.stack.isNotEmpty()
+        applyBackStack(oldStack.push(newEntry))
     }
 
     override fun pop() {
-        val oldStack = stack.value
+        val oldStack = stackState.value
         val newStack = oldStack.pop(::createBackStackEntry)
 
         val oldLifecycle = oldStack.top?.lifecycle
@@ -66,8 +87,7 @@ internal class RouterImpl<in C>(
         oldLifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
         oldLifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
 
-        stack.value = newStack
-        backPressedCallback.isEnabled = newStack.stack.isNotEmpty()
+        applyBackStack(newStack)
     }
 
     private fun createBackStackEntry(configuration: C): Entry.Created<C> {
@@ -78,6 +98,11 @@ internal class RouterImpl<in C>(
             component = resolve(configuration, lifecycleHolder.registry),
             lifecycleHolder = lifecycleHolder
         )
+    }
+
+    private fun applyBackStack(backStack: BackStack<C>) {
+        stackState.value = backStack
+        backPressedCallback.isEnabled = backStack.stack.isNotEmpty()
     }
 
     private inner class BackPressedCallback : OnBackPressedCallback(false) {

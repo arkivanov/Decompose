@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val root = TodoRootComponent(this, onBackPressedDispatcher)
+        val root = TodoRootComponent(this, savedStateRegistry, onBackPressedDispatcher)
 
         setContent {
             ComposeAppTheme {
@@ -23,5 +23,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-
-

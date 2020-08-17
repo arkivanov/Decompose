@@ -1,9 +1,11 @@
 package com.arkivanov.todo.root
 
 import android.content.Context
+import android.os.Parcelable
 import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.savedstate.SavedStateRegistry
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.core.lifecycle.Lifecycle
 import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
@@ -14,18 +16,22 @@ import com.arkivanov.todo.edit.TodoEditComponent
 import com.arkivanov.todo.main.TodoMainComponent
 import com.arkivanov.todo.root.integration.editOutputToListInput
 import com.arkivanov.todo.router.ComposableComponent
+import com.arkivanov.todo.router.ParcelableRouterStateKeeper
 import com.arkivanov.todo.router.Router
+import com.arkivanov.todo.router.RouterParams
 import com.arkivanov.todo.utils.Consumer
 import com.badoo.reaktive.observable.mapNotNull
 import com.badoo.reaktive.observable.ofType
 import com.badoo.reaktive.subject.publish.PublishSubject
 import com.squareup.sqldelight.android.AndroidSqliteDriver
+import kotlinx.android.parcel.Parcelize
 import com.arkivanov.todo.edit.TodoEditComponent.Output as EditOutput
 import com.arkivanov.todo.main.TodoMainComponent.Input as MainInput
 import com.arkivanov.todo.main.TodoMainComponent.Output as MainOutput
 
 class TodoRootComponent(
     context: Context,
+    private val savedStateRegistry: SavedStateRegistry,
     private val onBackPressedDispatcher: OnBackPressedDispatcher
 ) : ComposableComponent {
 
@@ -36,7 +42,7 @@ class TodoRootComponent(
     @Composable
     override fun content() {
         Column {
-            Router<Configuration>(Configuration.Main, onBackPressedDispatcher) { configuration, lifecycle ->
+            Router(params = ::routerParams) { configuration, lifecycle ->
                 when (configuration) {
                     is Configuration.Main -> main(lifecycle.asMviLifecycle())
                     is Configuration.Edit -> edit(lifecycle.asMviLifecycle(), id = configuration.id)
@@ -44,6 +50,16 @@ class TodoRootComponent(
             }
         }
     }
+
+    private fun routerParams(): RouterParams<Configuration> =
+        RouterParams(
+            initialConfiguration = Configuration.Main,
+            stateKeeper = ParcelableRouterStateKeeper(
+                savedStateRegistry = savedStateRegistry,
+                key = "TodoRootRouter"
+            ),
+            onBackPressedDispatcher = onBackPressedDispatcher
+        )
 
     private fun Router<Configuration>.main(lifecycle: Lifecycle): TodoMainComponent =
         TodoMainComponent(
@@ -76,8 +92,11 @@ class TodoRootComponent(
         )
     }
 
-    private sealed class Configuration {
+    private sealed class Configuration : Parcelable {
+        @Parcelize
         object Main : Configuration()
+
+        @Parcelize
         class Edit(val id: Long) : Configuration()
     }
 }
