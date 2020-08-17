@@ -42,5 +42,4 @@ android {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
-    implementation project(":utils")
 }

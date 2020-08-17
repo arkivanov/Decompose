@@ -57,5 +57,5 @@ dependencies {
     implementation project(":edit")
     implementation project(":database")
     implementation project(":utils")
-    implementation project(":router")
+    implementation project(':decompose')
 }

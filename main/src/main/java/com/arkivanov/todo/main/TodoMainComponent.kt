@@ -14,7 +14,7 @@ import com.arkivanov.todo.list.TodoListComponent
 import com.arkivanov.todo.main.integration.addOutputToListInput
 import com.arkivanov.todo.main.integration.inputToListInput
 import com.arkivanov.todo.main.integration.listOutputToOutput
-import com.arkivanov.todo.router.Component
+import com.arkivanov.decompose.Component
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.mapNotNull

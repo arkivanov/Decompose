@@ -1,6 +1,6 @@
-package com.arkivanov.todo.router
+package com.arkivanov.decompose
 
-import com.arkivanov.todo.router.BackStack.Entry
+import com.arkivanov.decompose.BackStack.Entry
 
 internal fun <C> BackStack<C>.push(entry: Entry.Created<C>): BackStack<C> =
     BackStack(
