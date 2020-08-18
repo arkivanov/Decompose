@@ -1,4 +1,5 @@
 include ':decompose'
+include ':sample:counter:app'
 include ':sample:todo:app'
 include ':sample:todo:utils'
 include ':sample:todo:database'
