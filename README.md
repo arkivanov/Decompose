@@ -13,7 +13,9 @@ Each `Component` is represented by the [Component](https://github.com/arkivanov/
 
 A key unit is the [Router](https://github.com/arkivanov/Decompose/blob/master/decompose/src/main/java/com/arkivanov/decompose/Router.kt).
 It is responsible for managing `Component`s, just like `FragmentManager`.
-The `Router` supports back stack and so each `Component` has its own `Lifecycle`. Each time a new `Component` is pushed, the currently active `Component` is stopped. When a `Component` is popped from the back stack, the previous `Component` is resumed.
+
+The `Router` supports back stack and so each `Component` has its own `Lifecycle`. Each time a new `Component` is pushed, the currently active `Component` is stopped. When a `Component` is popped from the back stack, the previous `Component` is resumed. This allows business logic to run while the component is in the back stack.
+
 Each `Component` is created based on an associated `Configuration`. `Configurations` can be persisted via Android's `saved state`, thus allowing back stack restoration after configurations change or process death.
 
 ### Sample app
