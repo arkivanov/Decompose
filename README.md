@@ -1,3 +1,6 @@
+[![Version](https://jitpack.io/v/arkivanov/decompose.svg)](https://jitpack.io/#arkivanov/decompose)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+
 ## Decompose
 
 Lifecycle-aware components for Jetpack Compose with routing functionality.
