@@ -1,8 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        compose_kotlin_compiler_version = '1.4.0-rc'
-        compose_version = '0.1.0-dev16'
+        compose_kotlin_compiler_version = '1.4.0'
+        compose_version = '0.1.0-dev17'
     }
     ext.kotlin_version = "1.4.0"
     repositories {
@@ -10,7 +10,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.2.0-alpha05"
+        classpath "com.android.tools.build:gradle:4.2.0-alpha07"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.squareup.sqldelight:gradle-plugin:1.4.0'
 
@@ -30,4 +30,25 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+void setupCompose(Project project) {
+    project.android {
+        kotlinOptions {
+            freeCompilerArgs += ["-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check"]
+        }
+
+        buildFeatures {
+            compose true
+        }
+
+        composeOptions {
+            kotlinCompilerExtensionVersion "${compose_version}"
+            kotlinCompilerVersion "${compose_kotlin_compiler_version}"
+        }
+    }
+
+    project.dependencies {
+        implementation "androidx.compose.foundation:foundation:$compose_version"
+    }
 }

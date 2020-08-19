@@ -3,22 +3,40 @@ package com.arkivanov.decompose
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.arkivanov.decompose.BackStack.Entry
 
 internal class RouterImpl<in C>(
-    private val stackState: MutableState<BackStack<C>>,
+    private val initialConfiguration: C,
+    private val lifecycle: Lifecycle,
     private val stateKeeper: RouterStateKeeper<C>?,
     backPressedDispatcher: OnBackPressedDispatcher?,
-    private val resolve: Router<C>.(configuration: C, Lifecycle) -> Component
+    private val resolve: (configuration: C, Lifecycle) -> Component
 ) : Router<C> {
 
+    private val stackState = mutableStateOf(BackStack<C>())
     private val backPressedCallback = BackPressedCallback()
 
     init {
         stateKeeper?.register(::saveState)
         backPressedDispatcher?.addCallback(backPressedCallback)
+
+        lifecycle.addObserver(
+            object : DefaultLifecycleObserver {
+                override fun onCreate(owner: LifecycleOwner) {
+                    if (!restoreState()) {
+                        push(initialConfiguration)
+                    }
+                }
+
+                override fun onDestroy(owner: LifecycleOwner) {
+                    dispose()
+                }
+            }
+        )
     }
 
     private fun saveState(): List<C> {
@@ -28,20 +46,17 @@ internal class RouterImpl<in C>(
         return entries.map(Entry<C>::configuration)
     }
 
-    private fun restoreStateIfNeeded() {
-        val configurations = stateKeeper?.consume() ?: return
+    private fun restoreState(): Boolean {
+        val configurations = stateKeeper?.consume() ?: return false
 
-        applyBackStack(
-            BackStack(
-                top = configurations.lastOrNull()?.let(::createBackStackEntry),
-                stack = configurations.dropLast(1).map { Entry.Destroyed(it) }
-            )
-        )
+        applyBackStack(BackStack(stack = configurations.dropLast(1).map { Entry.Destroyed(it) }))
+        configurations.lastOrNull()?.also(::push)
+
+        return true
     }
 
     @Composable
-    fun content() {
-        restoreStateIfNeeded()
+    override fun content() {
         stackState.value.top?.component?.content()
     }
 
@@ -56,6 +71,7 @@ internal class RouterImpl<in C>(
     override fun push(configuration: C) {
         val oldStack = stackState.value
         val newEntry = createBackStackEntry(configuration)
+        applyBackStack(oldStack.push(newEntry))
 
         val oldLifecycle = oldStack.top?.lifecycle
         val newLifecycle = newEntry.lifecycle
@@ -67,13 +83,12 @@ internal class RouterImpl<in C>(
         newLifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
 
         oldLifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-
-        applyBackStack(oldStack.push(newEntry))
     }
 
     override fun pop() {
         val oldStack = stackState.value
         val newStack = oldStack.pop(::createBackStackEntry)
+        applyBackStack(newStack)
 
         val oldLifecycle = oldStack.top?.lifecycle
         val newLifecycle = newStack.top?.lifecycle
@@ -86,16 +101,15 @@ internal class RouterImpl<in C>(
 
         oldLifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
         oldLifecycle?.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-
-        applyBackStack(newStack)
     }
 
     private fun createBackStackEntry(configuration: C): Entry.Created<C> {
         val lifecycleHolder = LifecycleHolder()
+        val mergedLifecycle = MergedLifecycle(lifecycle, lifecycleHolder.registry)
 
         return Entry.Created(
             configuration = configuration,
-            component = resolve(configuration, lifecycleHolder.registry),
+            component = resolve(configuration, mergedLifecycle.registry),
             lifecycleHolder = lifecycleHolder
         )
     }
@@ -111,5 +125,3 @@ internal class RouterImpl<in C>(
         }
     }
 }
-
-

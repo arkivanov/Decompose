@@ -1,12 +1,16 @@
 package com.arkivanov.todo.main
 
+import android.util.Log
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.Lifecycle
+import com.arkivanov.decompose.Component
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
-import com.arkivanov.mvikotlin.core.lifecycle.Lifecycle
+import com.arkivanov.mvikotlin.core.lifecycle.doOnCreateDestroy
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
 import com.arkivanov.mvikotlin.extensions.reaktive.bind
 import com.arkivanov.todo.add.TodoAddComponent
 import com.arkivanov.todo.database.TodoDatabaseQueries
@@ -14,7 +18,6 @@ import com.arkivanov.todo.list.TodoListComponent
 import com.arkivanov.todo.main.integration.addOutputToListInput
 import com.arkivanov.todo.main.integration.inputToListInput
 import com.arkivanov.todo.main.integration.listOutputToOutput
-import com.arkivanov.decompose.Component
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.mapNotNull
@@ -35,7 +38,7 @@ class TodoMainComponent(
     private val listOutput = PublishSubject<ListOutput>()
 
     init {
-        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
+        bind(lifecycle.asMviLifecycle(), BinderLifecycleMode.CREATE_DESTROY) {
             listOutput.mapNotNull(listOutputToOutput) bindTo output
         }
     }
@@ -48,6 +51,7 @@ class TodoMainComponent(
             input = merge(addOutput.mapNotNull(addOutputToListInput), input.mapNotNull(inputToListInput)),
             output = listOutput
         )
+
 
     private val addComponent =
         TodoAddComponent(

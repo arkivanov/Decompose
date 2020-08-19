@@ -1,5 +1,6 @@
 package com.arkivanov.todo.list
 
+import android.util.Log
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -15,17 +16,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import com.arkivanov.decompose.Component
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
-import com.arkivanov.mvikotlin.core.lifecycle.Lifecycle
-import com.arkivanov.mvikotlin.core.lifecycle.doOnDestroy
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
 import com.arkivanov.mvikotlin.extensions.reaktive.bind
 import com.arkivanov.todo.database.TodoDatabaseQueries
 import com.arkivanov.todo.list.integration.ListStoreDatabase
 import com.arkivanov.todo.list.integration.inputToIntent
 import com.arkivanov.todo.list.store.ListStore.Intent
 import com.arkivanov.todo.list.store.ListStoreFactory
-import com.arkivanov.decompose.Component
+import com.arkivanov.todo.utils.doOnDestroy
 import com.arkivanov.todo.utils.observableState
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.observable.Observable
@@ -42,7 +44,7 @@ class TodoListComponent(
     private val store = ListStoreFactory(storeFactory, ListStoreDatabase(queries)).create()
 
     init {
-        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
+        bind(lifecycle.asMviLifecycle(), BinderLifecycleMode.CREATE_DESTROY) {
             input.mapNotNull(inputToIntent) bindTo store
         }
 

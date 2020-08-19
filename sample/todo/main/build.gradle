@@ -30,14 +30,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures {
-        compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion "${compose_version}"
-        kotlinCompilerVersion "${compose_kotlin_compiler_version}"
-    }
 }
+
+setupCompose(project)
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -46,6 +41,7 @@ dependencies {
     implementation "com.arkivanov.mvikotlin:mvikotlin:2.0.0-rc2"
     implementation "com.arkivanov.mvikotlin:mvikotlin-main:2.0.0-rc2"
     implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-reaktive:2.0.0-rc2"
+    implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-androidx:2.0.0-rc2"
     implementation "com.badoo.reaktive:reaktive:1.1.16"
     implementation project(":sample:todo:list")
     implementation project(":sample:todo:add")

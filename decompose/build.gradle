@@ -30,16 +30,12 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures {
-        compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion "${compose_version}"
-        kotlinCompilerVersion "${compose_kotlin_compiler_version}"
-    }
 }
+
+setupCompose(project)
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0"
     implementation "androidx.compose.foundation:foundation:$compose_version"
 }

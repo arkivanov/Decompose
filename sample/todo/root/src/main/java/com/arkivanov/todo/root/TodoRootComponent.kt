@@ -2,12 +2,16 @@ package com.arkivanov.todo.root
 
 import android.content.Context
 import android.os.Parcelable
+import android.util.Log
 import androidx.activity.OnBackPressedDispatcher
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.Lifecycle
 import androidx.savedstate.SavedStateRegistry
+import com.arkivanov.decompose.Component
+import com.arkivanov.decompose.ParcelableRouterStateKeeper
+import com.arkivanov.decompose.Router
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
-import com.arkivanov.mvikotlin.core.lifecycle.Lifecycle
+import com.arkivanov.mvikotlin.core.lifecycle.doOnCreateDestroy
 import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
 import com.arkivanov.mvikotlin.extensions.reaktive.bind
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
@@ -15,10 +19,6 @@ import com.arkivanov.todo.database.TodoDatabase
 import com.arkivanov.todo.edit.TodoEditComponent
 import com.arkivanov.todo.main.TodoMainComponent
 import com.arkivanov.todo.root.integration.editOutputToListInput
-import com.arkivanov.decompose.Component
-import com.arkivanov.decompose.ParcelableRouterStateKeeper
-import com.arkivanov.decompose.Router
-import com.arkivanov.decompose.RouterParams
 import com.arkivanov.todo.utils.Consumer
 import com.badoo.reaktive.observable.mapNotNull
 import com.badoo.reaktive.observable.ofType
@@ -30,38 +30,40 @@ import com.arkivanov.todo.main.TodoMainComponent.Input as MainInput
 import com.arkivanov.todo.main.TodoMainComponent.Output as MainOutput
 
 class TodoRootComponent(
+    lifecycle: Lifecycle,
     context: Context,
-    private val savedStateRegistry: SavedStateRegistry,
-    private val onBackPressedDispatcher: OnBackPressedDispatcher
+    savedStateRegistry: SavedStateRegistry,
+    onBackPressedDispatcher: OnBackPressedDispatcher
 ) : Component {
 
     private val storeFactory = DefaultStoreFactory
     private val database = TodoDatabase(AndroidSqliteDriver(TodoDatabase.Schema, context, "TodoDatabase"))
     private val mainInput = PublishSubject<MainInput>()
 
-    @Composable
-    override fun content() {
-        Column {
-            Router(params = ::routerParams) { configuration, lifecycle ->
-                when (configuration) {
-                    is Configuration.Main -> main(lifecycle.asMviLifecycle())
-                    is Configuration.Edit -> edit(lifecycle.asMviLifecycle(), id = configuration.id)
-                }
-            }
-        }
-    }
-
-    private fun routerParams(): RouterParams<Configuration> =
-        RouterParams(
+    private val router =
+        Router<Configuration>(
             initialConfiguration = Configuration.Main,
+            lifecycle = lifecycle,
             stateKeeper = ParcelableRouterStateKeeper(
                 savedStateRegistry = savedStateRegistry,
                 key = "TodoRootRouter"
             ),
-            onBackPressedDispatcher = onBackPressedDispatcher
+            onBackPressedDispatcher = onBackPressedDispatcher,
+            resolve = ::resolveChild
         )
 
-    private fun Router<Configuration>.main(lifecycle: Lifecycle): TodoMainComponent =
+    @Composable
+    override fun content() {
+        router.content()
+    }
+
+    private fun resolveChild(configuration: Configuration, lifecycle: Lifecycle): Component =
+        when (configuration) {
+            is Configuration.Main -> main(lifecycle)
+            is Configuration.Edit -> edit(lifecycle, id = configuration.id)
+        }
+
+    private fun main(lifecycle: Lifecycle): TodoMainComponent =
         TodoMainComponent(
             storeFactory = storeFactory,
             queries = database.todoDatabaseQueries,
@@ -70,17 +72,17 @@ class TodoRootComponent(
             output = Consumer { onMainOutput(it) }
         )
 
-    private fun Router<Configuration>.onMainOutput(output: MainOutput) =
+    private fun onMainOutput(output: MainOutput) =
         when (output) {
-            is MainOutput.Selected -> push(Configuration.Edit(id = output.id))
+            is MainOutput.Selected -> router.push(Configuration.Edit(id = output.id))
         }
 
-    private fun Router<Configuration>.edit(lifecycle: Lifecycle, id: Long): TodoEditComponent {
+    private fun edit(lifecycle: Lifecycle, id: Long): TodoEditComponent {
         val editOutput = PublishSubject<EditOutput>()
 
-        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
+        bind(lifecycle.asMviLifecycle(), BinderLifecycleMode.CREATE_DESTROY) {
             editOutput.mapNotNull(editOutputToListInput(id = id)) bindTo mainInput
-            editOutput.ofType<EditOutput.Finished>() bindTo { pop() }
+            editOutput.ofType<EditOutput.Finished>() bindTo { router.pop() }
         }
 
         return TodoEditComponent(

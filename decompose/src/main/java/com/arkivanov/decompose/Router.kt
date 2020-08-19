@@ -1,42 +1,27 @@
 package com.arkivanov.decompose
 
 import androidx.activity.OnBackPressedDispatcher
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.onDispose
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.state
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.Lifecycle
 
-interface Router<in C> {
+interface Router<in C> : Component {
 
     fun push(configuration: C)
 
     fun pop()
 }
 
-@Composable
 fun <C> Router(
-    params: () -> RouterParams<C>,
-    resolve: Router<C>.(configuration: C, Lifecycle) -> Component
-) {
-    val stack = state<BackStack<C>> { BackStack() }
-
-    val router =
-        remember {
-            val routerParams = params()
-
-            RouterImpl(stack, routerParams.stateKeeper, routerParams.onBackPressedDispatcher, resolve).apply {
-                push(routerParams.initialConfiguration)
-            }
-        }
-
-    onDispose(router::dispose)
-
-    router.content()
-}
-
-class RouterParams<C>(
-    val initialConfiguration: C,
-    val stateKeeper: RouterStateKeeper<C>? = null,
-    val onBackPressedDispatcher: OnBackPressedDispatcher? = null,
-)
+    initialConfiguration: C,
+    lifecycle: Lifecycle,
+    stateKeeper: RouterStateKeeper<C>? = null,
+    onBackPressedDispatcher: OnBackPressedDispatcher? = null,
+    resolve: (configuration: C, Lifecycle) -> Component
+): Router<C> =
+    RouterImpl(
+        initialConfiguration = initialConfiguration,
+        lifecycle = lifecycle,
+        stateKeeper = stateKeeper,
+        backPressedDispatcher = onBackPressedDispatcher,
+        resolve = resolve
+    )

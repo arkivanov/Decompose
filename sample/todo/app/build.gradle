@@ -30,18 +30,13 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures {
-        compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion "${compose_version}"
-        kotlinCompilerVersion "${compose_kotlin_compiler_version}"
-    }
 
     packagingOptions {
         exclude 'META-INF/*'
     }
 }
+
+setupCompose(project)
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

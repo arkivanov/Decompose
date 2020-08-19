@@ -15,18 +15,15 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import com.arkivanov.decompose.Component
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
-import com.arkivanov.mvikotlin.core.lifecycle.Lifecycle
-import com.arkivanov.mvikotlin.core.lifecycle.doOnDestroy
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
 import com.arkivanov.mvikotlin.extensions.reaktive.bind
 import com.arkivanov.mvikotlin.extensions.reaktive.labels
 import com.arkivanov.todo.database.TodoDatabaseQueries
@@ -34,7 +31,7 @@ import com.arkivanov.todo.edit.integration.EditStoreDatabase
 import com.arkivanov.todo.edit.integration.mappings.labelToOutput
 import com.arkivanov.todo.edit.store.EditStore.Intent
 import com.arkivanov.todo.edit.store.EditStoreFactory
-import com.arkivanov.decompose.Component
+import com.arkivanov.todo.utils.doOnDestroy
 import com.arkivanov.todo.utils.observableState
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.observable.mapNotNull
@@ -50,25 +47,11 @@ class TodoEditComponent(
     private val store = EditStoreFactory(storeFactory, EditStoreDatabase(queries), id = id).create()
 
     init {
-        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
+        bind(lifecycle.asMviLifecycle(), BinderLifecycleMode.CREATE_DESTROY) {
             store.labels.mapNotNull(labelToOutput) bindTo output
         }
 
         lifecycle.doOnDestroy(store::dispose)
-    }
-
-    @Composable
-    private fun String.asTextFieldValue(): TextFieldValue {
-        var textFieldValue by state { TextFieldValue() }
-
-        if (textFieldValue.text != this) {
-            textFieldValue = TextFieldValue(
-                text = this,
-                selection = textFieldValue.selection.constrain(0, length)
-            )
-        }
-
-        return textFieldValue
     }
 
     private fun TextRange.constrain(minimumValue: Int, maximumValue: Int): TextRange {

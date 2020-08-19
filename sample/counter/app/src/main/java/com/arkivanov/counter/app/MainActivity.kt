@@ -6,17 +6,18 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.platform.setContent
 import com.arkivanov.counter.app.ui.ComposeAppTheme
+import com.arkivanov.decompose.Component
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val root = RootComponent(savedStateRegistry, onBackPressedDispatcher)
-
         setContent {
             ComposeAppTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    root.content()
+                    Component { lifecycle ->
+                        RootComponent(lifecycle, savedStateRegistry, onBackPressedDispatcher)
+                    }
                 }
             }
         }
