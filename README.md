@@ -3,7 +3,7 @@
 
 ## Decompose
 
-Lifecycle-aware components for Jetpack Compose with routing functionality.
+Lifecycle-aware components for Jetpack Compose with routing functionality. This project is inspired by [Badoos RIBs](https://github.com/badoo/RIBs) fork of the [Uber RIBs](https://github.com/uber/RIBs) framework.
 
 ### Component
 
