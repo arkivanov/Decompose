@@ -9,7 +9,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.rx.observer
 
 @Composable
-fun <T : Any> Store<*, T, *>.observableState(): State<T> {
+fun <T : Any> Store<*, T, *>.observableState(): T {
     val state = remember { mutableStateOf(state) }
 
     onActive {
@@ -17,5 +17,5 @@ fun <T : Any> Store<*, T, *>.observableState(): State<T> {
         onDispose(disposable::dispose)
     }
 
-    return state
+    return state.value
 }

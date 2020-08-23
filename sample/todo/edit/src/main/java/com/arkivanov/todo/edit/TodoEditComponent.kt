@@ -65,7 +65,7 @@ class TodoEditComponent(
 
     @Composable
     override fun content() {
-        val state = store.observableState().value
+        val state = store.observableState()
 
         Column(horizontalGravity = Alignment.CenterHorizontally) {
             TopAppBar(

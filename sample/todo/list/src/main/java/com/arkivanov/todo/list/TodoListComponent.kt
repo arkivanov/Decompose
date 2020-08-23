@@ -55,7 +55,7 @@ class TodoListComponent(
     override fun content() {
         val state = store.observableState()
 
-        LazyColumnFor(items = state.value.items, modifier = Modifier.weight(1F)) { item ->
+        LazyColumnFor(items = state.items, modifier = Modifier.weight(1F)) { item ->
             Row(modifier = Modifier.clickable(onClick = { output.onNext(Output.Selected(id = item.id)) }) + Modifier.padding(8.dp)) {
                 Text(
                     text = AnnotatedString(item.text),

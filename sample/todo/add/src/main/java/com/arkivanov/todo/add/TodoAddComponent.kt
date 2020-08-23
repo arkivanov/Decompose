@@ -45,7 +45,7 @@ class TodoAddComponent(
 
     @Composable
     override fun content() {
-        val state = store.observableState().value
+        val state = store.observableState()
 
         Row(verticalGravity = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
             OutlinedTextField(
