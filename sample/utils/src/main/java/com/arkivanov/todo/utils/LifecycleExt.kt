@@ -1,4 +1,4 @@
-package com.arkivanov.counter.app
+package com.arkivanov.todo.utils
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle

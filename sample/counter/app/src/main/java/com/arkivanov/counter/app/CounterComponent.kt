@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.Component
+import com.arkivanov.todo.utils.doOnCreate
+import com.arkivanov.todo.utils.doOnDestroy
 
 class CounterComponent(
     lifecycle: Lifecycle,

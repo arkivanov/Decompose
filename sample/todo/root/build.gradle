@@ -51,6 +51,6 @@ dependencies {
     implementation project(":sample:todo:main")
     implementation project(":sample:todo:edit")
     implementation project(":sample:todo:database")
-    implementation project(":sample:todo:utils")
+    implementation project(":sample:utils")
     implementation project(':decompose')
 }
