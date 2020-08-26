@@ -1,6 +1,5 @@
 package com.arkivanov.todo.list
 
-import android.util.Log
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -18,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.Component
+import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
@@ -34,12 +34,12 @@ import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.mapNotNull
 
 class TodoListComponent(
+    componentContext: ComponentContext,
     storeFactory: StoreFactory,
     queries: TodoDatabaseQueries,
-    lifecycle: Lifecycle,
     input: Observable<Input>,
     private val output: Consumer<Output>
-) : Component {
+) : Component, ComponentContext by componentContext {
 
     private val store = ListStoreFactory(storeFactory, ListStoreDatabase(queries)).create()
 

@@ -1,14 +1,13 @@
 package com.arkivanov.todo.main
 
-import android.util.Log
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.Component
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.child
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
-import com.arkivanov.mvikotlin.core.lifecycle.doOnCreateDestroy
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
 import com.arkivanov.mvikotlin.extensions.reaktive.bind
@@ -27,12 +26,12 @@ import com.arkivanov.todo.add.TodoAddComponent.Output as AddOutput
 import com.arkivanov.todo.list.TodoListComponent.Output as ListOutput
 
 class TodoMainComponent(
+    componentContext: ComponentContext,
     storeFactory: StoreFactory,
     queries: TodoDatabaseQueries,
-    lifecycle: Lifecycle,
     input: Observable<Input>,
     private val output: Consumer<Output>
-) : Component {
+) : Component, ComponentContext by componentContext {
 
     private val addOutput = PublishSubject<AddOutput>()
     private val listOutput = PublishSubject<ListOutput>()
@@ -45,19 +44,18 @@ class TodoMainComponent(
 
     private val listComponent =
         TodoListComponent(
+            componentContext = componentContext.child("ListComponent"),
             storeFactory = storeFactory,
             queries = queries,
-            lifecycle = lifecycle,
             input = merge(addOutput.mapNotNull(addOutputToListInput), input.mapNotNull(inputToListInput)),
             output = listOutput
         )
 
-
     private val addComponent =
         TodoAddComponent(
+            componentContext = componentContext.child("AddComponent"),
             storeFactory = storeFactory,
             queries = queries,
-            lifecycle = lifecycle,
             output = addOutput
         )
 

@@ -2,16 +2,11 @@ package com.arkivanov.todo.root
 
 import android.content.Context
 import android.os.Parcelable
-import android.util.Log
-import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.Lifecycle
-import androidx.savedstate.SavedStateRegistry
 import com.arkivanov.decompose.Component
-import com.arkivanov.decompose.ParcelableRouterStateKeeper
-import com.arkivanov.decompose.Router
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
-import com.arkivanov.mvikotlin.core.lifecycle.doOnCreateDestroy
 import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
 import com.arkivanov.mvikotlin.extensions.reaktive.bind
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
@@ -30,26 +25,19 @@ import com.arkivanov.todo.main.TodoMainComponent.Input as MainInput
 import com.arkivanov.todo.main.TodoMainComponent.Output as MainOutput
 
 class TodoRootComponent(
-    lifecycle: Lifecycle,
-    context: Context,
-    savedStateRegistry: SavedStateRegistry,
-    onBackPressedDispatcher: OnBackPressedDispatcher
-) : Component {
+    componentContext: ComponentContext,
+    context: Context
+) : Component, ComponentContext by componentContext {
 
     private val storeFactory = DefaultStoreFactory
     private val database = TodoDatabase(AndroidSqliteDriver(TodoDatabase.Schema, context, "TodoDatabase"))
     private val mainInput = PublishSubject<MainInput>()
 
     private val router =
-        Router<Configuration>(
+        router<Configuration>(
             initialConfiguration = Configuration.Main,
-            lifecycle = lifecycle,
-            stateKeeper = ParcelableRouterStateKeeper(
-                savedStateRegistry = savedStateRegistry,
-                key = "TodoRootRouter"
-            ),
-            onBackPressedDispatcher = onBackPressedDispatcher,
-            resolve = ::resolveChild
+            handleBackButton = true,
+            componentFactory = ::resolveChild
         )
 
     @Composable
@@ -57,17 +45,17 @@ class TodoRootComponent(
         router.content()
     }
 
-    private fun resolveChild(configuration: Configuration, lifecycle: Lifecycle): Component =
+    private fun resolveChild(configuration: Configuration, componentContext: ComponentContext): Component =
         when (configuration) {
-            is Configuration.Main -> main(lifecycle)
-            is Configuration.Edit -> edit(lifecycle, id = configuration.id)
+            is Configuration.Main -> main(componentContext)
+            is Configuration.Edit -> edit(componentContext, id = configuration.id)
         }
 
-    private fun main(lifecycle: Lifecycle): TodoMainComponent =
+    private fun main(componentContext: ComponentContext): TodoMainComponent =
         TodoMainComponent(
+            componentContext = componentContext,
             storeFactory = storeFactory,
             queries = database.todoDatabaseQueries,
-            lifecycle = lifecycle,
             input = mainInput,
             output = Consumer { onMainOutput(it) }
         )
@@ -77,7 +65,7 @@ class TodoRootComponent(
             is MainOutput.Selected -> router.push(Configuration.Edit(id = output.id))
         }
 
-    private fun edit(lifecycle: Lifecycle, id: Long): TodoEditComponent {
+    private fun edit(componentContext: ComponentContext, id: Long): TodoEditComponent {
         val editOutput = PublishSubject<EditOutput>()
 
         bind(lifecycle.asMviLifecycle(), BinderLifecycleMode.CREATE_DESTROY) {
@@ -86,10 +74,10 @@ class TodoRootComponent(
         }
 
         return TodoEditComponent(
+            componentContext = componentContext,
             storeFactory = storeFactory,
             queries = database.todoDatabaseQueries,
             id = id,
-            lifecycle = lifecycle,
             output = editOutput
         )
     }

@@ -3,12 +3,11 @@ package com.arkivanov.decompose
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 
 internal class MergedLifecycle(lifecycle1: Lifecycle, lifecycle2: Lifecycle) {
 
     private val holder = LifecycleHolder() // Must be stored in a field
-    val registry: LifecycleRegistry = holder.registry
+    val lifecycle: Lifecycle = holder.registry
 
     init {
         lifecycle1.addObserver(LifecycleObserverImpl(lifecycle2))
@@ -44,13 +43,13 @@ internal class MergedLifecycle(lifecycle1: Lifecycle, lifecycle2: Lifecycle) {
 
         private fun onUp(state: Lifecycle.State, event: Lifecycle.Event) {
             if (state <= other.currentState) {
-                registry.handleLifecycleEvent(event)
+                holder.registry.handleLifecycleEvent(event)
             }
         }
 
         private fun onDown(state: Lifecycle.State, event: Lifecycle.Event) {
             if (state < other.currentState) {
-                registry.handleLifecycleEvent(event)
+                holder.registry.handleLifecycleEvent(event)
             }
         }
     }

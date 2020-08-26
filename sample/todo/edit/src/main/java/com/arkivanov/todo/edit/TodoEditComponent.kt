@@ -19,8 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.Component
+import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.androidx.lifecycle.asMviLifecycle
@@ -37,12 +37,12 @@ import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.observable.mapNotNull
 
 class TodoEditComponent(
+    componentContext: ComponentContext,
     storeFactory: StoreFactory,
     queries: TodoDatabaseQueries,
     id: Long,
-    lifecycle: Lifecycle,
     private val output: Consumer<Output>
-) : Component {
+) : Component, ComponentContext by componentContext {
 
     private val store = EditStoreFactory(storeFactory, EditStoreDatabase(queries), id = id).create()
 

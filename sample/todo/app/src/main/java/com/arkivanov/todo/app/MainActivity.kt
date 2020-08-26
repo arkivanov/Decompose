@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.platform.setContent
-import com.arkivanov.decompose.Component
+import com.arkivanov.decompose.RootComponent
 import com.arkivanov.todo.app.ui.ComposeAppTheme
 import com.arkivanov.todo.root.TodoRootComponent
 
@@ -16,8 +16,8 @@ class MainActivity : AppCompatActivity() {
         setContent {
             ComposeAppTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    Component { lifecycle ->
-                        TodoRootComponent(lifecycle, this, savedStateRegistry, onBackPressedDispatcher)
+                    RootComponent { componentContext ->
+                        TodoRootComponent(componentContext, this)
                     }
                 }
             }
