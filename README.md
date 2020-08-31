@@ -16,7 +16,9 @@ It is responsible for managing `Component`s, just like `FragmentManager`.
 
 The `Router` supports back stack and so each `Component` has its own `Lifecycle`. Each time a new `Component` is pushed, the currently active `Component` is stopped. When a `Component` is popped from the back stack, the previous `Component` is resumed. This allows business logic to run while the component is in the back stack.
 
-Each `Component` is created based on an associated `Configuration`. `Configurations` can be persisted via Android's `saved state`, thus allowing back stack restoration after configurations change or process death.
+Each `Component` is created based on an associated `Configuration`. `Configurations` can be persisted via Android's `saved state`, thus allowing back stack restoration after configurations change or process death. When the back stack is restored, only currently active `Components` are recreated. All others in the back stack remain destroyed, and recreated on demand when navigating back.
+
+`Routers` can be nested, and each `Component` can have more than one `Router`.
 
 ### Sample apps
 
@@ -25,11 +27,16 @@ There are two sample apps.
 #### Sample counter app
 
 This sample can be found [here](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app).
-There are just two components: 
-- [CounterComponent](https://github.com/arkivanov/Decompose/blob/master/sample/counter/app/src/main/java/com/arkivanov/counter/app/CounterComponent.kt) - this `Component` just increments the counter every 100 ms. It starts counting once created and stops when destroyed. It also displays a `Button`, its text and click listener are injected via constructor.
-- [RootComponent](https://github.com/arkivanov/Decompose/blob/master/sample/counter/app/src/main/java/com/arkivanov/counter/app/RootComponent.kt) - this `Component` aggregates two instances of the `CounterComponent`. The first instance is displayed at the beggining. When the `Button` is clicked the second instance is pushed. When the `Button` or a back button is tapped in the second instance, it's popped and the first instance is displayed again. You can observe that it was counting while in the back stack.
+There are three components: 
+- [Counter](https://github.com/arkivanov/Decompose/blob/master/sample/counter/app/src/main/java/com/arkivanov/counter/app/Counter.kt) - this `Component` just increments the counter every 500 ms. It starts counting once created and stops when destroyed. So `Counter` continues counting while in the back stack, unless recreated.
+- [CounterInnerContainer](https://github.com/arkivanov/Decompose/blob/master/sample/counter/app/src/main/java/com/arkivanov/counter/app/CounterInnerContainer.kt) - this `Component` contains the `Counter` and two `Routers` on the left and on the right side. Each `Router` displays its stack of `Counters` and two buttons for navigation. "Next" button pushes another `Counter` to the corresponding `Router`, "Prev" button pops the active `Counter` for the `Router`.
+- [CounterRootComponent](https://github.com/arkivanov/Decompose/blob/master/sample/counter/app/src/main/java/com/arkivanov/counter/app/CounterRootContainer.kt) - this `Component` also contains the `Counter`, the `Router` of `CounterInnerContainer` and a button pushing another `CounterInnerContainer` to the stack. System back button is used for backward navigation.
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterDemo.gif" width="196">
+
+##### Sample Counter Component structure 
+
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterStructure.png" width="384">
 
 #### Sample todo app
 
@@ -43,6 +50,7 @@ There are multiple `Components`, each in a separate module:
 
 All data is persisted using SQLDelight database. The sample intensively uses [MVIKotlin](https://github.com/arkivanov/MVIKotlin) and [Reaktive](https://github.com/badoo/Reaktive) libraries, just for fun.
 
-##### Todo Component structure 
+##### Sample Todo Component structure 
 
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/TodoApp.png" width="512">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleTodoStructure.png" width="512">
+
