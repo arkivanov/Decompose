@@ -1,5 +1,6 @@
 package com.arkivanov.counter.app
 
+import android.os.Bundle
 import android.os.Handler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Box
@@ -18,7 +19,19 @@ class Counter(
     private val index: Int
 ) : Component, ComponentContext by componentContext {
 
-    private val viewModel = ViewModelProvider(this).get(ViewModelImpl::class.java)
+    private val viewModel =
+        ViewModelProvider(
+            this,
+            ViewModelFactory(savedStateKeeper.consume(KEY_COUNTER)?.getInt(KEY_COUNTER) ?: 0)
+        ).get(ViewModelImpl::class.java)
+
+    init {
+        savedStateKeeper.register(KEY_COUNTER) {
+            Bundle().apply {
+                putInt(KEY_COUNTER, viewModel.count.value)
+            }
+        }
+    }
 
     @Composable
     override fun content() {
@@ -27,8 +40,12 @@ class Counter(
         }
     }
 
-    internal class ViewModelImpl : ViewModel() {
-        val count = mutableStateOf(0)
+    private companion object {
+        private const val KEY_COUNTER = "COUNTER"
+    }
+
+    private class ViewModelImpl(initialCount: Int) : ViewModel() {
+        val count = mutableStateOf(initialCount)
         private val handler = Handler()
 
         init {
@@ -48,5 +65,12 @@ class Counter(
 
             super.onCleared()
         }
+    }
+
+    private class ViewModelFactory(
+        private val initialCount: Int
+    ) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T = ViewModelImpl(initialCount) as T
     }
 }
