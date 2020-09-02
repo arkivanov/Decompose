@@ -2,7 +2,7 @@
 buildscript {
     ext {
         compose_kotlin_compiler_version = '1.4.0'
-        compose_version = '0.1.0-dev17'
+        compose_version = '1.0.0-alpha02'
     }
     ext.kotlin_version = "1.4.0"
     repositories {
@@ -10,9 +10,9 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.2.0-alpha07"
+        classpath "com.android.tools.build:gradle:4.2.0-alpha09"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.squareup.sqldelight:gradle-plugin:1.4.0'
+        classpath 'com.squareup.sqldelight:gradle-plugin:1.4.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
