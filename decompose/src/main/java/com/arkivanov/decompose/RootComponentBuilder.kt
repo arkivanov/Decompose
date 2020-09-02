@@ -4,6 +4,8 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
 
@@ -11,6 +13,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 fun RootComponent(
     savedStateRegistry: SavedStateRegistry,
     onBackPressedDispatcher: OnBackPressedDispatcher,
+    viewModelStore: ViewModelStore,
     factory: (ComponentContext) -> Component
 ) {
     val lifecycle = lifecycle()
@@ -18,16 +21,18 @@ fun RootComponent(
     val component =
         remember {
             val savedStateKeeper = rootSavedStateKeeper(savedStateRegistry)
-            val routerFactory = DefaultRouterFactory(lifecycle, savedStateKeeper, onBackPressedDispatcher)
-            factory(ComponentContextImpl(lifecycle, savedStateKeeper, onBackPressedDispatcher, routerFactory))
+            val routerFactory = DefaultRouterFactory(lifecycle, savedStateKeeper, onBackPressedDispatcher, viewModelStore)
+            factory(ComponentContextImpl(lifecycle, savedStateKeeper, onBackPressedDispatcher, viewModelStore, routerFactory))
         }
 
     component.content()
 }
 
 @Composable
-fun <T> T.RootComponent(factory: (ComponentContext) -> Component) where T : SavedStateRegistryOwner, T : OnBackPressedDispatcherOwner {
-    RootComponent(savedStateRegistry, onBackPressedDispatcher, factory)
+fun <T> T.RootComponent(
+    factory: (ComponentContext) -> Component
+) where T : SavedStateRegistryOwner, T : OnBackPressedDispatcherOwner, T : ViewModelStoreOwner {
+    RootComponent(savedStateRegistry, onBackPressedDispatcher, viewModelStore, factory)
 }
 
 private fun rootSavedStateKeeper(registry: SavedStateRegistry): SavedStateKeeper =

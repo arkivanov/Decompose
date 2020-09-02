@@ -8,16 +8,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStore
 
 internal class RouterImpl<C : Parcelable>(
     initialConfiguration: C,
     private val configurationClassLoader: ClassLoader?,
     private val lifecycle: Lifecycle,
     private val savedStateKeeper: SavedStateKeeper,
-    private val savedStateKey: String,
+    private val key: String,
     onBackPressedDispatcher: OnBackPressedDispatcher?,
-    private val componentFactory: (C, Lifecycle, SavedStateKeeper) -> Component
+    viewModelStore: ViewModelStore,
+    private val componentFactory: (C, Lifecycle, SavedStateKeeper, ViewModelStore) -> Component
 ) : Router<C>, LifecycleOwner {
 
     private val onBackPressedCallback = OnBackPressedCallbackImpl()
@@ -26,15 +28,37 @@ internal class RouterImpl<C : Parcelable>(
         onBackPressedDispatcher?.addCallback(this, onBackPressedCallback)
     }
 
+    private val viewModel = viewModelStore.viewModel(key) { ViewModelImpl<C>() }
     private val stackState = mutableStateOf(restoreState() ?: Stack(active = createComponent(initialConfiguration)))
 
     init {
-        savedStateKeeper.register(savedStateKey, ::saveState)
-        lifecycle.doOnDestroy { savedStateKeeper.unregister(savedStateKey) }
+        savedStateKeeper.register(key, ::saveState)
 
         updateOnBackPressedCallback()
 
+        viewModel.activeEntry = stackState.value.active
         stackState.value.active.lifecycleHolder.registry.resume()
+
+        lifecycle.doOnDestroy(::destroy)
+    }
+
+    private fun destroy() {
+        savedStateKeeper.unregister(key)
+
+        val stack = stackState.value
+
+        stack.active.lifecycleHolder.registry.destroy()
+
+        stack.backStack.reversed().forEach { entry ->
+            when (entry) {
+                is Stack.Entry.Created -> {
+                    entry.viewModelStore.clear()
+                    entry.lifecycleHolder.registry.destroy()
+                }
+
+                is Stack.Entry.Destroyed -> Unit
+            }.let {}
+        }
     }
 
     override val stackSize: Int get() = stackState.value.backStack.size + 1
@@ -51,7 +75,7 @@ internal class RouterImpl<C : Parcelable>(
     override fun getLifecycle(): Lifecycle = lifecycle
 
     private fun restoreState(): Stack<C>? {
-        val savedState = savedStateKeeper.consume(savedStateKey) ?: return null
+        val savedState = savedStateKeeper.consume(key) ?: return null
 
         val configurations =
             savedState
@@ -61,7 +85,8 @@ internal class RouterImpl<C : Parcelable>(
 
         val last = configurations.last()
         val lastBundle: Bundle? = savedState.getBundle(last.toString())
-        val lastEntry: Stack.Entry.Created<C> = createComponent(last, lastBundle)
+        val lastViewModelStore = viewModel.activeEntry?.viewModelStore
+        val lastEntry: Stack.Entry.Created<C> = createComponent(last, lastBundle, lastViewModelStore)
 
         val backStack =
             configurations.dropLast(1).map {
@@ -96,40 +121,33 @@ internal class RouterImpl<C : Parcelable>(
 
         val savedEntry: Stack.Entry.Created<C> = oldStack.active.let { it.copy(savedState = it.savedStateKeeper.save()) }
 
-        savedEntry.lifecycleHolder.registry.apply {
-            handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-        }
-
+        savedEntry.lifecycleHolder.registry.pause()
         newEntry.lifecycleHolder.registry.resume()
+        savedEntry.lifecycleHolder.registry.stop()
 
-        savedEntry.lifecycleHolder.registry.apply {
-            handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-        }
-
+        viewModel.activeEntry = newEntry
         stackState.value = oldStack.copy(active = newEntry, backStack = oldStack.backStack + savedEntry)
 
         updateOnBackPressedCallback()
     }
 
-    private fun LifecycleRegistry.resume() {
-        if (currentState == Lifecycle.State.INITIALIZED) {
-            handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-        }
-        handleLifecycleEvent(Lifecycle.Event.ON_START)
-        handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    }
-
-    private fun createComponent(configuration: C, savedState: Bundle? = null): Stack.Entry.Created<C> {
+    private fun createComponent(
+        configuration: C,
+        savedState: Bundle? = null,
+        savedViewModelStore: ViewModelStore? = null
+    ): Stack.Entry.Created<C> {
         val componentLifecycleHolder = LifecycleHolder()
         val mergedLifecycle = MergedLifecycle(lifecycle, componentLifecycleHolder.registry)
         val savedStateKeeper = DefaultSavedStateKeeper(savedState)
-        val component = componentFactory(configuration, mergedLifecycle.lifecycle, savedStateKeeper)
+        val viewModelStore = savedViewModelStore ?: ViewModelStore()
+        val component = componentFactory(configuration, mergedLifecycle.lifecycle, savedStateKeeper, viewModelStore)
 
         return Stack.Entry.Created(
             configuration = configuration,
             component = component,
             lifecycleHolder = componentLifecycleHolder,
-            savedStateKeeper = savedStateKeeper
+            savedStateKeeper = savedStateKeeper,
+            viewModelStore = viewModelStore
         )
     }
 
@@ -147,17 +165,12 @@ internal class RouterImpl<C : Parcelable>(
 
         val topEntry: Stack.Entry.Created<C> = oldStack.active
 
-        topEntry.lifecycleHolder.registry.apply {
-            handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-        }
-
+        topEntry.lifecycleHolder.registry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
         nextActiveEntry.lifecycleHolder.registry.resume()
+        topEntry.viewModelStore.clear()
+        topEntry.lifecycleHolder.registry.destroy()
 
-        topEntry.lifecycleHolder.registry.apply {
-            handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-            handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-        }
-
+        viewModel.activeEntry = nextActiveEntry
         stackState.value = oldStack.copy(active = nextActiveEntry, backStack = oldStack.backStack.dropLast(1))
 
         updateOnBackPressedCallback()
@@ -167,7 +180,7 @@ internal class RouterImpl<C : Parcelable>(
         onBackPressedCallback.isEnabled = stackState.value.backStack.isNotEmpty()
     }
 
-    private data class Stack<out C : Parcelable>(
+    internal data class Stack<out C : Parcelable>(
         val active: Entry.Created<C>,
         val backStack: List<Entry<C>> = emptyList()
     ) {
@@ -180,7 +193,8 @@ internal class RouterImpl<C : Parcelable>(
                 override val savedState: Bundle? = null,
                 val component: Component,
                 val lifecycleHolder: LifecycleHolder,
-                val savedStateKeeper: DefaultSavedStateKeeper
+                val savedStateKeeper: DefaultSavedStateKeeper,
+                val viewModelStore: ViewModelStore
             ) : Entry<C>()
 
             data class Destroyed<out C : Parcelable>(
@@ -193,6 +207,16 @@ internal class RouterImpl<C : Parcelable>(
     private inner class OnBackPressedCallbackImpl : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             pop()
+        }
+    }
+
+    private class ViewModelImpl<C : Parcelable> : ViewModel() {
+        var activeEntry: Stack.Entry.Created<C>? = null
+
+        override fun onCleared() {
+            activeEntry?.viewModelStore?.clear()
+
+            super.onCleared()
         }
     }
 }
