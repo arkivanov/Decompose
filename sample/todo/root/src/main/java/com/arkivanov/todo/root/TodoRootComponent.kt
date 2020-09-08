@@ -42,7 +42,7 @@ class TodoRootComponent(
 
     @Composable
     override fun content() {
-        router.content()
+        router.state.value.activeComponent.content()
     }
 
     private fun resolveChild(configuration: Configuration, componentContext: ComponentContext): Component =

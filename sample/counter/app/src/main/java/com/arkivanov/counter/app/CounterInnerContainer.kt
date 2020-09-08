@@ -76,24 +76,26 @@ class CounterInnerContainer(
     @Composable
     private fun Child(router: Router<Configuration.Child>) {
         Column {
-            Button(onClick = { router.pushNextChild() }) {
+            val routerState = router.state.value
+
+            Button(onClick = { router.pushNextChild(index = routerState.stack.size) }) {
                 Text(text = "Next Counter")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = router::pop, enabled = router.stackSize > 1) {
+            Button(onClick = router::pop, enabled = routerState.stack.size > 1) {
                 Text(text = "Prev Counter")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            router.content()
+            routerState.activeComponent.content()
         }
     }
 
-    private fun Router<Configuration.Child>.pushNextChild() {
-        push(Configuration.Child(index = stackSize))
+    private fun Router<Configuration.Child>.pushNextChild(index: Int) {
+        push(Configuration.Child(index = index))
     }
 
     private sealed class Configuration : Parcelable {

@@ -46,23 +46,25 @@ class CounterRootContainer(
                 horizontalGravity = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(16.dp)
             ) {
+                val routerState = router.state.value
+
                 counter.content()
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(onClick = ::nextChild) {
+                Button(onClick = { nextChild(index = routerState.stack.size) }) {
                     Text(text = "Next Counter")
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                router.content()
+                routerState.activeComponent.content()
             }
         }
     }
 
-    private fun nextChild() {
-        router.push(Configuration.Child(index = router.stackSize))
+    private fun nextChild(index: Int) {
+        router.push(Configuration.Child(index = index))
     }
 
     private sealed class Configuration : Parcelable {

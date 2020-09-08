@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -29,15 +29,16 @@ internal class RouterImpl<C : Parcelable>(
     }
 
     private val viewModel = viewModelStore.viewModel(key) { ViewModelImpl<C>() }
-    private val stackState = mutableStateOf(restoreState() ?: Stack(active = createComponent(initialConfiguration)))
+    private var stack = restoreStack() ?: Stack(active = createComponent(initialConfiguration))
+    override val state: MutableState<RouterState<C>> = mutableStateOf(stack.toState())
 
     init {
-        savedStateKeeper.register(key, ::saveState)
+        savedStateKeeper.register(key, ::saveStack)
 
         updateOnBackPressedCallback()
 
-        viewModel.activeEntry = stackState.value.active
-        stackState.value.active.lifecycleHolder.registry.resume()
+        viewModel.activeEntry = stack.active
+        stack.active.lifecycleHolder.registry.resume()
 
         lifecycle.doOnDestroy(::destroy)
     }
@@ -45,7 +46,7 @@ internal class RouterImpl<C : Parcelable>(
     private fun destroy() {
         savedStateKeeper.unregister(key)
 
-        val stack = stackState.value
+        val stack = stack
 
         stack.active.lifecycleHolder.registry.destroy()
 
@@ -61,20 +62,9 @@ internal class RouterImpl<C : Parcelable>(
         }
     }
 
-    override val stackSize: Int get() = stackState.value.backStack.size + 1
-
-    override fun getStack(): List<C> {
-        val stack = stackState.value
-        val list = ArrayList<C>(stack.backStack.size + 1)
-        stack.backStack.forEach { list += it.configuration }
-        list += stack.active.configuration
-
-        return list
-    }
-
     override fun getLifecycle(): Lifecycle = lifecycle
 
-    private fun restoreState(): Stack<C>? {
+    private fun restoreStack(): Stack<C>? {
         val savedState = savedStateKeeper.consume(key) ?: return null
 
         val configurations =
@@ -96,9 +86,9 @@ internal class RouterImpl<C : Parcelable>(
         return Stack(active = lastEntry, backStack = backStack)
     }
 
-    private fun saveState(): Bundle =
+    private fun saveStack(): Bundle =
         Bundle().apply {
-            val stack = stackState.value
+            val stack = stack
 
             putParcelableArrayList("CONFIGS", ArrayList(stack.backStack.map { it.configuration } + stack.active.configuration))
 
@@ -109,13 +99,8 @@ internal class RouterImpl<C : Parcelable>(
             }
         }
 
-    @Composable
-    override fun content() {
-        stackState.value.active.component.content()
-    }
-
     override fun push(configuration: C) {
-        val oldStack = stackState.value
+        val oldStack = stack
 
         val newEntry: Stack.Entry.Created<C> = createComponent(configuration)
 
@@ -126,7 +111,7 @@ internal class RouterImpl<C : Parcelable>(
         savedEntry.lifecycleHolder.registry.stop()
 
         viewModel.activeEntry = newEntry
-        stackState.value = oldStack.copy(active = newEntry, backStack = oldStack.backStack + savedEntry)
+        setStack(oldStack.copy(active = newEntry, backStack = oldStack.backStack + savedEntry))
 
         updateOnBackPressedCallback()
     }
@@ -152,7 +137,7 @@ internal class RouterImpl<C : Parcelable>(
     }
 
     override fun pop() {
-        val oldStack = stackState.value
+        val oldStack = stack
 
         val nextEntry: Stack.Entry<C>? = oldStack.backStack.lastOrNull()
         check(nextEntry != null) { "Can't pop the only Component" }
@@ -171,14 +156,25 @@ internal class RouterImpl<C : Parcelable>(
         topEntry.lifecycleHolder.registry.destroy()
 
         viewModel.activeEntry = nextActiveEntry
-        stackState.value = oldStack.copy(active = nextActiveEntry, backStack = oldStack.backStack.dropLast(1))
+        setStack(oldStack.copy(active = nextActiveEntry, backStack = oldStack.backStack.dropLast(1)))
 
         updateOnBackPressedCallback()
     }
 
     private fun updateOnBackPressedCallback() {
-        onBackPressedCallback.isEnabled = stackState.value.backStack.isNotEmpty()
+        onBackPressedCallback.isEnabled = stack.backStack.isNotEmpty()
     }
+
+    private fun setStack(stack: Stack<C>) {
+        this.stack = stack
+        state.value = stack.toState()
+    }
+
+    private fun Stack<C>.toState(): RouterState<C> =
+        RouterState(
+            stack = backStack.map { it.configuration } + active.configuration,
+            activeComponent = active.component
+        )
 
     internal data class Stack<out C : Parcelable>(
         val active: Entry.Created<C>,
