@@ -1,0 +1,32 @@
+CREATE TABLE todo (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    orderNum INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    isDone INTEGER AS Boolean NOT NULL DEFAULT 0
+);
+
+selectAll:
+SELECT *
+FROM todo;
+
+select:
+SELECT *
+FROM todo
+WHERE id = :id;
+
+add:
+INSERT INTO todo (orderNum, text)
+VALUES ((CASE (SELECT COUNT(*) FROM todo) WHEN 0 THEN 1 ELSE (SELECT MAX(orderNum)+1 FROM todo) END), :text);
+
+setText:
+UPDATE todo
+SET text = :text
+WHERE id = :id;
+
+setDone:
+UPDATE todo
+SET isDone = :isDone
+WHERE id = :id;
+
+getLastInsertId:
+SELECT last_insert_rowid();

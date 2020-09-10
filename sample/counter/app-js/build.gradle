@@ -1,0 +1,21 @@
+plugins {
+    id 'org.jetbrains.kotlin.js'
+}
+
+kotlin {
+    js {
+        useCommonJs()
+        browser()
+        binaries { executable() }
+    }
+}
+
+dependencies {
+    implementation project(":sample:counter:shared")
+    implementation "org.jetbrains:kotlin-react:$js_kotlin_react_version"
+    implementation "org.jetbrains:kotlin-react-dom:$js_kotlin_react_dom_version"
+    implementation "org.jetbrains:kotlin-styled:$js_kotlin_styled_version"
+    implementation "org.jetbrains:kotlin-css-js:$js_kotlin_css_version"
+    implementation(npm("react-hot-loader", "^4.12.20"))
+    implementation "com.ccfraser.muirwik:muirwik-components:$js_muirwik_version"
+}

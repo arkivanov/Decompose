@@ -1,0 +1,37 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+}
+
+androidExtensions {
+    features = ['parcelize']
+}
+
+setupAndroid(project)
+setupCompose(project)
+
+android {
+    defaultConfig {
+        applicationId "com.arkivanov.counter.app"
+        versionCode 1
+        versionName "1.0"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/*'
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.compose.foundation:foundation:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.core:core-ktx:$androidx_core_ktx_version"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_common_java8_version"
+    implementation "com.google.android.material:material:$android_material_version"
+    implementation project(':decompose')
+    implementation project(':sample:todo:utils')
+    implementation project(':sample:counter:shared')
+}

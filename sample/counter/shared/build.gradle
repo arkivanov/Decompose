@@ -1,0 +1,69 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-multiplatform'
+    id 'kotlin-android-extensions'
+}
+
+androidExtensions {
+    features = ['parcelize']
+}
+
+setupMultiplatform(project)
+setupAndroid(project)
+setupCompose(project)
+setupComposeMppWorkaround(project)
+
+kotlin {
+    ios {
+        binaries {
+            framework {
+                baseName = "Counter"
+                export(project(":decompose"))
+            }
+        }
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api project(':decompose')
+                implementation "com.badoo.reaktive:reaktive:$reaktive_version"
+            }
+        }
+
+        androidMain {
+            dependencies {
+                implementation "androidx.compose.foundation:foundation:$compose_version"
+                implementation "androidx.compose.material:material:$compose_version"
+            }
+        }
+
+        jsMain {
+            dependencies {
+                implementation "org.jetbrains:kotlin-react:$js_kotlin_react_version"
+                implementation "org.jetbrains:kotlin-styled:$js_kotlin_styled_version"
+                implementation "com.ccfraser.muirwik:muirwik-components:$js_muirwik_version"
+            }
+        }
+    }
+}
+
+static String getIosTargetName() {
+    def sdkName = System.getenv("SDK_NAME") ?: "iphonesimulator"
+    return "ios" + (sdkName.startsWith("iphoneos") ? "Arm64" : "X64")
+}
+
+task packForXcode(type: Sync) {
+    group = "build"
+    def mode = System.getenv("CONFIGURATION")
+    if (mode == null) {
+        mode = "DEBUG"
+    }
+    def targetName = getIosTargetName()
+    def framework = kotlin.targets.getByName(targetName).binaries.getFramework(mode)
+    inputs.property("mode", mode)
+    dependsOn(framework.linkTask)
+    def targetDir = new File(buildDir, "xcode-frameworks")
+    from(framework.outputDirectory)
+    into(targetDir)
+}

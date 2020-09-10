@@ -1,49 +1,31 @@
 plugins {
     id 'com.android.library'
-    id 'kotlin-android'
+    id 'kotlin-multiplatform'
 }
 
-android {
-    compileSdkVersion 29
-    buildToolsVersion "30.0.0"
+setupMultiplatform(project)
+setupAndroid(project)
+setupCompose(project)
+setupComposeMppWorkaround(project)
 
-    defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation project(":sample:todo:database")
+                implementation project(":sample:todo:utils")
+                implementation project(':decompose')
+                implementation "com.badoo.reaktive:reaktive:$reaktive_version"
+                implementation "com.arkivanov.mvikotlin:mvikotlin:$mvikotlin_version"
+                implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-reaktive:$mvikotlin_version"
+            }
+        }
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        androidMain {
+            dependencies {
+                implementation "androidx.compose.foundation:foundation:$compose_version"
+                implementation "androidx.compose.material:material:$compose_version"
+            }
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-}
-
-setupCompose(project)
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "androidx.compose.foundation:foundation:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "com.arkivanov.mvikotlin:mvikotlin:2.0.0-rc2"
-    implementation "com.arkivanov.mvikotlin:mvikotlin-main:2.0.0-rc2"
-    implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-reaktive:2.0.0-rc2"
-    implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-androidx:2.0.0-rc2"
-    implementation "com.badoo.reaktive:reaktive:1.1.16"
-    implementation project(":sample:todo:database")
-    implementation project(":sample:utils")
-    implementation project(':decompose')
 }

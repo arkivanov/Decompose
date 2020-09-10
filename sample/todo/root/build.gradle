@@ -1,56 +1,81 @@
 plugins {
     id 'com.android.library'
-    id 'kotlin-android'
+    id 'kotlin-multiplatform'
     id 'kotlin-android-extensions'
+    id 'com.squareup.sqldelight'
 }
-
-android {
-    compileSdkVersion 29
-    buildToolsVersion "30.0.0"
-
-    defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-}
-
-setupCompose(project)
 
 androidExtensions {
     features = ['parcelize']
 }
 
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "androidx.compose.foundation:foundation:$compose_version"
-    implementation "com.arkivanov.mvikotlin:mvikotlin:2.0.0-rc2"
-    implementation "com.arkivanov.mvikotlin:mvikotlin-main:2.0.0-rc2"
-    implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-reaktive:2.0.0-rc2"
-    implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-androidx:2.0.0-rc2"
-    implementation "com.badoo.reaktive:reaktive:1.1.16"
-    implementation "com.squareup.sqldelight:android-driver:1.4.0"
-    implementation project(":sample:todo:main")
-    implementation project(":sample:todo:edit")
-    implementation project(":sample:todo:database")
-    implementation project(":sample:utils")
-    implementation project(':decompose')
+setupMultiplatform(project)
+setupAndroid(project)
+setupCompose(project)
+setupComposeMppWorkaround(project)
+
+kotlin {
+    ios {
+        binaries {
+            framework {
+                baseName = "Todo"
+                export(project(":decompose"))
+                export project(":sample:todo:database")
+                export project(":sample:todo:main")
+                export project(":sample:todo:edit")
+                export project(":sample:todo:list")
+                export project(":sample:todo:add")
+            }
+        }
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api project(":sample:todo:main")
+                api project(":sample:todo:edit")
+                api project(":sample:todo:database")
+                implementation project(":sample:todo:utils")
+                api project(':decompose')
+                implementation "com.badoo.reaktive:reaktive:$reaktive_version"
+                implementation "com.arkivanov.mvikotlin:mvikotlin:$mvikotlin_version"
+                implementation "com.arkivanov.mvikotlin:mvikotlin-main:$mvikotlin_version"
+                implementation "com.arkivanov.mvikotlin:mvikotlin-extensions-reaktive:$mvikotlin_version"
+            }
+        }
+
+        androidMain {
+            dependencies {
+                implementation "androidx.compose.foundation:foundation:$compose_version"
+                implementation "androidx.compose.material:material:$compose_version"
+            }
+        }
+
+        iosMain {
+            dependencies {
+                api project(":sample:todo:list")
+                api project(":sample:todo:add")
+            }
+        }
+    }
+}
+
+static String getIosTargetName() {
+    def sdkName = System.getenv("SDK_NAME") ?: "iphonesimulator"
+    return "ios" + (sdkName.startsWith("iphoneos") ? "Arm64" : "X64")
+}
+
+task packForXcode(type: Sync) {
+    group = "build"
+    def mode = System.getenv("CONFIGURATION")
+    if (mode == null) {
+        mode = "DEBUG"
+    }
+    def targetName = getIosTargetName()
+    def framework = kotlin.targets.getByName(targetName).binaries.getFramework(mode)
+    inputs.property("mode", mode)
+    dependsOn(framework.linkTask)
+    def targetDir = new File(buildDir, "xcode-frameworks")
+    from(framework.outputDirectory)
+    into(targetDir)
 }

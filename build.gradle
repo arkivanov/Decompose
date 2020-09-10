@@ -1,18 +1,32 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        compose_kotlin_compiler_version = '1.4.0'
+        decompose_version = '0.0.5'
+        kotlin_version = "1.4.10"
+        compose_kotlin_compiler_version = '1.4.10'
         compose_version = '1.0.0-alpha02'
+        reaktive_version = '1.1.17'
+        mvikotlin_version = '2.0.0-rc3'
+        sqldelight_version = '1.4.3'
+        androidx_appcompat_version = '1.2.0'
+        androidx_core_ktx_version = '1.3.1'
+        android_material_version = '1.2.1'
+        androidx_lifecycle_common_java8_version = '2.2.0'
+        androidx_activity_version = '1.1.0'
+        js_kotlin_react_version = '16.13.1-pre.114-kotlin-1.4.0'
+        js_kotlin_react_dom_version = '16.13.1-pre.114-kotlin-1.4.0'
+        js_kotlin_styled_version = '1.0.0-pre.114-kotlin-1.4.0'
+        js_kotlin_css_version = '1.0.0-pre.114-kotlin-1.4.0'
+        js_muirwik_version = '0.6.0'
     }
-    ext.kotlin_version = "1.4.0"
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.2.0-alpha09"
+        classpath "com.android.tools.build:gradle:4.2.0-alpha10"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.squareup.sqldelight:gradle-plugin:1.4.2'
+        classpath "com.squareup.sqldelight:gradle-plugin:$sqldelight_version"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -25,17 +39,34 @@ allprojects {
         jcenter()
         maven { url "https://dl.bintray.com/arkivanov/maven" }
         maven { url "https://dl.bintray.com/badoo/maven" }
+        maven { url "https://dl.bintray.com/cfraser/muirwik" }
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+void setupMultiplatform(Project project) {
+    project.kotlin {
+        android()
+        ios()
+
+        js {
+            browser()
+            nodejs()
+        }
+
+        sourceSets {
+            commonMain {
+                dependencies {
+                    implementation kotlin("stdlib")
+                }
+            }
+        }
+    }
 }
 
 void setupCompose(Project project) {
     project.android {
         kotlinOptions {
-            freeCompilerArgs += ["-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check"]
+            useIR = true
         }
 
         buildFeatures {
@@ -47,8 +78,56 @@ void setupCompose(Project project) {
             kotlinCompilerVersion "${compose_kotlin_compiler_version}"
         }
     }
+}
+
+// As per KT-38694 (https://github.com/avdim/compose_mpp_workaround)
+void setupComposeMppWorkaround(Project project) {
+    project.configurations {
+        create("composeCompiler") {
+            setCanBeConsumed(false)
+        }
+    }
 
     project.dependencies {
-        implementation "androidx.compose.foundation:foundation:$compose_version"
+        composeCompiler "androidx.compose:compose-compiler:$compose_version"
+    }
+
+    project.afterEvaluate {
+        def composeCompilerJar = project.configurations.getByName("composeCompiler").resolve().getAt(0)
+        if (composeCompilerJar == null) {
+            throw new Exception("Please add \"androidx.compose:compose-compiler\" (and only that) as a \"composeCompiler\" dependency")
+        }
+
+        project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile.class) {
+            kotlinOptions.freeCompilerArgs += ["-Xuse-ir", "-Xplugin=$composeCompilerJar"]
+        }
+    }
+}
+
+void setupAndroid(Project project) {
+    project.android {
+        compileSdkVersion 29
+        buildToolsVersion "30.0.0"
+
+        defaultConfig {
+            minSdkVersion 23
+            targetSdkVersion 29
+        }
+
+        buildTypes {
+            release {
+                minifyEnabled false
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            }
+        }
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+
+        kotlinOptions {
+            jvmTarget = '1.8'
+        }
     }
 }

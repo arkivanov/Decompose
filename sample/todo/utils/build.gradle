@@ -1,0 +1,27 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-multiplatform'
+    id 'com.squareup.sqldelight'
+}
+
+setupMultiplatform(project)
+setupAndroid(project)
+
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation project(":decompose")
+                implementation "com.arkivanov.mvikotlin:mvikotlin:$mvikotlin_version"
+                implementation "com.arkivanov.mvikotlin:rx:$mvikotlin_version"
+                implementation "com.badoo.reaktive:reaktive:$reaktive_version"
+            }
+        }
+    }
+}
+
+afterEvaluate {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile.class) {
+        kotlinOptions.freeCompilerArgs += ["-Xuse-ir"]
+    }
+}

@@ -1,0 +1,32 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    defaultConfig {
+        applicationId "com.arkivanov.todo.app"
+        versionCode 1
+        versionName "1.0"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/*'
+    }
+}
+
+setupAndroid(project)
+setupCompose(project)
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.compose.foundation:foundation:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.core:core-ktx:$androidx_core_ktx_version"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
+    implementation "com.google.android.material:material:$android_material_version"
+    implementation "com.squareup.sqldelight:android-driver:$sqldelight_version"
+    implementation project(':decompose')
+    implementation project(":sample:todo:root")
+    implementation project(":sample:todo:database")
+}

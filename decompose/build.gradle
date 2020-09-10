@@ -1,41 +1,73 @@
 plugins {
     id 'com.android.library'
-    id 'kotlin-android'
+    id 'kotlin-multiplatform'
+    id 'kotlin-android-extensions'
+    id 'maven-publish'
 }
 
-android {
-    compileSdkVersion 29
-    buildToolsVersion "30.0.0"
+androidExtensions {
+    features = ['parcelize']
+}
 
-    defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+setupMultiplatform(project)
+setupAndroid(project)
+setupCompose(project)
+setupComposeMppWorkaround(project)
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
+kotlin {
+    android {
+        publishLibraryVariants("release", "debug")
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    sourceSets {
+        androidMain {
+            dependencies {
+                implementation "androidx.activity:activity:$androidx_activity_version"
+                implementation "androidx.compose.foundation:foundation:$compose_version"
+                implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_common_java8_version"
+            }
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
+}
+
+group = "com.arkivanov.decompose"
+version = decompose_version
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            pom {
+                licenses {
+                    license {
+                        name = "The Apache License, Version 2.0"
+                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = "arkivanov"
+                        name = "Arkadii Ivanov"
+                        email = "arkann1985@gmail.com"
+                    }
+                }
+
+                scm {
+                    url = "https://github.com/arkivanov/Decompose"
+                    connection = "scm:git:git://github.com/arkivanov/Decompose.git"
+                    developerConnection = "scm:git:git://github.com/arkivanov/Decompose.git"
+                }
+            }
+        }
     }
 }
 
-setupCompose(project)
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0"
-    implementation "androidx.compose.foundation:foundation:$compose_version"
+repositories {
+    maven {
+        url = "https://api.bintray.com/maven/arkivanov/maven/decompose/;publish=0;override=1"
+        credentials {
+            username = "arkivanov"
+            password = findProperty("bintray_api_key").toString()
+        }
+    }
 }
