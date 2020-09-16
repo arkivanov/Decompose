@@ -1,6 +1,6 @@
-[![Download](https://api.bintray.com/packages/arkivanov/maven/mvikotlin/images/download.svg)](https://bintray.com/arkivanov/maven/mvikotlin/_latestVersion)
+[![Download](https://api.bintray.com/packages/arkivanov/maven/decompose/images/download.svg)](https://bintray.com/arkivanov/maven/decompose/_latestVersion)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
-![Twitter URL](https://img.shields.io/twitter/url?label=Twitter&style=social&url=https%3A%2F%2Ftwitter.com%2Farkann1985)
+[![Twitter URL](https://img.shields.io/badge/Twitter-@arkann1985-blue.svg?style=social&logo=twitter)](https://twitter.com/arkann1985)
 
 ## Decompose
 
@@ -10,6 +10,26 @@ Supported targets:
 - Android
 - iosX64, iosArm64
 - JavaScript
+
+### Setup
+
+Add Bintray repository to your root build.gradle file:
+
+```groovy
+repositories {
+    maven {
+        url  "https://dl.bintray.com/arkivanov/maven"
+    }
+}
+```
+
+Add Decompose dependency to your build.gradle:
+
+```groovy
+implementation "com.arkivanov.decompose:decompose:<version>"
+```
+
+## Overview
 
 ### Component
 
@@ -26,8 +46,7 @@ Each `Component` has an associated [ComponentContext](https://github.com/arkivan
 
 ### The Router
 
-A key unit is the [Router](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/Router.kt).
-It is responsible for managing `Components`, just like `FragmentManager`.
+A key unit is the [Router](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/Router.kt). It is responsible for managing `Components`, just like `FragmentManager`.
 
 The `Router` supports back stack and so each `Component` has its own `Lifecycle`. Each time a new `Component` is pushed, the currently active `Component` is stopped. When a `Component` is popped from the back stack, the previous `Component` is resumed. This allows business logic to run while the component is in the back stack.
 
@@ -35,11 +54,11 @@ Each `Component` is created based on an associated `Configuration`. `Configurati
 
 `Routers` can be nested, and each `Component` can have more than one `Router`.
 
-### Sample apps
+## Sample apps
 
 There are two sample apps.
 
-#### Sample counter app
+### Sample counter app
 
 This sample demonstrates the following features:
 - Nested `Components`
@@ -60,11 +79,11 @@ Content:
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterDemo.gif" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterIos.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterJs.png" width="196">
 
-##### Sample Counter Component structure 
+#### Sample Counter Component structure 
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterStructure.png" width="384">
 
-#### Sample todo app
+### Sample todo app
 
 This sample can be found [here](https://github.com/arkivanov/Decompose/tree/master/sample/todo).
 
@@ -85,7 +104,7 @@ There are multiple `Components`, each in a separate module:
 - [edit](https://github.com/arkivanov/Decompose/tree/master/sample/todo/edit) - provides the ability to edit a selected todo item.
 - [root](https://github.com/arkivanov/Decompose/tree/master/sample/todo/root) - aggregates both `main` and `edit` components and uses `Router` to switch between them.
 
-##### Sample Todo Component structure 
+#### Sample Todo Component structure 
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleTodoStructure.png" width="512">
 
