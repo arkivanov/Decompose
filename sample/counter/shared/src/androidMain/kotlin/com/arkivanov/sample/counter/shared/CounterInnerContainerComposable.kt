@@ -38,7 +38,7 @@ operator fun CounterInnerContainer.Model.invoke() {
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                leftChild { child ->
+                rightChild { child ->
                     child(onNext = ::onNextRightChild, onPrev = ::onPrevRightChild)
                 }
             }
