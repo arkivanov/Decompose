@@ -1,4 +1,6 @@
+[![Download](https://api.bintray.com/packages/arkivanov/maven/mvikotlin/images/download.svg)](https://bintray.com/arkivanov/maven/mvikotlin/_latestVersion)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+![Twitter URL](https://img.shields.io/twitter/url?label=Twitter&style=social&url=https%3A%2F%2Ftwitter.com%2Farkann1985)
 
 ## Decompose
 
@@ -16,9 +18,9 @@ Each `Component` is represented by the [Component](https://github.com/arkivanov/
 ### ComponentContext
 
 Each `Component` has an associated [ComponentContext](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/ComponentContext.kt) which implements the following interfaces:
-- [RouterFactory](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/RouterFactory.kt, so you can create nested `Routers` in your `Componenets`
+- [RouterFactory](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/RouterFactory.kt), so you can create nested `Routers` in your `Componenets`
 - [StateKeeperOwner](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/statekeeper/StateKeeperOwner.kt), so you can preserve any state during configuration changes and/or process death
-- [InstanceKeeperOwner]https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/instancekeeper/InstanceKeeperOwner.kt), so you can retain instances in your `Components` (like with AndroidX ViewModels)
+- [InstanceKeeperOwner](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/instancekeeper/InstanceKeeperOwner.kt), so you can retain instances in your `Components` (like with AndroidX ViewModels)
 - [LifecycleOwner](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/lifecycle/LifecycleOwner.kt), so each `Component` has its own lifecycle
 - [BackPressedDispatcherOwner](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/backpressed/BackPressedDispatcherOwner.kt), so each `Component` can handle back button events
 
@@ -86,3 +88,7 @@ There are multiple `Components`, each in a separate module:
 ##### Sample Todo Component structure 
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleTodoStructure.png" width="512">
+
+## Author
+
+Twitter: [@arkann1985](https://twitter.com/arkann1985)
