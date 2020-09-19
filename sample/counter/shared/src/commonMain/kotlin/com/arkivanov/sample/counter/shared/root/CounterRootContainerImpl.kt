@@ -1,11 +1,11 @@
 package com.arkivanov.sample.counter.shared.root
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.Router
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.router
 import com.arkivanov.decompose.statekeeper.Parcelable
+import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.sample.counter.shared.counter.Counter
@@ -29,7 +29,7 @@ internal class CounterRootContainerImpl(
     override val model: Model =
         object : Model, Events by this {
             override val counter: Counter.Model = this@CounterRootContainerImpl.counter.model
-            override val child: Value<Model.Child> = router.model.map { it.toModelChild() }
+            override val child: Value<Model.Child> = router.state.map { it.toModelChild() }
         }
 
     private fun resolveChild(configuration: ChildConfiguration, componentContext: ComponentContext): CounterInnerContainer =
@@ -42,7 +42,7 @@ internal class CounterRootContainerImpl(
         )
 
     override fun onNextChild() {
-        router.push(ChildConfiguration(index = router.model.value.backStack.size + 1))
+        router.push(ChildConfiguration(index = router.state.value.backStack.size + 1))
     }
 
     override fun onPrevChild() {

@@ -1,10 +1,10 @@
 package com.arkivanov.todo.add
 
-import com.arkivanov.decompose.Component
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.todo.add.TodoAdd.Model
 
-interface TodoAdd : Component<Model> {
+interface TodoAdd {
+
+    val model: Model
 
     interface Model : Events {
         val data: Value<Data>

@@ -25,7 +25,7 @@ import com.arkivanov.decompose.statekeeper.StateKeeperDispatcher
 import androidx.lifecycle.Lifecycle as AndroidLifecycle
 
 @Composable
-fun <T : Component<*>> RootComponent(
+fun <T> RootComponent(
     savedStateRegistry: SavedStateRegistry,
     viewModelStore: ViewModelStore,
     onBackPressedDispatcher: OnBackPressedDispatcher,
@@ -44,7 +44,7 @@ fun <T : Component<*>> RootComponent(
 }
 
 @Composable
-fun <T, C : Component<*>> T.RootComponent(
+fun <T, C> T.RootComponent(
     factory: (ComponentContext) -> C
 ): C where T : SavedStateRegistryOwner, T : OnBackPressedDispatcherOwner, T : ViewModelStoreOwner, T : LifecycleOwner =
     RootComponent(savedStateRegistry, viewModelStore, onBackPressedDispatcher, (this as LifecycleOwner).lifecycle, factory)

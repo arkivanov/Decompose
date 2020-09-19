@@ -1,12 +1,12 @@
 package com.arkivanov.todo.root
 
-import com.arkivanov.decompose.Component
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.todo.edit.TodoEdit
 import com.arkivanov.todo.main.TodoMain
-import com.arkivanov.todo.root.TodoRoot.Model
 
-interface TodoRoot : Component<Model> {
+interface TodoRoot {
+
+    val model: Model
 
     interface Model {
         val child: Value<Child>

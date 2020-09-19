@@ -43,7 +43,7 @@ internal class TodoRootImpl(
 
     override val model: Model =
         object : Model {
-            override val child: Value<Child> = router.model.map { it.activeChild.component }
+            override val child: Value<Child> = router.state.map { it.activeChild.component }
         }
 
     private fun resolveChild(configuration: Configuration, componentContext: ComponentContext): Child =

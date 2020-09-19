@@ -43,7 +43,7 @@ internal class RouterImpl<C : Parcelable, T : Any>(
     private val retainedInstance: RetainedInstance<C, T> = instanceKeeper.getOrCreate(key, ::RetainedInstance)
 
     private var stack = restoreStack() ?: Stack(active = createComponent(initialConfiguration))
-    override val model: MutableValue<RouterState<C, T>> = MutableValue(stack.toState())
+    override val state: MutableValue<RouterState<C, T>> = MutableValue(stack.toState())
 
     init {
         stateKeeper.register(key) { stack.save() }
@@ -165,7 +165,7 @@ internal class RouterImpl<C : Parcelable, T : Any>(
 
     private fun setStack(stack: Stack<C, T>) {
         this.stack = stack
-        model.value = stack.toState()
+        state.value = stack.toState()
     }
 
     private fun Stack<C, T>.toState(): RouterState<C, T> =

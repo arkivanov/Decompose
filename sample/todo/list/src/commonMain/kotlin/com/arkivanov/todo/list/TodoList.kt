@@ -1,11 +1,11 @@
 package com.arkivanov.todo.list
 
-import com.arkivanov.decompose.Component
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.todo.list.TodoList.Model
 import com.arkivanov.todo.list.model.TodoItem
 
-interface TodoList : Component<Model> {
+interface TodoList {
+
+    val model: Model
 
     interface Model : Events {
         val data: Value<Data>
