@@ -20,7 +20,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        RootView(componentHolder.component.model as! TodoRootModel)
+        RootView(componentHolder.component.model)
             .onAppear { LifecycleRegistryExtKt.resume(self.componentHolder.lifecycle) }
             .onDisappear { LifecycleRegistryExtKt.stop(self.componentHolder.lifecycle) }
     }
@@ -32,7 +32,7 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-class ComponentHolder<T : Component> {
+class ComponentHolder<T> {
     let lifecycle: LifecycleRegistry
     let component: T
     

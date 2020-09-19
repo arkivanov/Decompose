@@ -14,7 +14,7 @@ struct ContentView: View {
     private var componentHolder = ComponentHolder(factory: CounterRootContainerBuilderKt.CounterRootContainer)
     
     var body: some View {
-        CounterRootView(componentHolder.component.model as! CounterRootContainerModel)
+        CounterRootView(componentHolder.component.model)
             .onAppear { LifecycleRegistryExtKt.resume(self.componentHolder.lifecycle) }
             .onDisappear { LifecycleRegistryExtKt.stop(self.componentHolder.lifecycle) }
     }
@@ -26,7 +26,7 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-class ComponentHolder<T : Component> {
+class ComponentHolder<T> {
     let lifecycle: LifecycleRegistry
     let component: T
     
