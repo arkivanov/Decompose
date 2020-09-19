@@ -60,14 +60,14 @@ publishing {
             }
         }
     }
-}
 
-repositories {
-    maven {
-        url = "https://api.bintray.com/maven/arkivanov/maven/decompose/;publish=0;override=1"
-        credentials {
-            username = "arkivanov"
-            password = findProperty("bintray_api_key").toString()
+    repositories {
+        maven {
+            url = "https://api.bintray.com/maven/arkivanov/maven/decompose/;publish=0;override=1"
+            credentials {
+                username = "arkivanov"
+                password = findProperty("bintray_api_key").toString()
+            }
         }
     }
 }
