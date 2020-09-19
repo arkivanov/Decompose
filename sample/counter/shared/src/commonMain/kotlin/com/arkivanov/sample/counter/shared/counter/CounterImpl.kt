@@ -1,14 +1,15 @@
 package com.arkivanov.sample.counter.shared.counter
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.instancekeeper.InstanceKeeper
 import com.arkivanov.decompose.instancekeeper.getOrCreate
 import com.arkivanov.decompose.statekeeper.Parcelable
+import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.statekeeper.consume
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
+import com.arkivanov.decompose.value.reduce
 import com.arkivanov.sample.counter.shared.counter.Counter.Data
 import com.arkivanov.sample.counter.shared.counter.Counter.Model
 import com.badoo.reaktive.disposable.scope.DisposableScope
@@ -56,7 +57,7 @@ internal class CounterImpl(
             singleOf(Unit)
                 .repeatWhen { _, _ -> maybeTimer(250L, mainScheduler) }
                 .subscribeScoped(isThreadLocal = true) {
-                    state.value = state.value.run { copy(count = count + 1) }
+                    state.reduce { it.copy(count = it.count + 1) }
                 }
         }
 
