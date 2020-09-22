@@ -1,6 +1,6 @@
 package com.arkivanov.decompose.lifecycle
 
-internal class MergedLifecycle private constructor(
+class MergedLifecycle private constructor(
     private val registry: LifecycleRegistry,
     lifecycle1: Lifecycle,
     lifecycle2: Lifecycle
@@ -8,13 +8,17 @@ internal class MergedLifecycle private constructor(
 
     constructor(lifecycle1: Lifecycle, lifecycle2: Lifecycle) : this(LifecycleRegistry(), lifecycle1, lifecycle2)
 
+    private var state1: Lifecycle.State = Lifecycle.State.INITIALIZED
+    private var state2: Lifecycle.State = Lifecycle.State.INITIALIZED
+
     init {
-        lifecycle1.subscribe(LifecycleObserverImpl(lifecycle2))
-        lifecycle2.subscribe(LifecycleObserverImpl(lifecycle1))
+        lifecycle1.subscribe(LifecycleObserverImpl(otherState = ::state2, onStateChanged = { state1 = it }))
+        lifecycle2.subscribe(LifecycleObserverImpl(otherState = ::state1, onStateChanged = { state2 = it }))
     }
 
     private inner class LifecycleObserverImpl(
-        private val other: Lifecycle
+        private val otherState: () -> Lifecycle.State,
+        private val onStateChanged: (Lifecycle.State) -> Unit
     ) : DefaultLifecycleCallbacks {
         override fun onCreate() {
             onUp(Lifecycle.State.CREATED, registry::onCreate)
@@ -41,15 +45,17 @@ internal class MergedLifecycle private constructor(
         }
 
         private fun onUp(state: Lifecycle.State, call: () -> Unit) {
-            if (state <= other.state) {
+            onStateChanged(state)
+            if (state <= otherState()) {
                 call()
             }
         }
 
         private fun onDown(state: Lifecycle.State, call: () -> Unit) {
-            if (state < other.state) {
+            if (state < otherState()) {
                 call()
             }
+            onStateChanged(state)
         }
     }
 }
