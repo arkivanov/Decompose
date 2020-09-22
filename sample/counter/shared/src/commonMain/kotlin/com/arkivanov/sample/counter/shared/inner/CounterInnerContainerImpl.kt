@@ -23,7 +23,6 @@ internal class CounterInnerContainerImpl(
         router(
             initialConfiguration = ChildConfiguration(index = 0),
             key = "LeftRouter",
-            handleBackButton = true,
             componentFactory = ::resolveChild
         )
 
