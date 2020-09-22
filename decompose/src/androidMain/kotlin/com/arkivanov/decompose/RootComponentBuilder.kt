@@ -25,29 +25,53 @@ import com.arkivanov.decompose.statekeeper.StateKeeperDispatcher
 import androidx.lifecycle.Lifecycle as AndroidLifecycle
 
 @Composable
-fun <T> RootComponent(
+fun <T> rootComponent(
     savedStateRegistry: SavedStateRegistry,
     viewModelStore: ViewModelStore,
     onBackPressedDispatcher: OnBackPressedDispatcher,
     lifecycle: AndroidLifecycle? = null,
     factory: (ComponentContext) -> T,
 ): T {
-    val componentLifecycle = lifecycle?.asDecomposeLifecycle()?.let { MergedLifecycle(it, lifecycle()) } ?: lifecycle()
+    val composableLifecycle = lifecycle()
 
     return remember {
-        val stateKeeper = rootStateKeeper(savedStateRegistry)
-        val instanceKeeper = rootViewModel(viewModelStore).instanceKeeperDispatcher
-        val backPressedDispatcher = BackPressedDispatcher()
-        setupBackPressedCallback(componentLifecycle, onBackPressedDispatcher, backPressedDispatcher)
-        factory(DefaultComponentContext(componentLifecycle, stateKeeper, instanceKeeper, backPressedDispatcher))
+        val componentLifecycle = lifecycle?.asDecomposeLifecycle()?.let { MergedLifecycle(it, composableLifecycle) } ?: composableLifecycle
+        val componentContext = rootComponentContext(savedStateRegistry, viewModelStore, onBackPressedDispatcher, componentLifecycle)
+        factory(componentContext)
     }
 }
 
 @Composable
-fun <T, C> T.RootComponent(
+fun <T, C> T.rootComponent(
     factory: (ComponentContext) -> C
 ): C where T : SavedStateRegistryOwner, T : OnBackPressedDispatcherOwner, T : ViewModelStoreOwner, T : LifecycleOwner =
-    RootComponent(savedStateRegistry, viewModelStore, onBackPressedDispatcher, (this as LifecycleOwner).lifecycle, factory)
+    rootComponent(savedStateRegistry, viewModelStore, onBackPressedDispatcher, (this as LifecycleOwner).lifecycle, factory)
+
+fun rootComponentContext(
+    savedStateRegistry: SavedStateRegistry,
+    viewModelStore: ViewModelStore,
+    onBackPressedDispatcher: OnBackPressedDispatcher,
+    lifecycle: AndroidLifecycle
+): ComponentContext =
+    rootComponentContext(savedStateRegistry, viewModelStore, onBackPressedDispatcher, lifecycle.asDecomposeLifecycle())
+
+fun <T> T.rootComponentContext(
+): ComponentContext where T : SavedStateRegistryOwner, T : OnBackPressedDispatcherOwner, T : ViewModelStoreOwner, T : LifecycleOwner =
+    rootComponentContext(savedStateRegistry, viewModelStore, onBackPressedDispatcher, (this as LifecycleOwner).lifecycle)
+
+private fun rootComponentContext(
+    savedStateRegistry: SavedStateRegistry,
+    viewModelStore: ViewModelStore,
+    onBackPressedDispatcher: OnBackPressedDispatcher,
+    lifecycle: Lifecycle
+): ComponentContext {
+    val stateKeeper = rootStateKeeper(savedStateRegistry)
+    val instanceKeeper = rootViewModel(viewModelStore).instanceKeeperDispatcher
+    val backPressedDispatcher = BackPressedDispatcher()
+    setupBackPressedCallback(lifecycle, onBackPressedDispatcher, backPressedDispatcher)
+
+    return DefaultComponentContext(lifecycle, stateKeeper, instanceKeeper, backPressedDispatcher)
+}
 
 private fun rootStateKeeper(registry: SavedStateRegistry): StateKeeper =
     StateKeeperDispatcher(

@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.platform.setContent
-import com.arkivanov.decompose.RootComponent
+import com.arkivanov.decompose.rootComponent
 import com.arkivanov.todo.app.ui.ComposeAppTheme
 import com.arkivanov.todo.database.TodoDatabaseDriverFactory
 import com.arkivanov.todo.root.TodoRoot
@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             ComposeAppTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    RootComponent { componentContext ->
+                    rootComponent { componentContext ->
                         TodoRoot(componentContext, TodoDatabaseDriverFactory(this))
                     }.model()
                 }

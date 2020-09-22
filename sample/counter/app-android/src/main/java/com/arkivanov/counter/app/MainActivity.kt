@@ -10,7 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import com.arkivanov.counter.app.ui.ComposeAppTheme
-import com.arkivanov.decompose.RootComponent
+import com.arkivanov.decompose.rootComponent
 import com.arkivanov.sample.counter.shared.invoke
 import com.arkivanov.sample.counter.shared.root.CounterRootContainer
 
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
             ComposeAppTheme {
                 Surface(color = MaterialTheme.colors.background) {
                     Box(gravity = ContentGravity.Center, modifier = Modifier.fillMaxSize()) {
-                        RootComponent(::CounterRootContainer).model()
+                        rootComponent(::CounterRootContainer).model()
                     }
                 }
             }
