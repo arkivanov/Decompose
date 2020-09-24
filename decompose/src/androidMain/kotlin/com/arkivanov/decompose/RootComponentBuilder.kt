@@ -47,18 +47,6 @@ fun <T, C> T.rootComponent(
 ): C where T : SavedStateRegistryOwner, T : OnBackPressedDispatcherOwner, T : ViewModelStoreOwner, T : LifecycleOwner =
     rootComponent(savedStateRegistry, viewModelStore, onBackPressedDispatcher, (this as LifecycleOwner).lifecycle, factory)
 
-fun rootComponentContext(
-    savedStateRegistry: SavedStateRegistry,
-    viewModelStore: ViewModelStore,
-    onBackPressedDispatcher: OnBackPressedDispatcher,
-    lifecycle: AndroidLifecycle
-): ComponentContext =
-    rootComponentContext(savedStateRegistry, viewModelStore, onBackPressedDispatcher, lifecycle.asDecomposeLifecycle())
-
-fun <T> T.rootComponentContext(
-): ComponentContext where T : SavedStateRegistryOwner, T : OnBackPressedDispatcherOwner, T : ViewModelStoreOwner, T : LifecycleOwner =
-    rootComponentContext(savedStateRegistry, viewModelStore, onBackPressedDispatcher, (this as LifecycleOwner).lifecycle)
-
 private fun rootComponentContext(
     savedStateRegistry: SavedStateRegistry,
     viewModelStore: ViewModelStore,
