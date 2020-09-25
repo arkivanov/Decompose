@@ -249,6 +249,10 @@ There are multiple components, each in a separate module:
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleTodoStructure.png" width="512">
 
+## Articles
+
+[Decompose — experiments with Kotlin Multiplatform lifecycle-aware components and navigation](https://medium.com/@arkann1985/decompose-experiments-with-kotlin-multiplatform-lifecycle-aware-components-and-navigation-a04ef3c7f6a3)
+
 ## Author
 
 Twitter: [@arkann1985](https://twitter.com/arkann1985)
