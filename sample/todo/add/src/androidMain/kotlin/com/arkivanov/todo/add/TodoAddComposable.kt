@@ -13,7 +13,7 @@ import com.arkivanov.decompose.invoke
 
 @Composable
 operator fun TodoAdd.Model.invoke() {
-    Row(verticalGravity = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
         data { data ->
             OutlinedTextField(
                 value = data.text,
