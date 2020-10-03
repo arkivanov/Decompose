@@ -4,7 +4,7 @@ buildscript {
         decompose_version = '0.0.7'
         kotlin_version = "1.4.10"
         compose_kotlin_compiler_version = '1.4.10'
-        compose_version = '1.0.0-alpha02'
+        compose_version = '1.0.0-alpha04'
         reaktive_version = '1.1.17'
         mvikotlin_version = '2.0.0-rc3'
         sqldelight_version = '1.4.3'
@@ -24,7 +24,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.2.0-alpha10"
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha13'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.squareup.sqldelight:gradle-plugin:$sqldelight_version"
 
@@ -89,13 +89,13 @@ void setupComposeMppWorkaround(Project project) {
     }
 
     project.dependencies {
-        composeCompiler "androidx.compose:compose-compiler:$compose_version"
+        composeCompiler "androidx.compose.compiler:compiler:$compose_version"
     }
 
     project.afterEvaluate {
         def composeCompilerJar = project.configurations.getByName("composeCompiler").resolve().getAt(0)
         if (composeCompilerJar == null) {
-            throw new Exception("Please add \"androidx.compose:compose-compiler\" (and only that) as a \"composeCompiler\" dependency")
+            throw new Exception("Please add \"androidx.compose.compiler:compiler\" (and only that) as a \"composeCompiler\" dependency")
         }
 
         project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile.class) {

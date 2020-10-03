@@ -3,7 +3,6 @@ package com.arkivanov.todo.list
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope.weight
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -20,7 +19,7 @@ import com.arkivanov.decompose.invoke
 @Composable
 operator fun TodoList.Model.invoke() {
     data { data ->
-        LazyColumnFor(items = data.items, modifier = Modifier.weight(1F)) { item ->
+        LazyColumnFor(items = data.items) { item ->
             Row(modifier = Modifier.clickable(onClick = { onItemClicked(id = item.id) }).padding(8.dp)) {
                 Text(
                     text = AnnotatedString(item.text),

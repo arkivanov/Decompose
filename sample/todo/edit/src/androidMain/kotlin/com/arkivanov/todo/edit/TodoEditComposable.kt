@@ -22,7 +22,7 @@ import com.arkivanov.decompose.invoke
 
 @Composable
 operator fun TodoEdit.Model.invoke() {
-    Column(horizontalGravity = Alignment.CenterHorizontally) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         TopAppBar(
             title = { Text("Edit todo") },
             navigationIcon = {

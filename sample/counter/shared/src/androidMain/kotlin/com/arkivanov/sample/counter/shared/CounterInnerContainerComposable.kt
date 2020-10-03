@@ -24,7 +24,7 @@ operator fun CounterInnerContainer.Model.invoke() {
     Box(border = BorderStroke(width = 1.dp, color = Color.Black)) {
         Column(
             verticalArrangement = Arrangement.Center,
-            horizontalGravity = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(16.dp)
         ) {
             counter()
