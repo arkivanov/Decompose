@@ -34,29 +34,27 @@ group = "com.arkivanov.decompose"
 version = decompose_version
 
 publishing {
-    publications {
-        maven(MavenPublication) {
-            pom {
-                licenses {
-                    license {
-                        name = "The Apache License, Version 2.0"
-                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                    }
+    publications.withType(MavenPublication.class).all {
+        pom {
+            licenses {
+                license {
+                    name = "The Apache License, Version 2.0"
+                    url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
                 }
+            }
 
-                developers {
-                    developer {
-                        id = "arkivanov"
-                        name = "Arkadii Ivanov"
-                        email = "arkann1985@gmail.com"
-                    }
+            developers {
+                developer {
+                    id = "arkivanov"
+                    name = "Arkadii Ivanov"
+                    email = "arkann1985@gmail.com"
                 }
+            }
 
-                scm {
-                    url = "https://github.com/arkivanov/Decompose"
-                    connection = "scm:git:git://github.com/arkivanov/Decompose.git"
-                    developerConnection = "scm:git:git://github.com/arkivanov/Decompose.git"
-                }
+            scm {
+                url = "https://github.com/arkivanov/Decompose"
+                connection = "scm:git:git://github.com/arkivanov/Decompose.git"
+                developerConnection = "scm:git:git://github.com/arkivanov/Decompose.git"
             }
         }
     }
