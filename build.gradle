@@ -114,13 +114,6 @@ void setupAndroid(Project project) {
             targetSdkVersion 29
         }
 
-        buildTypes {
-            release {
-                minifyEnabled false
-                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            }
-        }
-
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
@@ -128,6 +121,43 @@ void setupAndroid(Project project) {
 
         kotlinOptions {
             jvmTarget = '1.8'
+        }
+    }
+}
+
+void setupPublicationPom(Publication publication) {
+    publication.pom {
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        }
+
+        developers {
+            developer {
+                id = "arkivanov"
+                name = "Arkadii Ivanov"
+                email = "arkann1985@gmail.com"
+            }
+        }
+
+        scm {
+            url = "https://github.com/arkivanov/Decompose"
+            connection = "scm:git:git://github.com/arkivanov/Decompose.git"
+            developerConnection = "scm:git:git://github.com/arkivanov/Decompose.git"
+        }
+    }
+}
+
+void setupPublicationRepository(PublishingExtension publishing) {
+    publishing.repositories {
+        maven {
+            url = "https://api.bintray.com/maven/arkivanov/maven/decompose/;publish=0;override=1"
+            credentials {
+                username = "arkivanov"
+                password = findProperty("bintray_api_key").toString()
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.invoke
+import com.arkivanov.decompose.extensions.compose.invoke
 
 @Composable
 operator fun TodoAdd.Model.invoke() {

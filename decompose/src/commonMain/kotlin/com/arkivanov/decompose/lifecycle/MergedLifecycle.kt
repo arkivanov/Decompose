@@ -1,6 +1,9 @@
 package com.arkivanov.decompose.lifecycle
 
-internal class MergedLifecycle private constructor(
+import com.arkivanov.decompose.InternalDecomposeApi
+
+@InternalDecomposeApi
+class MergedLifecycle private constructor(
     private val registry: LifecycleRegistry,
     lifecycle1: Lifecycle,
     lifecycle2: Lifecycle

@@ -32,6 +32,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_common_java8_version"
     implementation "com.google.android.material:material:$android_material_version"
     implementation project(':decompose')
+    implementation project(':extensions-compose')
     implementation project(':sample:todo:utils')
     implementation project(':sample:counter:shared')
 }

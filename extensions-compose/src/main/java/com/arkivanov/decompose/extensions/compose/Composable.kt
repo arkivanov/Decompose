@@ -1,4 +1,4 @@
-package com.arkivanov.decompose
+package com.arkivanov.decompose.extensions.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State

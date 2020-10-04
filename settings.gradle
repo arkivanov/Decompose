@@ -1,4 +1,5 @@
 include ':decompose'
+include ':extensions-compose'
 include ':sample:counter:shared'
 include ':sample:counter:app-android'
 include ':sample:counter:app-js'

@@ -10,7 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import com.arkivanov.counter.app.ui.ComposeAppTheme
-import com.arkivanov.decompose.rootComponent
+import com.arkivanov.decompose.extensions.compose.rootComponent
 import com.arkivanov.sample.counter.shared.invoke
 import com.arkivanov.sample.counter.shared.root.CounterRootContainer
 

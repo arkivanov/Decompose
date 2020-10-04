@@ -46,6 +46,7 @@ kotlin {
 
         androidMain {
             dependencies {
+                implementation project(":extensions-compose")
                 implementation "androidx.compose.foundation:foundation:$compose_version"
                 implementation "androidx.compose.material:material:$compose_version"
             }

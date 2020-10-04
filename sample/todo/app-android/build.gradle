@@ -27,6 +27,7 @@ dependencies {
     implementation "com.google.android.material:material:$android_material_version"
     implementation "com.squareup.sqldelight:android-driver:$sqldelight_version"
     implementation project(':decompose')
+    implementation project(":extensions-compose")
     implementation project(":sample:todo:root")
     implementation project(":sample:todo:database")
 }

@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.invoke
+import com.arkivanov.decompose.extensions.compose.invoke
 
 @Composable
 operator fun TodoList.Model.invoke() {

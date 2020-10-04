@@ -1,9 +1,11 @@
 package com.arkivanov.todo.main
 
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.arkivanov.todo.add.invoke
 import com.arkivanov.todo.list.invoke
 
@@ -12,7 +14,9 @@ operator fun TodoMain.Model.invoke() {
     Column {
         TopAppBar(title = { Text(text = "Todo List") })
 
-        listModel()
+        Box(Modifier.weight(1F)) {
+            listModel()
+        }
         addModel()
     }
 }
