@@ -29,6 +29,12 @@ Add Decompose dependency to your build.gradle:
 implementation "com.arkivanov.decompose:decompose:<version>"
 ```
 
+Add extensions for Jetpack Compose to your Android build.gradle:
+
+```groovy
+implementation "com.arkivanov.decompose:extensions-compose:<version>"
+```
+
 ## Overview
 
 ### Component
