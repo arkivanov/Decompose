@@ -12,6 +12,8 @@
 		DC3CC702250ED7C000B59ACB /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3CC701250ED7C000B59ACB /* MainView.swift */; };
 		DC3CC704250ED9D800B59ACB /* EditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3CC703250ED9D800B59ACB /* EditView.swift */; };
 		DC3CC706250EDDB600B59ACB /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3CC705250EDDB600B59ACB /* RootView.swift */; };
+		DC5631A5252DFB54009DD94A /* RouterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5631A4252DFB54009DD94A /* RouterView.swift */; };
+		DC5631A7252E0176009DD94A /* ViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5631A6252E0176009DD94A /* ViewExt.swift */; };
 		DC6AE817250EC8EC00E69026 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6AE816250EC8EC00E69026 /* AppDelegate.swift */; };
 		DC6AE819250EC8EC00E69026 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6AE818250EC8EC00E69026 /* SceneDelegate.swift */; };
 		DC6AE81B250EC8EC00E69026 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6AE81A250EC8EC00E69026 /* ContentView.swift */; };
@@ -44,6 +46,8 @@
 		DC3CC701250ED7C000B59ACB /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		DC3CC703250ED9D800B59ACB /* EditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditView.swift; sourceTree = "<group>"; };
 		DC3CC705250EDDB600B59ACB /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		DC5631A4252DFB54009DD94A /* RouterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterView.swift; sourceTree = "<group>"; };
+		DC5631A6252E0176009DD94A /* ViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExt.swift; sourceTree = "<group>"; };
 		DC6AE813250EC8EC00E69026 /* ios-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC6AE816250EC8EC00E69026 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC6AE818250EC8EC00E69026 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -103,6 +107,8 @@
 				DC3CC705250EDDB600B59ACB /* RootView.swift */,
 				DC231370250FF81100BBC24B /* ObservableValue.swift */,
 				DC231372250FF83A00BBC24B /* MutableStateBuilder.swift */,
+				DC5631A4252DFB54009DD94A /* RouterView.swift */,
+				DC5631A6252E0176009DD94A /* ViewExt.swift */,
 			);
 			path = "ios-app";
 			sourceTree = "<group>";
@@ -221,8 +227,10 @@
 				DC3CC702250ED7C000B59ACB /* MainView.swift in Sources */,
 				DC6AE817250EC8EC00E69026 /* AppDelegate.swift in Sources */,
 				DC3CC706250EDDB600B59ACB /* RootView.swift in Sources */,
+				DC5631A7252E0176009DD94A /* ViewExt.swift in Sources */,
 				DC231373250FF83A00BBC24B /* MutableStateBuilder.swift in Sources */,
 				DC6AE819250EC8EC00E69026 /* SceneDelegate.swift in Sources */,
+				DC5631A5252DFB54009DD94A /* RouterView.swift in Sources */,
 				DC3CC704250ED9D800B59ACB /* EditView.swift in Sources */,
 				DC231371250FF81100BBC24B /* ObservableValue.swift in Sources */,
 				DC6AE81B250EC8EC00E69026 /* ContentView.swift in Sources */,
