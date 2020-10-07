@@ -6,7 +6,6 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.reaktive.bind
 import com.arkivanov.todo.database.TodoDatabaseQueries
 import com.arkivanov.todo.list.TodoList
 import com.arkivanov.todo.list.TodoList.Data
@@ -17,8 +16,8 @@ import com.arkivanov.todo.list.TodoList.Output
 import com.arkivanov.todo.list.store.ListStore.Intent
 import com.arkivanov.todo.list.store.ListStore.State
 import com.arkivanov.todo.list.store.ListStoreFactory
-import com.arkivanov.todo.utils.asMviLifecycle
 import com.arkivanov.todo.utils.asValue
+import com.arkivanov.todo.utils.bind
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.mapNotNull
@@ -35,11 +34,11 @@ internal class TodoListImpl(
 
     override val model: Model =
         object : Model, Events by this {
-            override val data: Value<Data> = store.asValue().map { it.asData() }
+            override val data: Value<Data> = store.asValue(lifecycle).map { it.asData() }
         }
 
     init {
-        bind(lifecycle.asMviLifecycle(), BinderLifecycleMode.CREATE_DESTROY) {
+        bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
             input.mapNotNull(inputToIntent) bindTo store
         }
 
