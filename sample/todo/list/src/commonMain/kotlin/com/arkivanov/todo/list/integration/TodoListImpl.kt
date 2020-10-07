@@ -18,6 +18,7 @@ import com.arkivanov.todo.list.store.ListStore.State
 import com.arkivanov.todo.list.store.ListStoreFactory
 import com.arkivanov.todo.utils.asValue
 import com.arkivanov.todo.utils.bind
+import com.arkivanov.todo.utils.getStore
 import com.badoo.reaktive.base.Consumer
 import com.badoo.reaktive.observable.Observable
 import com.badoo.reaktive.observable.mapNotNull
@@ -30,7 +31,7 @@ internal class TodoListImpl(
     private val output: Consumer<Output>
 ) : TodoList, Events, ComponentContext by componentContext {
 
-    private val store = ListStoreFactory(storeFactory, ListStoreDatabase(queries)).create()
+    private val store = instanceKeeper.getStore { ListStoreFactory(storeFactory, ListStoreDatabase(queries)).create() }
 
     override val model: Model =
         object : Model, Events by this {

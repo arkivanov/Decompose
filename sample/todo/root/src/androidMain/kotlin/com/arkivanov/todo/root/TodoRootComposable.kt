@@ -2,18 +2,30 @@ package com.arkivanov.todo.root
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
-import com.arkivanov.decompose.extensions.compose.invoke
+import com.arkivanov.decompose.extensions.compose.children
 import com.arkivanov.todo.edit.invoke
 import com.arkivanov.todo.main.invoke
 
 @Composable
 operator fun TodoRoot.Model.invoke() {
-    child {
-        Crossfade(current = it) { child ->
-            when (child) {
-                is TodoRoot.Child.Main -> child.model()
-                is TodoRoot.Child.Edit -> child.model()
+    routerState.children { child, configuration ->
+        Crossfade(currentChild = child, currentKey = configuration) { currentChild ->
+            when (currentChild) {
+                is TodoRoot.Child.Main -> currentChild.model()
+                is TodoRoot.Child.Edit -> currentChild.model()
             }
         }
     }
+}
+
+@Composable
+fun <T> Crossfade(currentChild: T, currentKey: Any, children: @Composable (T) -> Unit) {
+    Crossfade(current = ChildWrapper(currentChild, currentKey)) {
+        children(it.child)
+    }
+}
+
+private class ChildWrapper<out T>(val child: T, val key: Any) {
+    override fun equals(other: Any?): Boolean = key == (other as? ChildWrapper<*>)?.key
+    override fun hashCode(): Int = key.hashCode()
 }

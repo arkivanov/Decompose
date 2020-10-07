@@ -1,11 +1,11 @@
 package com.arkivanov.todo.root.integration
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.router
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.extensions.reaktive.bind
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
@@ -43,7 +43,7 @@ internal class TodoRootImpl(
 
     override val model: Model =
         object : Model {
-            override val child: Value<Child> = router.state.map { it.activeChild.component }
+            override val routerState: Value<RouterState<*, Child>> = router.state
         }
 
     private fun resolveChild(configuration: Configuration, componentContext: ComponentContext): Child =
@@ -88,6 +88,6 @@ internal class TodoRootImpl(
         object Main : Configuration()
 
         @Parcelize
-        class Edit(val id: Long) : Configuration()
+        data class Edit(val id: Long) : Configuration()
     }
 }
