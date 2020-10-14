@@ -8,6 +8,7 @@ Kotlin Multiplatform lifecycle-aware business logic components (aka BLoCs) with 
 
 Supported targets:
 - Android
+- JVM
 - iosX64, iosArm64
 - JavaScript
 
