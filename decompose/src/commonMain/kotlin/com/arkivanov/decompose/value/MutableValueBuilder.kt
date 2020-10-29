@@ -14,6 +14,7 @@ private class MutableValueImpl<T : Any>(initialValue: T) : MutableValue<T>() {
 
     override fun subscribe(observer: ValueObserver<T>) {
         observers = observers + observer
+        observer(value)
     }
 
     override fun unsubscribe(observer: ValueObserver<T>) {
