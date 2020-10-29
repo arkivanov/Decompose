@@ -33,6 +33,7 @@ dependencies {
     implementation "com.google.android.material:material:$android_material_version"
     implementation project(':decompose')
     implementation project(':extensions-compose')
+    implementation project(':extensions-android')
     implementation project(':sample:todo:utils')
     implementation project(':sample:counter:shared')
 }

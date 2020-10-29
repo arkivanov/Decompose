@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/text_count"
+    android:layout_width="130dp"
+    android:layout_height="48dp"
+    android:background="@drawable/border"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:textAppearance="?textAppearanceBody1"
+    tools:text="123" />

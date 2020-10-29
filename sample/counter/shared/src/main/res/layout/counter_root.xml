@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <FrameLayout
+        android:id="@+id/container_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:background="#808080"
+        tools:layout_height="48dp"
+        tools:layout_width="100dp" />
+
+    <Button
+        android:id="@+id/button_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Next Child" />
+
+    <com.arkivanov.decompose.extensions.android.RouterView
+        android:id="@+id/router"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:background="#808080"
+        tools:layout_height="48dp"
+        tools:layout_width="100dp" />
+</LinearLayout>

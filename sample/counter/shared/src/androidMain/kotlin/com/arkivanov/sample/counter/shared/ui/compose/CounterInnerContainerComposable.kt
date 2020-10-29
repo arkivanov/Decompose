@@ -1,4 +1,4 @@
-package com.arkivanov.sample.counter.shared
+package com.arkivanov.sample.counter.shared.ui.compose
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Box

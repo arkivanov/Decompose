@@ -1,0 +1,45 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'maven-publish'
+}
+
+setupAndroid(project)
+
+android {
+    kotlinOptions {
+        freeCompilerArgs += "-Xopt-in=com.arkivanov.decompose.InternalDecomposeApi"
+    }
+}
+
+dependencies {
+    implementation project(':decompose')
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            debug(MavenPublication) {
+                from components.debug
+
+                group = "com.arkivanov.decompose"
+                artifactId = "extensions-android-debug"
+                version = decompose_version
+
+                setupPublicationPom(it)
+            }
+
+            release(MavenPublication) {
+                from components.release
+
+                group = "com.arkivanov.decompose"
+                artifactId = "extensions-android"
+                version = decompose_version
+
+                setupPublicationPom(it)
+            }
+        }
+
+        setupPublicationRepository(it)
+    }
+}
