@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.value.operator
 
+import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.ValueObserver
 
@@ -9,41 +10,27 @@ private class MappedValue<T : Any, out R : Any>(
     private val upstream: Value<T>,
     private val mapper: (T) -> R
 ) : Value<R>() {
-    private var lastUpstreamValue: T = upstream.value
-    private var lastDownstreamValue: R = mapper(lastUpstreamValue)
-
-    override val value: R
-        get() {
-            val upstreamValue = upstream.value
-            if (upstreamValue !== lastUpstreamValue) {
-                lastUpstreamValue = upstreamValue
-                lastDownstreamValue = mapper(upstreamValue)
-            }
-
-            return lastDownstreamValue
-        }
-
-    private var observers = emptySet<ValueObserver<R>>()
+    private val mutableValue = MutableValue(mapper(upstream.value))
     private var upstreamObserver: ValueObserver<T>? = null
+    private val observers = mutableSetOf<ValueObserver<R>>()
+
+    override val value: R get() = mutableValue.value
 
     override fun subscribe(observer: ValueObserver<R>) {
-        this.observers += observer
-
-        if (upstreamObserver == null) {
-            upstreamObserver =
-                {
-                    val value = mapper(it)
-                    observers.forEach { it(value) }
-                }
+        if (observers.isEmpty()) {
+            upstreamObserver = { mutableValue.value = mapper(it) }
+            upstream.subscribe(upstreamObserver!!)
         }
 
-        upstream.subscribe(upstreamObserver!!)
+        observers += observer
+        mutableValue.subscribe(observer)
     }
 
     override fun unsubscribe(observer: ValueObserver<R>) {
-        this.observers -= observer
+        mutableValue.unsubscribe(observer)
+        observers -= observer
 
-        if (observers.isEmpty() && (upstreamObserver != null)) {
+        if (observers.isEmpty()) {
             upstream.unsubscribe(upstreamObserver!!)
             upstreamObserver = null
         }
