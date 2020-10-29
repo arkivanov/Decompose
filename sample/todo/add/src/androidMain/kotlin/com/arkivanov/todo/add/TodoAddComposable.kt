@@ -9,12 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.invoke
+import com.arkivanov.decompose.extensions.compose.observe
 
 @Composable
 operator fun TodoAdd.Model.invoke() {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
-        data { data ->
+        data.observe { data ->
             OutlinedTextField(
                 value = data.text,
                 modifier = Modifier.weight(weight = 1F),

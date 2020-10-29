@@ -14,11 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.invoke
+import com.arkivanov.decompose.extensions.compose.observe
 
 @Composable
 operator fun TodoList.Model.invoke() {
-    data { data ->
+    data.observe { data ->
         LazyColumnFor(items = data.items) { item ->
             Row(modifier = Modifier.clickable(onClick = { onItemClicked(id = item.id) }).padding(8.dp)) {
                 Text(

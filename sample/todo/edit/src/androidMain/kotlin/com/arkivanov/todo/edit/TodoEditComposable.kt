@@ -18,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.invoke
+import com.arkivanov.decompose.extensions.compose.observe
 
 @Composable
 operator fun TodoEdit.Model.invoke() {
@@ -32,7 +32,7 @@ operator fun TodoEdit.Model.invoke() {
             }
         )
 
-        data { data ->
+        data.observe { data ->
             TextField(
                 value = data.text,
                 modifier = Modifier.weight(1F) + Modifier.fillMaxWidth() + Modifier.padding(8.dp),

@@ -28,7 +28,7 @@ fun <C : Parcelable, T : Any> Value<RouterState<C, T>>.children(render: @Composa
         }
     }
 
-    invoke { state ->
+    observe { state ->
         val activeChildConfiguration = state.activeChild.configuration
 
         val currentChild: ActiveChild<C>? = children.active

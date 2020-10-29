@@ -24,7 +24,13 @@ fun <T : Any> Value<T>.asState(): State<T> {
     return composeState
 }
 
+@Deprecated("Use observe {}", ReplaceWith("observe(render)"))
 @Composable
 operator fun <T : Any> Value<T>.invoke(render: @Composable (T) -> Unit) {
-    render(asState().value)
+    observe(render)
+}
+
+@Composable
+fun <T : Any> Value<T>.observe(renderer: @Composable (T) -> Unit) {
+    renderer(asState().value)
 }
