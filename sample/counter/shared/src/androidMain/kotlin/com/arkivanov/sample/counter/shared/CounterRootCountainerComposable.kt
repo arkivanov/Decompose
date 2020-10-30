@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.observe
+import com.arkivanov.decompose.extensions.compose.children
 import com.arkivanov.sample.counter.shared.root.CounterRootContainer
 
 @Composable
@@ -35,7 +35,7 @@ operator fun CounterRootContainer.Model.invoke() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            child.observe { child ->
+            child.children { child, _ ->
                 child.inner()
             }
         }

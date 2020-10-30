@@ -7,9 +7,9 @@ import com.arkivanov.decompose.router
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.sample.counter.shared.counter.Counter
 import com.arkivanov.sample.counter.shared.inner.CounterInnerContainer
+import com.arkivanov.sample.counter.shared.root.CounterRootContainer.Child
 import com.arkivanov.sample.counter.shared.root.CounterRootContainer.Events
 import com.arkivanov.sample.counter.shared.root.CounterRootContainer.Model
 
@@ -19,9 +19,9 @@ internal class CounterRootContainerImpl(
 
     private val counter = Counter(componentContext, index = 0)
 
-    private val router: Router<ChildConfiguration, CounterInnerContainer> =
+    private val router: Router<ChildConfiguration, Child> =
         router(
-            initialConfiguration = ChildConfiguration(index = 0),
+            initialConfiguration = ChildConfiguration(index = 0, isBackEnabled = false),
             handleBackButton = true,
             componentFactory = ::resolveChild
         )
@@ -29,20 +29,18 @@ internal class CounterRootContainerImpl(
     override val model: Model =
         object : Model, Events by this {
             override val counter: Counter.Model = this@CounterRootContainerImpl.counter.model
-            override val child: Value<Model.Child> = router.state.map { it.toModelChild() }
+            override val child: Value<RouterState<*, Child>> = router.state
         }
 
-    private fun resolveChild(configuration: ChildConfiguration, componentContext: ComponentContext): CounterInnerContainer =
-        CounterInnerContainer(componentContext, index = configuration.index)
-
-    private fun RouterState<ChildConfiguration, CounterInnerContainer>.toModelChild(): Model.Child =
-        Model.Child(
-            inner = activeChild.component.model,
-            isBackEnabled = backStack.isNotEmpty()
+    private fun resolveChild(configuration: ChildConfiguration, componentContext: ComponentContext): Child =
+        Child(
+            inner = CounterInnerContainer(componentContext, index = configuration.index).model,
+            isBackEnabled = configuration.isBackEnabled
         )
 
     override fun onNextChild() {
-        router.push(ChildConfiguration(index = router.state.value.backStack.size + 1))
+        val index = router.state.value.backStack.size + 1
+        router.push(ChildConfiguration(index = index, isBackEnabled = index >= 1))
     }
 
     override fun onPrevChild() {
@@ -50,5 +48,5 @@ internal class CounterRootContainerImpl(
     }
 
     @Parcelize
-    private data class ChildConfiguration(val index: Int) : Parcelable
+    private data class ChildConfiguration(val index: Int, val isBackEnabled: Boolean) : Parcelable
 }

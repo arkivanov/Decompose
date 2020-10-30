@@ -16,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.observe
+import com.arkivanov.decompose.extensions.compose.children
 import com.arkivanov.sample.counter.shared.inner.CounterInnerContainer
 
 @Composable
@@ -32,13 +32,13 @@ operator fun CounterInnerContainer.Model.invoke() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Row {
-                leftChild.observe { child ->
+                leftChild.children { child, _ ->
                     child(onNext = ::onNextLeftChild, onPrev = ::onPrevLeftChild)
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                rightChild.observe { child ->
+                rightChild.children { child, _ ->
                     child(onNext = ::onNextRightChild, onPrev = ::onPrevRightChild)
                 }
             }
@@ -47,7 +47,7 @@ operator fun CounterInnerContainer.Model.invoke() {
 }
 
 @Composable
-private operator fun CounterInnerContainer.Model.Child.invoke(onNext: () -> Unit, onPrev: () -> Unit) {
+private operator fun CounterInnerContainer.Child.invoke(onNext: () -> Unit, onPrev: () -> Unit) {
     Column {
         Button(onClick = onNext) {
             Text(text = "Next Counter")
