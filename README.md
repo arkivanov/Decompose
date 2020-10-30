@@ -4,7 +4,7 @@
 
 ## Decompose
 
-Kotlin Multiplatform lifecycle-aware business logic components (aka BLoCs) with routing functionality and pluggable UI (Jetpack Compose, SwiftUI, JS React, etc.) This project is inspired by [Badoos RIBs](https://github.com/badoo/RIBs) fork of the [Uber RIBs](https://github.com/uber/RIBs) framework.
+Kotlin Multiplatform lifecycle-aware business logic components (aka BLoCs) with routing functionality and pluggable UI (Android Views, Jetpack Compose, SwiftUI, JS React, etc.) This project is inspired by [Badoos RIBs](https://github.com/badoo/RIBs) fork of the [Uber RIBs](https://github.com/uber/RIBs) framework.
 
 Supported targets:
 - Android
@@ -28,6 +28,12 @@ Add Decompose dependency to your build.gradle:
 
 ```groovy
 implementation "com.arkivanov.decompose:decompose:<version>"
+```
+
+Add extensions for Android Views to your Android build.gradle:
+
+```groovy
+implementation "com.arkivanov.decompose:extensions-android:<version>"
 ```
 
 Add extensions for Jetpack Compose to your Android build.gradle:
@@ -214,7 +220,7 @@ This sample demonstrates the following features:
 - Reused components
 - State preservation (using `StateKeeper`)
 - Retaining instances (using `InstanceKeeper`)
-- Pluggable UI (Jetpack Compose, SwiftUI, JS React)
+- Pluggable UI (Android Views, Jetpack Compose, SwiftUI, JS React)
 
 Content:
 - [Shared module](https://github.com/arkivanov/Decompose/tree/master/sample/counter/shared) which includes the following components:
@@ -237,7 +243,7 @@ This sample can be found [here](https://github.com/arkivanov/Decompose/tree/mast
 
 It demonstrates the following features:
 - Nested components
-- Routing
+- Routing with view state preservation
 - Using `Lifecycle`
 - Multi-module structure (one component per module)
 - Inter-Component communication (via [Reaktive](https://github.com/badoo/Reaktive), just an example)
