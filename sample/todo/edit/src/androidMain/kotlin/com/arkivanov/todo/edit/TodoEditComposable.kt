@@ -1,6 +1,5 @@
 package com.arkivanov.todo.edit
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Checkbox
+import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TopAppBar
@@ -35,7 +35,7 @@ operator fun TodoEdit.Model.invoke() {
         data.observe { data ->
             TextField(
                 value = data.text,
-                modifier = Modifier.weight(1F) + Modifier.fillMaxWidth() + Modifier.padding(8.dp),
+                modifier = Modifier.weight(1F).fillMaxWidth().padding(8.dp),
                 label = { Text("Todo text") },
                 onValueChange = ::onTextChanged
             )
