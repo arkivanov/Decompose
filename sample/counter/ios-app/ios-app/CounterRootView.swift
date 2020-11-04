@@ -14,7 +14,7 @@ struct CounterRootView: View {
     private let counter: CounterModel
     
     @ObservedObject
-    private var child: ObservableValue<CounterRootContainerModelChild>
+    private var child: ObservableValue<RouterState<AnyObject, CounterRootContainerChild>>
     
     init(_ model: CounterRootContainerModel) {
         self.events = model
@@ -24,15 +24,17 @@ struct CounterRootView: View {
     
     
     var body: some View {
-        VStack(spacing: 8) {
+        let activeChild = self.child.value.activeChild.component
+        
+        return VStack(spacing: 8) {
             CounterView(self.counter)
             
             Button(action: self.events.onNextChild, label: { Text("Next Child") })
             
             Button(action: self.events.onPrevChild, label: { Text("Prev Child") })
-                .disabled(!child.value.isBackEnabled)
+                .disabled(!activeChild.isBackEnabled)
             
-            CounterInnerView(child.value.inner)
+            CounterInnerView(activeChild.inner)
         }
     }
 }
@@ -45,9 +47,9 @@ struct CounterRootView_Previews: PreviewProvider {
     class Model : CounterRootContainerModel {
         let counter: CounterModel = CounterView_Previews.Model()
         
-        let child: Value<CounterRootContainerModelChild> =
-            mutableValue(
-                CounterRootContainerModelChild(
+        let child: Value<RouterState<AnyObject, CounterRootContainerChild>> =
+            simpleRouterState(
+                CounterRootContainerChild(
                     inner: CounterInnerView_Previews.Model(),
                     isBackEnabled: true
                 )

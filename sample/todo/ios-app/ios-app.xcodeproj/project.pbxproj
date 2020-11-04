@@ -24,6 +24,7 @@
 		DC6AE82E250EC97F00E69026 /* Todo.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DC6AE82C250EC97F00E69026 /* Todo.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DC6AE831250EC9A300E69026 /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6AE830250EC9A300E69026 /* ListView.swift */; };
 		DC6AE837250ED14200E69026 /* AddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6AE836250ED14200E69026 /* AddView.swift */; };
+		DC95F2A0255320BE002EDDEA /* SimpleRouterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC95F29F255320BE002EDDEA /* SimpleRouterState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -59,6 +60,7 @@
 		DC6AE82C250EC97F00E69026 /* Todo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Todo.framework; path = "../root/build/xcode-frameworks/Todo.framework"; sourceTree = "<group>"; };
 		DC6AE830250EC9A300E69026 /* ListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
 		DC6AE836250ED14200E69026 /* AddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddView.swift; sourceTree = "<group>"; };
+		DC95F29F255320BE002EDDEA /* SimpleRouterState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleRouterState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 				DC231372250FF83A00BBC24B /* MutableStateBuilder.swift */,
 				DC5631A4252DFB54009DD94A /* RouterView.swift */,
 				DC5631A6252E0176009DD94A /* ViewExt.swift */,
+				DC95F29F255320BE002EDDEA /* SimpleRouterState.swift */,
 			);
 			path = "ios-app";
 			sourceTree = "<group>";
@@ -228,6 +231,7 @@
 				DC6AE817250EC8EC00E69026 /* AppDelegate.swift in Sources */,
 				DC3CC706250EDDB600B59ACB /* RootView.swift in Sources */,
 				DC5631A7252E0176009DD94A /* ViewExt.swift in Sources */,
+				DC95F2A0255320BE002EDDEA /* SimpleRouterState.swift in Sources */,
 				DC231373250FF83A00BBC24B /* MutableStateBuilder.swift in Sources */,
 				DC6AE819250EC8EC00E69026 /* SceneDelegate.swift in Sources */,
 				DC5631A5252DFB54009DD94A /* RouterView.swift in Sources */,

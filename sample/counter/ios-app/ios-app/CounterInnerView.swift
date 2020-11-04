@@ -14,10 +14,10 @@ struct CounterInnerView: View {
     private let counter: CounterModel
     
     @ObservedObject
-    private var leftChild: ObservableValue<CounterInnerContainerModelChild>
+    private var leftChild: ObservableValue<RouterState<AnyObject, CounterInnerContainerChild>>
     
     @ObservedObject
-    private var rightChild: ObservableValue<CounterInnerContainerModelChild>
+    private var rightChild: ObservableValue<RouterState<AnyObject, CounterInnerContainerChild>>
     
     init(_ model: CounterInnerContainerModel) {
         self.events = model
@@ -27,18 +27,21 @@ struct CounterInnerView: View {
     }
     
     var body: some View {
-        VStack(spacing: 8) {
+        let activeLeftChild = self.leftChild.value.activeChild.component
+        let activeRightChild = self.leftChild.value.activeChild.component
+
+        return VStack(spacing: 8) {
             CounterView(self.counter)
             
             HStack(spacing: 8) {
-                ChildView(child: self.leftChild.value, next: self.events.onNextLeftChild, prev: self.events.onPrevLeftChild)
-                ChildView(child: self.rightChild.value, next: self.events.onNextRightChild, prev: self.events.onPrevRightChild)
+                ChildView(child: activeLeftChild, next: self.events.onNextLeftChild, prev: self.events.onPrevLeftChild)
+                ChildView(child: activeRightChild, next: self.events.onNextRightChild, prev: self.events.onPrevRightChild)
             }
         }
     }
     
     private func ChildView(
-        child: CounterInnerContainerModelChild,
+        child: CounterInnerContainerChild,
         next: @escaping () -> Void,
         prev: @escaping () -> Void
     ) -> some View {
@@ -61,17 +64,17 @@ struct CounterInnerView_Previews: PreviewProvider {
     class Model : CounterInnerContainerModel {
         let counter: CounterModel = CounterView_Previews.Model()
         
-        let leftChild: Value<CounterInnerContainerModelChild> =
-            mutableValue(
-                CounterInnerContainerModelChild(
+        let leftChild: Value<RouterState<AnyObject, CounterInnerContainerChild>> =
+            simpleRouterState(
+                CounterInnerContainerChild(
                     counter: CounterView_Previews.Model(),
                     isBackEnabled: true
                 )
         )
         
-        let rightChild: Value<CounterInnerContainerModelChild> =
-            mutableValue(
-                CounterInnerContainerModelChild(
+        let rightChild: Value<RouterState<AnyObject, CounterInnerContainerChild>> =
+            simpleRouterState(
+                CounterInnerContainerChild(
                     counter: CounterView_Previews.Model(),
                     isBackEnabled: false
                 )

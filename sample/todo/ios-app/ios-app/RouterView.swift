@@ -37,15 +37,3 @@ struct RouterView<T : Hashable & AnyObject, Content : View> : View {
         }
     }
 }
-
-func simpleRouterState<T : AnyObject>(_ child: T) -> Value<RouterState<AnyObject, T>> {
-    return mutableValue(
-        RouterState(
-            activeChild: RouterStateEntryCreated(
-                configuration: "config" as AnyObject,
-                component: child
-            ),
-            backStack: []
-        )
-    )
-}
