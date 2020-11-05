@@ -7,8 +7,12 @@ internal class StateKeeperDispatcherImpl(savedState: ParcelableContainer?) : Sta
     private val savedState: MutableMap<String, ParcelableContainer>? = savedState?.consume<SavedState>()?.map
     private val suppliers = HashMap<String, () -> Parcelable>()
 
-    override fun save(): ParcelableContainer =
-        ParcelableContainer(SavedState(suppliers.mapValuesTo(HashMap()) { ParcelableContainer(it.value()) }))
+    override fun save(): ParcelableContainer? =
+        try {
+            ParcelableContainer(SavedState(suppliers.mapValuesTo(HashMap()) { ParcelableContainer(it.value()) }))
+        } catch (e: Exception) {
+            null
+        }
 
     override fun <T : Parcelable> consume(key: String, clazz: KClass<out T>): T? =
         savedState

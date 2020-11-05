@@ -4,7 +4,7 @@ import kotlin.js.JsName
 
 interface StateKeeperDispatcher : StateKeeper {
 
-    fun save(): ParcelableContainer
+    fun save(): ParcelableContainer?
 }
 
 @JsName("stateKeeperDispatcher")
