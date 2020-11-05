@@ -15,8 +15,8 @@ operator fun TodoMain.Model.invoke() {
         TopAppBar(title = { Text(text = "Todo List") })
 
         Box(Modifier.weight(1F)) {
-            listModel()
+            list.model()
         }
-        addModel()
+        add.model()
     }
 }

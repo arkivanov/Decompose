@@ -61,6 +61,25 @@ void setupMultiplatform(Project project) {
                     implementation kotlin("stdlib")
                 }
             }
+
+            commonTest {
+                dependencies {
+                    implementation "org.jetbrains.kotlin:kotlin-test-common:$kotlin_version"
+                    implementation "org.jetbrains.kotlin:kotlin-test-annotations-common:$kotlin_version"
+                }
+            }
+
+            androidTest {
+                dependencies {
+                    implementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+                }
+            }
+
+            jsTest {
+                dependencies {
+                    implementation "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
+                }
+            }
         }
     }
 }

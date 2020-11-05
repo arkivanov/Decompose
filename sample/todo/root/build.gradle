@@ -44,6 +44,13 @@ kotlin {
             }
         }
 
+        commonTest {
+            dependencies {
+                implementation project(":sample:todo:test-database")
+                implementation "com.badoo.reaktive:reaktive-testing:$reaktive_version"
+            }
+        }
+
         androidMain {
             dependencies {
                 implementation project(":extensions-compose")

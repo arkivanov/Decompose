@@ -8,8 +8,8 @@ interface TodoMain {
     val model: Model
 
     interface Model {
-        val listModel: TodoList.Model
-        val addModel: TodoAdd.Model
+        val list: TodoList
+        val add: TodoAdd
     }
 
     sealed class Input {

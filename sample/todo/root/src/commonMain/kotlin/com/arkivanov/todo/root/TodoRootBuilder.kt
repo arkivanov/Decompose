@@ -1,12 +1,12 @@
 package com.arkivanov.todo.root
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.todo.database.TodoDatabaseDriverFactory
+import com.arkivanov.todo.database.TodoDatabase
 import com.arkivanov.todo.root.integration.TodoRootImpl
 
 @Suppress("FunctionName")
 fun TodoRoot(
     componentContext: ComponentContext,
-    databaseDriverFactory: TodoDatabaseDriverFactory
+    database: TodoDatabase
 ): TodoRoot =
-    TodoRootImpl(componentContext, databaseDriverFactory)
+    TodoRootImpl(componentContext, database)

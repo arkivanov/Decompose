@@ -11,8 +11,8 @@ operator fun TodoRoot.Model.invoke() {
     routerState.children { child, configuration ->
         Crossfade(currentChild = child, currentKey = configuration) { currentChild ->
             when (currentChild) {
-                is TodoRoot.Child.Main -> currentChild.model()
-                is TodoRoot.Child.Edit -> currentChild.model()
+                is TodoRoot.Child.Main -> currentChild.main.model()
+                is TodoRoot.Child.Edit -> currentChild.edit.model()
             }
         }
     }

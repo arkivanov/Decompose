@@ -14,7 +14,7 @@ interface TodoRoot {
     }
 
     sealed class Child {
-        class Main(val model: TodoMain.Model) : Child()
-        class Edit(val model: TodoEdit.Model) : Child()
+        class Main(val main: TodoMain) : Child()
+        class Edit(val edit: TodoEdit) : Child()
     }
 }

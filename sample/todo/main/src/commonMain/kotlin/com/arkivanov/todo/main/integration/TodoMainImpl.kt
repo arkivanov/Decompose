@@ -55,7 +55,7 @@ internal class TodoMainImpl(
 
     override val model: Model =
         object : Model {
-            override val listModel: TodoList.Model = listComponent.model
-            override val addModel: TodoAdd.Model = addComponent.model
+            override val list: TodoList = listComponent
+            override val add: TodoAdd = addComponent
         }
 }

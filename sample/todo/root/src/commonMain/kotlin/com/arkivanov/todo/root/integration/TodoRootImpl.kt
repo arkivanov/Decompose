@@ -10,7 +10,6 @@ import com.arkivanov.mvikotlin.core.binder.BinderLifecycleMode
 import com.arkivanov.mvikotlin.extensions.reaktive.bind
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.arkivanov.todo.database.TodoDatabase
-import com.arkivanov.todo.database.TodoDatabaseDriverFactory
 import com.arkivanov.todo.edit.TodoEdit
 import com.arkivanov.todo.main.TodoMain
 import com.arkivanov.todo.root.TodoRoot
@@ -25,13 +24,24 @@ import com.arkivanov.todo.edit.TodoEdit.Output as EditOutput
 import com.arkivanov.todo.main.TodoMain.Input as MainInput
 import com.arkivanov.todo.main.TodoMain.Output as MainOutput
 
-internal class TodoRootImpl(
+internal class TodoRootImpl internal constructor(
     componentContext: ComponentContext,
-    databaseDriverFactory: TodoDatabaseDriverFactory
+    private val database: TodoDatabase,
+    private val todoMainFactory: TodoMainFactory,
+    private val todoEditFactory: TodoEditFactory
 ) : TodoRoot, ComponentContext by componentContext {
 
+    constructor(
+        componentContext: ComponentContext,
+        database: TodoDatabase,
+    ) : this(
+        componentContext = componentContext,
+        database = database,
+        todoMainFactory = TodoMainFactory(::TodoMain),
+        todoEditFactory = TodoEditFactory(::TodoEdit)
+    )
+
     private val storeFactory = DefaultStoreFactory
-    private val database = TodoDatabase(databaseDriverFactory())
     private val mainInput = PublishSubject<MainInput>()
 
     private val router =
@@ -48,12 +58,12 @@ internal class TodoRootImpl(
 
     private fun resolveChild(configuration: Configuration, componentContext: ComponentContext): Child =
         when (configuration) {
-            is Configuration.Main -> Child.Main(main(componentContext).model)
-            is Configuration.Edit -> Child.Edit(edit(componentContext, id = configuration.id).model)
+            is Configuration.Main -> Child.Main(main(componentContext))
+            is Configuration.Edit -> Child.Edit(edit(componentContext, id = configuration.id))
         }
 
     private fun main(componentContext: ComponentContext): TodoMain =
-        TodoMain(
+        todoMainFactory(
             componentContext = componentContext,
             storeFactory = storeFactory,
             queries = database.todoDatabaseQueries,
@@ -74,7 +84,7 @@ internal class TodoRootImpl(
             editOutput.ofType<EditOutput.Finished>() bindTo { router.pop() }
         }
 
-        return TodoEdit(
+        return todoEditFactory(
             componentContext = componentContext,
             storeFactory = storeFactory,
             queries = database.todoDatabaseQueries,
