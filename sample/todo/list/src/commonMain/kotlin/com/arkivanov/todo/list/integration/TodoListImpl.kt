@@ -42,8 +42,6 @@ internal class TodoListImpl(
         bind(lifecycle, BinderLifecycleMode.CREATE_DESTROY) {
             input.mapNotNull(inputToIntent) bindTo store
         }
-
-        lifecycle.doOnDestroy(store::dispose)
     }
 
     private fun State.asData(): Data =
