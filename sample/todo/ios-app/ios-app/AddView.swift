@@ -37,10 +37,14 @@ struct AddView: View {
 
 struct AddView_Previews: PreviewProvider {
     static var previews: some View {
-        AddView(Model())
+        AddView(StubModel())
     }
     
-    class Model: TodoAddModel {
+    class StubTodoAdd: TodoAdd {
+        var model: TodoAddModel = StubModel()
+    }
+    
+    private class StubModel: TodoAddModel {
         let data: Value<TodoAddData> =
             mutableValue(
                 TodoAddData(

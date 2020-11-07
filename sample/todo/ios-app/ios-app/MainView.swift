@@ -14,8 +14,8 @@ struct MainView: View {
     private var addModel: TodoAddModel
     
     init(_ model: TodoMainModel) {
-        self.listModel = model.listModel
-        self.addModel = model.addModel
+        self.listModel = model.list.model
+        self.addModel = model.add.model
     }
     
     var body: some View {
@@ -30,11 +30,15 @@ struct MainView: View {
 
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView(Model())
+        MainView(StubModel())
     }
     
-    class Model: TodoMainModel {
-        let listModel: TodoListModel = ListView_Previews.Model()
-        let addModel: TodoAddModel = AddView_Previews.Model()
+    class StubTodoMain: TodoMain {
+        let model: TodoMainModel = StubModel()
+    }
+    
+    private class StubModel: TodoMainModel {
+        let list: TodoList = ListView_Previews.StubTodoList()
+        let add: TodoAdd = AddView_Previews.StubTodoAdd()
     }
 }

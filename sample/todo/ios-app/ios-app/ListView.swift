@@ -36,10 +36,14 @@ struct ListView: View {
 
 struct ListView_Previews: PreviewProvider {
     static var previews: some View {
-        ListView(Model())
+        ListView(StubModel())
     }
     
-    class Model : TodoListModel {
+    class StubTodoList: TodoList {
+        let model: TodoListModel = StubModel()
+    }
+    
+    private class StubModel : TodoListModel {
         let data: Value<TodoListData> =
             mutableValue(
                 TodoListData(

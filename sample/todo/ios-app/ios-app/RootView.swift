@@ -19,13 +19,13 @@ struct RootView: View {
     var body: some View {
         RouterView(self.routerState) { child, isHidden in
             if (child is TodoRootChild.Main) {
-                MainView((child as! TodoRootChild.Main).model)
+                MainView((child as! TodoRootChild.Main).main.model)
                 .isHidden(isHidden)
                 .zIndex(1)
             }
 
             if (child is TodoRootChild.Edit) {
-                EditView((child as! TodoRootChild.Edit).model)
+                EditView((child as! TodoRootChild.Edit).edit.model)
                 .isHidden(isHidden)
                 .transition(.asymmetric(insertion: AnyTransition.move(edge: .trailing), removal: AnyTransition.move(edge: .trailing)))
                 .animation(.easeInOut)
@@ -42,7 +42,6 @@ struct RootView_Previews: PreviewProvider {
     
     class Model : TodoRootModel {
         let routerState: Value<RouterState<AnyObject, TodoRootChild>> =
-            simpleRouterState(TodoRootChild.Main(model: MainView_Previews.Model()))
-                              //TodoRootChild.Edit(model: EditView_Previews.Model())
+            simpleRouterState(TodoRootChild.Main(main: MainView_Previews.StubTodoMain()))
     }
 }

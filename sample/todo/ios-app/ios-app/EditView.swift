@@ -50,10 +50,14 @@ struct EditView: View {
 
 struct EditView_Previews: PreviewProvider {
     static var previews: some View {
-        EditView(Model())
+        EditView(StubModel())
     }
     
-    class Model: TodoEditModel {
+    class StubTodoEdit: TodoEdit {
+        let model: TodoEditModel = StubModel()
+    }
+    
+    private class StubModel: TodoEditModel {
         let data: Value<TodoEditData> =
             mutableValue(
                 TodoEditData(

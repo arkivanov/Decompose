@@ -15,7 +15,7 @@ struct ContentView: View {
         ComponentHolder {
             TodoRootBuilderKt.TodoRoot(
                 componentContext: $0,
-                databaseDriverFactory: DefaultDatabaseDriverFactory()
+                database: TodoDatabaseFactory().create()
             )
     }
     
