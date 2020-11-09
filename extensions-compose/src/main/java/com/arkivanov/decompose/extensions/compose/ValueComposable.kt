@@ -31,6 +31,6 @@ operator fun <T : Any> Value<T>.invoke(render: @Composable (T) -> Unit) {
 }
 
 @Composable
-fun <T : Any> Value<T>.observe(renderer: @Composable (T) -> Unit) {
-    renderer(asState().value)
+fun <T : Any> Value<T>.observe(observer: @Composable (T) -> Unit) {
+    observer(asState().value)
 }
