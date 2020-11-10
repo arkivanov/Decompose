@@ -29,7 +29,7 @@ internal class TodoEditImpl(
 
     override val model: TodoEdit.Model =
         object : TodoEdit.Model, TodoEdit.Events by this {
-            override val data: Value<TodoEdit.Data> = store.asValue(lifecycle).map { it.toData() }
+            override val data: Value<TodoEdit.Data> = store.asValue().map { it.toData() }
         }
 
     init {

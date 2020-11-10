@@ -35,7 +35,7 @@ internal class TodoListImpl(
 
     override val model: Model =
         object : Model, Events by this {
-            override val data: Value<Data> = store.asValue(lifecycle).map { it.asData() }
+            override val data: Value<Data> = store.asValue().map { it.asData() }
         }
 
     init {

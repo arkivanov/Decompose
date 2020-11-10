@@ -29,7 +29,7 @@ internal class TodoAddImpl(
 
     override val model: TodoAdd.Model =
         object : TodoAdd.Model, TodoAdd.Events by this {
-            override val data: Value<TodoAdd.Data> = store.asValue(lifecycle).map { it.asData() }
+            override val data: Value<TodoAdd.Data> = store.asValue().map { it.asData() }
         }
 
     init {
