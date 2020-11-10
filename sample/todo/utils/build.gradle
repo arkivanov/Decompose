@@ -4,7 +4,9 @@ plugins {
     id 'com.squareup.sqldelight'
 }
 
-setupMultiplatform(project)
+setupMultiplatformCommon(project)
+setupMultiplatformAndroid(project)
+setupMultiplatformIos(project)
 setupAndroid(project)
 
 kotlin {

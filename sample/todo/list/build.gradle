@@ -3,7 +3,9 @@ plugins {
     id 'kotlin-multiplatform'
 }
 
-setupMultiplatform(project)
+setupMultiplatformCommon(project)
+setupMultiplatformAndroid(project)
+setupMultiplatformIos(project)
 setupAndroid(project)
 setupCompose(project)
 setupComposeMppWorkaround(project)

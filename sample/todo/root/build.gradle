@@ -9,7 +9,9 @@ androidExtensions {
     features = ['parcelize']
 }
 
-setupMultiplatform(project)
+setupMultiplatformCommon(project)
+setupMultiplatformAndroid(project)
+setupMultiplatformIos(project)
 setupAndroid(project)
 setupCompose(project)
 setupComposeMppWorkaround(project)

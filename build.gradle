@@ -44,17 +44,8 @@ allprojects {
     }
 }
 
-void setupMultiplatform(Project project) {
+void setupMultiplatformCommon(Project project) {
     project.kotlin {
-        android()
-        ios()
-        jvm()
-
-        js {
-            browser()
-            nodejs()
-        }
-
         sourceSets {
             commonMain {
                 dependencies {
@@ -68,13 +59,44 @@ void setupMultiplatform(Project project) {
                     implementation "org.jetbrains.kotlin:kotlin-test-annotations-common:$kotlin_version"
                 }
             }
+        }
+    }
+}
 
+void setupMultiplatformAndroid(Project project) {
+    project.kotlin {
+        android()
+
+        sourceSets {
             androidTest {
                 dependencies {
                     implementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
                 }
             }
+        }
+    }
+}
 
+void setupMultiplatformJvm(Project project) {
+    project.kotlin {
+        jvm()
+    }
+}
+
+void setupMultiplatformIos(Project project) {
+    project.kotlin {
+        ios()
+    }
+}
+
+void setupMultiplatformJs(Project project) {
+    project.kotlin {
+        js {
+            browser()
+            nodejs()
+        }
+
+        sourceSets {
             jsTest {
                 dependencies {
                     implementation "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
