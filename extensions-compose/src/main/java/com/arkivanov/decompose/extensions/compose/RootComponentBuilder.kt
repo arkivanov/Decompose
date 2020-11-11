@@ -11,7 +11,7 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.backpressed.toBackPressedDispatched
+import com.arkivanov.decompose.backpressed.toBackPressedDispatcher
 import com.arkivanov.decompose.extensions.compose.lifecycle.lifecycle
 import com.arkivanov.decompose.instancekeeper.toInstanceKeeper
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
@@ -30,14 +30,12 @@ fun <T> rootComponent(
     val composableLifecycle = lifecycle()
 
     return remember {
-        val componentLifecycle = lifecycle?.asDecomposeLifecycle()?.let { MergedLifecycle(it, composableLifecycle) } ?: composableLifecycle
-
         val componentContext =
             DefaultComponentContext(
-                componentLifecycle,
+                lifecycle?.asDecomposeLifecycle()?.let { MergedLifecycle(it, composableLifecycle) } ?: composableLifecycle,
                 savedStateRegistry.toStateKeeper(),
                 viewModelStore.toInstanceKeeper(),
-                onBackPressedDispatcher.toBackPressedDispatched(componentLifecycle)
+                onBackPressedDispatcher.toBackPressedDispatcher()
             )
 
         factory(componentContext)

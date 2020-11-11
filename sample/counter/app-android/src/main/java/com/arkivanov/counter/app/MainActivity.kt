@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import com.arkivanov.counter.app.ui.ComposeAppTheme
 import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.backpressed.toBackPressedDispatched
+import com.arkivanov.decompose.backpressed.toBackPressedDispatcher
 import com.arkivanov.decompose.extensions.android.DefaultViewContext
 import com.arkivanov.decompose.extensions.android.child
 import com.arkivanov.decompose.extensions.compose.rootComponent
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
                 lifecycle = lifecycle,
                 stateKeeper = savedStateRegistry.toStateKeeper(),
                 instanceKeeper = viewModelStore.toInstanceKeeper(),
-                backPressedDispatcher = onBackPressedDispatcher.toBackPressedDispatched(lifecycle)
+                backPressedDispatcher = onBackPressedDispatcher.toBackPressedDispatcher()
             )
 
         val root = CounterRootContainer(componentContext)
