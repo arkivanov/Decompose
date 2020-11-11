@@ -4,7 +4,8 @@ buildscript {
         decompose_version = '0.1.1'
         kotlin_version = "1.4.10"
         compose_kotlin_compiler_version = '1.4.10'
-        compose_version = '1.0.0-alpha06'
+        compose_jetpack_version = '1.0.0-alpha06'
+        compose_jetbrains_version = '0.1.0-build113'
         reaktive_version = '1.1.18'
         mvikotlin_version = '2.0.0'
         sqldelight_version = '1.4.3'
@@ -23,14 +24,13 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.0-alpha15'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.squareup.sqldelight:gradle-plugin:$sqldelight_version"
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath "org.jetbrains.compose:compose-gradle-plugin:$compose_jetbrains_version"
     }
 }
 
@@ -38,6 +38,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
         maven { url "https://dl.bintray.com/arkivanov/maven" }
         maven { url "https://dl.bintray.com/badoo/maven" }
         maven { url "https://dl.bintray.com/cfraser/muirwik" }
@@ -117,7 +118,7 @@ void setupCompose(Project project) {
         }
 
         composeOptions {
-            kotlinCompilerExtensionVersion "${compose_version}"
+            kotlinCompilerExtensionVersion "${compose_jetpack_version}"
             kotlinCompilerVersion "${compose_kotlin_compiler_version}"
         }
     }
@@ -132,7 +133,7 @@ void setupComposeMppWorkaround(Project project) {
     }
 
     project.dependencies {
-        composeCompiler "androidx.compose.compiler:compiler:$compose_version"
+        composeCompiler "androidx.compose.compiler:compiler:$compose_jetpack_version"
     }
 
     project.afterEvaluate {

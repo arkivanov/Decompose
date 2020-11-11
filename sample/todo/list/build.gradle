@@ -25,9 +25,9 @@ kotlin {
 
         androidMain {
             dependencies {
-                implementation project(":extensions-compose")
-                implementation "androidx.compose.foundation:foundation:$compose_version"
-                implementation "androidx.compose.material:material:$compose_version"
+                implementation project(":extensions-compose-jetpack")
+                implementation "androidx.compose.foundation:foundation:$compose_jetpack_version"
+                implementation "androidx.compose.material:material:$compose_jetpack_version"
             }
         }
     }

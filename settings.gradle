@@ -1,5 +1,6 @@
 include ':decompose'
-include ':extensions-compose'
+include ':extensions-compose-jetpack'
+include ':extensions-compose-jetbrains'
 include ':extensions-android'
 include ':sample:counter:shared'
 include ':sample:counter:app-android'

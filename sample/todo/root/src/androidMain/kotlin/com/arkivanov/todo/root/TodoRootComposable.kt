@@ -2,7 +2,7 @@ package com.arkivanov.todo.root
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
-import com.arkivanov.decompose.extensions.compose.children
+import com.arkivanov.decompose.extensions.compose.jetpack.children
 import com.arkivanov.todo.edit.invoke
 import com.arkivanov.todo.main.invoke
 

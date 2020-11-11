@@ -1,4 +1,4 @@
-package com.arkivanov.decompose.extensions.compose
+package com.arkivanov.decompose.extensions.compose.jetbrains
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -22,12 +22,6 @@ fun <T : Any> Value<T>.asState(): State<T> {
     onDispose { unsubscribe(observer) }
 
     return composeState
-}
-
-@Deprecated("Use observe {}", ReplaceWith("observe(render)"))
-@Composable
-operator fun <T : Any> Value<T>.invoke(render: @Composable (T) -> Unit) {
-    observe(render)
 }
 
 @Composable

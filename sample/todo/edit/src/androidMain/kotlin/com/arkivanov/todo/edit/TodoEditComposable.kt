@@ -18,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.observe
+import com.arkivanov.decompose.extensions.compose.jetpack.observe
 
 @Composable
 operator fun TodoEdit.Model.invoke() {

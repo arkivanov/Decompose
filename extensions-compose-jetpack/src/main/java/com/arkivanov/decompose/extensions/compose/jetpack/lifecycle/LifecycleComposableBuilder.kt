@@ -1,4 +1,4 @@
-package com.arkivanov.decompose.extensions.compose.lifecycle
+package com.arkivanov.decompose.extensions.compose.jetpack.lifecycle
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.onActive

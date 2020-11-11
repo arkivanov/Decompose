@@ -1,6 +1,5 @@
-package com.arkivanov.decompose.extensions.compose
+package com.arkivanov.decompose.extensions.compose.jetbrains
 
-import android.os.Parcelable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.onDispose
@@ -8,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.UiSavedStateRegistry
 import androidx.compose.runtime.savedinstancestate.UiSavedStateRegistryAmbient
 import com.arkivanov.decompose.RouterState
+import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.value.Value
 
 private typealias SavedState = Map<String, List<Any?>>

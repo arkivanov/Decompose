@@ -1,0 +1,37 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-multiplatform'
+    id 'org.jetbrains.compose'
+    id 'maven-publish'
+}
+
+setupMultiplatformCommon(project)
+setupMultiplatformAndroid(project)
+setupMultiplatformJvm(project)
+setupAndroid(project)
+
+kotlin {
+    android {
+        publishLibraryVariants("release", "debug")
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation project(':decompose')
+                implementation "org.jetbrains.compose.foundation:foundation:$compose_jetbrains_version"
+            }
+        }
+    }
+}
+
+group = "com.arkivanov.decompose"
+version = decompose_version
+
+publishing {
+    publications.withType(MavenPublication.class).all {
+        setupPublicationPom(it)
+    }
+
+    setupPublicationRepository(it)
+}

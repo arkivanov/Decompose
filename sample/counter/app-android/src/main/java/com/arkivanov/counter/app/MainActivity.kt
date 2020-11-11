@@ -14,7 +14,7 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.backpressed.toBackPressedDispatcher
 import com.arkivanov.decompose.extensions.android.DefaultViewContext
 import com.arkivanov.decompose.extensions.android.child
-import com.arkivanov.decompose.extensions.compose.rootComponent
+import com.arkivanov.decompose.extensions.compose.jetpack.rootComponent
 import com.arkivanov.decompose.instancekeeper.toInstanceKeeper
 import com.arkivanov.decompose.lifecycle.asDecomposeLifecycle
 import com.arkivanov.decompose.statekeeper.toStateKeeper

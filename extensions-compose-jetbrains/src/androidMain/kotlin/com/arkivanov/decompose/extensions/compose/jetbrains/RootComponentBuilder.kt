@@ -1,4 +1,4 @@
-package com.arkivanov.decompose.extensions.compose
+package com.arkivanov.decompose.extensions.compose.jetbrains
 
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
@@ -11,14 +11,16 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.decompose.backpressed.toBackPressedDispatcher
-import com.arkivanov.decompose.extensions.compose.lifecycle.lifecycle
+import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.lifecycle
 import com.arkivanov.decompose.instancekeeper.toInstanceKeeper
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
 import com.arkivanov.decompose.lifecycle.asDecomposeLifecycle
 import com.arkivanov.decompose.statekeeper.toStateKeeper
 import androidx.lifecycle.Lifecycle as AndroidLifecycle
 
+@OptIn(InternalDecomposeApi::class)
 @Composable
 fun <T> rootComponent(
     savedStateRegistry: SavedStateRegistry,

@@ -15,8 +15,7 @@ android {
 
 dependencies {
     implementation project(':decompose')
-    implementation "androidx.activity:activity:$androidx_activity_version"
-    implementation "androidx.compose.foundation:foundation:$compose_version"
+    implementation "androidx.compose.foundation:foundation:$compose_jetpack_version"
 }
 
 afterEvaluate {
