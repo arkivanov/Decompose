@@ -1,5 +1,6 @@
 package com.arkivanov.sample.counter.shared.root
 
+import com.arkivanov.decompose.RouterState
 import com.arkivanov.sample.counter.shared.RenderableComponent
 import com.arkivanov.sample.counter.shared.counter.CounterR
 import com.arkivanov.sample.counter.shared.inner.InnerR
@@ -22,11 +23,11 @@ import styled.styledDiv
 
 class RootR(props: Props<CounterRootContainer.Model>) : RenderableComponent<CounterRootContainer.Model, RootR.State>(
     props = props,
-    initialState = State(child = props.model.child.value)
+    initialState = State(routerState = props.model.child.value)
 ) {
 
     init {
-        model.child.bindToState { child = it }
+        model.child.bindToState { routerState = it }
     }
 
     override fun RBuilder.render() {
@@ -35,13 +36,13 @@ class RootR(props: Props<CounterRootContainer.Model>) : RenderableComponent<Coun
 
             br {}
 
-            childWithButtons(state.child)
+            childWithButtons(state.routerState.activeChild.component)
 
             br {}
         }
     }
 
-    private fun RBuilder.childWithButtons(childModel: CounterRootContainer.Model.Child) {
+    private fun RBuilder.childWithButtons(child: CounterRootContainer.Child) {
         mGridContainer(alignItems = MGridAlignItems.center, spacing = MGridSpacing.spacing3) {
             attrs {
                 direction = MGridDirection.column
@@ -63,19 +64,19 @@ class RootR(props: Props<CounterRootContainer.Model>) : RenderableComponent<Coun
                     mButton(
                         "Prev Child",
                         variant = MButtonVariant.contained,
-                        disabled = !childModel.isBackEnabled,
+                        disabled = !child.isBackEnabled,
                         onClick = { model.onPrevChild() }
                     )
                 }
             }
 
             mGridItem {
-                renderableChild(InnerR::class, childModel.inner)
+                renderableChild(InnerR::class, child.inner)
             }
         }
     }
 
     class State(
-        var child: CounterRootContainer.Model.Child,
+        var routerState: RouterState<*, CounterRootContainer.Child>,
     ) : RState
 }
