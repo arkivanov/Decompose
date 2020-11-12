@@ -24,7 +24,8 @@ import com.arkivanov.decompose.value.MutableValue
 import kotlin.reflect.KClass
 
 internal class RouterImpl<C : Parcelable, T : Any>(
-    initialConfiguration: C,
+    initialConfiguration: () -> C,
+    initialBackStack: () -> List<C>,
     private val configurationClass: KClass<out C>,
     override val lifecycle: Lifecycle,
     private val key: String,
@@ -42,7 +43,7 @@ internal class RouterImpl<C : Parcelable, T : Any>(
 
     private val retainedInstance: RetainedInstance<C, T> = instanceKeeper.getOrCreate(key, ::RetainedInstance)
 
-    private var stack = restoreStack() ?: Stack(active = createComponent(initialConfiguration))
+    private var stack = restoreStack() ?: initialStack(initialConfiguration(), initialBackStack())
     override val state: MutableValue<RouterState<C, T>> = MutableValue(stack.toState())
 
     init {
@@ -73,6 +74,12 @@ internal class RouterImpl<C : Parcelable, T : Any>(
             }.let {}
         }
     }
+
+    private fun initialStack(initialConfiguration: C, initialBackStack: List<C>): Stack<C, T> =
+        Stack(
+            active = createComponent(initialConfiguration),
+            backStack = initialBackStack.map { Stack.Entry.Destroyed(configuration = it, savedState = null) }
+        )
 
     private fun restoreStack(): Stack<C, T>? {
         val savedState = stateKeeper.consume<SavedState>(key) ?: return null

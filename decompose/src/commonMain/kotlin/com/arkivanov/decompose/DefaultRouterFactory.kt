@@ -15,7 +15,8 @@ internal class DefaultRouterFactory(
 ) : RouterFactory {
 
     override fun <C : Parcelable, T : Any> router(
-        initialConfiguration: C,
+        initialConfiguration: () -> C,
+        initialBackStack: () -> List<C>,
         configurationClass: KClass<out C>,
         key: String,
         handleBackButton: Boolean,
@@ -23,6 +24,7 @@ internal class DefaultRouterFactory(
     ): Router<C, T> =
         RouterImpl(
             initialConfiguration = initialConfiguration,
+            initialBackStack = initialBackStack,
             configurationClass = configurationClass,
             lifecycle = lifecycle,
             key = key,
