@@ -39,7 +39,13 @@ implementation "com.arkivanov.decompose:extensions-android:<version>"
 Add extensions for Jetpack Compose to your Android build.gradle:
 
 ```groovy
-implementation "com.arkivanov.decompose:extensions-compose:<version>"
+implementation "com.arkivanov.decompose:extensions-compose-jetpack:<version>"
+```
+
+Add extensions for JetBrains Compose to your Android/JVM/Multiplatform build.gradle:
+
+```groovy
+implementation "com.arkivanov.decompose:extensions-compose-jetpack:<version>"
 ```
 
 ## Overview
@@ -65,7 +71,7 @@ class Counter {
 }
 ```
 
-Jetpack Compose UI example:
+Jetpack/JetBrains Compose UI example:
 
 ```kotlin
 @Composable
@@ -261,6 +267,10 @@ There are multiple components, each in a separate module:
 #### Sample Todo Component structure 
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleTodoStructure.png" width="512">
+
+### Sample Todo app using JetBrains Compose
+
+See the [Todo app example](https://github.com/JetBrains/compose-jb/tree/master/examples/todoapp) in the JetBrains Compose repository.
 
 ## Articles
 
