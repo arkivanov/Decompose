@@ -25,7 +25,7 @@ afterEvaluate {
                 from components.debug
 
                 group = "com.arkivanov.decompose"
-                artifactId = "extensions-compose-debug"
+                artifactId = "extensions-compose-jetpack-debug"
                 version = decompose_version
 
                 setupPublicationPom(it)
@@ -35,7 +35,7 @@ afterEvaluate {
                 from components.release
 
                 group = "com.arkivanov.decompose"
-                artifactId = "extensions-compose"
+                artifactId = "extensions-compose-jetpack"
                 version = decompose_version
 
                 setupPublicationPom(it)
