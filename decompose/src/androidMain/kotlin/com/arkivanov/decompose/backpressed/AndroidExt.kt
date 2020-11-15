@@ -76,16 +76,15 @@ private class DelegatedBackPressedDispatcher(
             }
 
             private fun handleBackPressed(): Boolean =
-                handlers.any { it() }
+                handlers.reversed().any { it() }
         }
 
     override fun register(handler: () -> Boolean) {
-        val isFirstHandler = handlers.isEmpty()
-        this.handlers += handler
-
-        if (isFirstHandler) {
+        if (handlers.isEmpty()) {
             delegate.addCallback(callback)
         }
+
+        this.handlers += handler
     }
 
     override fun unregister(handler: () -> Boolean) {
