@@ -1,5 +1,6 @@
 package com.arkivanov.decompose
 
+import com.arkivanov.decompose.backpressed.BackPressedDispatcher
 import com.arkivanov.decompose.backpressed.BackPressedRegistry
 import com.arkivanov.decompose.instancekeeper.InstanceKeeper
 import com.arkivanov.decompose.instancekeeper.InstanceKeeperDispatcher
@@ -31,22 +32,18 @@ internal class RouterImpl<C : Parcelable, T : Any>(
     private val key: String,
     private val stateKeeper: StateKeeper,
     instanceKeeper: InstanceKeeper,
-    private val backPressedRegistry: BackPressedRegistry?,
-    private val componentFactory: (C, Lifecycle, StateKeeper, InstanceKeeper) -> T
+    private val backPressedRegistry: BackPressedRegistry,
+    private val popOnBackPressed: Boolean,
+    private val componentFactory: (C, Lifecycle, StateKeeper, InstanceKeeper, BackPressedDispatcher) -> T
 ) : Router<C, T>, LifecycleOwner {
 
     private val onBackPressedHandler = ::onBackPressed
-
-    init {
-        backPressedRegistry?.register(onBackPressedHandler)
-    }
-
     private val retainedInstance: RetainedInstance<C, T> = instanceKeeper.getOrCreate(key, ::RetainedInstance)
-
     private var stack = restoreStack() ?: initialStack(initialConfiguration(), initialBackStack())
     override val state: MutableValue<RouterState<C, T>> = MutableValue(stack.toState())
 
     init {
+        backPressedRegistry.register(onBackPressedHandler)
         stateKeeper.register(key) { stack.save() }
 
         retainedInstance.activeEntry = stack.active
@@ -57,7 +54,7 @@ internal class RouterImpl<C : Parcelable, T : Any>(
 
     private fun destroy() {
         stateKeeper.unregister(key)
-        backPressedRegistry?.unregister(onBackPressedHandler)
+        backPressedRegistry.unregister(onBackPressedHandler)
 
         val stack = stack
 
@@ -128,14 +125,24 @@ internal class RouterImpl<C : Parcelable, T : Any>(
         val mergedLifecycle = MergedLifecycle(lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
         val instanceKeeperRegistry = savedInstanceKeeperDispatcher ?: InstanceKeeperDispatcher()
-        val component = componentFactory(configuration, mergedLifecycle, stateKeeperDispatcher, instanceKeeperRegistry)
+        val backPressedDispatcher = BackPressedDispatcher()
+
+        val component =
+            componentFactory(
+                configuration,
+                mergedLifecycle,
+                stateKeeperDispatcher,
+                instanceKeeperRegistry,
+                backPressedDispatcher
+            )
 
         return Stack.Entry.Created(
             configuration = configuration,
             component = component,
             lifecycleRegistry = componentLifecycleRegistry,
             stateKeeperDispatcher = stateKeeperDispatcher,
-            instanceKeeperDispatcher = instanceKeeperRegistry
+            instanceKeeperDispatcher = instanceKeeperRegistry,
+            backPressedDispatcher = backPressedDispatcher
         )
     }
 
@@ -163,11 +170,15 @@ internal class RouterImpl<C : Parcelable, T : Any>(
     }
 
     private fun onBackPressed(): Boolean =
-        if ((lifecycle.state >= Lifecycle.State.STARTED) && stack.backStack.isNotEmpty()) {
-            pop()
-            true
-        } else {
-            false
+        when {
+            stack.active.backPressedDispatcher.onBackPressed() -> true
+
+            popOnBackPressed && stack.backStack.isNotEmpty() -> {
+                pop()
+                true
+            }
+
+            else -> false
         }
 
     private fun setStack(stack: Stack<C, T>) {
@@ -213,7 +224,8 @@ internal class RouterImpl<C : Parcelable, T : Any>(
                 val component: T,
                 val lifecycleRegistry: LifecycleRegistry,
                 val stateKeeperDispatcher: StateKeeperDispatcher,
-                val instanceKeeperDispatcher: InstanceKeeperDispatcher
+                val instanceKeeperDispatcher: InstanceKeeperDispatcher,
+                val backPressedDispatcher: BackPressedDispatcher
             ) : Entry<C, T>()
 
             data class Destroyed<out C : Parcelable>(

@@ -1,6 +1,6 @@
 package com.arkivanov.decompose
 
-import com.arkivanov.decompose.backpressed.BackPressedDispatcher
+import com.arkivanov.decompose.backpressed.BackPressedRegistry
 import com.arkivanov.decompose.instancekeeper.InstanceKeeper
 import com.arkivanov.decompose.lifecycle.Lifecycle
 import com.arkivanov.decompose.statekeeper.Parcelable
@@ -11,7 +11,7 @@ internal class DefaultRouterFactory(
     private val lifecycle: Lifecycle,
     private val stateKeeper: StateKeeper,
     private val instanceKeeper: InstanceKeeper,
-    private val backPressedDispatcher: BackPressedDispatcher
+    private val backPressedRegistry: BackPressedRegistry
 ) : RouterFactory {
 
     override fun <C : Parcelable, T : Any> router(
@@ -30,8 +30,9 @@ internal class DefaultRouterFactory(
             key = key,
             stateKeeper = stateKeeper,
             instanceKeeper = instanceKeeper,
-            backPressedRegistry = backPressedDispatcher.takeIf { handleBackButton }
-        ) { configuration, lifecycle, stateKeeperProvider, instanceKeeperProvider ->
+            backPressedRegistry = backPressedRegistry,
+            popOnBackPressed = handleBackButton
+        ) { configuration, lifecycle, stateKeeperProvider, instanceKeeperProvider, backPressedDispatcher ->
             componentFactory(
                 configuration,
                 DefaultComponentContext(
