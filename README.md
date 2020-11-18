@@ -45,7 +45,7 @@ implementation "com.arkivanov.decompose:extensions-compose-jetpack:<version>"
 Add extensions for JetBrains Compose to your Android/JVM/Multiplatform build.gradle:
 
 ```groovy
-implementation "com.arkivanov.decompose:extensions-compose-jetpack:<version>"
+implementation "com.arkivanov.decompose:extensions-compose-jetbrains:<version>"
 ```
 
 ## Overview
@@ -75,8 +75,8 @@ Jetpack/JetBrains Compose UI example:
 
 ```kotlin
 @Composable
-operator fun Counter.invoke() {
-    state { state ->
+fun Counter.render() {
+    state.observe { state ->
         Column(horizontalGravity = Alignment.CenterHorizontally) {
             Text(text = state.count.toString())
 
@@ -110,6 +110,8 @@ struct CounterView: View {
 }
 ```
 
+If you are using only Jetpack/JetBrains Compose UI, then most likely you can use its `State` and `MutableState` directly, without intermediate `Value`/`MutableValue` from Decompose.
+
 ### ComponentContext
 
 Each component has an associated [ComponentContext](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/ComponentContext.kt) which implements the following interfaces:
@@ -129,7 +131,7 @@ The `Router` supports back stack and so each component has its own `Lifecycle`. 
 
 Each component is created based on an associated `Configuration`. `Configurations` can be persisted via Android's `saved state`, thus allowing back stack restoration after configurations change or process death. When the back stack is restored, only currently active components are recreated. All others in the back stack remain destroyed, and recreated on demand when navigating back. Decompose defines both `Parcelable` interface and `@Parcelize` annotation in common code using expect/actual, which works well with Kotlin Multiplatform. You can read more about it [here](https://kotlinlang.org/docs/reference/compiler-plugins.html#parcelable-implementations-generator).
 
-The `Router` has a state consisting of a currently active component and the back stack, so it can be rendered as normal.
+The `Router` has a state consisting of a currently active component and a back stack, so it can be rendered as any other state.
 
 `Routers` can be nested, and each component can have more than one `Router`.
 
