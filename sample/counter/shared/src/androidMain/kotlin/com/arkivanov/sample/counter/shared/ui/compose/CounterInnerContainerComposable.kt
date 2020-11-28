@@ -17,7 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetpack.children
+import com.arkivanov.decompose.extensions.compose.jetpack.Children
 import com.arkivanov.sample.counter.shared.inner.CounterInnerContainer
 
 @Composable
@@ -33,13 +33,13 @@ operator fun CounterInnerContainer.Model.invoke() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Row {
-                leftChild.children { child, _ ->
+                Children(leftChild) { child, _ ->
                     child(onNext = ::onNextLeftChild, onPrev = ::onPrevLeftChild)
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                rightChild.children { child, _ ->
+                Children(rightChild) { child, _ ->
                     child(onNext = ::onNextRightChild, onPrev = ::onPrevRightChild)
                 }
             }
