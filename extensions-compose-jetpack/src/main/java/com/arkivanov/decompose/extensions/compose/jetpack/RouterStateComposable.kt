@@ -53,7 +53,7 @@ private fun <C : Parcelable> RouterState<C, *>.getConfigurations(): Set<C> {
 private fun <T : Any> RestorableStateHolder<T>.retainStates(currentKeys: Set<T>) {
     val keys = remember(this) { Keys(currentKeys) }
 
-    onCommit(this) {
+    onCommit(this, currentKeys) {
         keys.set.forEach {
             if (it !in currentKeys) {
                 removeState(it)
