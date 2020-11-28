@@ -72,7 +72,7 @@ private class Keys<T : Any>(
 
 private typealias SavedState = Map<String, List<Any?>>
 
-@Deprecated("Use Children function")
+@Deprecated("Use Children function", ReplaceWith("Children(this, content = render)"))
 @Composable
 fun <C : Parcelable, T : Any> Value<RouterState<C, T>>.children(render: @Composable (child: T, configuration: C) -> Unit) {
     val state by asState()
