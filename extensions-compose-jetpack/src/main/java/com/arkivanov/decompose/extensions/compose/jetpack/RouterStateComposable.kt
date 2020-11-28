@@ -59,9 +59,9 @@ private fun <T : Any> RestorableStateHolder<T>.retainStates(currentKeys: Set<T>)
                 removeState(it)
             }
         }
-    }
 
-    keys.set = currentKeys
+        keys.set = currentKeys
+    }
 }
 
 private class Keys<T : Any>(
