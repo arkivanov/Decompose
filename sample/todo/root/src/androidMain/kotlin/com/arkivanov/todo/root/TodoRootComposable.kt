@@ -7,7 +7,7 @@ import com.arkivanov.todo.main.invoke
 
 @Composable
 operator fun TodoRoot.Model.invoke() {
-    Children(routerState = routerState, animation = Crossfade()) { child, _ ->
+    Children(routerState = routerState, animation = crossfade()) { child, _ ->
         when (child) {
             is TodoRoot.Child.Main -> child.main.model()
             is TodoRoot.Child.Edit -> child.edit.model()

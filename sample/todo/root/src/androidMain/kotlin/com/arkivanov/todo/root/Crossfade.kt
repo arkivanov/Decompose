@@ -2,7 +2,7 @@ package com.arkivanov.todo.root
 
 import androidx.compose.runtime.Composable
 
-fun <T, K> Crossfade(): @Composable (currentChild: T, currentKey: K, children: @Composable (T, K) -> Unit) -> Unit =
+fun <T, K> crossfade(): @Composable (currentChild: T, currentKey: K, children: @Composable (T, K) -> Unit) -> Unit =
     { currentChild: T, currentKey: K, children: @Composable (T, K) -> Unit ->
         Crossfade(currentChild, currentKey, children)
     }
