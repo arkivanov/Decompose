@@ -2,10 +2,10 @@
 buildscript {
     ext {
         decompose_version = '0.1.3'
-        kotlin_version = "1.4.10"
-        compose_kotlin_compiler_version = '1.4.10'
-        compose_jetpack_version = '1.0.0-alpha07'
-        compose_jetbrains_version = '0.1.0-build113'
+        kotlin_version = "1.4.20"
+        compose_kotlin_compiler_version = '1.4.20'
+        compose_jetpack_version = '1.0.0-alpha08'
+        compose_jetbrains_version = '0.3.0-build133'
         reaktive_version = '1.1.18'
         mvikotlin_version = '2.0.0'
         sqldelight_version = '1.4.3'
@@ -27,7 +27,7 @@ buildscript {
         maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha15'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha16'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.squareup.sqldelight:gradle-plugin:$sqldelight_version"
         classpath "org.jetbrains.compose:compose-gradle-plugin:$compose_jetbrains_version"

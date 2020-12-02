@@ -34,7 +34,7 @@ fun <C : Parcelable, T : Any> Children(
     holder.retainStates(state.getConfigurations())
 
     animation(activeChild.component, activeChild.configuration) { child, configuration ->
-        holder.withRestorableState(configuration) {
+        holder.RestorableStateProvider(configuration) {
             content(child, configuration)
         }
     }
