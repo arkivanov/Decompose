@@ -1,11 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-multiplatform'
-    id 'kotlin-android-extensions'
-}
-
-androidExtensions {
-    features = ['parcelize']
+    id 'kotlin-parcelize'
 }
 
 setupMultiplatformCommon(project)

@@ -1,11 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
-}
-
-androidExtensions {
-    features = ['parcelize']
+    id 'kotlin-parcelize'
 }
 
 setupAndroid(project)
