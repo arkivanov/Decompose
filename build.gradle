@@ -39,8 +39,6 @@ allprojects {
         google()
         jcenter()
         maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
-        maven { url "https://dl.bintray.com/arkivanov/maven" }
-        maven { url "https://dl.bintray.com/badoo/maven" }
         maven { url "https://dl.bintray.com/cfraser/muirwik" }
     }
 }
