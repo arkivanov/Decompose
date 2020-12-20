@@ -21,6 +21,7 @@ afterEvaluate {
         publications {
             debug(MavenPublication) {
                 from components.debug
+                artifact sourceJar
 
                 group = "com.arkivanov.decompose"
                 artifactId = "extensions-android-debug"
@@ -31,6 +32,7 @@ afterEvaluate {
 
             release(MavenPublication) {
                 from components.release
+                artifact sourceJar
 
                 group = "com.arkivanov.decompose"
                 artifactId = "extensions-android"
@@ -42,4 +44,9 @@ afterEvaluate {
 
         setupPublicationRepository(it)
     }
+}
+
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "source"
 }
