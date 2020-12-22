@@ -27,13 +27,12 @@ Supported targets:
 
 ### Setup
 
-Add Bintray repository to your root build.gradle file:
+Decompose is published to Bintray, the repository is synchronized with JCenter.
+Make sure you have the JCenter repository specified in your build.gradle:
 
 ```groovy
 repositories {
-    maven {
-        url  "https://dl.bintray.com/arkivanov/maven"
-    }
+    jcenter()
 }
 ```
 
