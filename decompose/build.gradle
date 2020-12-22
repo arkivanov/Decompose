@@ -41,5 +41,12 @@ publishing {
         setupPublicationPom(it)
     }
 
+    publications {
+        kotlinMultiplatform {
+            artifactId = project.name
+            artifact metadataSourcesJar
+        }
+    }
+
     setupPublicationRepository(it)
 }
