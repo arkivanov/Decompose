@@ -30,6 +30,5 @@ dependencies {
     implementation project(':decompose')
     implementation project(':extensions-compose-jetpack')
     implementation project(':extensions-android')
-    implementation project(':sample:todo:utils')
     implementation project(':sample:counter:shared')
 }

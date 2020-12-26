@@ -257,34 +257,23 @@ Content:
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterStructure.png" width="384">
 
-### Sample todo app
+### Sample Todo List app
 
-This sample can be found [here](https://github.com/arkivanov/Decompose/tree/master/sample/todo).
+This sample can be found in the JetBrains Compose repository [here](https://github.com/arkivanov/Decompose/tree/master/sample/todo).
 
 It demonstrates the following features:
+- Multiplatform: Android, iOS and Desktop
+- Shared JetBrains Compose UI for Android and Desktop apps
+- SwiftUI for iOS app
 - Nested components
-- Routing with view state preservation
+- Shared routing with view state preservation
 - Using `Lifecycle`
 - Multi-module structure (one component per module)
-- Inter-Component communication (via [Reaktive](https://github.com/badoo/Reaktive), just an example)
+- Inter-component communication (via [Reaktive](https://github.com/badoo/Reaktive), just an example)
 - MVI using [MVIKotlin](https://github.com/arkivanov/MVIKotlin)
 - Data persistance using [SQLDelight](https://github.com/cashapp/sqldelight)
-- Pluggable UI (Jetpack Compose, SwiftUI, JS React)
 
-There are multiple components, each in a separate module:
-- [list](https://github.com/arkivanov/Decompose/tree/master/sample/todo/list) - the top part of the `Main` screen, displays a list of todo items. Tap on an item opens the `Editor` screen.
-- [add](https://github.com/arkivanov/Decompose/tree/master/sample/todo/add) - the bottom part of the `Main` screen, displays input field and a button. Tap on the button adds a new todo item to the list.
-- [main](https://github.com/arkivanov/Decompose/tree/master/sample/todo/main) - aggregates both `list` and `add` components, represents the `Main` screen.
-- [edit](https://github.com/arkivanov/Decompose/tree/master/sample/todo/edit) - provides the ability to edit a selected todo item.
-- [root](https://github.com/arkivanov/Decompose/tree/master/sample/todo/root) - aggregates both `main` and `edit` components and uses `Router` to switch between them.
-
-#### Sample Todo Component structure 
-
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleTodoStructure.png" width="512">
-
-### Sample Todo app using JetBrains Compose
-
-See the [Todo app example](https://github.com/JetBrains/compose-jb/tree/master/examples/todoapp) in the JetBrains Compose repository.
+Please refer to the sample's readme for more information.
 
 ## Articles
 

@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             ComposeAppTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    Box(modifier = Modifier.fillMaxSize(), alignment = Alignment.Center) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         rootComponent(::CounterRootContainer).model()
                     }
                 }
