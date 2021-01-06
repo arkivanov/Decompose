@@ -259,7 +259,7 @@ Content:
 
 ### Sample Todo List app
 
-This sample can be found in the JetBrains Compose repository [here](https://github.com/arkivanov/Decompose/tree/master/sample/todo).
+This sample can be found in the JetBrains Compose repository [here](https://github.com/JetBrains/compose-jb/tree/master/examples/todoapp).
 
 It demonstrates the following features:
 - Multiplatform: Android, iOS and Desktop
