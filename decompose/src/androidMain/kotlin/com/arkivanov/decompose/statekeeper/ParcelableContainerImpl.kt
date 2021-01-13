@@ -4,15 +4,15 @@ import android.os.Bundle
 import android.os.Parcel
 import kotlin.reflect.KClass
 
-actual class ParcelableContainer private constructor(
+internal actual class ParcelableContainerImpl private constructor(
     private val bundle: Bundle
-) : Parcelable {
+) : ParcelableContainer {
 
     actual constructor() : this(Bundle())
 
     private constructor(parcel: Parcel) : this(parcel.readBundle(Bundle::class.java.classLoader) ?: Bundle())
 
-    actual fun <T : Parcelable> consume(clazz: KClass<out T>): T? {
+    override fun <T : Parcelable> consume(clazz: KClass<out T>): T? {
         bundle.classLoader = clazz.java.classLoader
         val value: T? = bundle.getParcelable(KEY)
         if (value != null) {
@@ -22,7 +22,7 @@ actual class ParcelableContainer private constructor(
         return value
     }
 
-    actual fun set(value: Parcelable?) {
+    override fun set(value: Parcelable?) {
         bundle.putParcelable(KEY, value)
     }
 
@@ -32,11 +32,11 @@ actual class ParcelableContainer private constructor(
 
     override fun describeContents(): Int = 0
 
-    companion object CREATOR : android.os.Parcelable.Creator<ParcelableContainer> {
+    companion object CREATOR : android.os.Parcelable.Creator<ParcelableContainerImpl> {
         private const val KEY = "key"
 
-        override fun createFromParcel(parcel: Parcel): ParcelableContainer = ParcelableContainer(parcel)
+        override fun createFromParcel(parcel: Parcel): ParcelableContainerImpl = ParcelableContainerImpl(parcel)
 
-        override fun newArray(size: Int): Array<ParcelableContainer?> = arrayOfNulls(size)
+        override fun newArray(size: Int): Array<ParcelableContainerImpl?> = arrayOfNulls(size)
     }
 }
