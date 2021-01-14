@@ -77,6 +77,14 @@ void setupMultiplatformAndroid(Project project) {
 void setupMultiplatformJvm(Project project) {
     project.kotlin {
         jvm()
+
+        sourceSets {
+            jvmTest {
+                dependencies {
+                    implementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+                }
+            }
+        }
     }
 }
 
