@@ -28,7 +28,7 @@ struct CounterInnerView: View {
     
     var body: some View {
         let activeLeftChild = self.leftChild.value.activeChild.component
-        let activeRightChild = self.leftChild.value.activeChild.component
+        let activeRightChild = self.rightChild.value.activeChild.component
 
         return VStack(spacing: 8) {
             CounterView(self.counter)
