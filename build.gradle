@@ -4,7 +4,7 @@ buildscript {
         decompose_version = '0.1.6'
         kotlin_version = "1.4.21"
         compose_kotlin_compiler_version = kotlin_version
-        compose_jetpack_version = '1.0.0-alpha09'
+        compose_jetpack_version = '1.0.0-alpha10'
         compose_jetbrains_version = '0.3.0-build135'
         reaktive_version = '1.1.18'
         mvikotlin_version = '2.0.0'
