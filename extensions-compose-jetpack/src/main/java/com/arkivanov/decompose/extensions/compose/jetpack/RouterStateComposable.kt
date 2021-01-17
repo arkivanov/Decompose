@@ -16,22 +16,11 @@ typealias ChildContent<C, T> = @Composable (child: T, configuration: C) -> Unit
 
 typealias ChildAnimation<C, T> = @Composable (child: T, configuration: C, ChildContent<C, T>) -> Unit
 
-@Composable
-fun <C : Parcelable, T : Any> Children(
-    routerState: Value<RouterState<C, T>>,
-    content: ChildContent<C, T>
-) {
-    // Workaround https://github.com/arkivanov/Decompose/issues/25
-    val animation: ChildAnimation<C, T> = { child, configuration, function -> function(child, configuration) }
-
-    Children(routerState = routerState, animation = animation, content = content)
-}
-
 @OptIn(ExperimentalRestorableStateHolder::class)
 @Composable
 fun <C : Parcelable, T : Any> Children(
     routerState: Value<RouterState<C, T>>,
-    animation: ChildAnimation<C, T>,
+    animation: ChildAnimation<C, T> = { child, configuration, childContent -> childContent(child, configuration) },
     content: ChildContent<C, T>
 ) {
     val holder = key(routerState) { rememberRestorableStateHolder<C>() }
