@@ -23,17 +23,3 @@ fun <T : Any> Value<T>.asState(): State<T> {
 
     return composeState
 }
-
-@Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated("Use `val state by value.asState()`")
-@Composable
-operator fun <T : Any> Value<T>.invoke(render: @Composable (T) -> Unit) {
-    observe(render)
-}
-
-@Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated("Use `val state by value.asState()`")
-@Composable
-fun <T : Any> Value<T>.observe(observer: @Composable (T) -> Unit) {
-    observer(asState().value)
-}
