@@ -5,7 +5,7 @@ buildscript {
         kotlin_version = "1.4.21"
         compose_kotlin_compiler_version = kotlin_version
         compose_jetpack_version = '1.0.0-alpha10'
-        compose_jetbrains_version = '0.3.0-build135'
+        compose_jetbrains_version = '0.3.0-build140'
         reaktive_version = '1.1.18'
         mvikotlin_version = '2.0.0'
         androidx_appcompat_version = '1.2.0'
