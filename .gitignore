@@ -8,3 +8,14 @@
 .externalNativeBuild
 .cxx
 local.properties
+.DS_Store
+/node_modules
+/npm-debug.log*
+__pycache__
+venv
+/MANIFEST
+/manifest.json
+/site
+/dist
+/mkdocs_material.egg-info
+.vscode
