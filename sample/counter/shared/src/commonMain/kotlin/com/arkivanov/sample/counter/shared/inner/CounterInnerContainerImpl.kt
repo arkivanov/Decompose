@@ -3,6 +3,7 @@ package com.arkivanov.sample.counter.shared.inner
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.Router
 import com.arkivanov.decompose.RouterState
+import com.arkivanov.decompose.childContext
 import com.arkivanov.decompose.pop
 import com.arkivanov.decompose.push
 import com.arkivanov.decompose.router
@@ -19,7 +20,7 @@ internal class CounterInnerContainerImpl(
     index: Int
 ) : CounterInnerContainer, Events, ComponentContext by componentContext {
 
-    private val counter = Counter(componentContext, index = index)
+    private val counter = Counter(childContext(key = "counter"), index = index)
 
     private val leftRouter: Router<ChildConfiguration, Child> =
         router(
