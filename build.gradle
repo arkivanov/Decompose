@@ -2,10 +2,10 @@
 buildscript {
     ext {
         decompose_version = '0.1.6'
-        kotlin_version = "1.4.21"
+        kotlin_version = "1.4.21-2"
         compose_kotlin_compiler_version = kotlin_version
-        compose_jetpack_version = '1.0.0-alpha10'
-        compose_jetbrains_version = '0.3.0-build140'
+        compose_jetpack_version = '1.0.0-alpha11'
+        compose_jetbrains_version = '0.3.0-build146'
         reaktive_version = '1.1.18'
         mvikotlin_version = '2.0.0'
         androidx_appcompat_version = '1.2.0'
@@ -26,7 +26,7 @@ buildscript {
         maven { url "https://maven.pkg.jetbrains.space/public/p/compose/dev" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-beta03'
+        classpath 'com.android.tools.build:gradle:4.2.0-beta04'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.compose:compose-gradle-plugin:$compose_jetbrains_version"
     }

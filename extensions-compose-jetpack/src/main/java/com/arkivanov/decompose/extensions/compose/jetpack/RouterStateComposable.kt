@@ -2,9 +2,9 @@ package com.arkivanov.decompose.extensions.compose.jetpack
 
 import android.os.Parcelable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.ExperimentalRestorableStateHolder
 import androidx.compose.runtime.savedinstancestate.RestorableStateHolder
@@ -49,7 +49,7 @@ private fun <C : Parcelable> RouterState<C, *>.getConfigurations(): Set<C> {
 private fun <T : Any> RestorableStateHolder<T>.retainStates(currentKeys: Set<T>) {
     val keys = remember(this) { Keys(currentKeys) }
 
-    onCommit(this, currentKeys) {
+    DisposableEffect(this, currentKeys) {
         keys.set.forEach {
             if (it !in currentKeys) {
                 removeState(it)
@@ -57,6 +57,8 @@ private fun <T : Any> RestorableStateHolder<T>.retainStates(currentKeys: Set<T>)
         }
 
         keys.set = currentKeys
+
+        onDispose {}
     }
 }
 
