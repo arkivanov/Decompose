@@ -25,6 +25,7 @@ nav:
 
   - Components: 
     - Overview: component/overview.md
+    - Custom ComponentContext: component/custom-component-context.md
     
   - Routers: 
     - Overview: router/overview.md
