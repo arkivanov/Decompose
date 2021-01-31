@@ -14,14 +14,14 @@ copyright: Copyright &copy; 2020 - 2021 Arkadii Ivanov
 
 # Page tree
 nav:
-  - Overview: 
-    - Overview: index.md
-    - Contributing: contributing.md
+  - Overview: index.md
 
   - Getting started:
     - Installation: getting-started.md
     - Samples: samples.md
     - License: license.md
+    - Contributing: contributing.md
+
 
   - Components: 
     - Overview: component/overview.md
