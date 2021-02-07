@@ -1,3 +1,5 @@
+![](cover.jpeg)
+
 [![Download](https://api.bintray.com/packages/arkivanov/maven/decompose/images/download.svg)](https://bintray.com/arkivanov/maven/decompose/_latestVersion)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Twitter URL](https://img.shields.io/badge/Twitter-@arkann1985-blue.svg?style=social&logo=twitter)](https://twitter.com/arkann1985)
@@ -274,6 +276,14 @@ It demonstrates the following features:
 - Data persistance using [SQLDelight](https://github.com/cashapp/sqldelight)
 
 Please refer to the sample's readme for more information.
+
+### Sample Greetings App (Desktop Only)
+
+![](docs/media/SampleGreetingsDemo.gif)
+
+A simple greetings app to showcase routing and state management using Decompose.
+
+Repo : [decompose-desktop-example](https://github.com/theapache64/decompose-desktop-example)
 
 ## Articles
 
