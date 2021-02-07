@@ -275,6 +275,14 @@ It demonstrates the following features:
 
 Please refer to the sample's readme for more information.
 
+### Sample Greetings App (Desktop Only)
+
+![](docs/media/SampleGreetingsDemo.gif)
+
+A simple greetings app to showcase routing and state management using Decompose.
+
+Repo : [decompose-desktop-example](https://github.com/theapache64/decompose-desktop-example)
+
 ## Articles
 
 - [Decompose — experiments with Kotlin Multiplatform lifecycle-aware components and navigation](https://proandroiddev.com/decompose-experiments-with-kotlin-multiplatform-lifecycle-aware-components-and-navigation-a04ef3c7f6a3?source=friends_link&sk=f7d289cc329b6c8a765fc049e36c313f)
