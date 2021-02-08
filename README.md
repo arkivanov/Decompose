@@ -87,14 +87,14 @@ Jetpack/JetBrains Compose UI example:
 
 ```kotlin
 @Composable
-fun Counter.render() {
-    state.observe { state ->
-        Column(horizontalGravity = Alignment.CenterHorizontally) {
-            Text(text = state.count.toString())
+fun CounterUi(counter: Counter) {
+    val state by counter.state.asState()
 
-            Button(onClick = ::increment) {
-                Text("Increment")
-            }
+    Column {
+        Text(text = state.count.toString())
+
+        Button(onClick = counter::increment) {
+            Text("Increment")
         }
     }
 }
