@@ -22,6 +22,12 @@ kotlin {
                 implementation "org.jetbrains.compose.foundation:foundation:$compose_jetbrains_version"
             }
         }
+
+        androidMain {
+            dependencies {
+                implementation "androidx.activity:activity:$androidx_activity_version"
+            }
+        }
     }
 }
 
@@ -31,13 +37,6 @@ version = decompose_version
 publishing {
     publications.withType(MavenPublication.class).all {
         setupPublicationPom(it)
-    }
-
-    publications {
-        kotlinMultiplatform {
-            artifactId = project.name
-            artifact metadataSourcesJar
-        }
     }
 
     setupPublicationRepository(it)
