@@ -56,6 +56,14 @@ void setupMultiplatformCommon(Project project) {
                     implementation "org.jetbrains.kotlin:kotlin-test-annotations-common:$kotlin_version"
                 }
             }
+
+            nonAndroidMain {
+                dependsOn commonMain
+            }
+
+            nonAndroidTest {
+                dependsOn commonTest
+            }
         }
     }
 }
@@ -79,7 +87,13 @@ void setupMultiplatformJvm(Project project) {
         jvm()
 
         sourceSets {
+            jvmMain {
+                dependsOn nonAndroidMain
+            }
+
             jvmTest {
+                dependsOn nonAndroidTest
+
                 dependencies {
                     implementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
                 }
@@ -91,6 +105,48 @@ void setupMultiplatformJvm(Project project) {
 void setupMultiplatformIos(Project project) {
     project.kotlin {
         ios()
+
+        sourceSets {
+            iosMain {
+                dependsOn nonAndroidMain
+            }
+
+            iosTest {
+                dependsOn nonAndroidTest
+            }
+        }
+    }
+}
+
+void setupMultiplatformMacosX64(Project project) {
+    project.kotlin {
+        macosX64()
+
+        sourceSets {
+            macosX64Main {
+                dependsOn nonAndroidMain
+            }
+
+            macosX64Test {
+                dependsOn nonAndroidTest
+            }
+        }
+    }
+}
+
+void setupMultiplatformTvos(Project project) {
+    project.kotlin {
+        tvos()
+
+        sourceSets {
+            tvosMain {
+                dependsOn nonAndroidMain
+            }
+
+            tvosTest {
+                dependsOn nonAndroidTest
+            }
+        }
     }
 }
 
@@ -102,7 +158,13 @@ void setupMultiplatformJs(Project project) {
         }
 
         sourceSets {
+            jsMain {
+                dependsOn nonAndroidMain
+            }
+
             jsTest {
+                dependsOn nonAndroidTest
+
                 dependencies {
                     implementation "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
                 }
