@@ -9,6 +9,8 @@ setupMultiplatformCommon(project)
 setupMultiplatformAndroid(project)
 setupMultiplatformJvm(project)
 setupMultiplatformIos(project)
+setupMultiplatformMacosX64(project)
+setupMultiplatformTvos(project)
 setupMultiplatformJs(project)
 setupAndroid(project)
 
