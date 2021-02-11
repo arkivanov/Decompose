@@ -8,6 +8,8 @@ Supported targets:
 - Android
 - JVM
 - iosX64, iosArm64
+- macosX64
+- tvosX64, tvosArm64
 - JavaScript
 
 ## Why Decompose? 
