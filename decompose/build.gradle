@@ -12,6 +12,7 @@ setupMultiplatformIos(project)
 setupMultiplatformMacosX64(project)
 setupMultiplatformTvos(project)
 setupMultiplatformJs(project)
+//setupMultiplatformLinuxX64(project)
 setupAndroid(project)
 
 kotlin {
