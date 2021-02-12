@@ -64,6 +64,22 @@ void setupMultiplatformCommon(Project project) {
             nonAndroidTest {
                 dependsOn commonTest
             }
+
+            nativeMain {
+                dependsOn commonMain
+            }
+
+            nativeTest {
+                dependsOn commonTest
+            }
+
+            nonNativeMain {
+                dependsOn commonMain
+            }
+
+            nonNativeTest {
+                dependsOn commonTest
+            }
         }
     }
 }
@@ -73,7 +89,13 @@ void setupMultiplatformAndroid(Project project) {
         android()
 
         sourceSets {
+            androidMain {
+                dependsOn nonNativeMain
+            }
+
             androidTest {
+                dependsOn nonNativeTest
+
                 dependencies {
                     implementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
                 }
@@ -89,10 +111,12 @@ void setupMultiplatformJvm(Project project) {
         sourceSets {
             jvmMain {
                 dependsOn nonAndroidMain
+                dependsOn nonNativeMain
             }
 
             jvmTest {
                 dependsOn nonAndroidTest
+                dependsOn nonNativeTest
 
                 dependencies {
                     implementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
@@ -109,10 +133,12 @@ void setupMultiplatformIos(Project project) {
         sourceSets {
             iosMain {
                 dependsOn nonAndroidMain
+                dependsOn nativeMain
             }
 
             iosTest {
                 dependsOn nonAndroidTest
+                dependsOn nativeTest
             }
         }
     }
@@ -125,10 +151,12 @@ void setupMultiplatformMacosX64(Project project) {
         sourceSets {
             macosX64Main {
                 dependsOn nonAndroidMain
+                dependsOn nativeMain
             }
 
             macosX64Test {
                 dependsOn nonAndroidTest
+                dependsOn nativeTest
             }
         }
     }
@@ -141,10 +169,12 @@ void setupMultiplatformTvos(Project project) {
         sourceSets {
             tvosMain {
                 dependsOn nonAndroidMain
+                dependsOn nativeMain
             }
 
             tvosTest {
                 dependsOn nonAndroidTest
+                dependsOn nativeTest
             }
         }
     }
@@ -160,10 +190,12 @@ void setupMultiplatformJs(Project project) {
         sourceSets {
             jsMain {
                 dependsOn nonAndroidMain
+                dependsOn nonNativeMain
             }
 
             jsTest {
                 dependsOn nonAndroidTest
+                dependsOn nonNativeTest
 
                 dependencies {
                     implementation "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
@@ -180,10 +212,12 @@ void setupMultiplatformLinuxX64(Project project) {
         sourceSets {
             linuxX64Main {
                 dependsOn nonAndroidMain
+                dependsOn nativeMain
             }
 
             linuxX64Test {
                 dependsOn nonAndroidTest
+                dependsOn nativeTest
             }
         }
     }

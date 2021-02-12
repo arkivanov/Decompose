@@ -3,6 +3,7 @@ package com.arkivanov.decompose.router
 import com.arkivanov.decompose.Router
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.backpressed.BackPressedRegistry
+import com.arkivanov.decompose.ensureNeverFrozen
 import com.arkivanov.decompose.lifecycle.Lifecycle
 import com.arkivanov.decompose.lifecycle.doOnDestroy
 import com.arkivanov.decompose.pop
@@ -16,6 +17,10 @@ internal class RouterImpl<C : Parcelable, T : Any>(
     private val stackHolder: StackHolder<C, T>,
     private val navigator: StackNavigator<C, T>
 ) : Router<C, T> {
+
+    init {
+        ensureNeverFrozen()
+    }
 
     private val onBackPressedHandler = ::onBackPressed
     override val state: MutableValue<RouterState<C, T>> = MutableValue(stackHolder.stack.toState())
