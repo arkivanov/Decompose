@@ -19,6 +19,7 @@ internal class RouterImpl<C : Parcelable, T : Any>(
 
     private val onBackPressedHandler = ::onBackPressed
     override val state: MutableValue<RouterState<C, T>> = MutableValue(stackHolder.stack.toState())
+    private val queue = ArrayDeque<(List<C>) -> List<C>>()
 
     init {
         backPressedRegistry.register(onBackPressedHandler)
@@ -30,9 +31,19 @@ internal class RouterImpl<C : Parcelable, T : Any>(
     }
 
     override fun navigate(transformer: (stack: List<C>) -> List<C>) {
-        val newStack = navigator.navigate(oldStack = stackHolder.stack, transformer = transformer)
-        stackHolder.stack = newStack
-        state.value = newStack.toState()
+        queue.addLast(transformer)
+        if (queue.size == 1) {
+            drainQueue()
+        }
+    }
+
+    private fun drainQueue() {
+        do {
+            val newStack = navigator.navigate(oldStack = stackHolder.stack, transformer = queue.first())
+            stackHolder.stack = newStack
+            state.value = newStack.toState()
+            queue.removeFirst()
+        } while (queue.isNotEmpty())
     }
 
     private fun onBackPressed(): Boolean =
