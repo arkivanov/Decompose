@@ -173,6 +173,23 @@ void setupMultiplatformJs(Project project) {
     }
 }
 
+void setupMultiplatformLinuxX64(Project project) {
+    project.kotlin {
+        linuxX64()
+
+        sourceSets {
+            linuxX64Main {
+                dependsOn nonAndroidMain
+            }
+
+            linuxX64Test {
+                dependsOn nonAndroidTest
+            }
+        }
+    }
+}
+
+
 void setupCompose(Project project) {
     project.android {
         kotlinOptions {
