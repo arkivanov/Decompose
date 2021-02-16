@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import com.arkivanov.counter.app.ui.ComposeAppTheme
 import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.backpressed.toBackPressedDispatcher
 import com.arkivanov.decompose.extensions.android.DefaultViewContext
 import com.arkivanov.decompose.extensions.android.child
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(ExperimentalDecomposeApi::class)
     private fun drawViaViews() {
         setContentView(R.layout.main_activity)
 

@@ -2,12 +2,14 @@ package com.arkivanov.sample.counter.shared.ui.android
 
 import android.view.View
 import android.widget.TextView
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.layoutInflater
 import com.arkivanov.decompose.value.observe
 import com.arkivanov.sample.counter.shared.R
 import com.arkivanov.sample.counter.shared.counter.Counter.Model
 
+@ExperimentalDecomposeApi
 @Suppress("FunctionName") // Factory function
 fun ViewContext.CounterView(model: Model): View {
     val root = layoutInflater.inflate(R.layout.counter, parent, false)
