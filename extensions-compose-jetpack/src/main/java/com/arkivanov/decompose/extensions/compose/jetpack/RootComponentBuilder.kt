@@ -11,6 +11,7 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.decompose.backpressed.toBackPressedDispatcher
 import com.arkivanov.decompose.extensions.compose.jetpack.lifecycle.lifecycle
 import com.arkivanov.decompose.instancekeeper.toInstanceKeeper
@@ -19,8 +20,9 @@ import com.arkivanov.decompose.lifecycle.asDecomposeLifecycle
 import com.arkivanov.decompose.statekeeper.toStateKeeper
 import androidx.lifecycle.Lifecycle as AndroidLifecycle
 
+@OptIn(InternalDecomposeApi::class)
 @Composable
-fun <T> rootComponent(
+fun <T> rememberRootComponent(
     savedStateRegistry: SavedStateRegistry,
     viewModelStore: ViewModelStore,
     onBackPressedDispatcher: OnBackPressedDispatcher,
@@ -43,7 +45,43 @@ fun <T> rootComponent(
 }
 
 @Composable
+fun <T, C> T.rememberRootComponent(
+    factory: (ComponentContext) -> C
+): C where T : SavedStateRegistryOwner, T : OnBackPressedDispatcherOwner, T : ViewModelStoreOwner, T : LifecycleOwner =
+    rememberRootComponent(
+        savedStateRegistry = savedStateRegistry,
+        viewModelStore = viewModelStore,
+        onBackPressedDispatcher = onBackPressedDispatcher,
+        lifecycle = (this as LifecycleOwner).lifecycle,
+        factory = factory
+    )
+
+@Deprecated(
+    "Use rememberRootComponent",
+    ReplaceWith("rememberRootComponent(savedStateRegistry, viewModelStore, onBackPressedDispatcher, lifecycle, factory)")
+)
+@Composable
+fun <T> rootComponent(
+    savedStateRegistry: SavedStateRegistry,
+    viewModelStore: ViewModelStore,
+    onBackPressedDispatcher: OnBackPressedDispatcher,
+    lifecycle: AndroidLifecycle? = null,
+    factory: (ComponentContext) -> T,
+): T =
+    rememberRootComponent(
+        savedStateRegistry = savedStateRegistry,
+        viewModelStore = viewModelStore,
+        onBackPressedDispatcher = onBackPressedDispatcher,
+        lifecycle = lifecycle,
+        factory = factory
+    )
+
+@Deprecated(
+    "Use rememberRootComponent",
+    ReplaceWith("rememberRootComponent(factory)")
+)
+@Composable
 fun <T, C> T.rootComponent(
     factory: (ComponentContext) -> C
 ): C where T : SavedStateRegistryOwner, T : OnBackPressedDispatcherOwner, T : ViewModelStoreOwner, T : LifecycleOwner =
-    rootComponent(savedStateRegistry, viewModelStore, onBackPressedDispatcher, (this as LifecycleOwner).lifecycle, factory)
+    rememberRootComponent(factory = factory)

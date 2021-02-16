@@ -7,12 +7,6 @@ plugins {
 setupAndroid(project)
 setupCompose(project)
 
-android {
-    kotlinOptions {
-        freeCompilerArgs += "-Xopt-in=com.arkivanov.decompose.InternalDecomposeApi"
-    }
-}
-
 dependencies {
     implementation project(':decompose')
     implementation "androidx.compose.foundation:foundation:$compose_jetpack_version"

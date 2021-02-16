@@ -16,7 +16,7 @@ import com.arkivanov.decompose.statekeeper.StateKeeperDispatcher
 
 @OptIn(InternalDecomposeApi::class)
 @Composable
-fun <T> rootComponent(
+fun <T> rememberRootComponent(
     lifecycle: Lifecycle? = null,
     stateKeeper: StateKeeper? = null,
     instanceKeeper: InstanceKeeper? = null,
@@ -37,3 +37,23 @@ fun <T> rootComponent(
         factory(componentContext)
     }
 }
+
+@Deprecated(
+    "Use rememberRootComponent",
+    ReplaceWith("rememberRootComponent(lifecycle, stateKeeper, instanceKeeper, backPressedDispatcher, factory)")
+)
+@Composable
+fun <T> rootComponent(
+    lifecycle: Lifecycle? = null,
+    stateKeeper: StateKeeper? = null,
+    instanceKeeper: InstanceKeeper? = null,
+    backPressedDispatcher: BackPressedDispatcher? = null,
+    factory: (ComponentContext) -> T,
+): T =
+    rememberRootComponent(
+        lifecycle = lifecycle,
+        stateKeeper = stateKeeper,
+        instanceKeeper = instanceKeeper,
+        backPressedDispatcher = backPressedDispatcher,
+        factory = factory
+    )
