@@ -279,7 +279,7 @@ Please refer to the sample's readme for more information.
 
 ### Sample Greetings App (Desktop Only)
 
-![](docs/media/SampleGreetingsDemo.gif)
+<img src="docs/media/SampleGreetingsDemo.gif" width="512">
 
 A simple greetings app to showcase routing and state management using Decompose.
 
