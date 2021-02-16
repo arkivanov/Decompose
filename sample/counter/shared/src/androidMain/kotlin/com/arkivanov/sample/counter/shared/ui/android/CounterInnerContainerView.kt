@@ -1,6 +1,7 @@
 package com.arkivanov.sample.counter.shared.ui.android
 
 import android.view.View
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.android.RouterView
 import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.child
@@ -8,6 +9,7 @@ import com.arkivanov.decompose.extensions.android.layoutInflater
 import com.arkivanov.sample.counter.shared.R
 import com.arkivanov.sample.counter.shared.inner.CounterInnerContainer.Model
 
+@ExperimentalDecomposeApi
 @Suppress("FunctionName") // Factory function
 fun ViewContext.CounterInnerView(model: Model): View {
     val root = layoutInflater.inflate(R.layout.counter_inner, parent, false)

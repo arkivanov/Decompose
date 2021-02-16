@@ -9,6 +9,7 @@ import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.R
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.lifecycle.Lifecycle
@@ -19,6 +20,7 @@ import com.arkivanov.decompose.lifecycle.resume
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.observe
 
+@ExperimentalDecomposeApi
 class RouterView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
