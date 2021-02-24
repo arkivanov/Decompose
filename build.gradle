@@ -4,8 +4,8 @@ buildscript {
         decompose_version = '0.1.8'
         kotlin_version = "1.4.30"
         compose_kotlin_compiler_version = kotlin_version
-        compose_jetpack_version = '1.0.0-alpha12'
-        compose_jetbrains_version = '0.3.0-build152'
+        compose_jetpack_version = '1.0.0-beta01'
+        compose_jetbrains_version = '0.4.0-build168'
         reaktive_version = '1.1.18'
         mvikotlin_version = '2.0.0'
         androidx_appcompat_version = '1.2.0'
@@ -13,6 +13,7 @@ buildscript {
         android_material_version = '1.2.1'
         androidx_lifecycle_common_java8_version = '2.2.0'
         androidx_activity_version = '1.2.0'
+        androidx_activity_compose_version = '1.3.0-alpha03'
         android_material_version = '1.2.1'
         js_kotlin_react_version = '16.13.1-pre.114-kotlin-1.4.0'
         js_kotlin_react_dom_version = '16.13.1-pre.114-kotlin-1.4.0'

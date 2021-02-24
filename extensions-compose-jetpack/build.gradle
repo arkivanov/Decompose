@@ -10,6 +10,7 @@ setupCompose(project)
 dependencies {
     implementation project(':decompose')
     implementation "androidx.compose.foundation:foundation:$compose_jetpack_version"
+    implementation "androidx.activity:activity-ktx:$androidx_activity_version"
 }
 
 afterEvaluate {
