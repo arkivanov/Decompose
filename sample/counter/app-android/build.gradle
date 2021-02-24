@@ -27,6 +27,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_common_java8_version"
     implementation "com.google.android.material:material:$android_material_version"
+    implementation("androidx.activity:activity-compose:$androidx_activity_compose_version")
     implementation project(':decompose')
     implementation project(':extensions-compose-jetpack')
     implementation project(':extensions-android')

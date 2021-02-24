@@ -25,7 +25,7 @@ kotlin {
 
         androidMain {
             dependencies {
-                implementation "androidx.activity:activity:$androidx_activity_version"
+                implementation "androidx.activity:activity-ktx:$androidx_activity_version"
             }
         }
     }
