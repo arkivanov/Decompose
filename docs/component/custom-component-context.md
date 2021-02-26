@@ -1,4 +1,4 @@
-# Custom Component Context
+# Custom `ComponentContext`
 
 If one is needing `ComponentContext` to have extra functionality that is not already provided. It is possible to create a custom `ComponentContext` that could be decorated with the desired functionality of your choice. 
 

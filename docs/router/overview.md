@@ -1,6 +1,6 @@
 # Router Overview 
 
-### The Router
+## The Router
 
 A key unit is the [Router](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/Router.kt). It is responsible for managing components, just like `FragmentManager`.
 
@@ -12,7 +12,7 @@ The `Router` has a state consisting of a currently active component and a back s
 
 `Routers` can be nested, and each component can have more than one `Router`.
 
-#### Routing example
+## Routing example
 
 Here is a very basic example of navigation between two children components:
 
