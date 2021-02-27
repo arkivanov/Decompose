@@ -23,11 +23,11 @@ nav:
     - Contributing: contributing.md
 
 
-  - Components: 
+  - Component: 
     - Overview: component/overview.md
     - Custom ComponentContext: component/custom-component-context.md
     
-  - Routers: 
+  - Router: 
     - Overview: router/overview.md
 
 

@@ -4,13 +4,14 @@
 
 Decompose is a Kotlin Multiplatform lifecycle-aware business logic components (aka BLoCs) with routing functionality and pluggable UI (Android Views, Jetpack Compose, SwiftUI, JS React, etc.) This project is inspired by [Badoos RIBs](https://github.com/badoo/RIBs) fork of the [Uber RIBs](https://github.com/uber/RIBs) framework.
 
-Supported targets:
-- Android
-- JVM
-- iosX64, iosArm64
-- macosX64
-- tvosX64, tvosArm64
-- JavaScript
+### Supported targets
+
+* Android
+* JVM
+* iosX64, iosArm64
+* macosX64
+* tvosX64, tvosArm64
+* JavaScript
 
 ## Why Decompose? 
 
