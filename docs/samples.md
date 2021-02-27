@@ -53,6 +53,12 @@ Please refer to the [sample's readme](https://github.com/JetBrains/compose-jb/bl
 
 The Todo sample app can be found in the JetBrains Compose repository [here](https://github.com/JetBrains/compose-jb/tree/master/examples/todoapp).
 
+## Sample Greetings App
+
+![](media/SampleGreetingsDemo.gif)
+
+[Sample Greetings Repository](https://github.com/theapache64/decompose-desktop-example)
+
 ## More Articles
 
 * [Decompose — experiments with Kotlin Multiplatform lifecycle-aware components and navigation](https://proandroiddev.com/decompose-experiments-with-kotlin-multiplatform-lifecycle-aware-components-and-navigation-a04ef3c7f6a3?source=friends_link&sk=f7d289cc329b6c8a765fc049e36c313f)
