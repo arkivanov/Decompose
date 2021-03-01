@@ -25,6 +25,8 @@ nav:
 
   - Component: 
     - Overview: component/overview.md
+    - StateKeeper: component/state-keeper.md
+    - InstanceKeeper: component/instance-keeper.md
     - Custom ComponentContext: component/custom-component-context.md
     
   - Router: 
