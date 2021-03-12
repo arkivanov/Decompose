@@ -2,7 +2,6 @@ package com.arkivanov.decompose.router.statekeeper
 
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.ParcelableContainer
-import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.statekeeper.StateKeeperDispatcher
 import com.arkivanov.decompose.statekeeper.consume
 import kotlin.reflect.KClass
@@ -39,6 +38,6 @@ class TestStateKeeperDispatcher(
     }
 
     private class SavedState(
-        val map: HashMap<String, ParcelableContainer>
+        val map: MutableMap<String, ParcelableContainer>
     ) : Parcelable by ParcelableStub()
 }

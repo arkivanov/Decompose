@@ -23,7 +23,7 @@ internal class StackNavigatorImpl<C : Any, T : Any>(
                 when (val entry = oldStack.backStack.find { it.configuration === newActiveConfiguration }) {
                     is RouterEntry.Created -> entry.copy(savedState = null)
                     is RouterEntry.Destroyed -> routerEntryFactory(entry.configuration, entry.savedState)
-                    null -> routerEntryFactory(newActiveConfiguration, null)
+                    null -> routerEntryFactory(newActiveConfiguration)
                 }
 
             oldStack.active.lifecycleRegistry.pause()

@@ -2,6 +2,9 @@ package com.arkivanov.decompose
 
 import com.arkivanov.decompose.statekeeper.Parcelable
 
+/**
+ * A convenience extension function for [RouterFactory.router].
+ */
 inline fun <reified C : Parcelable, T : Any> RouterFactory.router(
     initialConfiguration: C,
     initialBackStack: List<C> = emptyList(),
@@ -18,6 +21,9 @@ inline fun <reified C : Parcelable, T : Any> RouterFactory.router(
         childFactory = childFactory
     )
 
+/**
+ * A convenience extension function for [RouterFactory.router].
+ */
 inline fun <reified C : Parcelable, T : Any> RouterFactory.router(
     noinline initialConfiguration: () -> C,
     noinline initialBackStack: () -> List<C> = ::emptyList,
