@@ -3,6 +3,16 @@ package com.arkivanov.decompose.backpressed
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 
+/**
+ * Creates a new instance of [BackPressedDispatcher] and attaches it to the provided [OnBackPressedDispatcher]
+ */
+fun BackPressedDispatcher(onBackPressedDispatcher: OnBackPressedDispatcher): BackPressedDispatcher =
+    DelegatedBackPressedDispatcher(onBackPressedDispatcher)
+
+@Deprecated(
+    "Use BackPressedDispatcher(OnBackPressedDispatcher) builder function",
+    ReplaceWith("BackPressedDispatcher(this)")
+)
 fun OnBackPressedDispatcher.toBackPressedDispatcher(): BackPressedDispatcher = DelegatedBackPressedDispatcher(this)
 
 private class DelegatedBackPressedDispatcher(
