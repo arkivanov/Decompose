@@ -15,11 +15,16 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.Children
+import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.slide
+import com.arkivanov.decompose.extensions.compose.jetpack.asState
 import com.arkivanov.sample.counter.shared.inner.CounterInnerContainer
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 operator fun CounterInnerContainer.Model.invoke() {
     Box(modifier = Modifier.border(BorderStroke(width = 1.dp, color = Color.Black))) {
@@ -33,14 +38,35 @@ operator fun CounterInnerContainer.Model.invoke() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Row {
-                Children(leftChild) {
-                    it.instance(onNext = ::onNextLeftChild, onPrev = ::onPrevLeftChild)
+
+                Column(modifier = Modifier.clipToBounds()) {
+                    val activeChild = leftChild.asState().value.activeChild.instance
+
+                    ChildButtons(
+                        isBackEnabled = activeChild.isBackEnabled,
+                        onNext = ::onNextLeftChild,
+                        onPrev = ::onPrevLeftChild
+                    )
+
+                    Children(routerState = leftChild, animation = slide()) {
+                        it.instance.counter()
+                    }
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                Children(rightChild) {
-                    it.instance(onNext = ::onNextRightChild, onPrev = ::onPrevRightChild)
+                Column(modifier = Modifier.clipToBounds()) {
+                    val activeChild = rightChild.asState().value.activeChild.instance
+
+                    ChildButtons(
+                        isBackEnabled = activeChild.isBackEnabled,
+                        onNext = ::onNextRightChild,
+                        onPrev = ::onPrevRightChild
+                    )
+
+                    Children(routerState = rightChild, animation = slide()) {
+                        it.instance.counter()
+                    }
                 }
             }
         }
@@ -48,7 +74,11 @@ operator fun CounterInnerContainer.Model.invoke() {
 }
 
 @Composable
-private operator fun CounterInnerContainer.Child.invoke(onNext: () -> Unit, onPrev: () -> Unit) {
+private fun ChildButtons(
+    isBackEnabled: Boolean,
+    onNext: () -> Unit,
+    onPrev: () -> Unit
+) {
     Column {
         Button(onClick = onNext) {
             Text(text = "Next Counter")
@@ -61,7 +91,5 @@ private operator fun CounterInnerContainer.Child.invoke(onNext: () -> Unit, onPr
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        counter()
     }
 }

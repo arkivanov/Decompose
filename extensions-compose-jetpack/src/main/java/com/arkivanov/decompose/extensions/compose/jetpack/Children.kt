@@ -14,21 +14,20 @@ import com.arkivanov.decompose.value.Value
 
 typealias ChildContent<C, T> = @Composable (child: Child.Created<C, T>) -> Unit
 
-typealias ChildAnimation<C, T> = @Composable (child: Child.Created<C, T>, ChildContent<C, T>) -> Unit
+typealias ChildAnimation<C, T> = @Composable (RouterState<C, T>, ChildContent<C, T>) -> Unit
 
 @Composable
 fun <C : Any, T : Any> Children(
     routerState: Value<RouterState<C, T>>,
-    animation: ChildAnimation<C, T> = { child, childContent -> childContent(child) },
+    animation: ChildAnimation<C, T> = { state, childContent -> childContent(state.activeChild) },
     content: ChildContent<C, T>
 ) {
     val holder = key(routerState) { rememberSaveableStateHolder() }
     val state by routerState.asState()
-    val activeChild = state.activeChild
 
     holder.retainStates(state.getConfigurations())
 
-    animation(activeChild) { child ->
+    animation(state) { child ->
         holder.SaveableStateProvider(child.configuration) {
             content(child)
         }
