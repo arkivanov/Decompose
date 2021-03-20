@@ -37,7 +37,7 @@ operator fun CounterRootContainer.Model.invoke() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Children(child) {
-                it.component.inner()
+                it.instance.inner()
             }
         }
     }

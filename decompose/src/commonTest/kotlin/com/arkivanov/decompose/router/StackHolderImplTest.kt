@@ -37,7 +37,7 @@ class StackHolderImplTest {
                 }
             }
 
-        holder.stack.active.component.instanceKeeper.put("key", instance)
+        holder.stack.active.instance.instanceKeeper.put("key", instance)
 
         instanceKeeperDispatcher.destroy()
 
@@ -49,13 +49,13 @@ class StackHolderImplTest {
         var stateKeeperDispatcher = TestStateKeeperDispatcher()
         var holder = stackHolder(stateKeeperDispatcher = stateKeeperDispatcher)
         val savedComponentState = ParcelableStub()
-        holder.stack.active.component.stateKeeper.register("MY_KEY") { savedComponentState }
+        holder.stack.active.instance.stateKeeper.register("MY_KEY") { savedComponentState }
 
         val savedState = stateKeeperDispatcher.save() as TestParcelableContainer
         stateKeeperDispatcher = TestStateKeeperDispatcher(savedState)
         holder = stackHolder(stateKeeperDispatcher = stateKeeperDispatcher)
 
-        val restoredComponentState = holder.stack.active.component.stateKeeper.consume<ParcelableStub>("MY_KEY")
+        val restoredComponentState = holder.stack.active.instance.stateKeeper.consume<ParcelableStub>("MY_KEY")
         assertSame(savedComponentState, restoredComponentState)
     }
 
@@ -94,7 +94,7 @@ class StackHolderImplTest {
             return RouterEntry.Created(
                 configuration = configuration,
                 savedState = null,
-                component = Component(
+                instance = Component(
                     configuration = configuration,
                     instanceKeeper = instanceKeeper,
                     stateKeeper = stateKeeper

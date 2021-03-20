@@ -25,9 +25,9 @@ internal class DefaultRouterFactory(
         configurationClass: KClass<out C>,
         key: String,
         handleBackButton: Boolean,
-        componentFactory: (configuration: C, ComponentContext) -> T
+        childFactory: (configuration: C, ComponentContext) -> T
     ): Router<C, T> {
-        val routerEntryFactory = RouterEntryFactoryImpl(lifecycle = lifecycle, componentFactory = componentFactory)
+        val routerEntryFactory = RouterEntryFactoryImpl(lifecycle = lifecycle, childFactory = childFactory)
 
         return RouterImpl(
             lifecycle = lifecycle,

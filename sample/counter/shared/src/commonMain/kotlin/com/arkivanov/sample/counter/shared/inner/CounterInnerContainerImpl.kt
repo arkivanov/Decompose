@@ -26,14 +26,14 @@ internal class CounterInnerContainerImpl(
         router(
             initialConfiguration = ChildConfiguration(index = 0, isBackEnabled = false),
             key = "LeftRouter",
-            componentFactory = ::resolveChild
+            childFactory = ::resolveChild
         )
 
     private val rightRouter: Router<ChildConfiguration, Child> =
         router(
             initialConfiguration = ChildConfiguration(index = 0, isBackEnabled = false),
             key = "RightRouter",
-            componentFactory = ::resolveChild
+            childFactory = ::resolveChild
         )
 
     override val model: Model =

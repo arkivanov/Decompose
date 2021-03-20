@@ -3,7 +3,6 @@ package com.arkivanov.sample.counter.shared.root
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.Router
 import com.arkivanov.decompose.RouterState
-import com.arkivanov.decompose.child
 import com.arkivanov.decompose.childContext
 import com.arkivanov.decompose.pop
 import com.arkivanov.decompose.push
@@ -27,7 +26,7 @@ internal class CounterRootContainerImpl(
         router(
             initialConfiguration = ChildConfiguration(index = 0, isBackEnabled = false),
             handleBackButton = true,
-            componentFactory = ::resolveChild
+            childFactory = ::resolveChild
         )
 
     override val model: Model =

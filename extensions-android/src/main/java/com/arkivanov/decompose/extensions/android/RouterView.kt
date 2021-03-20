@@ -109,7 +109,7 @@ class RouterView @JvmOverloads constructor(
 
         val childViewLifecycle = LifecycleRegistry()
         val viewContext = DefaultViewContext(this, MergedLifecycle(lifecycle, childViewLifecycle))
-        viewContext.replaceChildView(this, activeChild.component, activeChild.configuration)
+        viewContext.replaceChildView(this, activeChild.instance, activeChild.configuration)
 
         val newChildView = findNewChildView()
 

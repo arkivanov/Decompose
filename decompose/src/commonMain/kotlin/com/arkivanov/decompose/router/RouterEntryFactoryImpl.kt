@@ -12,7 +12,7 @@ import com.arkivanov.decompose.statekeeper.StateKeeperDispatcher
 
 internal class RouterEntryFactoryImpl<C : Any, out T : Any>(
     private val lifecycle: Lifecycle,
-    private val componentFactory: (configuration: C, ComponentContext) -> T
+    private val childFactory: (configuration: C, ComponentContext) -> T
 ) : RouterEntryFactory<C, T> {
 
     override fun invoke(
@@ -27,7 +27,7 @@ internal class RouterEntryFactoryImpl<C : Any, out T : Any>(
         val backPressedDispatcher = BackPressedDispatcher()
 
         val component =
-            componentFactory(
+            childFactory(
                 configuration,
                 DefaultComponentContext(
                     mergedLifecycle,
@@ -39,7 +39,7 @@ internal class RouterEntryFactoryImpl<C : Any, out T : Any>(
 
         return RouterEntry.Created(
             configuration = configuration,
-            component = component,
+            instance = component,
             lifecycleRegistry = componentLifecycleRegistry,
             stateKeeperDispatcher = stateKeeperDispatcher,
             instanceKeeperDispatcher = instanceKeeperRegistry,

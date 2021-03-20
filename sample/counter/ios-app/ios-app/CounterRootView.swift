@@ -24,7 +24,7 @@ struct CounterRootView: View {
     
     
     var body: some View {
-        let activeChild = self.child.value.activeChild.component
+        let activeChild = self.child.value.activeChild.instance
         
         return VStack(spacing: 8) {
             CounterView(self.counter)

@@ -83,7 +83,7 @@ class StackNavigatorTest {
                 transformer = { it + Config() }
             )
 
-        assertEquals(1, (newStack.backStack[0] as RouterEntry.Created).component.instanceNumber)
+        assertEquals(1, (newStack.backStack[0] as RouterEntry.Created).instance.instanceNumber)
     }
 
     @Test
@@ -97,9 +97,9 @@ class StackNavigatorTest {
                 transformer = { it + Config() }
             )
 
-        assertEquals(1, (newStack.backStack[0] as RouterEntry.Created).component.instanceNumber)
-        assertEquals(1, (newStack.backStack[1] as RouterEntry.Created).component.instanceNumber)
-        assertEquals(1, (newStack.backStack[2] as RouterEntry.Created).component.instanceNumber)
+        assertEquals(1, (newStack.backStack[0] as RouterEntry.Created).instance.instanceNumber)
+        assertEquals(1, (newStack.backStack[1] as RouterEntry.Created).instance.instanceNumber)
+        assertEquals(1, (newStack.backStack[2] as RouterEntry.Created).instance.instanceNumber)
     }
 
     @Test
@@ -232,8 +232,8 @@ class StackNavigatorTest {
                 transformer = { it.dropLast(1) }
             )
 
-        assertEquals(1, (newStack.backStack[0] as RouterEntry.Created).component.instanceNumber)
-        assertEquals(1, newStack.active.component.instanceNumber)
+        assertEquals(1, (newStack.backStack[0] as RouterEntry.Created).instance.instanceNumber)
+        assertEquals(1, newStack.active.instance.instanceNumber)
     }
 
     @Test
@@ -397,8 +397,8 @@ class StackNavigatorTest {
                 transformer = { listOf(Config(), sameConfig1, sameConfig2, Config(), Config()) }
             )
 
-        assertEquals(1, (newStack.backStack[1] as RouterEntry.Created).component.instanceNumber)
-        assertEquals(1, (newStack.backStack[2] as RouterEntry.Created).component.instanceNumber)
+        assertEquals(1, (newStack.backStack[1] as RouterEntry.Created).instance.instanceNumber)
+        assertEquals(1, (newStack.backStack[2] as RouterEntry.Created).instance.instanceNumber)
     }
 
     @Test
@@ -445,9 +445,9 @@ class StackNavigatorTest {
                 transformer = { listOf(Config(), sameConfig1, sameConfig2, Config(), sameConfig3) }
             )
 
-        assertEquals(1, (newStack.backStack[1] as RouterEntry.Created).component.instanceNumber)
-        assertEquals(1, (newStack.backStack[2] as RouterEntry.Created).component.instanceNumber)
-        assertEquals(1, newStack.active.component.instanceNumber)
+        assertEquals(1, (newStack.backStack[1] as RouterEntry.Created).instance.instanceNumber)
+        assertEquals(1, (newStack.backStack[2] as RouterEntry.Created).instance.instanceNumber)
+        assertEquals(1, newStack.active.instance.instanceNumber)
     }
 
     private fun RouterStack<Config, *>.getConfigurationBackStack(): List<Config> =
@@ -465,7 +465,7 @@ class StackNavigatorTest {
         ): RouterEntry.Created<Config, Component> =
             RouterEntry.Created(
                 configuration = configuration,
-                component = component,
+                instance = component,
                 lifecycleRegistry = lifecycleRegistry,
                 stateKeeperDispatcher = stateKeeperDispatcher,
                 instanceKeeperDispatcher = InstanceKeeperDispatcher(),
@@ -482,7 +482,7 @@ class StackNavigatorTest {
             RouterEntry.Created(
                 configuration = configuration,
                 savedState = savedState,
-                component = component,
+                instance = component,
                 lifecycleRegistry = lifecycleRegistry,
                 stateKeeperDispatcher = stateKeeperDispatcher,
                 instanceKeeperDispatcher = InstanceKeeperDispatcher(),
