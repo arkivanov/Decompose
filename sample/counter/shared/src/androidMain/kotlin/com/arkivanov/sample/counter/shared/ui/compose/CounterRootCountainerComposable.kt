@@ -36,8 +36,8 @@ operator fun CounterRootContainer.Model.invoke() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Children(child) { child, _ ->
-                child.inner()
+            Children(child) {
+                it.component.inner()
             }
         }
     }

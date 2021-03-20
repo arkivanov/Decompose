@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.router
 
+import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.Router
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.backpressed.BackPressedRegistry
@@ -65,13 +66,13 @@ internal class RouterImpl<C : Parcelable, T : Any>(
 
     private fun RouterStack<C, T>.toState(): RouterState<C, T> =
         RouterState(
-            activeChild = RouterState.Entry.Created(configuration = active.configuration, component = active.component),
+            activeChild = Child.Created(configuration = active.configuration, component = active.component),
             backStack = backStack.map { it.toRouterStateEntry() }
         )
 
-    private fun RouterEntry<C, T>.toRouterStateEntry(): RouterState.Entry<C, T> =
+    private fun RouterEntry<C, T>.toRouterStateEntry(): Child<C, T> =
         when (this) {
-            is RouterEntry.Created -> RouterState.Entry.Created(configuration = configuration, component = component)
-            is RouterEntry.Destroyed -> RouterState.Entry.Destroyed(configuration = configuration)
+            is RouterEntry.Created -> Child.Created(configuration = configuration, component = component)
+            is RouterEntry.Destroyed -> Child.Destroyed(configuration = configuration)
         }
 }
