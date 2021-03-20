@@ -93,7 +93,7 @@ internal class StackHolderImpl<C : Parcelable, T : Any>(
         ) : Parcelable
     }
 
-    private class RetainedInstance<C : Parcelable, T : Any> : InstanceKeeper.Instance {
+    private class RetainedInstance<C : Any, T : Any> : InstanceKeeper.Instance {
         var activeEntry: RouterEntry.Created<C, T>? = null
 
         override fun onDestroy() {
