@@ -8,10 +8,9 @@ import com.arkivanov.decompose.ensureNeverFrozen
 import com.arkivanov.decompose.lifecycle.Lifecycle
 import com.arkivanov.decompose.lifecycle.doOnDestroy
 import com.arkivanov.decompose.pop
-import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.value.MutableValue
 
-internal class RouterImpl<C : Parcelable, T : Any>(
+internal class RouterImpl<C : Any, T : Any>(
     lifecycle: Lifecycle,
     private val backPressedRegistry: BackPressedRegistry,
     private val popOnBackPressed: Boolean,

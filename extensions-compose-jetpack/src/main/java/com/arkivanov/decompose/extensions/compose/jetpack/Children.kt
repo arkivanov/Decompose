@@ -10,7 +10,6 @@ import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.RouterState
-import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.value.Value
 
 typealias ChildContent<C, T> = @Composable (child: Child.Created<C, T>) -> Unit
@@ -18,7 +17,7 @@ typealias ChildContent<C, T> = @Composable (child: Child.Created<C, T>) -> Unit
 typealias ChildAnimation<C, T> = @Composable (child: Child.Created<C, T>, ChildContent<C, T>) -> Unit
 
 @Composable
-fun <C : Parcelable, T : Any> Children(
+fun <C : Any, T : Any> Children(
     routerState: Value<RouterState<C, T>>,
     animation: ChildAnimation<C, T> = { child, childContent -> childContent(child) },
     content: ChildContent<C, T>
@@ -36,7 +35,7 @@ fun <C : Parcelable, T : Any> Children(
     }
 }
 
-private fun <C : Parcelable> RouterState<C, *>.getConfigurations(): Set<C> {
+private fun <C : Any> RouterState<C, *>.getConfigurations(): Set<C> {
     val set = HashSet<C>()
     backStack.forEach { set += it.configuration }
     set += activeChild.configuration

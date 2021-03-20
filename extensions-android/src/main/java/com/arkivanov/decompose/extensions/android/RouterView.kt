@@ -31,7 +31,7 @@ class RouterView @JvmOverloads constructor(
     private val inactiveChildren = HashMap<String, InactiveChild>()
     private var savedState: Bundle? = null
 
-    fun <C : Parcelable, T : Any> children(
+    fun <C : Any, T : Any> children(
         routerState: Value<RouterState<C, T>>,
         lifecycle: Lifecycle,
         replaceChildView: ViewContext.(parent: ViewGroup, child: T, configuration: C) -> Unit
@@ -88,7 +88,7 @@ class RouterView @JvmOverloads constructor(
             setTag(R.id.decompose_router_view_key, value)
         }
 
-    private fun <C : Parcelable, T : Any> onStateChanged(
+    private fun <C : Any, T : Any> onStateChanged(
         state: RouterState<C, T>,
         lifecycle: Lifecycle,
         replaceChildView: ViewContext.(ViewGroup, T, C) -> Unit
@@ -145,12 +145,12 @@ class RouterView @JvmOverloads constructor(
 
     private class ActiveChild(
         val key: String,
-        val configuration: Parcelable,
+        val configuration: Any,
         val lifecycle: LifecycleRegistry
     )
 
     private class InactiveChild(
-        val configuration: Parcelable,
+        val configuration: Any,
         val savedState: SparseArray<Parcelable>
     )
 
