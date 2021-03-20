@@ -36,7 +36,7 @@ class RootR(props: Props<CounterRootContainer.Model>) : RenderableComponent<Coun
 
             br {}
 
-            childWithButtons(state.routerState.activeChild.component)
+            childWithButtons(state.routerState.activeChild.instance)
 
             br {}
         }

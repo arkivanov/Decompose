@@ -65,13 +65,13 @@ internal class RouterImpl<C : Any, T : Any>(
 
     private fun RouterStack<C, T>.toState(): RouterState<C, T> =
         RouterState(
-            activeChild = Child.Created(configuration = active.configuration, component = active.component),
+            activeChild = Child.Created(configuration = active.configuration, instance = active.instance),
             backStack = backStack.map { it.toRouterStateEntry() }
         )
 
     private fun RouterEntry<C, T>.toRouterStateEntry(): Child<C, T> =
         when (this) {
-            is RouterEntry.Created -> Child.Created(configuration = configuration, component = component)
+            is RouterEntry.Created -> Child.Created(configuration = configuration, instance = instance)
             is RouterEntry.Destroyed -> Child.Destroyed(configuration = configuration)
         }
 }

@@ -40,12 +40,12 @@ class InnerR(props: Props<CounterInnerContainer.Model>) : RenderableComponent<Co
             mGridContainer(justify = MGridJustify.spaceAround, spacing = MGridSpacing.spacing3) {
                 mGridItem {}
                 childWithButtons(
-                    child = state.leftRouterState.activeChild.component,
+                    child = state.leftRouterState.activeChild.instance,
                     onNext = model::onNextLeftChild,
                     onPrev = model::onPrevLeftChild
                 )
                 childWithButtons(
-                    child = state.rightRouterState.activeChild.component,
+                    child = state.rightRouterState.activeChild.instance,
                     onNext = model::onNextRightChild,
                     onPrev = model::onPrevRightChild
                 )

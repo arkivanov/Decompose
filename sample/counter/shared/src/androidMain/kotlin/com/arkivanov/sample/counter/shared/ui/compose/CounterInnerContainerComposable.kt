@@ -34,13 +34,13 @@ operator fun CounterInnerContainer.Model.invoke() {
 
             Row {
                 Children(leftChild) {
-                    it.component(onNext = ::onNextLeftChild, onPrev = ::onPrevLeftChild)
+                    it.instance(onNext = ::onNextLeftChild, onPrev = ::onPrevLeftChild)
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Children(rightChild) {
-                    it.component(onNext = ::onNextRightChild, onPrev = ::onPrevRightChild)
+                    it.instance(onNext = ::onNextRightChild, onPrev = ::onPrevRightChild)
                 }
             }
         }

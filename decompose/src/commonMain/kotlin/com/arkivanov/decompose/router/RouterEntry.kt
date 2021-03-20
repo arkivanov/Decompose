@@ -13,7 +13,7 @@ internal sealed class RouterEntry<out C, out T> {
     data class Created<out C, out T>(
         override val configuration: C,
         override val savedState: ParcelableContainer? = null,
-        val component: T,
+        val instance: T,
         val lifecycleRegistry: LifecycleRegistry,
         val stateKeeperDispatcher: StateKeeperDispatcher,
         val instanceKeeperDispatcher: InstanceKeeperDispatcher,

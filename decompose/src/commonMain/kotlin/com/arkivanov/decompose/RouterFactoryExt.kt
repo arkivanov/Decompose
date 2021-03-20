@@ -7,7 +7,7 @@ inline fun <reified C : Parcelable, T : Any> RouterFactory.router(
     initialBackStack: List<C> = emptyList(),
     key: String = "DefaultRouter",
     handleBackButton: Boolean = false,
-    noinline componentFactory: (configuration: C, ComponentContext) -> T
+    noinline childFactory: (configuration: C, ComponentContext) -> T
 ): Router<C, T> =
     router(
         initialConfiguration = { initialConfiguration },
@@ -15,7 +15,7 @@ inline fun <reified C : Parcelable, T : Any> RouterFactory.router(
         configurationClass = C::class,
         key = key,
         handleBackButton = handleBackButton,
-        componentFactory = componentFactory
+        childFactory = childFactory
     )
 
 inline fun <reified C : Parcelable, T : Any> RouterFactory.router(
@@ -23,7 +23,7 @@ inline fun <reified C : Parcelable, T : Any> RouterFactory.router(
     noinline initialBackStack: () -> List<C> = ::emptyList,
     key: String = "DefaultRouter",
     handleBackButton: Boolean = false,
-    noinline componentFactory: (configuration: C, ComponentContext) -> T
+    noinline childFactory: (configuration: C, ComponentContext) -> T
 ): Router<C, T> =
     router(
         initialConfiguration = initialConfiguration,
@@ -31,5 +31,5 @@ inline fun <reified C : Parcelable, T : Any> RouterFactory.router(
         configurationClass = C::class,
         key = key,
         handleBackButton = handleBackButton,
-        componentFactory = componentFactory
+        childFactory = childFactory
     )

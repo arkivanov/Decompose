@@ -11,6 +11,6 @@ interface RouterFactory {
         configurationClass: KClass<out C>,
         key: String = "DefaultRouter",
         handleBackButton: Boolean = false,
-        componentFactory: (configuration: C, ComponentContext) -> T
+        childFactory: (configuration: C, ComponentContext) -> T
     ): Router<C, T>
 }

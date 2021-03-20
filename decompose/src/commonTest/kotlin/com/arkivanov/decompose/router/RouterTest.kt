@@ -74,7 +74,7 @@ class RouterTest {
         RouterStack(
             active = RouterEntry.Created(
                 configuration = stack.last(),
-                component = stack.last(),
+                instance = stack.last(),
                 lifecycleRegistry = LifecycleRegistry(),
                 stateKeeperDispatcher = TestStateKeeperDispatcher(),
                 instanceKeeperDispatcher = InstanceKeeperDispatcher(),

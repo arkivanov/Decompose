@@ -13,7 +13,7 @@ func simpleRouterState<T : AnyObject>(_ child: T) -> Value<RouterState<AnyObject
         RouterState(
             activeChild: ChildCreated(
                 configuration: "config" as AnyObject,
-                component: child
+                instance: child
             ),
             backStack: []
         )
