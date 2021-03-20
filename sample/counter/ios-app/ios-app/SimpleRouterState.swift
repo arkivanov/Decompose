@@ -11,7 +11,7 @@ import Counter
 func simpleRouterState<T : AnyObject>(_ child: T) -> Value<RouterState<AnyObject, T>> {
     return mutableValue(
         RouterState(
-            activeChild: RouterStateEntryCreated(
+            activeChild: ChildCreated(
                 configuration: "config" as AnyObject,
                 component: child
             ),

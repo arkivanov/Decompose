@@ -1,4 +1,4 @@
-package com.arkivanov.decompose.extensions.compose.jetpack
+package com.arkivanov.decompose.extensions.compose.jetbrains
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -7,18 +7,19 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.value.Value
 
-typealias ChildContent<C, T> = @Composable (child: T, configuration: C) -> Unit
+typealias ChildContent<C, T> = @Composable (child: Child.Created<C, T>) -> Unit
 
-typealias ChildAnimation<C, T> = @Composable (child: T, configuration: C, ChildContent<C, T>) -> Unit
+typealias ChildAnimation<C, T> = @Composable (child: Child.Created<C, T>, ChildContent<C, T>) -> Unit
 
 @Composable
 fun <C : Parcelable, T : Any> Children(
     routerState: Value<RouterState<C, T>>,
-    animation: ChildAnimation<C, T> = { child, configuration, childContent -> childContent(child, configuration) },
+    animation: ChildAnimation<C, T> = { child, childContent -> childContent(child) },
     content: ChildContent<C, T>
 ) {
     val holder = key(routerState) { rememberSaveableStateHolder() }
@@ -27,9 +28,9 @@ fun <C : Parcelable, T : Any> Children(
 
     holder.retainStates(state.getConfigurations())
 
-    animation(activeChild.component, activeChild.configuration) { child, configuration ->
-        holder.SaveableStateProvider(configuration) {
-            content(child, configuration)
+    animation(activeChild) { child ->
+        holder.SaveableStateProvider(child.configuration) {
+            content(child)
         }
     }
 }
