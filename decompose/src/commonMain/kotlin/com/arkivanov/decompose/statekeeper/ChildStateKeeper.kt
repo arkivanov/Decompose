@@ -4,7 +4,7 @@ import kotlin.reflect.KClass
 
 internal fun StateKeeper.child(key: String): StateKeeper = ChildStateKeeper(this, key)
 
-private class ChildStateKeeper(
+internal class ChildStateKeeper(
     private val parent: StateKeeper,
     private val key: String
 ) : StateKeeper {
@@ -34,7 +34,8 @@ private class ChildStateKeeper(
         }
     }
 
-    private fun save(): Parcelable = SavedState(states)
+    private fun save(): Parcelable =
+        SavedState(suppliers.mapValuesTo(HashMap()) { it.value() })
 
     @Parcelize
     private class SavedState(val map: MutableMap<String, Parcelable>) : Parcelable
