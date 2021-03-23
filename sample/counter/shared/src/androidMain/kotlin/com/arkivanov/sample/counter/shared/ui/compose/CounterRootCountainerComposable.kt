@@ -13,18 +13,22 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.Children
+import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.slide
 import com.arkivanov.sample.counter.shared.root.CounterRootContainer
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 operator fun CounterRootContainer.Model.invoke() {
     Box(modifier = Modifier.border(BorderStroke(width = 1.dp, color = Color.Black))) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.clipToBounds().padding(16.dp)
         ) {
             counter()
 
@@ -36,7 +40,7 @@ operator fun CounterRootContainer.Model.invoke() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Children(child) {
+            Children(routerState = child, animation = slide()) {
                 it.instance.inner()
             }
         }
