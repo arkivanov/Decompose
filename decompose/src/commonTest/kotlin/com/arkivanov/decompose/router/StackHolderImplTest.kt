@@ -1,43 +1,52 @@
 package com.arkivanov.decompose.router
 
 import com.arkivanov.decompose.backpressed.BackPressedDispatcher
-import com.arkivanov.decompose.instancekeeper.InstanceKeeper
 import com.arkivanov.decompose.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.router.statekeeper.ParcelableStub
-import com.arkivanov.decompose.router.statekeeper.TestParcelableContainer
 import com.arkivanov.decompose.router.statekeeper.TestStateKeeperDispatcher
-import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.ParcelableContainer
-import com.arkivanov.decompose.statekeeper.Parcelize
-import com.arkivanov.decompose.statekeeper.StateKeeper
-import com.arkivanov.decompose.statekeeper.StateKeeperDispatcher
 import com.arkivanov.decompose.statekeeper.consume
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 @Suppress("TestFunctionName")
 class StackHolderImplTest {
 
-    @Parcelize
-    private class Config : Parcelable
+    @Test
+    fun WHEN_recreated_THEN_instances_retained_in_active_component() {
+        val instanceKeeperDispatcher = InstanceKeeperDispatcher()
+        val stackSaver = stackSaver()
+        val oldHolder = stackHolder(instanceKeeperDispatcher = instanceKeeperDispatcher, stackSaver = stackSaver)
+        val instance = TestInstance()
+        oldHolder.stack.active.instanceKeeperDispatcher.put("key", instance)
+        val savedState = stackSaver.save()
+
+        val newHolder = stackHolder(instanceKeeperDispatcher = instanceKeeperDispatcher, stackSaver = stackSaver(savedState = savedState))
+
+        assertSame(instance, newHolder.stack.active.instanceKeeperDispatcher.get("key"))
+    }
+
+    @Test
+    fun WHEN_recreated_without_saved_state_THEN_previous_retained_instance_destroyed() {
+        val instanceKeeperDispatcher = InstanceKeeperDispatcher()
+        val oldHolder = stackHolder(instanceKeeperDispatcher = instanceKeeperDispatcher)
+        val instance = TestInstance()
+        oldHolder.stack.active.instanceKeeperDispatcher.put("key", instance)
+
+        stackHolder(instanceKeeperDispatcher = instanceKeeperDispatcher)
+
+        assertTrue(instance.isDestroyed)
+    }
 
     @Test
     fun GIVEN_created_WHEN_InstanceKeeper_destroyed_THEN_active_InstanceKeeper_destroyed() {
         val instanceKeeperDispatcher = InstanceKeeperDispatcher()
         val holder = stackHolder(instanceKeeperDispatcher = instanceKeeperDispatcher)
-
-        val instance =
-            object : InstanceKeeper.Instance {
-                var isDestroyed = false
-
-                override fun onDestroy() {
-                    isDestroyed = true
-                }
-            }
-
-        holder.stack.active.instance.instanceKeeper.put("key", instance)
+        val instance = TestInstance()
+        holder.stack.active.instanceKeeperDispatcher.put("key", instance)
 
         instanceKeeperDispatcher.destroy()
 
@@ -45,44 +54,95 @@ class StackHolderImplTest {
     }
 
     @Test
-    fun WHEN_router_recreated_THEN_state_restored_for_active_component() {
-        var stateKeeperDispatcher = TestStateKeeperDispatcher()
-        var holder = stackHolder(stateKeeperDispatcher = stateKeeperDispatcher)
+    fun WHEN_recreated_THEN_active_component_restored() {
+        val stackSaver = stackSaver()
+        val oldHolder = stackHolder(stackSaver = stackSaver)
+        val originalStack = oldHolder.stack
+        val savedState = stackSaver.save()
+
+        val newHolder = stackHolder(stackSaver = stackSaver(savedState = savedState))
+
+        assertEquals(originalStack.active.configuration, newHolder.stack.active.configuration)
+    }
+
+    @Test
+    fun WHEN_recreated_THEN_back_stack_restored() {
+        val stackSaver = stackSaver()
+        val oldHolder = stackHolder(stackSaver = stackSaver)
+        val originalStack = oldHolder.stack
+        val savedState = stackSaver.save()
+
+        val newHolder = stackHolder(stackSaver = stackSaver(savedState = savedState))
+
+        assertEquals(originalStack.backStack.map { it.configuration }, newHolder.stack.backStack.map { it.configuration })
+    }
+
+    @Test
+    fun WHEN_recreated_THEN_state_restored_for_active_component() {
+        val stackSaver = stackSaver()
+        val oldHolder = stackHolder(stackSaver = stackSaver)
+        val originalStack = oldHolder.stack
         val savedComponentState = ParcelableStub()
-        holder.stack.active.instance.stateKeeper.register("MY_KEY") { savedComponentState }
+        originalStack.active.stateKeeperDispatcher.register("key") { savedComponentState }
+        val savedState = stackSaver.save()
 
-        val savedState = stateKeeperDispatcher.save() as TestParcelableContainer
-        stateKeeperDispatcher = TestStateKeeperDispatcher(savedState)
-        holder = stackHolder(stateKeeperDispatcher = stateKeeperDispatcher)
+        val newHolder = stackHolder(stackSaver = stackSaver(savedState = savedState))
 
-        val restoredComponentState = holder.stack.active.instance.stateKeeper.consume<ParcelableStub>("MY_KEY")
+        val restoredComponentState = newHolder.stack.active.stateKeeperDispatcher.consume<ParcelableStub>("key")
         assertSame(savedComponentState, restoredComponentState)
     }
 
+    @Test
+    fun WHEN_recreated_THEN_state_restored_for_back_stack() {
+        val stackSaver = stackSaver()
+        val oldHolder = stackHolder(stackSaver = stackSaver)
+        val savedState1 = ParcelableContainer()
+        val savedState2 = ParcelableContainer()
+
+        val originalStack =
+            RouterStack(
+                active = TestRouterEntryFactory.invoke(configuration = Config("3")),
+                backStack = listOf(
+                    RouterEntry.Destroyed(configuration = Config("1"), savedState = savedState1),
+                    RouterEntry.Destroyed(configuration = Config("2"), savedState = savedState2)
+                )
+            )
+
+        oldHolder.stack = originalStack
+        val savedState = stackSaver.save()
+
+        val newHolder = stackHolder(stackSaver = stackSaver(savedState = savedState))
+
+        assertEquals(listOf(savedState1, savedState2), newHolder.stack.backStack.map { it.savedState })
+    }
+
     private fun stackHolder(
-        stateKeeperDispatcher: StateKeeperDispatcher = TestStateKeeperDispatcher(),
+        initialConfiguration: Config = Config("1"),
+        stackSaver: StackSaver<Config> = stackSaver(),
         instanceKeeperDispatcher: InstanceKeeperDispatcher = InstanceKeeperDispatcher(),
-        routerEntryFactory: RouterEntryFactory<Config, Component> = TestRouterEntryFactory()
+        routerEntryFactory: RouterEntryFactory<Config, Component> = TestRouterEntryFactory
     ): StackHolderImpl<Config, Component> =
         StackHolderImpl(
-            initialConfiguration = { Config() },
-            initialBackStack = { emptyList() },
-            configurationClass = Config::class,
+            initialConfiguration = { initialConfiguration },
+            initialBackStack = ::emptyList,
             lifecycle = LifecycleRegistry(),
             key = "key",
-            stateKeeper = stateKeeperDispatcher,
+            stackSaver = stackSaver,
             instanceKeeper = instanceKeeperDispatcher,
-            routerEntryFactory = routerEntryFactory,
-            parcelableContainerFactory = ::TestParcelableContainer
+            routerEntryFactory = routerEntryFactory
         )
 
-    private class Component(
-        val configuration: Config,
-        val instanceKeeper: InstanceKeeper,
-        val stateKeeper: StateKeeper
-    )
+    private fun stackSaver(savedState: TestStackSaver.SavedState<Config>? = null): TestStackSaver<Config> =
+        TestStackSaver(
+            copyConfiguration = Config::copy,
+            savedState = savedState
+        )
 
-    private class TestRouterEntryFactory : RouterEntryFactory<Config, Component> {
+    private data class Config(val key: String)
+
+    private class Component
+
+    private object TestRouterEntryFactory : RouterEntryFactory<Config, Component> {
         override fun invoke(
             configuration: Config,
             savedState: ParcelableContainer?,
@@ -94,11 +154,7 @@ class StackHolderImplTest {
             return RouterEntry.Created(
                 configuration = configuration,
                 savedState = null,
-                instance = Component(
-                    configuration = configuration,
-                    instanceKeeper = instanceKeeper,
-                    stateKeeper = stateKeeper
-                ),
+                instance = Component(),
                 lifecycleRegistry = LifecycleRegistry(),
                 stateKeeperDispatcher = stateKeeper,
                 instanceKeeperDispatcher = instanceKeeper,

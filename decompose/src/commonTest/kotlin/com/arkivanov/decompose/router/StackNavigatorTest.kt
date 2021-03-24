@@ -208,6 +208,23 @@ class StackNavigatorTest {
     }
 
     @Test
+    fun GIVEN_back_stack_WHEN_pop_THEN_old_active_component_retained_instance_destroyed() {
+        val instanceKeeperDispatcher = InstanceKeeperDispatcher()
+        val instance = TestInstance()
+        instanceKeeperDispatcher.put("key", instance)
+
+        navigator.navigate(
+            oldStack = RouterStack(
+                active = activeEntry(configuration = Config(), instanceKeeperDispatcher = instanceKeeperDispatcher),
+                backStack = listOf(createdEntry(configuration = Config()))
+            ),
+            transformer = { it.dropLast(1) }
+        )
+
+        assertTrue(instance.isDestroyed)
+    }
+
+    @Test
     fun GIVEN_back_stack_WHEN_pop_THEN_new_active_component_resumed() {
         val newStack =
             navigator.navigate(
@@ -461,14 +478,15 @@ class StackNavigatorTest {
             configuration: Config,
             component: Component = Component(),
             lifecycleRegistry: LifecycleRegistry = LifecycleRegistry().apply { resume() },
-            stateKeeperDispatcher: StateKeeperDispatcher = TestStateKeeperDispatcher()
+            stateKeeperDispatcher: StateKeeperDispatcher = TestStateKeeperDispatcher(),
+            instanceKeeperDispatcher: InstanceKeeperDispatcher = InstanceKeeperDispatcher()
         ): RouterEntry.Created<Config, Component> =
             RouterEntry.Created(
                 configuration = configuration,
                 instance = component,
                 lifecycleRegistry = lifecycleRegistry,
                 stateKeeperDispatcher = stateKeeperDispatcher,
-                instanceKeeperDispatcher = InstanceKeeperDispatcher(),
+                instanceKeeperDispatcher = instanceKeeperDispatcher,
                 backPressedDispatcher = BackPressedDispatcher()
             )
 
