@@ -24,7 +24,9 @@ class DefaultAppComponentContext(
 
 ## How to create router with custom ComponentContext
 
-In order to pass this `AppComponentContext` to other components in an application from the router, make an extension function on the new interface that will create a router using the implementation of `AppComponentContext` for the component factory. 
+In order to pass this `AppComponentContext` to other components in an application from the `Router`,
+make an extension function on the `AppComponentContext` interface. This custom extension function will
+create the `Router` and provide child `AppComponentContext`.
 
 ```kotlin
 fun <C : Parcelable, T : Any> AppComponentContext.appRouter(
@@ -33,7 +35,7 @@ fun <C : Parcelable, T : Any> AppComponentContext.appRouter(
     configurationClass: KClass<out C>,
     key: String = "DefaultRouter",
     handleBackButton: Boolean = false,
-    componentFactory: (configuration: C, AppComponentContext) -> T
+    childFactory: (configuration: C, AppComponentContext) -> T
 ): Router<C, T> =
     router(
         initialConfiguration = initialConfiguration,
@@ -42,7 +44,7 @@ fun <C : Parcelable, T : Any> AppComponentContext.appRouter(
         key = key,
         handleBackButton = handleBackButton
     ) { configuration, componentContext ->
-        componentFactory(
+        childFactory(
             configuration,
             DefaultAppComponentContext(
                 componentContext = componentContext
@@ -58,8 +60,8 @@ class MyComponent(componentContext: AppComponentContext): AppComponentContext by
     
     private val router = appRouter(
         initialConfiguration = { Configuration.Home },
-        componentFactory = { configuration, appComponentContext ->
-            //return child components using custom component context
+        childFactory = { configuration, appComponentContext ->
+            // return child components using the custom component context
         }
     )
 }

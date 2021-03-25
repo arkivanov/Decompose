@@ -29,10 +29,10 @@ class Parent(componentContext: ComponentContext) : ComponentContext by component
     private val router =
         router<Config, Any>(
             initialConfiguration = Config.Child1,
-            componentFactory = ::createChild
+            childFactory = ::createChild
         )
     
-    val children: Value<RouterState<Config, Any>> get() = router.state
+    val children: Value<RouterState<*, Any>> get() = router.state
 
     private fun createChild(config: Config, componentContext: ComponentContext): Any =
         when (config) {
@@ -48,7 +48,7 @@ class Parent(componentContext: ComponentContext) : ComponentContext by component
         router.pop()
     }
 
-    sealed class Config : Parcelable {
+    private sealed class Config : Parcelable {
         @Parcelize
         object Child1 : Config()
 
