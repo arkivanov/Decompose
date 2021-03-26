@@ -7,7 +7,7 @@ plugins {
 setupMultiplatformCommon(project)
 setupMultiplatformAndroid(project)
 setupMultiplatformIos(project)
-setupMultiplatformJs(project)
+setupMultiplatformJs(project, false)
 setupAndroid(project)
 setupCompose(project)
 setupComposeMppWorkaround(project)
