@@ -1,23 +1,14 @@
-plugins {
-    id 'com.android.library'
-    id 'kotlin-multiplatform'
-    id 'kotlin-parcelize'
-    id 'maven-publish'
+setupMultiplatform(project)
+
+doIfAndroidEnabled {
+    plugins.apply("kotlin-parcelize")
 }
 
-setupMultiplatformCommon(project)
-setupMultiplatformAndroid(project)
-setupMultiplatformJvm(project)
-setupMultiplatformIos(project)
-setupMultiplatformMacosX64(project)
-setupMultiplatformTvos(project)
-setupMultiplatformJs(project)
-//setupMultiplatformLinuxX64(project)
-setupAndroid(project)
-
 kotlin {
-    android {
-        publishLibraryVariants("release", "debug")
+    doIfAndroidEnabled {
+        android {
+            publishLibraryVariants("release", "debug")
+        }
     }
 
     sourceSets {
@@ -27,10 +18,12 @@ kotlin {
             }
         }
 
-        androidMain {
-            dependencies {
-                implementation "androidx.activity:activity-ktx:$androidx_activity_version"
-                implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_common_java8_version"
+        doIfAndroidEnabled {
+            androidMain {
+                dependencies {
+                    implementation "androidx.activity:activity-ktx:$androidx_activity_version"
+                    implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_common_java8_version"
+                }
             }
         }
     }
@@ -39,10 +32,4 @@ kotlin {
 group = "com.arkivanov.decompose"
 version = decompose_version
 
-publishing {
-    publications.withType(MavenPublication.class).all {
-        setupPublicationPom(it)
-    }
-
-    setupPublicationRepository(it)
-}
+setupMultiplatformPublications(project)

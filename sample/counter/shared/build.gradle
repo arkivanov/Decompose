@@ -1,23 +1,19 @@
-plugins {
-    id 'com.android.library'
-    id 'kotlin-multiplatform'
-    id 'kotlin-parcelize'
+setupMultiplatform(project, [Target.ANDROID, Target.IOS, Target.JS], false)
+
+doIfAndroidEnabled {
+    plugins.apply("kotlin-parcelize")
+    setupCompose(project)
+    setupComposeMppWorkaround(project)
 }
 
-setupMultiplatformCommon(project)
-setupMultiplatformAndroid(project)
-setupMultiplatformIos(project)
-setupMultiplatformJs(project, false)
-setupAndroid(project)
-setupCompose(project)
-setupComposeMppWorkaround(project)
-
 kotlin {
-    ios {
-        binaries {
-            framework {
-                baseName = "Counter"
-                export(project(":decompose"))
+    doIfIosEnabled {
+        ios {
+            binaries {
+                framework {
+                    baseName = "Counter"
+                    export(project(":decompose"))
+                }
             }
         }
     }
@@ -30,21 +26,25 @@ kotlin {
             }
         }
 
-        androidMain {
-            dependencies {
-                implementation project(':extensions-compose-jetpack')
-                implementation project(':extensions-android')
-                implementation "androidx.compose.foundation:foundation:$compose_jetpack_version"
-                implementation "androidx.compose.material:material:$compose_jetpack_version"
-                implementation "com.google.android.material:material:$android_material_version"
+        doIfAndroidEnabled {
+            androidMain {
+                dependencies {
+                    implementation project(':extensions-compose-jetpack')
+                    implementation project(':extensions-android')
+                    implementation "androidx.compose.foundation:foundation:$compose_jetpack_version"
+                    implementation "androidx.compose.material:material:$compose_jetpack_version"
+                    implementation "com.google.android.material:material:$android_material_version"
+                }
             }
         }
 
-        jsMain {
-            dependencies {
-                implementation "org.jetbrains:kotlin-react:$js_kotlin_react_version"
-                implementation "org.jetbrains:kotlin-styled:$js_kotlin_styled_version"
-                implementation "com.ccfraser.muirwik:muirwik-components:$js_muirwik_version"
+        doIfJsEnabled {
+            jsMain {
+                dependencies {
+                    implementation "org.jetbrains:kotlin-react:$js_kotlin_react_version"
+                    implementation "org.jetbrains:kotlin-styled:$js_kotlin_styled_version"
+                    implementation "com.ccfraser.muirwik:muirwik-components:$js_muirwik_version"
+                }
             }
         }
     }
@@ -55,17 +55,19 @@ static String getIosTargetName() {
     return "ios" + (sdkName.startsWith("iphoneos") ? "Arm64" : "X64")
 }
 
-task packForXcode(type: Sync) {
-    group = "build"
-    def mode = System.getenv("CONFIGURATION")
-    if (mode == null) {
-        mode = "DEBUG"
+doIfIosEnabled {
+    task packForXcode(type: Sync) {
+        group = "build"
+        def mode = System.getenv("CONFIGURATION")
+        if (mode == null) {
+            mode = "DEBUG"
+        }
+        def targetName = getIosTargetName()
+        def framework = kotlin.targets.getByName(targetName).binaries.getFramework(mode)
+        inputs.property("mode", mode)
+        dependsOn(framework.linkTask)
+        def targetDir = new File(buildDir, "xcode-frameworks")
+        from(framework.outputDirectory)
+        into(targetDir)
     }
-    def targetName = getIosTargetName()
-    def framework = kotlin.targets.getByName(targetName).binaries.getFramework(mode)
-    inputs.property("mode", mode)
-    dependsOn(framework.linkTask)
-    def targetDir = new File(buildDir, "xcode-frameworks")
-    from(framework.outputDirectory)
-    into(targetDir)
 }

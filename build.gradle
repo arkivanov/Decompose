@@ -42,7 +42,59 @@ allprojects {
     }
 }
 
-void setupMultiplatformCommon(Project project) {
+boolean setupMultiplatform(Project project, List<Target> targets = Target.values().toList(), boolean isJsIrEnabled = true) {
+    if (!targets.any { isTargetEnabled(it) }) {
+        return false
+    }
+
+    doIfAndroidEnabled {
+        project.plugins.apply("com.android.library")
+    }
+
+    project.plugins.apply("kotlin-multiplatform")
+
+    setupMultiplatformCommon(project)
+    doIfAndroidEnabled {
+        if (Target.ANDROID in targets) {
+            setupMultiplatformAndroid(project)
+            setupAndroid(project)
+        }
+    }
+
+    doIfJvmEnabled {
+        if (Target.JVM in targets) {
+            setupMultiplatformJvm(project)
+        }
+    }
+
+    doIfIosEnabled {
+        if (Target.IOS in targets) {
+            setupMultiplatformIos(project)
+        }
+    }
+
+    doIfMacosX64Enabled {
+        if (Target.MACOS_X64 in targets) {
+            setupMultiplatformMacosX64(project)
+        }
+    }
+
+    doIfTvosEnabled {
+        if (Target.TVOS in targets) {
+            setupMultiplatformTvos(project)
+        }
+    }
+
+    doIfJsEnabled {
+        if (Target.JS in targets) {
+            setupMultiplatformJs(project, isJsIrEnabled)
+        }
+    }
+
+    return true
+}
+
+private void setupMultiplatformCommon(Project project) {
     project.kotlin {
         sourceSets {
             commonMain {
@@ -85,7 +137,7 @@ void setupMultiplatformCommon(Project project) {
     }
 }
 
-void setupMultiplatformAndroid(Project project) {
+private void setupMultiplatformAndroid(Project project) {
     project.kotlin {
         android()
 
@@ -105,7 +157,7 @@ void setupMultiplatformAndroid(Project project) {
     }
 }
 
-void setupMultiplatformJvm(Project project) {
+private void setupMultiplatformJvm(Project project) {
     project.kotlin {
         jvm()
 
@@ -127,7 +179,7 @@ void setupMultiplatformJvm(Project project) {
     }
 }
 
-void setupMultiplatformIos(Project project) {
+private void setupMultiplatformIos(Project project) {
     project.kotlin {
         ios()
 
@@ -145,7 +197,7 @@ void setupMultiplatformIos(Project project) {
     }
 }
 
-void setupMultiplatformMacosX64(Project project) {
+private void setupMultiplatformMacosX64(Project project) {
     project.kotlin {
         macosX64()
 
@@ -163,7 +215,7 @@ void setupMultiplatformMacosX64(Project project) {
     }
 }
 
-void setupMultiplatformTvos(Project project) {
+private void setupMultiplatformTvos(Project project) {
     project.kotlin {
         tvos()
 
@@ -181,7 +233,7 @@ void setupMultiplatformTvos(Project project) {
     }
 }
 
-void setupMultiplatformJs(Project project, boolean isIrEnabled = true) {
+private void setupMultiplatformJs(Project project, boolean isIrEnabled = true) {
     project.kotlin {
         js(isIrEnabled ? BOTH : LEGACY) {
             browser()
@@ -205,25 +257,6 @@ void setupMultiplatformJs(Project project, boolean isIrEnabled = true) {
         }
     }
 }
-
-void setupMultiplatformLinuxX64(Project project) {
-    project.kotlin {
-        linuxX64()
-
-        sourceSets {
-            linuxX64Main {
-                dependsOn nonAndroidMain
-                dependsOn nativeMain
-            }
-
-            linuxX64Test {
-                dependsOn nonAndroidTest
-                dependsOn nativeTest
-            }
-        }
-    }
-}
-
 
 void setupCompose(Project project) {
     project.android {
@@ -287,6 +320,28 @@ void setupAndroid(Project project) {
     }
 }
 
+
+void setupMultiplatformPublications(Project project) {
+    project.plugins.apply('maven-publish')
+
+    project.publishing {
+        publications.withType(MavenPublication.class).all {
+            setupPublicationPom(it)
+        }
+
+        setupPublicationRepository(it)
+    }
+
+    final isMetadata = findProperty("publish_metadata") != null
+
+    final metadataPublicationNames =
+            [org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin.METADATA_TARGET_NAME, "kotlinMultiplatform"]
+
+    project.tasks.withType(PublishToMavenRepository.class).all {
+        it.enabled = (it.publication?.name in metadataPublicationNames) == isMetadata
+    }
+}
+
 void setupPublicationPom(Publication publication) {
     publication.pom {
         licenses {
@@ -322,4 +377,53 @@ void setupPublicationRepository(PublishingExtension publishing) {
             }
         }
     }
+}
+
+void doIfAndroidEnabled(Closure block) {
+    if (isTargetEnabled(Target.ANDROID)) {
+        block()
+    }
+}
+
+void doIfJvmEnabled(Closure block) {
+    if (isTargetEnabled(Target.JVM)) {
+        block()
+    }
+}
+
+void doIfJsEnabled(Closure block) {
+    if (isTargetEnabled(Target.JS)) {
+        block()
+    }
+}
+
+void doIfIosEnabled(Closure block) {
+    if (isTargetEnabled(Target.IOS)) {
+        block()
+    }
+}
+
+void doIfMacosX64Enabled(Closure block) {
+    if (isTargetEnabled(Target.MACOS_X64)) {
+        block()
+    }
+}
+
+void doIfTvosEnabled(Closure block) {
+    if (isTargetEnabled(Target.TVOS)) {
+        block()
+    }
+}
+
+boolean isTargetEnabled(Target target) {
+    return target in getTargets()
+}
+
+Set<Target> getTargets() {
+    final String targets = findProperty("targets")
+
+    return targets
+            ?.split(",")
+            ?.collect(new HashSet(), Target.&valueOf)
+            ?: EnumSet.allOf(Target.class)
 }
