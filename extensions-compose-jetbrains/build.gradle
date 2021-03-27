@@ -1,18 +1,14 @@
-plugins {
-    id 'com.android.library'
-    id 'kotlin-multiplatform'
-    id 'org.jetbrains.compose'
-    id 'maven-publish'
+if (!setupMultiplatform(project, [Target.ANDROID, Target.JVM])) {
+    return
 }
 
-setupMultiplatformCommon(project)
-setupMultiplatformAndroid(project)
-setupMultiplatformJvm(project)
-setupAndroid(project)
+plugins.apply('org.jetbrains.compose')
 
 kotlin {
-    android {
-        publishLibraryVariants("release", "debug")
+    doIfAndroidEnabled {
+        android {
+            publishLibraryVariants("release", "debug")
+        }
     }
 
     sourceSets {
@@ -23,9 +19,11 @@ kotlin {
             }
         }
 
-        androidMain {
-            dependencies {
-                implementation "androidx.activity:activity-ktx:$androidx_activity_version"
+        doIfAndroidEnabled {
+            androidMain {
+                dependencies {
+                    implementation "androidx.activity:activity-ktx:$androidx_activity_version"
+                }
             }
         }
     }
@@ -34,10 +32,4 @@ kotlin {
 group = "com.arkivanov.decompose"
 version = decompose_version
 
-publishing {
-    publications.withType(MavenPublication.class).all {
-        setupPublicationPom(it)
-    }
-
-    setupPublicationRepository(it)
-}
+setupMultiplatformPublications(project)

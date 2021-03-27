@@ -1,6 +1,8 @@
-plugins {
-    id 'org.jetbrains.kotlin.js'
+if (!isTargetEnabled(Target.JS)) {
+    return
 }
+
+plugins.apply('org.jetbrains.kotlin.js')
 
 kotlin {
     js {

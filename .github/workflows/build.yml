@@ -1,0 +1,50 @@
+name: Build
+
+on:
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+
+jobs:
+  linux-build:
+    name: Build on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Update dependencies
+        run: sudo apt-get update
+      - name: Install dependencies
+        run: sudo apt-get install nodejs chromium-browser
+      - name: Set up cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Build
+        run: ./gradlew build -Ptargets=ANDROID,JVM,JS
+  macos-build:
+    name: Build on Macos
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Set up cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Build iOS
+        run: ./gradlew build --info -Pbuild_type=IOS,TVOS,MACOS_X64

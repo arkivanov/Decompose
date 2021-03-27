@@ -1,8 +1,10 @@
-plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-parcelize'
+if (!isTargetEnabled(Target.ANDROID)) {
+    return
 }
+
+plugins.apply('com.android.application')
+plugins.apply('kotlin-android')
+plugins.apply('kotlin-parcelize')
 
 setupAndroid(project)
 setupCompose(project)
