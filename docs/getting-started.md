@@ -1,23 +1,6 @@
 ## Setup
 
-Decompose is published to Bintray, the repository is synchronized with JCenter.
-Make sure you have the JCenter repository specified in your `build.gradle`:
-
-=== "Groovy"
-
-    ``` groovy
-    repositories {
-        jcenter()
-    }
-    ```
-
-=== "Kotlin"
-
-    ``` kotlin
-    repositories {
-        jcenter()
-    }
-    ```
+Decompose is published to Maven Central Repository.
 
 Add Decompose dependency to your `build.gradle` and replace `<version>` with the latest [version](https://github.com/arkivanov/Decompose/tags). 
 
