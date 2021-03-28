@@ -26,7 +26,7 @@ afterEvaluate {
                 artifactId = "extensions-compose-jetpack-debug"
                 version = decompose_version
 
-                setupPublicationPom(it)
+                setupPublicationPom(project, it)
             }
 
             release(MavenPublication) {
@@ -37,12 +37,12 @@ afterEvaluate {
                 artifactId = "extensions-compose-jetpack"
                 version = decompose_version
 
-                setupPublicationPom(it)
+                setupPublicationPom(project, it)
             }
         }
-
-        setupPublicationRepository(it)
     }
+
+    setupPublicationRepository(project)
 }
 
 task sourceJar(type: Jar) {

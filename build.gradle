@@ -277,24 +277,26 @@ void setupCompose(Project project) {
 
 // As per KT-38694 (https://github.com/avdim/compose_mpp_workaround)
 void setupComposeMppWorkaround(Project project) {
-    project.configurations {
-        create("composeCompiler") {
-            setCanBeConsumed(false)
-        }
-    }
-
-    project.dependencies {
-        composeCompiler "androidx.compose.compiler:compiler:$compose_jetpack_version"
-    }
-
-    project.afterEvaluate {
-        def composeCompilerJar = project.configurations.getByName("composeCompiler").resolve().getAt(0)
-        if (composeCompilerJar == null) {
-            throw new Exception("Please add \"androidx.compose.compiler:compiler\" (and only that) as a \"composeCompiler\" dependency")
+    project.with {
+        configurations {
+            create("composeCompiler") {
+                setCanBeConsumed(false)
+            }
         }
 
-        project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile.class) {
-            kotlinOptions.freeCompilerArgs += ["-Xuse-ir", "-Xplugin=$composeCompilerJar"]
+        dependencies {
+            composeCompiler "androidx.compose.compiler:compiler:$compose_jetpack_version"
+        }
+
+        afterEvaluate {
+            def composeCompilerJar = project.configurations.getByName("composeCompiler").resolve().getAt(0)
+            if (composeCompilerJar == null) {
+                throw new Exception("Please add \"androidx.compose.compiler:compiler\" (and only that) as a \"composeCompiler\" dependency")
+            }
+
+            project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile.class) {
+                kotlinOptions.freeCompilerArgs += ["-Xuse-ir", "-Xplugin=$composeCompilerJar"]
+            }
         }
     }
 }
@@ -320,60 +322,88 @@ void setupAndroid(Project project) {
     }
 }
 
-
 void setupMultiplatformPublications(Project project) {
-    project.plugins.apply('maven-publish')
+    project.with {
+        plugins.apply('maven-publish')
 
-    project.publishing {
-        publications.withType(MavenPublication.class).all {
-            setupPublicationPom(it)
+        publishing {
+            publications.withType(MavenPublication.class).all {
+                setupPublicationPom(project, it)
+            }
         }
 
-        setupPublicationRepository(it)
-    }
+        setupPublicationRepository(project)
 
-    final isMetadata = findProperty("publish_metadata") != null
+        final isMetadata = findProperty("publish_metadata") != null
 
-    final metadataPublicationNames =
-            [org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin.METADATA_TARGET_NAME, "kotlinMultiplatform"]
+        final metadataPublicationNames =
+                [org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin.METADATA_TARGET_NAME, "kotlinMultiplatform"]
 
-    project.tasks.withType(PublishToMavenRepository.class).all {
-        it.enabled = (it.publication?.name in metadataPublicationNames) == isMetadata
+        tasks.withType(PublishToMavenRepository.class).all {
+            it.enabled = (it.publication?.name in metadataPublicationNames) == isMetadata
+        }
     }
 }
 
-void setupPublicationPom(Publication publication) {
-    publication.pom {
-        licenses {
-            license {
-                name = "The Apache License, Version 2.0"
-                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        }
+void setupPublicationPom(Project project, Publication publication) {
+    Task javadocJar = project.tasks.findByName("javadocJar")
+    if (javadocJar == null) {
+        javadocJar =
+                project.task("javadocJar", type: Jar) {
+                    archiveClassifier.set("javadoc")
+                }
+    }
 
-        developers {
-            developer {
-                id = "arkivanov"
-                name = "Arkadii Ivanov"
-                email = "arkann1985@gmail.com"
-            }
-        }
+    publication.with {
+        artifact javadocJar
 
-        scm {
+        pom {
+            name = "Decompose"
+            description = "Kotlin Multiplatform lifecycle-aware business logic components"
             url = "https://github.com/arkivanov/Decompose"
-            connection = "scm:git:git://github.com/arkivanov/Decompose.git"
-            developerConnection = "scm:git:git://github.com/arkivanov/Decompose.git"
+
+            licenses {
+                license {
+                    name = "The Apache License, Version 2.0"
+                    url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                }
+            }
+
+            developers {
+                developer {
+                    id = "arkivanov"
+                    name = "Arkadii Ivanov"
+                    email = "arkann1985@gmail.com"
+                }
+            }
+
+            scm {
+                url = "https://github.com/arkivanov/Decompose"
+                connection = "scm:git:git://github.com/arkivanov/Decompose.git"
+                developerConnection = "scm:git:git://github.com/arkivanov/Decompose.git"
+            }
         }
     }
 }
 
-void setupPublicationRepository(PublishingExtension publishing) {
-    publishing.repositories {
-        maven {
-            url = "https://api.bintray.com/maven/arkivanov/maven/decompose/;publish=0;override=1"
-            credentials {
-                username = "arkivanov"
-                password = findProperty("bintray_api_key").toString()
+void setupPublicationRepository(Project project) {
+    project.with {
+        plugins.apply("signing")
+
+        publishing {
+            signing {
+                useInMemoryPgpKeys(System.getenv("SIGNING_KEY"), System.getenv("SIGNING_PASSWORD"))
+                sign(publications)
+            }
+
+            repositories {
+                maven {
+                    url = "https://oss.sonatype.org/service/local/staging/deployByRepositoryId/${System.getenv("SONATYPE_REPOSITORY_ID")}"
+                    credentials {
+                        username = "arkivanov"
+                        password = System.getenv("SONATYPE_PASSWORD")
+                    }
+                }
             }
         }
     }

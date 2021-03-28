@@ -1,0 +1,87 @@
+name: Publish
+
+on:
+  release:
+    types: [ created ]
+  workflow_dispatch:
+
+jobs:
+  create-staging-repository:
+    runs-on: ubuntu-latest
+    name: Create staging repository
+    outputs:
+      repository-id: ${{ steps.create.outputs.repository-id }}
+    steps:
+      - id: create
+        uses: nexus-actions/create-nexus-staging-repo@v1
+        with:
+          username: arkivanov
+          password: ${{ secrets.SONATYPE_PASSWORD }}
+          staging-profile-id: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
+          description: Created by GitHub Actions
+  metadata-publish:
+    name: Publish Metadata
+    runs-on: ubuntu-latest
+    needs: create-staging-repository
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Publish Metadata
+        env:
+          SONATYPE_REPOSITORY_ID: ${{ needs.create-staging-repository.outputs.repository-id }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        run: ./gradlew publish -Ppublish_metadata
+  linux-publish:
+    name: Publish on Linux
+    runs-on: ubuntu-latest
+    needs: create-staging-repository
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Publish
+        env:
+          SONATYPE_REPOSITORY_ID: ${{ needs.create-staging-repository.outputs.repository-id }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        run: ./gradlew publish -Ptargets=ANDROID,JVM,JS
+  macos-publish:
+    name: Publish on Macos
+    runs-on: macos-latest
+    needs: create-staging-repository
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Publish
+        env:
+          SONATYPE_REPOSITORY_ID: ${{ needs.create-staging-repository.outputs.repository-id }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        run: ./gradlew publish -Ptargets=IOS,TVOS,MACOS_X64
+  close-staging-repository:
+    name: Close staging repository
+    runs-on: ubuntu-latest
+    needs: [ metadata-publish, linux-publish, macos-publish ]
+    steps:
+      - name: Close staging repository
+        uses: nexus-actions/release-nexus-staging-repo@main
+        with:
+          username: arkivanov
+          password: ${{ secrets.SONATYPE_PASSWORD }}
+          staged_repository_id: ${{ needs.create_staging_repository.outputs.repository-id }}
+          close_only: 'true'
