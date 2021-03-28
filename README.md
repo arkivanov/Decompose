@@ -1,4 +1,4 @@
-[![Download](https://api.bintray.com/packages/arkivanov/maven/decompose/images/download.svg)](https://bintray.com/arkivanov/maven/decompose/_latestVersion)
+[![Maven Central](https://img.shields.io/maven-central/v/com.arkivanov.decompose/decompose?color=blue)](https://search.maven.org/artifact/com.arkivanov.decompose/decompose)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Twitter URL](https://img.shields.io/badge/Twitter-@arkann1985-blue.svg?style=social&logo=twitter)](https://twitter.com/arkann1985)
 
