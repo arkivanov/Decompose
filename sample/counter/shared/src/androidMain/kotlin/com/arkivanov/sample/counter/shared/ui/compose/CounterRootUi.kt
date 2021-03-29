@@ -19,29 +19,29 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.Children
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.slide
-import com.arkivanov.sample.counter.shared.root.CounterRootContainer
+import com.arkivanov.sample.counter.shared.root.CounterRoot
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
-operator fun CounterRootContainer.Model.invoke() {
+fun CounterRootUi(counterRoot: CounterRoot) {
     Box(modifier = Modifier.border(BorderStroke(width = 1.dp, color = Color.Black))) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.clipToBounds().padding(16.dp)
         ) {
-            counter()
+            CounterUi(counterRoot.counter)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = ::onNextChild) {
+            Button(onClick = counterRoot::onNextChild) {
                 Text(text = "Next Child")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Children(routerState = child, animation = slide()) {
-                it.instance.inner()
+            Children(routerState = counterRoot.routerState, animation = slide()) {
+                CounterInnerUi(it.instance.inner)
             }
         }
     }

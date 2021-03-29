@@ -10,38 +10,36 @@ import SwiftUI
 import Counter
 
 struct CounterInnerView: View {
-    private let events: CounterInnerContainerEvents
-    private let counter: CounterModel
+    private let counterInner: CounterInner
     
     @ObservedObject
-    private var leftChild: ObservableValue<RouterState<AnyObject, CounterInnerContainerChild>>
+    private var leftRouterState: ObservableValue<RouterState<AnyObject, CounterInnerChild>>
     
     @ObservedObject
-    private var rightChild: ObservableValue<RouterState<AnyObject, CounterInnerContainerChild>>
+    private var rightRouterState: ObservableValue<RouterState<AnyObject, CounterInnerChild>>
     
-    init(_ model: CounterInnerContainerModel) {
-        self.events = model
-        self.counter = model.counter
-        self.leftChild = ObservableValue(model.leftChild)
-        self.rightChild = ObservableValue(model.rightChild)
+    init(_ counterInner: CounterInner) {
+        self.counterInner = counterInner
+        self.leftRouterState = ObservableValue(counterInner.leftRouterState)
+        self.rightRouterState = ObservableValue(counterInner.rightRouterState)
     }
     
     var body: some View {
-        let activeLeftChild = self.leftChild.value.activeChild.instance
-        let activeRightChild = self.rightChild.value.activeChild.instance
-
+        let activeLeftChild = self.leftRouterState.value.activeChild.instance
+        let activeRightChild = self.rightRouterState.value.activeChild.instance
+        
         return VStack(spacing: 8) {
-            CounterView(self.counter)
+            CounterView(self.counterInner.counter)
             
             HStack(spacing: 8) {
-                ChildView(child: activeLeftChild, next: self.events.onNextLeftChild, prev: self.events.onPrevLeftChild)
-                ChildView(child: activeRightChild, next: self.events.onNextRightChild, prev: self.events.onPrevRightChild)
+                ChildView(child: activeLeftChild, next: self.counterInner.onNextLeftChild, prev: self.counterInner.onPrevLeftChild)
+                ChildView(child: activeRightChild, next: self.counterInner.onNextRightChild, prev: self.counterInner.onPrevRightChild)
             }
         }
     }
     
     private func ChildView(
-        child: CounterInnerContainerChild,
+        child: CounterInnerChild,
         next: @escaping () -> Void,
         prev: @escaping () -> Void
     ) -> some View {
@@ -58,26 +56,24 @@ struct CounterInnerView: View {
 
 struct CounterInnerView_Previews: PreviewProvider {
     static var previews: some View {
-        CounterInnerView(Model())
+        CounterInnerView(CounterInnerPreview())
     }
     
-    class Model : CounterInnerContainerModel {
-        let counter: CounterModel = CounterView_Previews.Model()
+    class CounterInnerPreview : CounterInner {
+        let counter: Counter = CounterView_Previews.CounterPreview()
         
-        let leftChild: Value<RouterState<AnyObject, CounterInnerContainerChild>> =
-            simpleRouterState(
-                CounterInnerContainerChild(
-                    counter: CounterView_Previews.Model(),
-                    isBackEnabled: true
-                )
+        let leftRouterState: Value<RouterState<AnyObject, CounterInnerChild>> = simpleRouterState(
+            CounterInnerChild(
+                counter: CounterView_Previews.CounterPreview(),
+                isBackEnabled: true
+            )
         )
         
-        let rightChild: Value<RouterState<AnyObject, CounterInnerContainerChild>> =
-            simpleRouterState(
-                CounterInnerContainerChild(
-                    counter: CounterView_Previews.Model(),
-                    isBackEnabled: false
-                )
+        let rightRouterState: Value<RouterState<AnyObject, CounterInnerChild>> = simpleRouterState(
+            CounterInnerChild(
+                counter: CounterView_Previews.CounterPreview(),
+                isBackEnabled: false
+            )
         )
         
         init() {

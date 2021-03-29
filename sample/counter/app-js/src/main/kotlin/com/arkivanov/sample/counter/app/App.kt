@@ -5,7 +5,7 @@ import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.destroy
 import com.arkivanov.decompose.lifecycle.resume
 import com.arkivanov.sample.counter.shared.renderableChild
-import com.arkivanov.sample.counter.shared.root.CounterRootContainer
+import com.arkivanov.sample.counter.shared.root.CounterRootComponent
 import com.arkivanov.sample.counter.shared.root.RootR
 import com.ccfraser.muirwik.components.mContainer
 import com.ccfraser.muirwik.components.mCssBaseline
@@ -19,7 +19,7 @@ class App : RComponent<RProps, RState>() {
 
     private val lifecycle = LifecycleRegistry()
     private val ctx = DefaultComponentContext(lifecycle = lifecycle)
-    private val root = CounterRootContainer(ctx)
+    private val root = CounterRootComponent(ctx)
 
     override fun componentDidMount() {
         lifecycle.resume()
@@ -33,7 +33,7 @@ class App : RComponent<RProps, RState>() {
         mCssBaseline()
 
         mContainer(maxWidth = Breakpoint.xs) {
-            renderableChild(RootR::class, root.model)
+            renderableChild(RootR::class, root)
         }
     }
 }

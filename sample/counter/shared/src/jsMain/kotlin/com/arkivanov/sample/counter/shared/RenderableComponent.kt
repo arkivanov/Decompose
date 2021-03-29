@@ -10,7 +10,7 @@ import react.setState
 
 abstract class RenderableComponent<T : Any, S : RState>(props: Props<T>, initialState: S) : RComponent<Props<T>, S>(props) {
 
-    protected val model: T get() = props.model
+    protected val component: T get() = props.component
     private val subscriptions = ArrayList<Subscription<*>>()
 
     init {
@@ -38,7 +38,7 @@ abstract class RenderableComponent<T : Any, S : RState>(props: Props<T>, initial
     }
 
     interface Props<T : Any> : RProps {
-        var model: T
+        var component: T
     }
 
     protected class Subscription<T : Any>(

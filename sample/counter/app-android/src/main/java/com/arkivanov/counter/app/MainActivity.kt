@@ -19,9 +19,9 @@ import com.arkivanov.decompose.extensions.compose.jetpack.rememberRootComponent
 import com.arkivanov.decompose.instancekeeper.InstanceKeeper
 import com.arkivanov.decompose.lifecycle.asDecomposeLifecycle
 import com.arkivanov.decompose.statekeeper.StateKeeper
-import com.arkivanov.sample.counter.shared.root.CounterRootContainer
+import com.arkivanov.sample.counter.shared.root.CounterRootComponent
 import com.arkivanov.sample.counter.shared.ui.android.CounterRootView
-import com.arkivanov.sample.counter.shared.ui.compose.invoke
+import com.arkivanov.sample.counter.shared.ui.compose.CounterRootUi
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,7 +41,8 @@ class MainActivity : AppCompatActivity() {
             ComposeAppTheme {
                 Surface(color = MaterialTheme.colors.background) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        rememberRootComponent(::CounterRootContainer).model()
+                        val component = rememberRootComponent(::CounterRootComponent)
+                        CounterRootUi(component)
                     }
                 }
             }
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                 backPressedDispatcher = BackPressedDispatcher(onBackPressedDispatcher)
             )
 
-        val root = CounterRootContainer(componentContext)
+        val root = CounterRootComponent(componentContext)
 
         val viewContext =
             DefaultViewContext(
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity() {
 
         viewContext.apply {
             child(parent) {
-                CounterRootView(root.model)
+                CounterRootView(root)
             }
         }
     }

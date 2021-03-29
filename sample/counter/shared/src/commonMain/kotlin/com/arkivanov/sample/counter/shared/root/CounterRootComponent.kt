@@ -11,16 +11,15 @@ import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.counter.shared.counter.Counter
-import com.arkivanov.sample.counter.shared.inner.CounterInnerContainer
-import com.arkivanov.sample.counter.shared.root.CounterRootContainer.Child
-import com.arkivanov.sample.counter.shared.root.CounterRootContainer.Events
-import com.arkivanov.sample.counter.shared.root.CounterRootContainer.Model
+import com.arkivanov.sample.counter.shared.counter.CounterComponent
+import com.arkivanov.sample.counter.shared.inner.CounterInnerComponent
+import com.arkivanov.sample.counter.shared.root.CounterRoot.Child
 
-internal class CounterRootContainerImpl(
+class CounterRootComponent(
     componentContext: ComponentContext
-) : CounterRootContainer, Events, ComponentContext by componentContext {
+) : CounterRoot, ComponentContext by componentContext {
 
-    private val counter = Counter(childContext(key = "counter"), index = 0)
+    override val counter: Counter = CounterComponent(childContext(key = "counter"), index = 0)
 
     private val router: Router<ChildConfiguration, Child> =
         router(
@@ -29,21 +28,16 @@ internal class CounterRootContainerImpl(
             childFactory = ::resolveChild
         )
 
-    override val model: Model =
-        object : Model, Events by this {
-            override val counter: Counter.Model = this@CounterRootContainerImpl.counter.model
-            override val child: Value<RouterState<*, Child>> = router.state
-        }
+    override val routerState: Value<RouterState<*, Child>> = router.state
 
     private fun resolveChild(configuration: ChildConfiguration, componentContext: ComponentContext): Child =
         Child(
-            inner = CounterInnerContainer(componentContext, index = configuration.index).model,
+            inner = CounterInnerComponent(componentContext, index = configuration.index),
             isBackEnabled = configuration.isBackEnabled
         )
 
     override fun onNextChild() {
-        val index = router.state.value.backStack.size + 1
-        router.push(ChildConfiguration(index = index, isBackEnabled = index >= 1))
+        router.push(ChildConfiguration(index = router.state.value.backStack.size + 1, isBackEnabled = true))
     }
 
     override fun onPrevChild() {

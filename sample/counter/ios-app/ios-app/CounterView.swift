@@ -11,14 +11,14 @@ import Counter
 
 struct CounterView: View {
     @ObservedObject
-    private var data: ObservableValue<CounterData>
+    private var model: ObservableValue<CounterModel>
 
-    init(_ model: CounterModel) {
-        self.data = ObservableValue(model.data)
+    init(_ counter: Counter) {
+        self.model = ObservableValue(counter.model)
     }
     
     var body: some View {
-        Text(data.value.text)
+        Text(model.value.text)
             .padding()
             .border(Color.black, width: 2)
     }
@@ -26,12 +26,12 @@ struct CounterView: View {
 
 struct CounterView_Previews: PreviewProvider {
     static var previews: some View {
-        CounterView(Model())
+        CounterView(CounterPreview())
     }
     
-    class Model : CounterModel {
-        let data: Value<CounterData> = mutableValue(
-            CounterData(text: "Counter0: 100")
+    class CounterPreview : Counter {
+        let model: Value<CounterModel> = mutableValue(
+            CounterModel(text: "Counter0: 100")
         )
     }
 }

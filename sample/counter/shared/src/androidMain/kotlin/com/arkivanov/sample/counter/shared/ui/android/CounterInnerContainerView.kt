@@ -7,11 +7,11 @@ import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.child
 import com.arkivanov.decompose.extensions.android.layoutInflater
 import com.arkivanov.sample.counter.shared.R
-import com.arkivanov.sample.counter.shared.inner.CounterInnerContainer.Model
+import com.arkivanov.sample.counter.shared.inner.CounterInner
 
 @ExperimentalDecomposeApi
 @Suppress("FunctionName") // Factory function
-fun ViewContext.CounterInnerView(model: Model): View {
+fun ViewContext.CounterInnerView(counterInner: CounterInner): View {
     val root = layoutInflater.inflate(R.layout.counter_inner, parent, false)
     val leftNextButton: View = root.findViewById(R.id.button_left_next)
     val leftPrevButton: View = root.findViewById(R.id.button_left_prev)
@@ -20,22 +20,22 @@ fun ViewContext.CounterInnerView(model: Model): View {
     val rightPrevButton: View = root.findViewById(R.id.button_right_prev)
     val rightRouter: RouterView = root.findViewById(R.id.router_right)
 
-    leftNextButton.setOnClickListener { model.onNextLeftChild() }
-    leftPrevButton.setOnClickListener { model.onPrevLeftChild() }
-    rightNextButton.setOnClickListener { model.onNextRightChild() }
-    rightPrevButton.setOnClickListener { model.onPrevRightChild() }
+    leftNextButton.setOnClickListener { counterInner.onNextLeftChild() }
+    leftPrevButton.setOnClickListener { counterInner.onPrevLeftChild() }
+    rightNextButton.setOnClickListener { counterInner.onNextRightChild() }
+    rightPrevButton.setOnClickListener { counterInner.onPrevRightChild() }
 
     child(root.findViewById(R.id.container_counter)) {
-        CounterView(model.counter)
+        CounterView(counterInner.counter)
     }
 
-    leftRouter.children(model.leftChild, lifecycle) { parent, child, _ ->
+    leftRouter.children(counterInner.leftRouterState, lifecycle) { parent, child, _ ->
         parent.removeAllViews()
         parent.addView(CounterView(child.counter))
         leftPrevButton.isEnabled = child.isBackEnabled
     }
 
-    rightRouter.children(model.rightChild, lifecycle) { parent, child, _ ->
+    rightRouter.children(counterInner.rightRouterState, lifecycle) { parent, child, _ ->
         parent.removeAllViews()
         parent.addView(CounterView(child.counter))
         rightPrevButton.isEnabled = child.isBackEnabled
