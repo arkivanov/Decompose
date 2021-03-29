@@ -128,7 +128,7 @@ private fun <T : Any> PageAnimationFrame(
     }
 }
 
-private class AnimationItem<T>(
+private class AnimationItem<out T>(
     val key: T,
     val arrangement: PageArrangement,
     val direction: PageAnimationDirection
