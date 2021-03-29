@@ -10,28 +10,26 @@ import SwiftUI
 import Counter
 
 struct CounterRootView: View {
-    private let events: CounterRootContainerEvents
-    private let counter: CounterModel
+    private let counterRoot: CounterRoot
     
     @ObservedObject
-    private var child: ObservableValue<RouterState<AnyObject, CounterRootContainerChild>>
+    private var routerState: ObservableValue<RouterState<AnyObject, CounterRootChild>>
     
-    init(_ model: CounterRootContainerModel) {
-        self.events = model
-        self.counter = model.counter
-        self.child = ObservableValue(model.child)
+    init(_ counterRoot: CounterRoot) {
+        self.counterRoot = counterRoot
+        self.routerState = ObservableValue(counterRoot.routerState)
     }
     
     
     var body: some View {
-        let activeChild = self.child.value.activeChild.instance
+        let activeChild = self.routerState.value.activeChild.instance
         
         return VStack(spacing: 8) {
-            CounterView(self.counter)
+            CounterView(self.counterRoot.counter)
             
-            Button(action: self.events.onNextChild, label: { Text("Next Child") })
+            Button(action: self.counterRoot.onNextChild, label: { Text("Next Child") })
             
-            Button(action: self.events.onPrevChild, label: { Text("Prev Child") })
+            Button(action: self.counterRoot.onPrevChild, label: { Text("Prev Child") })
                 .disabled(!activeChild.isBackEnabled)
             
             CounterInnerView(activeChild.inner)
@@ -41,18 +39,17 @@ struct CounterRootView: View {
 
 struct CounterRootView_Previews: PreviewProvider {
     static var previews: some View {
-        CounterRootView(Model())
+        CounterRootView(CoutnerRootPreview())
     }
     
-    class Model : CounterRootContainerModel {
-        let counter: CounterModel = CounterView_Previews.Model()
+    class CoutnerRootPreview : CounterRoot {
+        let counter: Counter = CounterView_Previews.CounterPreview()
         
-        let child: Value<RouterState<AnyObject, CounterRootContainerChild>> =
-            simpleRouterState(
-                CounterRootContainerChild(
-                    inner: CounterInnerView_Previews.Model(),
-                    isBackEnabled: true
-                )
+        let routerState: Value<RouterState<AnyObject, CounterRootChild>> = simpleRouterState(
+            CounterRootChild(
+                inner: CounterInnerView_Previews.CounterInnerPreview(),
+                isBackEnabled: true
+            )
         )
         
         func onNextChild() {

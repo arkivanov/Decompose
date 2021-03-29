@@ -10,7 +10,6 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.decompose.value.reduce
-import com.arkivanov.sample.counter.shared.counter.Counter.Data
 import com.arkivanov.sample.counter.shared.counter.Counter.Model
 import com.badoo.reaktive.disposable.scope.DisposableScope
 import com.badoo.reaktive.maybe.maybeTimer
@@ -18,7 +17,7 @@ import com.badoo.reaktive.scheduler.mainScheduler
 import com.badoo.reaktive.single.repeatWhen
 import com.badoo.reaktive.single.singleOf
 
-internal class CounterImpl(
+class CounterComponent(
     componentContext: ComponentContext,
     index: Int
 ) : Counter, ComponentContext by componentContext {
@@ -28,17 +27,16 @@ internal class CounterImpl(
             Handler(stateKeeper.consume(KEY_STATE) ?: State(index = index))
         }
 
-    override val model: Model =
-        object : Model {
-            override val data: Value<Data> = handler.state.map { it.toData() }
-        }
+    override val model: Value<Model> = handler.state.map { it.toModel() }
 
     init {
         stateKeeper.register(KEY_STATE) { handler.state.value }
     }
 
-    private fun State.toData(): Data =
-        Data(text = "Counter${index}: ${count.toString().padStart(length = 3, padChar = '0')}")
+    private fun State.toModel(): Model =
+        Model(
+            text = "Counter${index}: ${count.toString().padStart(length = 3, padChar = '0')}"
+        )
 
     private companion object {
         private const val KEY_STATE = "STATE"

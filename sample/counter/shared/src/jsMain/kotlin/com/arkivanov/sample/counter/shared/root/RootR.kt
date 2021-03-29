@@ -21,18 +21,18 @@ import react.RState
 import react.dom.br
 import styled.styledDiv
 
-class RootR(props: Props<CounterRootContainer.Model>) : RenderableComponent<CounterRootContainer.Model, RootR.State>(
+class RootR(props: Props<CounterRoot>) : RenderableComponent<CounterRoot, RootR.State>(
     props = props,
-    initialState = State(routerState = props.model.child.value)
+    initialState = State(routerState = props.component.routerState.value)
 ) {
 
     init {
-        model.child.bindToState { routerState = it }
+        component.routerState.bindToState { routerState = it }
     }
 
     override fun RBuilder.render() {
         mPaper(variant = MPaperVariant.outlined) {
-            renderableChild(CounterR::class, this@RootR.model.counter)
+            renderableChild(CounterR::class, this@RootR.component.counter)
 
             br {}
 
@@ -42,7 +42,7 @@ class RootR(props: Props<CounterRootContainer.Model>) : RenderableComponent<Coun
         }
     }
 
-    private fun RBuilder.childWithButtons(child: CounterRootContainer.Child) {
+    private fun RBuilder.childWithButtons(child: CounterRoot.Child) {
         mGridContainer(alignItems = MGridAlignItems.center, spacing = MGridSpacing.spacing3) {
             attrs {
                 direction = MGridDirection.column
@@ -54,7 +54,7 @@ class RootR(props: Props<CounterRootContainer.Model>) : RenderableComponent<Coun
                         caption = "Next Child",
                         variant = MButtonVariant.contained,
                         color = MColor.primary,
-                        onClick = { model.onNextChild() }
+                        onClick = { component.onNextChild() }
                     )
                 }
 
@@ -65,7 +65,7 @@ class RootR(props: Props<CounterRootContainer.Model>) : RenderableComponent<Coun
                         "Prev Child",
                         variant = MButtonVariant.contained,
                         disabled = !child.isBackEnabled,
-                        onClick = { model.onPrevChild() }
+                        onClick = { component.onPrevChild() }
                     )
                 }
             }
@@ -77,6 +77,6 @@ class RootR(props: Props<CounterRootContainer.Model>) : RenderableComponent<Coun
     }
 
     class State(
-        var routerState: RouterState<*, CounterRootContainer.Child>,
+        var routerState: RouterState<*, CounterRoot.Child>,
     ) : RState
 }

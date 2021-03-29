@@ -11,10 +11,10 @@ import Counter
 
 struct ContentView: View {
     @State
-    private var componentHolder = ComponentHolder(factory: CounterRootContainerBuilderKt.CounterRootContainer)
+    private var componentHolder = ComponentHolder(factory: CounterRootComponent.init)
     
     var body: some View {
-        CounterRootView(componentHolder.component.model)
+        CounterRootView(componentHolder.component)
             .onAppear { LifecycleRegistryExtKt.resume(self.componentHolder.lifecycle) }
             .onDisappear { LifecycleRegistryExtKt.stop(self.componentHolder.lifecycle) }
     }

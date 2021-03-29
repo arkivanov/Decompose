@@ -22,50 +22,50 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.Children
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.slide
 import com.arkivanov.decompose.extensions.compose.jetpack.asState
-import com.arkivanov.sample.counter.shared.inner.CounterInnerContainer
+import com.arkivanov.sample.counter.shared.inner.CounterInner
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
-operator fun CounterInnerContainer.Model.invoke() {
+fun CounterInnerUi(counterInner: CounterInner) {
     Box(modifier = Modifier.border(BorderStroke(width = 1.dp, color = Color.Black))) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(16.dp)
         ) {
-            counter()
+            CounterUi(counterInner.counter)
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Row {
 
                 Column(modifier = Modifier.clipToBounds()) {
-                    val activeChild = leftChild.asState().value.activeChild.instance
+                    val activeChild = counterInner.leftRouterState.asState().value.activeChild.instance
 
                     ChildButtons(
                         isBackEnabled = activeChild.isBackEnabled,
-                        onNext = ::onNextLeftChild,
-                        onPrev = ::onPrevLeftChild
+                        onNext = counterInner::onNextLeftChild,
+                        onPrev = counterInner::onPrevLeftChild
                     )
 
-                    Children(routerState = leftChild, animation = slide()) {
-                        it.instance.counter()
+                    Children(routerState = counterInner.leftRouterState, animation = slide()) {
+                        CounterUi(it.instance.counter)
                     }
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Column(modifier = Modifier.clipToBounds()) {
-                    val activeChild = rightChild.asState().value.activeChild.instance
+                    val activeChild = counterInner.rightRouterState.asState().value.activeChild.instance
 
                     ChildButtons(
                         isBackEnabled = activeChild.isBackEnabled,
-                        onNext = ::onNextRightChild,
-                        onPrev = ::onPrevRightChild
+                        onNext = counterInner::onNextRightChild,
+                        onPrev = counterInner::onPrevRightChild
                     )
 
-                    Children(routerState = rightChild, animation = slide()) {
-                        it.instance.counter()
+                    Children(routerState = counterInner.rightRouterState, animation = slide()) {
+                        CounterUi(it.instance.counter)
                     }
                 }
             }

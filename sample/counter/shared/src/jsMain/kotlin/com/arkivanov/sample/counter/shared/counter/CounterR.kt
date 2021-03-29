@@ -8,22 +8,22 @@ import com.ccfraser.muirwik.components.mTypography
 import react.RBuilder
 import react.RState
 
-class CounterR(props: Props<Counter.Model>) : RenderableComponent<Counter.Model, CounterR.State>(
+class CounterR(props: Props<Counter>) : RenderableComponent<Counter, CounterR.State>(
     props = props,
-    initialState = State(data = props.model.data.value)
+    initialState = State(model = props.component.model.value)
 ) {
 
     init {
-        model.data.bindToState { data = it }
+        component.model.bindToState { model = it }
     }
 
     override fun RBuilder.render() {
         mPaper(variant = MPaperVariant.outlined) {
-            mTypography(state.data.text, align = MTypographyAlign.center)
+            mTypography(state.model.text, align = MTypographyAlign.center)
         }
     }
 
     class State(
-        var data: Counter.Data
+        var model: Counter.Model
     ) : RState
 }

@@ -18,22 +18,22 @@ import react.RState
 import react.dom.br
 import styled.styledDiv
 
-class InnerR(props: Props<CounterInnerContainer.Model>) : RenderableComponent<CounterInnerContainer.Model, InnerR.State>(
+class InnerR(props: Props<CounterInner>) : RenderableComponent<CounterInner, InnerR.State>(
     props = props,
     initialState = State(
-        leftRouterState = props.model.leftChild.value,
-        rightRouterState = props.model.rightChild.value
+        leftRouterState = props.component.leftRouterState.value,
+        rightRouterState = props.component.rightRouterState.value
     )
 ) {
 
     init {
-        model.leftChild.bindToState { leftRouterState = it }
-        model.rightChild.bindToState { rightRouterState = it }
+        component.leftRouterState.bindToState { leftRouterState = it }
+        component.rightRouterState.bindToState { rightRouterState = it }
     }
 
     override fun RBuilder.render() {
         mPaper(variant = MPaperVariant.outlined) {
-            renderableChild(CounterR::class, this@InnerR.model.counter)
+            renderableChild(CounterR::class, this@InnerR.component.counter)
 
             br {}
 
@@ -41,13 +41,13 @@ class InnerR(props: Props<CounterInnerContainer.Model>) : RenderableComponent<Co
                 mGridItem {}
                 childWithButtons(
                     child = state.leftRouterState.activeChild.instance,
-                    onNext = model::onNextLeftChild,
-                    onPrev = model::onPrevLeftChild
+                    onNext = component::onNextLeftChild,
+                    onPrev = component::onPrevLeftChild
                 )
                 childWithButtons(
                     child = state.rightRouterState.activeChild.instance,
-                    onNext = model::onNextRightChild,
-                    onPrev = model::onPrevRightChild
+                    onNext = component::onNextRightChild,
+                    onPrev = component::onPrevRightChild
                 )
                 mGridItem {}
             }
@@ -57,7 +57,7 @@ class InnerR(props: Props<CounterInnerContainer.Model>) : RenderableComponent<Co
     }
 
     private fun RBuilder.childWithButtons(
-        child: CounterInnerContainer.Child,
+        child: CounterInner.Child,
         onNext: () -> Unit,
         onPrev: () -> Unit
     ) {
@@ -89,7 +89,7 @@ class InnerR(props: Props<CounterInnerContainer.Model>) : RenderableComponent<Co
     }
 
     class State(
-        var leftRouterState: RouterState<*, CounterInnerContainer.Child>,
-        var rightRouterState: RouterState<*, CounterInnerContainer.Child>
+        var leftRouterState: RouterState<*, CounterInner.Child>,
+        var rightRouterState: RouterState<*, CounterInner.Child>
     ) : RState
 }

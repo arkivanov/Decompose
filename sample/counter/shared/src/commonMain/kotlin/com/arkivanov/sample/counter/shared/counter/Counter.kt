@@ -4,13 +4,9 @@ import com.arkivanov.decompose.value.Value
 
 interface Counter {
 
-    val model: Model
+    val model: Value<Model>
 
-    interface Model {
-        val data: Value<Data>
-    }
-
-    class Data(
+    class Model(
         val text: String
     )
 }

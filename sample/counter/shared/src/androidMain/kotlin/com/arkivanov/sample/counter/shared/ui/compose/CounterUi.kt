@@ -14,10 +14,14 @@ import com.arkivanov.decompose.extensions.compose.jetpack.asState
 import com.arkivanov.sample.counter.shared.counter.Counter
 
 @Composable
-operator fun Counter.Model.invoke() {
-    val data by data.asState()
+fun CounterUi(counter: Counter) {
+    val model by counter.model.asState()
 
-    Box(modifier = Modifier.border(BorderStroke(width = 1.dp, color = Color.Black)).padding(16.dp)) {
-        Text(text = data.text)
+    Box(
+        modifier = Modifier
+            .border(BorderStroke(width = 1.dp, color = Color.Black))
+            .padding(16.dp)
+    ) {
+        Text(text = model.text)
     }
 }
