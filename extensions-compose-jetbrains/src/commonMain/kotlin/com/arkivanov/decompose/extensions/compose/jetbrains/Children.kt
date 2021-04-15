@@ -3,7 +3,6 @@ package com.arkivanov.decompose.extensions.compose.jetbrains
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
@@ -21,7 +20,7 @@ fun <C : Any, T : Any> Children(
     animation: ChildAnimation<C, T> = { state, childContent -> childContent(state.activeChild) },
     content: ChildContent<C, T>
 ) {
-    val holder = key(routerState) { rememberSaveableStateHolder() }
+    val holder = rememberSaveableStateHolder()
     val state by routerState.asState()
 
     holder.retainStates(state.getConfigurations())
