@@ -20,27 +20,17 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 
 @Composable
 internal fun <T : Any> PageAnimation(
-    key: T,
+    page: T,
+    key: Any,
     animationSpec: FiniteAnimationSpec<Float>,
     arranger: PageArranger<T>,
     animator: PageAnimator<T>,
     content: @Composable (key: T) -> Unit
 ) {
-    val keys = remember { MutableKeys(newKey = key) }
-
-    if (key != keys.newKey) {
-        keys.oldKey = keys.newKey
-        keys.newKey = key
-    }
-
-    val newKey = keys.newKey
-    val oldKey = keys.oldKey
-
     PageAnimation(
-        oldKey = oldKey,
-        newKey = newKey,
+        page = KeyedPage(page = page, key = key),
         animationSpec = animationSpec,
-        arrangement = if (oldKey == null) PageArrangement.FOLLOWING else arranger(newKey, oldKey),
+        arranger = arranger,
         animator = animator,
         content = content
     )
@@ -48,21 +38,50 @@ internal fun <T : Any> PageAnimation(
 
 @Composable
 private fun <T : Any> PageAnimation(
-    oldKey: T?,
-    newKey: T,
+    page: KeyedPage<T>,
+    animationSpec: FiniteAnimationSpec<Float>,
+    arranger: PageArranger<T>,
+    animator: PageAnimator<T>,
+    content: @Composable (page: T) -> Unit
+) {
+    val pages = remember { MutablePages(newPage = page) }
+
+    if (page != pages.newPage) {
+        pages.oldPage = pages.newPage
+        pages.newPage = page
+    }
+
+    val newPage: KeyedPage<T> = pages.newPage
+    val oldPage: KeyedPage<T>? = pages.oldPage
+
+    PageAnimation(
+        oldPage = oldPage,
+        newPage = newPage,
+        animationSpec = animationSpec,
+        arrangement = if (oldPage == null) PageArrangement.FOLLOWING else arranger(newPage.page, oldPage.page),
+        animator = animator,
+        content = content
+    )
+}
+
+@Composable
+private fun <T : Any> PageAnimation(
+    oldPage: KeyedPage<T>?,
+    newPage: KeyedPage<T>,
     animationSpec: AnimationSpec<Float>,
     arrangement: PageArrangement,
     animator: PageAnimator<T>,
-    content: @Composable (key: T) -> Unit
+    content: @Composable (page: T) -> Unit
 ) {
-    val animationState = remember(newKey) { AnimationState(if (oldKey == null) 1F else 0F) }
+    val animationState = remember(newPage.key) { AnimationState(if (oldPage == null) 1F else 0F) }
 
-    var items by remember(newKey) {
+    var items by remember(newPage.key) {
         mutableStateOf(
             listOfNotNull(
-                if (oldKey != null) {
+                if (oldPage != null) {
                     AnimationItem(
-                        key = oldKey,
+                        page = oldPage.page,
+                        key = oldPage.key,
                         arrangement = arrangement.invert(),
                         direction = PageAnimationDirection.EXIT
                     )
@@ -70,7 +89,8 @@ private fun <T : Any> PageAnimation(
                     null
                 },
                 AnimationItem(
-                    key = newKey,
+                    page = newPage.page,
+                    key = newPage.key,
                     arrangement = arrangement,
                     direction = PageAnimationDirection.ENTER
                 )
@@ -78,14 +98,14 @@ private fun <T : Any> PageAnimation(
         )
     }
 
-    LaunchedEffect(newKey) {
+    LaunchedEffect(newPage.key) {
         animationState.animateTo(
             targetValue = 1F,
             animationSpec = animationSpec,
             sequentialAnimation = !animationState.isFinished
         )
 
-        items = items.filter { it.key == newKey }
+        items = items.filter { it.key == newPage.key }
     }
 
     PageAnimationFrame(
@@ -118,9 +138,9 @@ private fun <T : Any> PageAnimationFrame(
                         PageAnimationDirection.EXIT -> 1F - animationValue
                     }
 
-                animator(item.key, factor, item.arrangement, item.direction) { modifier ->
+                animator(item.page, factor, item.arrangement, item.direction) { modifier ->
                     Box(modifier) {
-                        content(item.key)
+                        content(item.page)
                     }
                 }
             }
@@ -128,14 +148,20 @@ private fun <T : Any> PageAnimationFrame(
     }
 }
 
+private data class KeyedPage<out T>(
+    val page: T,
+    val key: Any
+)
+
 private class AnimationItem<out T>(
-    val key: T,
+    val page: T,
+    val key: Any,
     val arrangement: PageArrangement,
     val direction: PageAnimationDirection
 )
 
-private class MutableKeys<T : Any>(
-    var newKey: T
+private class MutablePages<T : Any>(
+    var newPage: T
 ) {
-    var oldKey: T? = null
+    var oldPage: T? = null
 }

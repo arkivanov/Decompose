@@ -32,7 +32,8 @@ fun <C : Any, T : Any> childAnimation(
         indicesMap[routerState.activeChild] = routerState.backStack.size
 
         PageAnimation(
-            key = routerState.activeChild,
+            page = routerState.activeChild,
+            key = routerState.activeChild.configuration,
             animationSpec = animationSpec,
             arranger = { new, old ->
                 val indexOfNew = indicesMap[new] ?: Int.MAX_VALUE
