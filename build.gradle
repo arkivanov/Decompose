@@ -2,10 +2,10 @@
 buildscript {
     ext {
         decompose_version = '0.2.3'
-        kotlin_version = "1.4.31"
+        kotlin_version = "1.4.32"
         compose_kotlin_compiler_version = kotlin_version
-        compose_jetpack_version = '1.0.0-beta03'
-        compose_jetbrains_version = '0.4.0-build177'
+        compose_jetpack_version = '1.0.0-beta05'
+        compose_jetbrains_version = '0.4.0-build184'
         reaktive_version = '1.1.21'
         mvikotlin_version = '2.0.0'
         androidx_appcompat_version = '1.2.0'
