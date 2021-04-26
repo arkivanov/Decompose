@@ -9,6 +9,12 @@ plugins.apply('maven-publish')
 setupAndroid(project)
 setupCompose(project)
 
+android {
+    lintOptions {
+        disable "UnusedCrossfadeTargetStateParameter"
+    }
+}
+
 dependencies {
     implementation project(':decompose')
     implementation "androidx.compose.foundation:foundation:$compose_jetpack_version"
