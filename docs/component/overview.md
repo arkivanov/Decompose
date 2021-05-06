@@ -22,8 +22,6 @@ class Counter {
 }
 ```
 
-
-
 ### Jetpack/JetBrains Compose UI Example
 
 ```kotlin
@@ -64,7 +62,6 @@ struct CounterView: View {
     }
 }
 ```
-
 
 ## `ComponentContext`
 
