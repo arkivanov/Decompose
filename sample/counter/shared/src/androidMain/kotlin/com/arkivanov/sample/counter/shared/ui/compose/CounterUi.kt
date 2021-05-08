@@ -10,12 +10,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetpack.asState
+import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.arkivanov.sample.counter.shared.counter.Counter
 
 @Composable
 fun CounterUi(counter: Counter) {
-    val model by counter.model.asState()
+    val model by counter.model.subscribeAsState()
 
     Box(
         modifier = Modifier
