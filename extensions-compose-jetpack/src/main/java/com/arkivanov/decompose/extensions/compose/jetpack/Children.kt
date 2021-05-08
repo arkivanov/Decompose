@@ -22,7 +22,7 @@ fun <C : Any, T : Any> Children(
     content: ChildContent<C, T>
 ) {
     val holder = rememberSaveableStateHolder()
-    val state by routerState.asState()
+    val state by routerState.subscribeAsState()
 
     holder.retainStates(state.getConfigurations())
 

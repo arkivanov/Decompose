@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.Children
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.slide
-import com.arkivanov.decompose.extensions.compose.jetpack.asState
+import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.arkivanov.sample.counter.shared.inner.CounterInner
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -40,7 +40,7 @@ fun CounterInnerUi(counterInner: CounterInner) {
             Row {
 
                 Column(modifier = Modifier.clipToBounds()) {
-                    val activeChild = counterInner.leftRouterState.asState().value.activeChild.instance
+                    val activeChild = counterInner.leftRouterState.subscribeAsState().value.activeChild.instance
 
                     ChildButtons(
                         isBackEnabled = activeChild.isBackEnabled,
@@ -56,7 +56,7 @@ fun CounterInnerUi(counterInner: CounterInner) {
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Column(modifier = Modifier.clipToBounds()) {
-                    val activeChild = counterInner.rightRouterState.asState().value.activeChild.instance
+                    val activeChild = counterInner.rightRouterState.subscribeAsState().value.activeChild.instance
 
                     ChildButtons(
                         isBackEnabled = activeChild.isBackEnabled,
