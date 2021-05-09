@@ -1,4 +1,4 @@
-setupMultiplatform(project, [Target.ANDROID, Target.IOS, Target.JS], false)
+setupMultiplatform(project, [Target.ANDROID, Target.IOS, Target.JS_LEGACY])
 
 doIfAndroidEnabled {
     plugins.apply("kotlin-parcelize")

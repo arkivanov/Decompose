@@ -1,11 +1,11 @@
-if (!isTargetEnabled(Target.JS)) {
+if (!isTargetEnabled(Target.JS_LEGACY)) {
     return
 }
 
 plugins.apply('org.jetbrains.kotlin.js')
 
 kotlin {
-    js {
+    js(LEGACY) {
         useCommonJs()
         browser()
     }
