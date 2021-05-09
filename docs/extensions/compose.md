@@ -209,7 +209,7 @@ fun RootUi(rootComponent: RootComponent) {
 }
 ```
 
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationCrossfadeSlide.gif" width="512">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationSlide.gif" width="512">
 
 #### Custom animations
 
