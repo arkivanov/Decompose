@@ -14,8 +14,14 @@ fun <C : Any, T : Any> crossfade(
 ): ChildAnimation<C, T> =
     { routerState, content ->
         Crossfade(
-            targetState = routerState.activeChild,
-            animationSpec = animationSpec,
-            content = content
-        )
+            targetState = ChildWrapper(routerState.activeChild, routerState.activeChild.configuration),
+            animationSpec = animationSpec
+        ) {
+            content(it.child)
+        }
     }
+
+private class ChildWrapper<out T, out C : Any>(val child: T, val key: C) {
+    override fun equals(other: Any?): Boolean = key == (other as? ChildWrapper<*, *>)?.key
+    override fun hashCode(): Int = key.hashCode()
+}
