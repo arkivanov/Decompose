@@ -33,6 +33,12 @@ nav:
     - Overview: router/overview.md
 
 
+  - Extensions:
+    - Overview: extensions/overview.md
+    - Extensions for Jetpack/JetBrains Compose: extensions/compose.md
+    - Extensions for Android views: extensions/android.md
+
+
   # Configuration
 theme:
   name: 'material'
