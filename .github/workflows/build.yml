@@ -28,7 +28,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Build
-        run: ./gradlew build -Ptargets=ANDROID,JVM,JS
+        run: ./gradlew build -Ptargets=ANDROID,JVM,JS_IR,JS_LEGACY
   macos-build:
     name: Build on Macos
     runs-on: macos-latest

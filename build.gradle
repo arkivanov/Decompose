@@ -42,7 +42,7 @@ allprojects {
     }
 }
 
-boolean setupMultiplatform(Project project, List<Target> targets = Target.values().toList(), boolean isJsIrEnabled = true) {
+boolean setupMultiplatform(Project project, List<Target> targets = Target.values().toList()) {
     if (!targets.any { isTargetEnabled(it) }) {
         return false
     }
@@ -86,8 +86,8 @@ boolean setupMultiplatform(Project project, List<Target> targets = Target.values
     }
 
     doIfJsEnabled {
-        if (Target.JS in targets) {
-            setupMultiplatformJs(project, isJsIrEnabled)
+        if ((Target.JS_IR in targets) || (Target.JS_LEGACY in targets)) {
+            setupMultiplatformJs(project, Target.JS_IR in targets, Target.JS_LEGACY in targets)
         }
     }
 
@@ -233,9 +233,9 @@ private void setupMultiplatformTvos(Project project) {
     }
 }
 
-private void setupMultiplatformJs(Project project, boolean isIrEnabled = true) {
+private void setupMultiplatformJs(Project project, boolean isIr, boolean isLegacy) {
     project.kotlin {
-        js(isIrEnabled ? BOTH : LEGACY) {
+        js(isIr ? (isLegacy ? BOTH : IR) : LEGACY) {
             browser()
             nodejs()
         }
@@ -422,7 +422,7 @@ void doIfJvmEnabled(Closure block) {
 }
 
 void doIfJsEnabled(Closure block) {
-    if (isTargetEnabled(Target.JS)) {
+    if (isTargetEnabled(Target.JS_LEGACY) || isTargetEnabled(Target.JS_IR)) {
         block()
     }
 }

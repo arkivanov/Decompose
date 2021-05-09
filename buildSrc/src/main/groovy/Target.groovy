@@ -1,7 +1,8 @@
 enum Target {
     ANDROID,
     JVM,
-    JS,
+    JS_IR,
+    JS_LEGACY,
     IOS,
     MACOS_X64,
     TVOS
