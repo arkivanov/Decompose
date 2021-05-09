@@ -1,0 +1,23 @@
+if (!setupMultiplatform(project, [Target.ANDROID, Target.JVM])) {
+    return
+}
+
+plugins.apply("org.jetbrains.compose")
+
+doIfAndroidEnabled {
+    plugins.apply("kotlin-parcelize")
+}
+
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation project(':decompose')
+                implementation project(':sample:master-detail:shared')
+                implementation project(':extensions-compose-jetbrains')
+                implementation "org.jetbrains.compose.foundation:foundation:$compose_jetbrains_version"
+                implementation "org.jetbrains.compose.material:material:$compose_jetbrains_version"
+            }
+        }
+    }
+}

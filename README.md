@@ -31,19 +31,21 @@ Decompose is a Kotlin Multiplatform lifecycle-aware business logic components (a
 
 Check out the [project website](https://arkivanov.github.io/Decompose/samples/) for a full description of each sample.
 
-* Counter 
-    * [Android sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app-android)
-    * [iOS sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/ios-app)
-    * [JavaScript sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app-js)
-* [Jetbrains Compose and SwiftUI todo app](https://github.com/JetBrains/compose-jb/tree/master/examples/todoapp)
-* [Simple Greetings Jetbrains Compose app](https://github.com/theapache64/decompose-desktop-example)  - desktop only
+* [Counter](https://github.com/arkivanov/Decompose/tree/master/sample/counter)
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterDemo.gif" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterIos.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterJs.png" width="196">
 
+* [Master - Detail](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail)
+
+<img src="docs/media/SampleMasterDetailAndroid1.png" width="196"> <img src="docs/media/SampleMasterDetailAndroid2.png" width="196"> <img src="docs/media/SampleMasterDetailDesktop.gif" width="512">
+
+* [Jetbrains Compose and SwiftUI todo app](https://github.com/JetBrains/compose-jb/tree/master/examples/todoapp)
+
 <img src="https://raw.githubusercontent.com/JetBrains/compose-jb/master/examples/todoapp/screenshots/todo.png" width="384"> 
 
-<img src="docs/media/SampleGreetingsDemo.gif" width="512">
+* [Simple Greetings Jetbrains Compose app](https://github.com/theapache64/decompose-desktop-example)  - desktop only
 
+<img src="docs/media/SampleGreetingsDemo.gif" width="512">
 
 ## Articles
 
@@ -55,7 +57,6 @@ Check out the [project website](https://arkivanov.github.io/Decompose/samples/) 
 Twitter: [@arkann1985](https://twitter.com/arkann1985)
 
 If you like this project you can always <a href="https://www.buymeacoffee.com/arkivanov" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" height=32></a> ;-)
-
 
 [badge-android]: http://img.shields.io/badge/platform-android-6EDB8D.svg?style=flat
 [badge-ios]: http://img.shields.io/badge/platform-ios-CDCDCD.svg?style=flat

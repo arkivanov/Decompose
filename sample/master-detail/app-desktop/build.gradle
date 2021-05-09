@@ -1,0 +1,44 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
+if (!setupMultiplatform(project, [Target.JVM])) {
+    return
+}
+
+plugins.apply("org.jetbrains.compose")
+
+kotlin {
+    jvm {
+        withJava()
+    }
+
+    sourceSets {
+        jvmMain {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation project(':decompose')
+                implementation project(':extensions-compose-jetbrains')
+                implementation project(':sample:master-detail:shared')
+                implementation project(':sample:master-detail:compose-ui')
+            }
+        }
+    }
+}
+
+compose.desktop {
+    application {
+        mainClass = "com.arkivanov.masterdetail.app.MainKt"
+
+        nativeDistributions {
+            targetFormats = EnumSet.of(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "DecomposeMasterDetail"
+            packageVersion = "1.0.0"
+
+            windows {
+                menuGroup = "Decompose Samples"
+                // see https://wixtoolset.org/documentation/manual/v3/howtos/general/generate_guids.html
+                upgradeUuid = "26181E8D-ADC6-4D03-BC67-B642F461AED4"
+            }
+        }
+    }
+}
+
