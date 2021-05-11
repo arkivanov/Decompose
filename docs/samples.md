@@ -16,9 +16,9 @@ This sample demonstrates the following features:
 Content:
 
 * [shared](https://github.com/arkivanov/Decompose/tree/master/sample/counter/shared) - the module which includes the following components:
-    * [Counter](https://github.com/arkivanov/Decompose/blob/master/sample/counter/shared/src/commonMain/kotlin/com/arkivanov/sample/counter/shared/counter/Counter.kt) - this component just increments the counter every 250 ms. It starts counting once created and stops when destroyed. So `Counter` continues counting while in the back stack, unless recreated. It uses the `InstanceKeeper`, so counting continues after configuration changes.
-    * [CounterInnerContainer](https://github.com/arkivanov/Decompose/blob/master/sample/counter/shared/src/commonMain/kotlin/com/arkivanov/sample/counter/shared/inner/CounterInnerContainer.kt) - this component contains the `Counter` and two `Routers` on the left and on the right side. Each `Router` displays its stack of `Counters` and two buttons for navigation. "Next" button pushes another `Counter` to the corresponding `Router`, "Prev" button pops the active `Counter` for the `Router`.
-    * [CounterRootComponent](https://github.com/arkivanov/Decompose/blob/master/sample/counter/shared/src/commonMain/kotlin/com/arkivanov/sample/counter/shared/root/CounterRootContainer.kt) - this component contains the `Counter`, the `Router` of `CounterInnerContainer` and a button pushing another `CounterInnerContainer` to the stack. System back button is used for backward navigation.
+    * [Counter](https://github.com/arkivanov/Decompose/blob/master/sample/counter/shared/src/commonMain/kotlin/com/arkivanov/sample/counter/shared/counter) - this component just increments the counter every 250 ms. It starts counting once created and stops when destroyed. So `Counter` continues counting while in the back stack, unless recreated. It uses the `InstanceKeeper`, so counting continues after configuration changes.
+    * [CounterInnerContainer](https://github.com/arkivanov/Decompose/blob/master/sample/counter/shared/src/commonMain/kotlin/com/arkivanov/sample/counter/shared/inner) - this component contains the `Counter` and two `Routers` on the left and on the right side. Each `Router` displays its stack of `Counters` and two buttons for navigation. "Next" button pushes another `Counter` to the corresponding `Router`, "Prev" button pops the active `Counter` for the `Router`.
+    * [CounterRootComponent](https://github.com/arkivanov/Decompose/blob/master/sample/counter/shared/src/commonMain/kotlin/com/arkivanov/sample/counter/shared/root) - this component contains the `Counter`, the `Router` of `CounterInnerContainer` and a button pushing another `CounterInnerContainer` to the stack. System back button is used for backward navigation.
 * [Android sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app-android)
 * [iOS sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/ios-app)
 * [JavaScript sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app-js)
@@ -29,7 +29,7 @@ Content:
 
 ## Sample Master-Detail App
 
-<img src="/media/SampleMasterDetailAndroid1.png" width="196"> <img src="/media/SampleMasterDetailAndroid2.png" width="196"> <img src="/media/SampleMasterDetailDesktop.gif" width="512">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailAndroid1.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailAndroid2.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailDesktop.gif" width="512">
 
 This sample demonstrates the following features:
 
