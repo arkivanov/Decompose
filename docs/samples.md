@@ -15,20 +15,37 @@ This sample demonstrates the following features:
 
 Content:
 
-* [Shared module](https://github.com/arkivanov/Decompose/tree/master/sample/counter/shared) which includes the following components:
+* [shared](https://github.com/arkivanov/Decompose/tree/master/sample/counter/shared) - the module which includes the following components:
     * [Counter](https://github.com/arkivanov/Decompose/blob/master/sample/counter/shared/src/commonMain/kotlin/com/arkivanov/sample/counter/shared/counter/Counter.kt) - this component just increments the counter every 250 ms. It starts counting once created and stops when destroyed. So `Counter` continues counting while in the back stack, unless recreated. It uses the `InstanceKeeper`, so counting continues after configuration changes.
     * [CounterInnerContainer](https://github.com/arkivanov/Decompose/blob/master/sample/counter/shared/src/commonMain/kotlin/com/arkivanov/sample/counter/shared/inner/CounterInnerContainer.kt) - this component contains the `Counter` and two `Routers` on the left and on the right side. Each `Router` displays its stack of `Counters` and two buttons for navigation. "Next" button pushes another `Counter` to the corresponding `Router`, "Prev" button pops the active `Counter` for the `Router`.
     * [CounterRootComponent](https://github.com/arkivanov/Decompose/blob/master/sample/counter/shared/src/commonMain/kotlin/com/arkivanov/sample/counter/shared/root/CounterRootContainer.kt) - this component contains the `Counter`, the `Router` of `CounterInnerContainer` and a button pushing another `CounterInnerContainer` to the stack. System back button is used for backward navigation.
+* [Android sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app-android)
+* [iOS sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/ios-app)
+* [JavaScript sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app-js)
 
 ### Counter Component Structure 
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterStructure.png" width="384">
 
-### Counter Source Code
+## Sample Master-Detail App
 
-* [Android sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app-android)
-* [iOS sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/ios-app)
-* [JavaScript sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app-js)
+<img src="/media/SampleMasterDetailAndroid1.png" width="196"> <img src="/media/SampleMasterDetailAndroid2.png" width="196"> <img src="/media/SampleMasterDetailDesktop.gif" width="512">
+
+This sample demonstrates the following features:
+
+* Advanced master-detail navigation with automatic single-pain/multi-pain layout
+* Nested components
+* Pluggable UI (Jetpack Compose for Android and Desktop, more to come)
+
+Content:
+
+* [shared](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/shared) - the multiplatform module which includes the following components:
+    * [ArticleList](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/shared/src/commonMain/kotlin/com/arkivanov/sample/masterdetail/shared/list) - the list of the items
+    * [ArticleDetails](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/shared/src/commonMain/kotlin/com/arkivanov/sample/masterdetail/shared/details) - the details of the selected item
+    * [Root](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/shared/src/commonMain/kotlin/com/arkivanov/sample/masterdetail/shared/root) - the root component navigating between screens
+* [compose-ui](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/compose-ui) - the module containing Compose UI for Android and Desktop targets
+* [Android sample app](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/app-android)
+* [Desktop sample app](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/app-desktop)
 
 ## Sample Todo List App
 
@@ -59,7 +76,7 @@ The Todo sample app can be found in the JetBrains Compose repository [here](http
 
 [Sample Greetings Repository](https://github.com/theapache64/decompose-desktop-example)
 
-## More Articles
+## Related articles
 
 * [Decompose — experiments with Kotlin Multiplatform lifecycle-aware components and navigation](https://proandroiddev.com/decompose-experiments-with-kotlin-multiplatform-lifecycle-aware-components-and-navigation-a04ef3c7f6a3?source=friends_link&sk=f7d289cc329b6c8a765fc049e36c313f)
 * [Fully cross-platform Kotlin applications (almost)](https://proandroiddev.com/fully-cross-platform-kotlin-applications-almost-29c7054f8f28?source=friends_link&sk=4619fdcb17912fde589bc4fca83efbbd)

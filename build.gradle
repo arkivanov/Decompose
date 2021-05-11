@@ -48,7 +48,9 @@ boolean setupMultiplatform(Project project, List<Target> targets = Target.values
     }
 
     doIfAndroidEnabled {
-        project.plugins.apply("com.android.library")
+        if (Target.ANDROID in targets) {
+            project.plugins.apply("com.android.library")
+        }
     }
 
     project.plugins.apply("kotlin-multiplatform")

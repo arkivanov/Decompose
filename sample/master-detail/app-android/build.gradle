@@ -1,0 +1,37 @@
+if (!isTargetEnabled(Target.ANDROID)) {
+    return
+}
+
+plugins.apply('com.android.application')
+plugins.apply("org.jetbrains.compose")
+plugins.apply('kotlin-android')
+plugins.apply('kotlin-parcelize')
+
+setupAndroid(project)
+
+android {
+    defaultConfig {
+        applicationId "com.arkivanov.masterdetail.app"
+        versionCode 1
+        versionName "1.0"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/*'
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.compose.foundation:foundation:$compose_jetbrains_version"
+    implementation "org.jetbrains.compose.material:material:$compose_jetbrains_version"
+    implementation "androidx.core:core-ktx:$androidx_core_ktx_version"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_common_java8_version"
+    implementation "com.google.android.material:material:$android_material_version"
+    implementation("androidx.activity:activity-compose:$androidx_activity_compose_version")
+    implementation project(':decompose')
+    implementation project(':extensions-compose-jetbrains')
+    implementation project(':sample:master-detail:shared')
+    implementation project(':sample:master-detail:compose-ui')
+}
