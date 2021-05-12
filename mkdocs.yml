@@ -31,6 +31,7 @@ nav:
     
   - Router: 
     - Overview: router/overview.md
+    - Deep linking: router/deeplinking.md
 
 
   - Extensions:
