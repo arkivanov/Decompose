@@ -20,7 +20,7 @@ import com.arkivanov.sample.masterdetail.shared.details.ArticleDetails
 
 @Composable
 fun ArticleDetailsUi(component: ArticleDetails, modifier: Modifier = Modifier) {
-    val model by component.article.subscribeAsState()
+    val model by component.models.subscribeAsState()
     val article = model.article
 
     Column(modifier = modifier) {

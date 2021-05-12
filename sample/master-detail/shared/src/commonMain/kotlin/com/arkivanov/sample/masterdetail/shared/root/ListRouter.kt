@@ -4,21 +4,18 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.RouterFactory
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.pop
-import com.arkivanov.decompose.popWhile
 import com.arkivanov.decompose.push
 import com.arkivanov.decompose.router
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.masterdetail.shared.database.ArticleDatabase
-import com.arkivanov.sample.masterdetail.shared.details.ArticleDetails
-import com.arkivanov.sample.masterdetail.shared.details.ArticleDetailsComponent
 import com.arkivanov.sample.masterdetail.shared.list.ArticleList
 import com.arkivanov.sample.masterdetail.shared.list.ArticleListComponent
-import com.arkivanov.sample.masterdetail.shared.root.Root.MainChild
+import com.arkivanov.sample.masterdetail.shared.root.Root.ListChild
 import com.badoo.reaktive.observable.Observable
 
-internal class MainRouter(
+internal class ListRouter(
     routerFactory: RouterFactory,
     private val database: ArticleDatabase,
     private val selectedArticleId: Observable<Long?>,
@@ -26,19 +23,18 @@ internal class MainRouter(
 ) {
 
     private val router =
-        routerFactory.router<Config, MainChild>(
+        routerFactory.router<Config, ListChild>(
             initialConfiguration = Config.List,
             key = "MainRouter",
-            handleBackButton = true,
             childFactory = ::createChild
         )
 
-    val state: Value<RouterState<Config, MainChild>> = router.state
+    val state: Value<RouterState<Config, ListChild>> = router.state
 
-    private fun createChild(config: Config, componentContext: ComponentContext): MainChild =
+    private fun createChild(config: Config, componentContext: ComponentContext): ListChild =
         when (config) {
-            is Config.List -> MainChild.List(articleList(componentContext))
-            is Config.Details -> MainChild.Details(articleDetails(articleId = config.articleId, isToolbarVisible = true))
+            is Config.List -> ListChild.List(articleList(componentContext))
+            is Config.None -> ListChild.None
         }
 
     private fun articleList(componentContext: ComponentContext): ArticleList =
@@ -49,26 +45,16 @@ internal class MainRouter(
             onArticleSelected = onArticleSelected
         )
 
-    private fun articleDetails(articleId: Long, isToolbarVisible: Boolean): ArticleDetails =
-        ArticleDetailsComponent(
-            database = database,
-            articleId = articleId,
-            isToolbarVisible = isToolbarVisible,
-            onFinished = router::pop
-        )
-
-    fun getSelectedArticleId(): Long? =
-        when (val config = router.state.value.activeChild.configuration) {
-            is Config.List -> null
-            is Config.Details -> config.articleId
+    fun moveToBackStack() {
+        if (router.state.value.activeChild.configuration !is Config.None) {
+            router.push(Config.None)
         }
-
-    fun pushDetails(id: Long) {
-        router.push(Config.Details(articleId = id))
     }
 
-    fun popToList() {
-        router.popWhile { it !is Config.List }
+    fun show() {
+        if (router.state.value.activeChild.configuration !is Config.List) {
+            router.pop()
+        }
     }
 
     sealed class Config : Parcelable {
@@ -76,6 +62,6 @@ internal class MainRouter(
         object List : Config()
 
         @Parcelize
-        data class Details(val articleId: Long) : Config()
+        object None : Config()
     }
 }

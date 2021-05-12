@@ -2,11 +2,13 @@ package com.arkivanov.sample.masterdetail.shared.root
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.RouterState
+import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.observe
+import com.arkivanov.decompose.value.reduce
 import com.arkivanov.sample.masterdetail.shared.database.DefaultArticleDatabase
 import com.arkivanov.sample.masterdetail.shared.root.Root.DetailsChild
-import com.arkivanov.sample.masterdetail.shared.root.Root.MainChild
+import com.arkivanov.sample.masterdetail.shared.root.Root.ListChild
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
 
 class RootComponent(
@@ -14,42 +16,67 @@ class RootComponent(
 ) : Root, ComponentContext by componentContext {
 
     private val database = DefaultArticleDatabase()
+    private val isDetailsToolbarVisible = BehaviorSubject(false)
     private val selectedArticleIdSubject = BehaviorSubject<Long?>(null)
 
-    private val mainRouter =
-        MainRouter(
+    private val _models = MutableValue(Root.Model())
+    override val models: Value<Root.Model> = _models
+
+    private val listRouter =
+        ListRouter(
             routerFactory = this,
             database = database,
             selectedArticleId = selectedArticleIdSubject,
             onArticleSelected = ::onArticleSelected
         )
 
-    override val mainRouterState: Value<RouterState<*, MainChild>> = mainRouter.state
+    override val listRouterState: Value<RouterState<*, ListChild>> = listRouter.state
 
     private val detailsRouter =
-        DetailsPaneRouter(
+        DetailsRouter(
             routerFactory = this,
-            database = database
+            database = database,
+            isToolbarVisible = isDetailsToolbarVisible,
+            onFinished = ::closeDetailsAndShowList
         )
 
     override val detailsRouterState: Value<RouterState<*, DetailsChild>> = detailsRouter.state
 
     init {
+        backPressedDispatcher.register {
+            if (isMultiPaneMode() || !detailsRouter.isShown()) {
+                false
+            } else {
+                closeDetailsAndShowList()
+                true
+            }
+        }
+
         detailsRouter.state.observe(lifecycle) {
             selectedArticleIdSubject.onNext(it.activeChild.configuration.getArticleId())
         }
     }
 
+    private fun closeDetailsAndShowList() {
+        listRouter.show()
+        detailsRouter.closeArticle()
+    }
+
     private fun onArticleSelected(id: Long) {
+        detailsRouter.showArticle(id = id)
+
         if (isMultiPaneMode()) {
-            detailsRouter.selectArticle(id = id)
+            listRouter.show()
         } else {
-            mainRouter.pushDetails(id = id)
+            listRouter.moveToBackStack()
         }
     }
 
     override fun setMultiPane(isMultiPane: Boolean) {
         if (isMultiPane != isMultiPaneMode()) {
+            _models.reduce { it.copy(isMultiPane = isMultiPane) }
+            isDetailsToolbarVisible.onNext(!isMultiPane)
+
             if (isMultiPane) {
                 switchToMultiPane()
             } else {
@@ -59,24 +86,22 @@ class RootComponent(
     }
 
     private fun switchToMultiPane() {
-        detailsRouter.selectArticle(id = mainRouter.getSelectedArticleId())
-        mainRouter.popToList()
+        listRouter.show()
     }
 
     private fun switchToSinglePane() {
-        detailsRouter
-            .getSelectedArticleId()
-            ?.also(mainRouter::pushDetails)
-
-        detailsRouter.closeArticle()
+        if (detailsRouter.isShown()) {
+            listRouter.moveToBackStack()
+        } else {
+            listRouter.show()
+        }
     }
 
-    private fun isMultiPaneMode(): Boolean = detailsRouter.isMultiPaneMode()
+    private fun isMultiPaneMode(): Boolean = _models.value.isMultiPane
 
-    private fun DetailsPaneRouter.Config.getArticleId(): Long? =
+    private fun DetailsRouter.Config.getArticleId(): Long? =
         when (this) {
-            is DetailsPaneRouter.Config.None,
-            is DetailsPaneRouter.Config.NotSelected -> null
-            is DetailsPaneRouter.Config.Selected -> articleId
+            is DetailsRouter.Config.None -> null
+            is DetailsRouter.Config.Details -> articleId
         }
 }
