@@ -4,7 +4,7 @@ import com.arkivanov.decompose.value.Value
 
 interface ArticleDetails {
 
-    val article: Value<Model>
+    val models: Value<Model>
 
     fun onCloseClicked()
 

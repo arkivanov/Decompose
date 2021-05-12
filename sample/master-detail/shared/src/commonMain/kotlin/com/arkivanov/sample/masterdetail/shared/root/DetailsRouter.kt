@@ -3,7 +3,7 @@ package com.arkivanov.sample.masterdetail.shared.root
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.RouterFactory
 import com.arkivanov.decompose.RouterState
-import com.arkivanov.decompose.replaceCurrent
+import com.arkivanov.decompose.popWhile
 import com.arkivanov.decompose.router
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
@@ -12,10 +12,13 @@ import com.arkivanov.sample.masterdetail.shared.database.ArticleDatabase
 import com.arkivanov.sample.masterdetail.shared.details.ArticleDetails
 import com.arkivanov.sample.masterdetail.shared.details.ArticleDetailsComponent
 import com.arkivanov.sample.masterdetail.shared.root.Root.DetailsChild
+import com.badoo.reaktive.observable.Observable
 
-internal class DetailsPaneRouter(
+internal class DetailsRouter(
     routerFactory: RouterFactory,
-    private val database: ArticleDatabase
+    private val database: ArticleDatabase,
+    private val isToolbarVisible: Observable<Boolean>,
+    private val onFinished: () -> Unit
 ) {
 
     private val router =
@@ -30,38 +33,34 @@ internal class DetailsPaneRouter(
     private fun createChild(config: Config, componentContext: ComponentContext): DetailsChild =
         when (config) {
             is Config.None -> DetailsChild.None
-            is Config.NotSelected -> DetailsChild.NotSelected
-            is Config.Selected -> DetailsChild.Selected(articleDetails(articleId = config.articleId, isToolbarVisible = false))
+            is Config.Details -> DetailsChild.Details(articleDetails(componentContext = componentContext, articleId = config.articleId))
         }
 
-    private fun articleDetails(articleId: Long, isToolbarVisible: Boolean): ArticleDetails =
+    private fun articleDetails(componentContext: ComponentContext, articleId: Long): ArticleDetails =
         ArticleDetailsComponent(
+            componentContext = componentContext,
             database = database,
             articleId = articleId,
             isToolbarVisible = isToolbarVisible,
-            onFinished = { /* no-op */ }
+            onFinished = onFinished
         )
 
-    fun selectArticle(id: Long?) {
-        router.replaceCurrent(if (id == null) Config.NotSelected else Config.Selected(articleId = id))
+    fun showArticle(id: Long) {
+        router.navigate { stack ->
+            stack
+                .dropLastWhile { it is Config.Details }
+                .plus(Config.Details(articleId = id))
+        }
     }
 
     fun closeArticle() {
-        router.replaceCurrent(Config.None)
+        router.popWhile { it !is Config.None }
     }
 
-    fun isMultiPaneMode(): Boolean =
+    fun isShown(): Boolean =
         when (router.state.value.activeChild.configuration) {
             is Config.None -> false
-            is Config.NotSelected,
-            is Config.Selected -> true
-        }
-
-    fun getSelectedArticleId(): Long? =
-        when (val config = router.state.value.activeChild.configuration) {
-            is Config.None,
-            is Config.NotSelected -> null
-            is Config.Selected -> config.articleId
+            is Config.Details -> true
         }
 
     sealed class Config : Parcelable {
@@ -69,9 +68,6 @@ internal class DetailsPaneRouter(
         object None : Config()
 
         @Parcelize
-        object NotSelected : Config()
-
-        @Parcelize
-        data class Selected(val articleId: Long) : Config()
+        data class Details(val articleId: Long) : Config()
     }
 }

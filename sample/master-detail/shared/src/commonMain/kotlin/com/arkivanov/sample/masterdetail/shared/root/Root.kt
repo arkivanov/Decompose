@@ -7,19 +7,23 @@ import com.arkivanov.sample.masterdetail.shared.list.ArticleList
 
 interface Root {
 
-    val mainRouterState: Value<RouterState<*, MainChild>>
+    val models: Value<Model>
+    val listRouterState: Value<RouterState<*, ListChild>>
     val detailsRouterState: Value<RouterState<*, DetailsChild>>
 
     fun setMultiPane(isMultiPane: Boolean)
 
-    sealed class MainChild {
-        class List(val component: ArticleList) : MainChild()
-        class Details(val component: ArticleDetails) : MainChild()
+    data class Model(
+        val isMultiPane: Boolean = false
+    )
+
+    sealed class ListChild {
+        class List(val component: ArticleList) : ListChild()
+        object None : ListChild()
     }
 
     sealed class DetailsChild {
         object None : DetailsChild()
-        object NotSelected : DetailsChild()
-        data class Selected(val component: ArticleDetails) : DetailsChild()
+        data class Details(val component: ArticleDetails) : DetailsChild()
     }
 }
