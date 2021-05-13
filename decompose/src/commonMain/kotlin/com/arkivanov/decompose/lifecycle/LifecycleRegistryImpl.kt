@@ -1,9 +1,14 @@
 package com.arkivanov.decompose.lifecycle
 
+import com.arkivanov.decompose.ensureNeverFrozen
 import com.arkivanov.decompose.lifecycle.Lifecycle.Callbacks
 import com.arkivanov.decompose.lifecycle.Lifecycle.State
 
 internal class LifecycleRegistryImpl : LifecycleRegistry {
+
+    init {
+        ensureNeverFrozen()
+    }
 
     private var callbacks = emptySet<Callbacks>()
     private var _state = State.INITIALIZED
