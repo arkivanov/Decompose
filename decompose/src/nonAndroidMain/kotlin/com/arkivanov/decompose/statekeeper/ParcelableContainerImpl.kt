@@ -1,8 +1,13 @@
 package com.arkivanov.decompose.statekeeper
 
+import com.arkivanov.decompose.ensureNeverFrozen
 import kotlin.reflect.KClass
 
 internal actual class ParcelableContainerImpl actual constructor() : ParcelableContainer {
+
+    init {
+        ensureNeverFrozen()
+    }
 
     private var value: Any? = null
 

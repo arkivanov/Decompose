@@ -1,6 +1,12 @@
 package com.arkivanov.decompose.backpressed
 
+import com.arkivanov.decompose.ensureNeverFrozen
+
 internal class BackPressedDispatcherImpl : BackPressedDispatcher {
+
+    init {
+        ensureNeverFrozen()
+    }
 
     private var handlers = emptySet<() -> Boolean>()
 

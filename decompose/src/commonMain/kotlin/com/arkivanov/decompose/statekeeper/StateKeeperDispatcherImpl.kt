@@ -1,8 +1,13 @@
 package com.arkivanov.decompose.statekeeper
 
+import com.arkivanov.decompose.ensureNeverFrozen
 import kotlin.reflect.KClass
 
 internal class StateKeeperDispatcherImpl(savedState: ParcelableContainer?) : StateKeeperDispatcher {
+
+    init {
+        ensureNeverFrozen()
+    }
 
     private val savedState: MutableMap<String, ParcelableContainer>? = savedState?.consume<SavedState>()?.map
     private val suppliers = HashMap<String, () -> Parcelable>()

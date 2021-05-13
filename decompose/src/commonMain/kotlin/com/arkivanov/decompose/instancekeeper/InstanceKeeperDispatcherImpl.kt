@@ -1,8 +1,13 @@
 package com.arkivanov.decompose.instancekeeper
 
+import com.arkivanov.decompose.ensureNeverFrozen
 import com.arkivanov.decompose.instancekeeper.InstanceKeeper.Instance
 
 internal class InstanceKeeperDispatcherImpl : InstanceKeeperDispatcher {
+
+    init {
+        ensureNeverFrozen()
+    }
 
     private val map = HashMap<Any, Instance>()
 
