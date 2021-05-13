@@ -18,7 +18,7 @@ can read more about it [here](https://kotlinlang.org/docs/reference/compiler-plu
 
 The `Router` has a state consisting of a currently active component and a back stack, so it can be rendered as any other state.
 
-`Routers` can be nested, and each component can have more than one `Router`.
+Child components can also have `Routers` (nested navigation), and each component can have more than one `Router`.
 
 ## Routing example
 
@@ -123,5 +123,30 @@ class RootComponent(
         @Parcelize
         data class Details(val itemId: Long) : Config()
     }
+}
+```
+
+## Multiple routers in a component
+
+When multiple `Routers` are required in one component, each such a `Router` must have a unique key associated. The keys are required to be
+unique only within the component, so it is ok for different components to have `Routers` with same keys. An exception will be thrown if
+multiple `Routers` with same key are detected in a component.
+
+```kotlin
+class Root(
+    componentContext: ComponentContext
+) : ComponentContext by componentContext {
+
+    private val topRouter =
+        router<TopConfig, TopChild>(
+            key = "TopRouter",
+            // Omitted code
+        )
+
+    private val bottomRouter =
+        router<BottomConfig, BottomChild>(
+            key = "BottomRouter",
+            // Omitted code
+        )
 }
 ```
