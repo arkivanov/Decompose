@@ -27,26 +27,6 @@ Content:
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterStructure.png" width="384">
 
-## Sample Master-Detail App
-
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailAndroid1.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailAndroid2.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailDesktop.gif" width="512">
-
-This sample demonstrates the following features:
-
-* Advanced master-detail navigation with automatic single-pain/multi-pain layout
-* Nested components
-* Pluggable UI (Jetpack Compose for Android and Desktop, more to come)
-
-Content:
-
-* [shared](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/shared) - the multiplatform module which includes the following components:
-    * [ArticleList](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/shared/src/commonMain/kotlin/com/arkivanov/sample/masterdetail/shared/list) - the list of the items
-    * [ArticleDetails](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/shared/src/commonMain/kotlin/com/arkivanov/sample/masterdetail/shared/details) - the details of the selected item
-    * [Root](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/shared/src/commonMain/kotlin/com/arkivanov/sample/masterdetail/shared/root) - the root component navigating between screens
-* [compose-ui](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/compose-ui) - the module containing Compose UI for Android and Desktop targets
-* [Android sample app](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/app-android)
-* [Desktop sample app](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/app-desktop)
-
 ## Sample Todo List App
 
 <img src="https://raw.githubusercontent.com/JetBrains/compose-jb/master/examples/todoapp/screenshots/todo.png" width="384">
@@ -69,6 +49,28 @@ Please refer to the [sample's readme](https://github.com/JetBrains/compose-jb/bl
 ### Todo Source Code
 
 The Todo sample app can be found in the JetBrains Compose repository [here](https://github.com/JetBrains/compose-jb/tree/master/examples/todoapp).
+
+## Sample Master-Detail App
+
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailAndroid1.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailAndroid2.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailDesktop.gif" width="512">
+
+> ⚠ This sample is for advanced single-pane/multi-pane navigation and layout, for generic master-detail navigation please refer to the Sample Todo List App described above.
+
+This sample demonstrates the following features:
+
+* Advanced master-detail navigation with automatic single-pane/multi-pane layout
+* Nested components
+* Pluggable UI (Jetpack Compose for Android and Desktop, more to come)
+
+Content:
+
+* [shared](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/shared) - the multiplatform module which includes the following components:
+    * [ArticleList](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/shared/src/commonMain/kotlin/com/arkivanov/sample/masterdetail/shared/list) - the list of the items
+    * [ArticleDetails](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/shared/src/commonMain/kotlin/com/arkivanov/sample/masterdetail/shared/details) - the details of the selected item
+    * [Root](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/shared/src/commonMain/kotlin/com/arkivanov/sample/masterdetail/shared/root) - the root component navigating between screens
+* [compose-ui](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/compose-ui) - the module containing Compose UI for Android and Desktop targets
+* [Android sample app](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/app-android)
+* [Desktop sample app](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/app-desktop)
 
 ## Sample Greetings App
 
