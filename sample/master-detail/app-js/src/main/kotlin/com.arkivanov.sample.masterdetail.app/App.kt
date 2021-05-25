@@ -7,10 +7,7 @@ import com.arkivanov.decompose.lifecycle.resume
 import com.arkivanov.sample.masterdetail.shared.renderableChild
 import com.arkivanov.sample.masterdetail.shared.root.RootComponent
 import com.arkivanov.sample.masterdetail.shared.root.RootR
-import com.ccfraser.muirwik.components.mContainer
 import com.ccfraser.muirwik.components.mCssBaseline
-import com.ccfraser.muirwik.components.mTypography
-import com.ccfraser.muirwik.components.styles.Breakpoint
 import react.RBuilder
 import react.RComponent
 import react.RProps
@@ -33,8 +30,6 @@ class App : RComponent<RProps, RState>() {
     override fun RBuilder.render() {
         mCssBaseline()
 
-        mContainer(maxWidth = Breakpoint.xs) {
-            renderableChild(RootR::class, root)
-        }
+        renderableChild(RootR::class, root)
     }
 }
