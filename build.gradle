@@ -3,6 +3,7 @@ buildscript {
     ext {
         decompose_version = '0.2.4'
         kotlin_version = "1.4.32"
+        junit_version = "4.13.2"
         compose_kotlin_compiler_version = kotlin_version
         compose_jetpack_version = '1.0.0-beta05'
         compose_jetbrains_version = '0.4.0-build184'
@@ -56,6 +57,7 @@ boolean setupMultiplatform(Project project, List<Target> targets = Target.values
     project.plugins.apply("kotlin-multiplatform")
 
     setupMultiplatformCommon(project)
+
     doIfAndroidEnabled {
         if (Target.ANDROID in targets) {
             setupMultiplatformAndroid(project)
