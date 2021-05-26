@@ -26,6 +26,16 @@ kotlin {
                 }
             }
         }
+
+        doIfJvmEnabled {
+            jvmTest {
+                dependencies {
+                    implementation "org.jetbrains.compose.ui:ui-test-junit4:$compose_jetbrains_version"
+                    implementation "junit:junit:$junit_version"
+                    implementation compose.desktop.currentOs
+                }
+            }
+        }
     }
 }
 
