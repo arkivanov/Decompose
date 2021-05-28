@@ -83,6 +83,12 @@ boolean setupMultiplatform(Project project, List<Target> targets = Target.values
         }
     }
 
+    doIfWatchosEnabled {
+        if (Target.WATCHOS in targets) {
+            setupMultiplatformWatchos(project)
+        }
+    }
+
     doIfTvosEnabled {
         if (Target.TVOS in targets) {
             setupMultiplatformTvos(project)
@@ -212,6 +218,24 @@ private void setupMultiplatformMacosX64(Project project) {
             }
 
             macosX64Test {
+                dependsOn nonAndroidTest
+                dependsOn nativeTest
+            }
+        }
+    }
+}
+
+private void setupMultiplatformWatchos(Project project) {
+    project.kotlin {
+        watchos()
+
+        sourceSets {
+            watchosMain {
+                dependsOn nonAndroidMain
+                dependsOn nativeMain
+            }
+
+            watchosTest {
                 dependsOn nonAndroidTest
                 dependsOn nativeTest
             }
@@ -439,6 +463,12 @@ void doIfIosEnabled(Closure block) {
 
 void doIfMacosX64Enabled(Closure block) {
     if (isTargetEnabled(Target.MACOS_X64)) {
+        block()
+    }
+}
+
+void doIfWatchosEnabled(Closure block) {
+    if (isTargetEnabled(Target.WATCHOS)) {
         block()
     }
 }

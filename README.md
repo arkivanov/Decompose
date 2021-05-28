@@ -8,6 +8,7 @@
 ![badge][badge-jvm]
 ![badge][badge-mac]
 ![badge][badge-tvos]
+![badge][badge-watchos]
 
 # Decompose
 
@@ -64,3 +65,4 @@ If you like this project you can always <a href="https://www.buymeacoffee.com/ar
 [badge-jvm]: http://img.shields.io/badge/platform-jvm-DB413D.svg?style=flat
 [badge-mac]: http://img.shields.io/badge/platform-macos-111111.svg?style=flat
 [badge-tvos]: http://img.shields.io/badge/platform-tvos-808080.svg?style=flat
+[badge-watchos]: http://img.shields.io/badge/platform-watchos-C0C0C0.svg?style=flat

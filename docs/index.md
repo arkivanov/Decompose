@@ -11,6 +11,7 @@ Decompose is a Kotlin Multiplatform lifecycle-aware business logic components (a
 * iosX64, iosArm64
 * macosX64
 * tvosX64, tvosArm64
+* watchosArm32, watchosArm64, watchosX86, watchosX64
 * JavaScript
 
 ## Why Decompose? 
