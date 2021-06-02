@@ -35,7 +35,7 @@ jobs:
           api-level: 21
           arch: x86
           disable-animations: true
-          script: ./gradlew :extensions-compose-jetbrains:connectedDebugAndroidTest :extensions-compose-jetpack:connectedDebugAndroidTest --stacktrace
+          script: ./gradlew :extensions-compose-jetpack:connectedDebugAndroidTest --stacktrace
   macos-build:
     name: Build on Macos
     runs-on: macos-latest

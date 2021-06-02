@@ -1,12 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        decompose_version = '0.2.4'
-        kotlin_version = "1.4.32"
+        decompose_version = '0.2.5'
+        kotlin_version = "1.5.10"
         junit_version = "4.13.2"
         compose_kotlin_compiler_version = kotlin_version
-        compose_jetpack_version = '1.0.0-beta05'
-        compose_jetbrains_version = '0.4.0-build184'
+        compose_jetpack_version = '1.0.0-beta08'
+        compose_jetbrains_version = '0.4.0'
         reaktive_version = '1.1.21'
         mvikotlin_version = '2.0.0'
         androidx_appcompat_version = '1.2.0'

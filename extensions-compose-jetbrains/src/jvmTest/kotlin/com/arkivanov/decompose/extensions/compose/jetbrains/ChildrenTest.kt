@@ -18,6 +18,8 @@ import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.crossfade
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.crossfadeScale
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.slide
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,60 +36,71 @@ class ChildrenTest(
 
     @Test
     fun WHEN_active_child_and_no_back_stack_THEN_active_child_displayed() {
-        val state = mutableStateOf(routerState(activeConfig = Config.A))
+        runBlocking(Dispatchers.Main) {
+            val state = mutableStateOf(routerState(activeConfig = Config.A))
 
-        setContent(state)
+            setContent(state)
 
-        composeRule.onNodeWithText(text = "ChildA", substring = true).assertExists()
+            composeRule.onNodeWithText(text = "ChildA", substring = true).assertExists()
+        }
     }
 
     @Test
     fun GIVEN_child_A_displayed_WHEN_push_child_B_THEN_child_B_displayed() {
-        val state = mutableStateOf(routerState(activeConfig = Config.A))
-        setContent(state)
+        runBlocking(Dispatchers.Main) {
+            val state = mutableStateOf(routerState(activeConfig = Config.A))
+            setContent(state)
 
-        state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
+            state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
 
-        composeRule.onNodeWithText(text = "ChildB", substring = true).assertExists()
+            composeRule.onNodeWithText(text = "ChildB", substring = true).assertExists()
+        }
     }
 
     @Test
     fun GIVEN_child_B_displayed_and_child_A_in_back_stack_WHEN_pop_child_B_THEN_child_A_displayed() {
-        val state = mutableStateOf(routerState(activeConfig = Config.A))
-        setContent(state)
-        state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
+        runBlocking(Dispatchers.Main) {
+            val state = mutableStateOf(routerState(activeConfig = Config.A))
+            setContent(state)
+            state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
 
-        state.setValueOnIdle(routerState(activeConfig = Config.A))
+            state.setValueOnIdle(routerState(activeConfig = Config.A))
 
-        composeRule.onNodeWithText(text = "ChildA", substring = true).assertExists()
+            composeRule.onNodeWithText(text = "ChildA", substring = true).assertExists()
+        }
     }
 
     @Test
     fun GIVEN_child_B_displayed_and_child_A_in_back_stack_WHEN_pop_child_B_THEN_state_restored_for_child_A() {
-        val state = mutableStateOf(routerState(activeConfig = Config.A))
-        setContent(state)
-        composeRule.onNodeWithText(text = "ChildA=0").performClick()
-        state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
+        runBlocking(Dispatchers.Main) {
+            val state = mutableStateOf(routerState(activeConfig = Config.A))
+            setContent(state)
+            composeRule.onNodeWithText(text = "ChildA=0").performClick()
+            state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
 
-        state.setValueOnIdle(routerState(activeConfig = Config.A))
+            state.setValueOnIdle(routerState(activeConfig = Config.A))
 
-        composeRule.onNodeWithText(text = "ChildA=1").assertExists()
+            composeRule.onNodeWithText(text = "ChildA=1").assertExists()
+        }
     }
 
     @Test
     fun GIVEN_child_B_displayed_and_child_A_in_back_stack_WHEN_pop_child_B_and_push_child_B_THEN_state_not_restored_for_child_B() {
-        val state = mutableStateOf(routerState(activeConfig = Config.A))
-        setContent(state)
-        state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
-        composeRule.onNodeWithText(text = "ChildB=0").performClick()
+        runBlocking(Dispatchers.Main) {
+            val state = mutableStateOf(routerState(activeConfig = Config.A))
+            setContent(state)
 
-        state.setValueOnIdle(routerState(activeConfig = Config.A))
-        state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
+            state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
+            composeRule.onNodeWithText(text = "ChildB=0").performClick()
 
-        composeRule.onNodeWithText(text = "ChildB=0").assertExists()
+            state.setValueOnIdle(routerState(activeConfig = Config.A))
+            state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
+
+            composeRule.onNodeWithText(text = "ChildB=0").assertExists()
+        }
     }
 
-    private fun setContent(state: State<out RouterState<Config, Config>>) {
+    private suspend fun setContent(state: State<RouterState<Config, Config>>) {
         composeRule.setContent {
             Children(state.value, animation) { child ->
                 when (child.configuration) {
@@ -116,12 +129,14 @@ class ChildrenTest(
         )
     }
 
-    private fun <T> MutableState<T>.setValueOnIdle(value: T) {
+    private suspend fun <T> MutableState<T>.setValueOnIdle(value: T) {
         runOnIdle { this.value = value }
+        runOnIdle {}
     }
 
-    private fun runOnIdle(block: () -> Unit) {
-        composeRule.runOnIdle(block)
+    private suspend fun runOnIdle(block: () -> Unit) {
+        composeRule.awaitIdle()
+        block()
     }
 
     companion object {

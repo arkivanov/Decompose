@@ -87,7 +87,7 @@ class ChildrenTest(
         composeRule.onNodeWithText(text = "ChildB=0").assertExists()
     }
 
-    private fun setContent(state: State<out RouterState<Config, Config>>) {
+    private fun setContent(state: State<RouterState<Config, Config>>) {
         composeRule.setContent {
             Children(state.value, animation) { child ->
                 when (child.configuration) {
@@ -118,6 +118,7 @@ class ChildrenTest(
 
     private fun <T> MutableState<T>.setValueOnIdle(value: T) {
         runOnIdle { this.value = value }
+        runOnIdle {}
     }
 
     private fun runOnIdle(block: () -> Unit) {
