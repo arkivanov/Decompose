@@ -3,6 +3,7 @@ buildscript {
     ext {
         decompose_version = '0.2.4'
         kotlin_version = "1.4.32"
+        junit_version = "4.13.2"
         compose_kotlin_compiler_version = kotlin_version
         compose_jetpack_version = '1.0.0-beta05'
         compose_jetbrains_version = '0.4.0-build184'
@@ -56,6 +57,7 @@ boolean setupMultiplatform(Project project, List<Target> targets = Target.values
     project.plugins.apply("kotlin-multiplatform")
 
     setupMultiplatformCommon(project)
+
     doIfAndroidEnabled {
         if (Target.ANDROID in targets) {
             setupMultiplatformAndroid(project)
@@ -78,6 +80,12 @@ boolean setupMultiplatform(Project project, List<Target> targets = Target.values
     doIfMacosX64Enabled {
         if (Target.MACOS_X64 in targets) {
             setupMultiplatformMacosX64(project)
+        }
+    }
+
+    doIfWatchosEnabled {
+        if (Target.WATCHOS in targets) {
+            setupMultiplatformWatchos(project)
         }
     }
 
@@ -210,6 +218,24 @@ private void setupMultiplatformMacosX64(Project project) {
             }
 
             macosX64Test {
+                dependsOn nonAndroidTest
+                dependsOn nativeTest
+            }
+        }
+    }
+}
+
+private void setupMultiplatformWatchos(Project project) {
+    project.kotlin {
+        watchos()
+
+        sourceSets {
+            watchosMain {
+                dependsOn nonAndroidMain
+                dependsOn nativeMain
+            }
+
+            watchosTest {
                 dependsOn nonAndroidTest
                 dependsOn nativeTest
             }
@@ -437,6 +463,12 @@ void doIfIosEnabled(Closure block) {
 
 void doIfMacosX64Enabled(Closure block) {
     if (isTargetEnabled(Target.MACOS_X64)) {
+        block()
+    }
+}
+
+void doIfWatchosEnabled(Closure block) {
+    if (isTargetEnabled(Target.WATCHOS)) {
         block()
     }
 }

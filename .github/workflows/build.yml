@@ -15,7 +15,7 @@ jobs:
       - name: Install Java
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: 11
       - name: Update dependencies
         run: sudo apt-get update
       - name: Install dependencies
@@ -29,6 +29,13 @@ jobs:
             ${{ runner.os }}-gradle-
       - name: Build
         run: ./gradlew build -Ptargets=ANDROID,JVM,JS_IR,JS_LEGACY
+      - name: Android instrumentation tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 21
+          arch: x86
+          disable-animations: true
+          script: ./gradlew :extensions-compose-jetbrains:connectedDebugAndroidTest :extensions-compose-jetpack:connectedDebugAndroidTest --stacktrace
   macos-build:
     name: Build on Macos
     runs-on: macos-latest
@@ -38,7 +45,7 @@ jobs:
       - name: Install Java
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: 11
       - name: Set up cache
         uses: actions/cache@v2
         with:
@@ -47,4 +54,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Build iOS
-        run: ./gradlew build --info -Ptargets=IOS,TVOS,MACOS_X64
+        run: ./gradlew build --info -Ptargets=IOS,TVOS,MACOS_X64,WATCHOS

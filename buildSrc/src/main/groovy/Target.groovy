@@ -5,5 +5,6 @@ enum Target {
     JS_LEGACY,
     IOS,
     MACOS_X64,
-    TVOS
+    TVOS,
+    WATCHOS
 }
