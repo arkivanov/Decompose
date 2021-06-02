@@ -1,32 +1,21 @@
 package com.arkivanov.sample.masterdetail.shared.root
 
 import com.arkivanov.decompose.RouterState
+import com.arkivanov.sample.masterdetail.shared.MasterDetailStyles
 import com.arkivanov.sample.masterdetail.shared.RenderableComponent
 import com.arkivanov.sample.masterdetail.shared.details.DetailsR
 import com.arkivanov.sample.masterdetail.shared.list.ArticleListR
 import com.arkivanov.sample.masterdetail.shared.renderableChild
 import com.arkivanov.sample.masterdetail.shared.root.RootR.State
-import com.ccfraser.muirwik.components.list.mList
+import com.ccfraser.muirwik.components.mHidden
 import kotlinx.browser.window
-import kotlinx.css.Display
-import kotlinx.css.FlexDirection
-import kotlinx.css.Position
-import kotlinx.css.display
-import kotlinx.css.flexDirection
-import kotlinx.css.height
-import kotlinx.css.left
-import kotlinx.css.pct
-import kotlinx.css.position
-import kotlinx.css.px
-import kotlinx.css.top
-import kotlinx.css.width
 import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RState
 import styled.css
 import styled.styledDiv
 
-private const val MULTI_PANE_WIDTH_THRESHOLD = 800
+private const val MULTI_PANE_WIDTH_THRESHOLD = 960
 
 class RootR(props: Props<Root>) : RenderableComponent<Root, State>(
     props = props,
@@ -60,68 +49,30 @@ class RootR(props: Props<Root>) : RenderableComponent<Root, State>(
     }
 
     override fun RBuilder.render() {
-        val isMultiPane = state.model.isMultiPane
-        styledDiv {
-            css {
-                display = Display.flex
-                flexDirection = FlexDirection.row
-            }
-            listPane(isMultiPane)
-            detailsPane(isMultiPane)
+        mHidden(mdUp = true) { //mdup = hide, if more than 960px
+            list()
+            details()
         }
-    }
-
-    private fun RBuilder.listPane(isMultiPane: Boolean) {
-        styledDiv {
-            css {
-                position = Position.absolute
-                top = 0.px
-                left = 0.px
-                width = 100.pct
-            }
+        mHidden(smDown = true) {//smdown = hide, if less than 960px
             styledDiv {
-                css {
-                    display = Display.flex
-                    flexDirection = FlexDirection.row
-                }
-                mList {
-                    css { width = if (isMultiPane) 40.pct else 100.pct }
-                    list()
-                }
-                if (isMultiPane) {
-                    styledDiv {
-                        css { width = 60.pct }
-                    }
-                }
+                css(MasterDetailStyles.singlePaneContainerCss)
+                listPane()
+                detailsPane()
             }
         }
     }
 
-    private fun RBuilder.detailsPane(isMultiPane: Boolean) {
+    private fun RBuilder.listPane() {
         styledDiv {
-            css {
-                position = Position.absolute
-                top = 0.px
-                left = 0.px
-                width = 100.pct
-            }
-            styledDiv {
-                css {
-                    display = Display.flex
-                    flexDirection = FlexDirection.row
-                    height = 100.pct
-                    width = 100.pct
-                }
-                if (isMultiPane) {
-                    styledDiv {
-                        css { width = 40.pct }
-                    }
-                }
-                styledDiv {
-                    css { width = if (isMultiPane) 60.pct else 100.pct }
-                    details()
-                }
-            }
+            css(MasterDetailStyles.listPaneContainerCss)
+            list()
+        }
+    }
+
+    private fun RBuilder.detailsPane() {
+        styledDiv {
+            css(MasterDetailStyles.detailsPaneContainerCss)
+            details()
         }
     }
 

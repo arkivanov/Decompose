@@ -1,11 +1,11 @@
 package com.arkivanov.sample.masterdetail.shared.list
 
+import com.arkivanov.sample.masterdetail.shared.MasterDetailStyles
 import com.arkivanov.sample.masterdetail.shared.RenderableComponent
 import com.arkivanov.sample.masterdetail.shared.list.ArticleListR.State
+import com.ccfraser.muirwik.components.list.mList
 import com.ccfraser.muirwik.components.list.mListItem
 import com.ccfraser.muirwik.components.mTypography
-import com.ccfraser.muirwik.components.spacingUnits
-import kotlinx.css.padding
 import react.RBuilder
 import react.RState
 import styled.css
@@ -22,14 +22,17 @@ class ArticleListR(props: Props<ArticleList>) : RenderableComponent<ArticleList,
     }
 
     override fun RBuilder.render() {
-        state.models.articles.forEach { article ->
-            val isSelected = article.id == state.models.selectedArticleId
-            mListItem(
-                selected = isSelected,
-                onClick = { handleArticleClick(article.id) }
-            ) {
-                css { padding(2.spacingUnits) }
-                mTypography(article.title)
+        mList {
+            state.models.articles.forEach { article ->
+                val isSelected = article.id == state.models.selectedArticleId
+                mListItem(
+                    selected = isSelected,
+                    onClick = { handleArticleClick(article.id) },
+                    button = true
+                ) {
+                    css(MasterDetailStyles.listItemCss)
+                    mTypography(article.title)
+                }
             }
         }
     }
