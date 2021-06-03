@@ -1,0 +1,21 @@
+if (!isTargetEnabled(Target.JS_LEGACY)) {
+    return
+}
+
+plugins.apply('org.jetbrains.kotlin.js')
+
+kotlin {
+    js(LEGACY) {
+        useCommonJs()
+        browser()
+    }
+}
+
+dependencies {
+    implementation project(':sample:master-detail:shared')
+    implementation "org.jetbrains:kotlin-react:$js_kotlin_react_version"
+    implementation "org.jetbrains:kotlin-react-dom:$js_kotlin_react_dom_version"
+    implementation "org.jetbrains:kotlin-styled:$js_kotlin_styled_version"
+    implementation "org.jetbrains:kotlin-css-js:$js_kotlin_css_version"
+    implementation "com.ccfraser.muirwik:muirwik-components:$js_muirwik_version"
+}
