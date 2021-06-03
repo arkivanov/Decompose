@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        decompose_version = '0.2.5'
+        decompose_version = '0.2.6'
         kotlin_version = "1.5.10"
         junit_version = "4.13.2"
         compose_kotlin_compiler_version = kotlin_version

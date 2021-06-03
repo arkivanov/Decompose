@@ -19,7 +19,9 @@ android {
     }
 
     packagingOptions {
-        exclude 'META-INF/*'
+        pickFirst 'META-INF/AL2.0'
+        pickFirst 'META-INF/LGPL2.0'
+        pickFirst 'META-INF/LGPL2.1'
     }
 }
 
