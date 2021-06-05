@@ -38,7 +38,7 @@ Check out the [project website](https://arkivanov.github.io/Decompose/samples/) 
 
 * [Master - Detail](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail)
 
-<img src="docs/media/SampleMasterDetailAndroid1.png" width="196"> <img src="docs/media/SampleMasterDetailAndroid2.png" width="196"> <img src="docs/media/SampleMasterDetailDesktop.gif" width="512">
+<img src="docs/media/SampleMasterDetailAndroid1.png" width="196"> <img src="docs/media/SampleMasterDetailAndroid2.png" width="196"> <img src="docs/media/SampleMasterDetailDesktop.gif" width="512"> <img src="docs/media/SampleMasterDetailJs.gif" width="512">
 
 * [Jetbrains Compose and SwiftUI todo app](https://github.com/JetBrains/compose-jb/tree/master/examples/todoapp)
 

@@ -52,7 +52,7 @@ The Todo sample app can be found in the JetBrains Compose repository [here](http
 
 ## Sample Master-Detail App
 
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailAndroid1.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailAndroid2.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailDesktop.gif" width="512">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailAndroid1.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailAndroid2.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailDesktop.gif" width="512"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMasterDetailJs.gif" width="512">
 
 > ⚠ This sample is for advanced single-pane/multi-pane navigation and layout, for generic master-detail navigation please refer to the Sample Todo List App described above.
 
@@ -60,7 +60,7 @@ This sample demonstrates the following features:
 
 * Advanced master-detail navigation with automatic single-pane/multi-pane layout
 * Nested components
-* Pluggable UI (Jetpack Compose for Android and Desktop, more to come)
+* Pluggable UI (Jetpack Compose for Android and Desktop, React for JS, more to come)
 
 Content:
 
@@ -71,6 +71,7 @@ Content:
 * [compose-ui](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/compose-ui) - the module containing Compose UI for Android and Desktop targets
 * [Android sample app](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/app-android)
 * [Desktop sample app](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/app-desktop)
+* [JavaScript sample app](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/app-js)
 
 ## Sample Greetings App
 
