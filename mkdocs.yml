@@ -25,6 +25,7 @@ nav:
 
   - Component: 
     - Overview: component/overview.md
+    - Lifecycle: component/lifecycle.md
     - StateKeeper: component/state-keeper.md
     - InstanceKeeper: component/instance-keeper.md
     - Custom ComponentContext: component/custom-component-context.md

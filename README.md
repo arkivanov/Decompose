@@ -28,6 +28,18 @@ Decompose is a Kotlin Multiplatform lifecycle-aware business logic components (a
 * [StateKeeper](https://arkivanov.github.io/Decompose/component/state-keeper/) - preserve state during configuration changes and/or process death
 * [InstanceKeeper](https://arkivanov.github.io/Decompose/component/instance-keeper/) - retain instances in your components (similar to AndroidX ViewModel)
 
+### Component hierarchy
+
+<img src="docs/media/ComponentHierarchy.png" width="512">
+
+### Pluggable UI hierarchy
+
+<img src="docs/media/PluggableUiHierarchy.png" width="512">
+
+### Typical component structure
+
+<img src="docs/media/ComponentStructure.png" width="512">
+
 ## Samples
 
 Check out the [project website](https://arkivanov.github.io/Decompose/samples/) for a full description of each sample.
