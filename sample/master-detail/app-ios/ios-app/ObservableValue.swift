@@ -1,6 +1,6 @@
 //
 //  ObservableValue.swift
-//  iosApp
+//  ios-app
 //
 //  Created by Nikola Milovic on 12/06/2021.
 //
