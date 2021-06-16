@@ -26,9 +26,9 @@ struct ListView: View {
 struct ListView_Previews: PreviewProvider {
     static var previews: some View {
         ListView(
-            items: [ArticleListArticle(id: 1, title: "123"),
-                ArticleListArticle(id: 2, title: "1234"),
-                ArticleListArticle(id: 3, title: "12345")],
+            items: [ArticleListArticle(id: 1, title: "Test Title 1"),
+                ArticleListArticle(id: 2, title: "Test Title 2"),
+                ArticleListArticle(id: 3, title: "Test Title 3")],
             onArticleClicked: { _ in }
         )
     }

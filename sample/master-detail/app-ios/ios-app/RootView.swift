@@ -27,10 +27,8 @@ struct RootView: View {
         self.detailRouterState = ObservableValue(masterRoot.detailsRouterState)
 
         if isIOS() {
-            print("is Ios")
             masterRoot.setMultiPane(isMultiPane: false)
         } else {
-            print("Ipad")
             masterRoot.setMultiPane(isMultiPane: true)
         }
     }
@@ -56,18 +54,18 @@ struct ListPane: View {
         self.isMultiPane = isMultiPane
     }
 
-    //Wrapping the views in AnyView allows this kind of syntax
     var body: some View {
         switch listChild {
         case let list as MasterDetail.RootListChild.List:
-            GeometryReader { metrics in HStack {
-                ListView(items: list.component.models.value.articles,
-                    onArticleClicked: list.component.onArticleClicked).frame(width: isMultiPane ? metrics.size.width * ListPaneScreenWidthPerc : metrics.size.width)
+            GeometryReader { metrics in
+                HStack {
+                    ListView(items: list.component.models.value.articles,
+                        onArticleClicked: list.component.onArticleClicked).frame(width: isMultiPane ? metrics.size.width * ListPaneScreenWidthPerc : metrics.size.width)
 
-                if isMultiPane {
-                    Spacer().frame(width: metrics.size.width * DetailsPaneScreenWidthPerc)
+                    if isMultiPane {
+                        Spacer().frame(width: metrics.size.width * DetailsPaneScreenWidthPerc)
+                    }
                 }
-            }
             }
 
         default: EmptyView()
@@ -88,17 +86,18 @@ struct DetailsPane: View {
     var body: some View {
         switch detailChild {
         case let detail as MasterDetail.RootDetailsChild.Details:
-            GeometryReader { metrics in HStack {
+            GeometryReader { metrics in
+                HStack {
+                    if isMultiPane {
+                        Spacer().frame(width: metrics.size.width * ListPaneScreenWidthPerc)
+                    }
 
-                if isMultiPane {
-                    Spacer().frame(width: metrics.size.width * ListPaneScreenWidthPerc)
+                    DetailsView(article: detail.component.models.value.article,
+                        onCloseClicked: detail.component.onCloseClicked,
+                        showToolbar: !isMultiPane
+                    ).frame(width: isMultiPane ? metrics.size.width * DetailsPaneScreenWidthPerc : metrics.size.width)
                 }
-                DetailsView(article: detail.component.models.value.article,
-                    onCloseClicked: detail.component.onCloseClicked,
-                    showToolbar: !isMultiPane
-                ).frame(width: isMultiPane ? metrics.size.width * DetailsPaneScreenWidthPerc : metrics.size.width)
-
-            } }
+            }
 
         default: EmptyView()
         }
@@ -138,9 +137,9 @@ struct RootView_Previews: PreviewProvider {
 
         let models: Value<ArticleListModel> = valueOf(ArticleListModel(
             articles:
-                [ArticleListArticle(id: 1, title: "123"),
-                ArticleListArticle(id: 2, title: "1234"),
-                ArticleListArticle(id: 3, title: "12345")],
+                [ArticleListArticle(id: 1, title: "Test Title 1"),
+                ArticleListArticle(id: 2, title: "Test Title 2"),
+                ArticleListArticle(id: 3, title: "Test Title 3")],
             selectedArticleId: 123))
 
     }
