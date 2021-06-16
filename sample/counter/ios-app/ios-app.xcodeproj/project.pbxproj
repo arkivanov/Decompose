@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		933ABDAA2679CDFF00A46B55 /* Counter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC23136C250FF73A00BBC24B /* Counter.framework */; };
 		DC23136D250FF73A00BBC24B /* Counter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC23136C250FF73A00BBC24B /* Counter.framework */; };
 		DC23136E250FF73A00BBC24B /* Counter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DC23136C250FF73A00BBC24B /* Counter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DC95F2A2255320EE002EDDEA /* SimpleRouterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC95F2A1255320EE002EDDEA /* SimpleRouterState.swift */; };
@@ -62,6 +63,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC23136D250FF73A00BBC24B /* Counter.framework in Frameworks */,
+				933ABDAA2679CDFF00A46B55 /* Counter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

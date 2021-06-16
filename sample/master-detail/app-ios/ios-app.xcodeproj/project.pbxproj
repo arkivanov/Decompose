@@ -10,7 +10,7 @@
 		932B121F267737E500479C85 /* DetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B121E267737E500479C85 /* DetailsView.swift */; };
 		932B122126776B9C00479C85 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B122026776B9C00479C85 /* SceneDelegate.swift */; };
 		932B122326776BBE00479C85 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932B122226776BBE00479C85 /* AppDelegate.swift */; };
-		932B122526776EDF00479C85 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 932B122426776EDF00479C85 /* LaunchScreen.storyboard */; };
+		933ABDAD2679CEF000A46B55 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 933ABDAB2679CEF000A46B55 /* LaunchScreen.storyboard */; };
 		93411C802676189D0016C790 /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93411C7F2676189D0016C790 /* ListView.swift */; };
 		9367CFAD2674C401005FC98B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9367CFAC2674C401005FC98B /* ContentView.swift */; };
 		9367CFAF2674C403005FC98B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9367CFAE2674C403005FC98B /* Assets.xcassets */; };
@@ -41,7 +41,7 @@
 		932B121E267737E500479C85 /* DetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsView.swift; sourceTree = "<group>"; };
 		932B122026776B9C00479C85 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		932B122226776BBE00479C85 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		932B122426776EDF00479C85 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		933ABDAC2679CEF000A46B55 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "../../../counter/ios-app/ios-app/Base.lproj/LaunchScreen.storyboard"; sourceTree = "<group>"; };
 		93411C7F2676189D0016C790 /* ListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
 		9367CFA72674C401005FC98B /* ios-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9367CFAC2674C401005FC98B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -88,7 +88,7 @@
 		9367CFA92674C401005FC98B /* ios-app */ = {
 			isa = PBXGroup;
 			children = (
-				932B122426776EDF00479C85 /* LaunchScreen.storyboard */,
+				933ABDAB2679CEF000A46B55 /* LaunchScreen.storyboard */,
 				93C735302674CE5600CC7447 /* ObservableValue.swift */,
 				93C735342674CEF900CC7447 /* RootView.swift */,
 				93C7352E2674CE2900CC7447 /* MutableStateBuilder.swift */,
@@ -152,6 +152,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1240;
+				ORGANIZATIONNAME = "Arkadii Ivanov";
 				TargetAttributes = {
 					9367CFA62674C401005FC98B = {
 						CreatedOnToolsVersion = 12.4;
@@ -181,7 +182,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				932B122526776EDF00479C85 /* LaunchScreen.storyboard in Resources */,
+				933ABDAD2679CEF000A46B55 /* LaunchScreen.storyboard in Resources */,
 				9367CFB22674C403005FC98B /* Preview Assets.xcassets in Resources */,
 				9367CFAF2674C403005FC98B /* Assets.xcassets in Resources */,
 			);
@@ -205,7 +206,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd \"$SRCROOT\"\ncd ../../..\n./gradlew :sample:master-detail:shared:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION} -Dorg.gradle.java.home=//Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home\n\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n#cd \"$SRCROOT\"\n#cd ../../..\n#./gradlew :sample:master-detail:shared:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION} -Dorg.gradle.java.home=//Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home\ncd $SRCROOT/../../..\n./gradlew :sample:counter:shared:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION}\ncd $SRCROOT\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -227,6 +228,17 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		933ABDAB2679CEF000A46B55 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				933ABDAC2679CEF000A46B55 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		9367CFB42674C403005FC98B /* Debug */ = {
@@ -355,12 +367,12 @@
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks";
 				INFOPLIST_FILE = "ios-app/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.arkivanov.masterdetail.ios-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arkivanov.decompose.sample.masterdetail.ios-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -377,12 +389,12 @@
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks";
 				INFOPLIST_FILE = "ios-app/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.arkivanov.masterdetail.ios-app";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.arkivanov.decompose.sample.masterdetail.ios-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
