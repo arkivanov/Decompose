@@ -31,10 +31,11 @@ Content:
 
 <img src="https://raw.githubusercontent.com/JetBrains/compose-jb/master/examples/todoapp/screenshots/todo.png" width="384">
 
-The sample todo list app demonstrates the following features:
+The sample Todo List App demonstrates the following features:
 
-* Multiplatform: Android, iOS and Desktop
+* Multiplatform: Android, iOS, Desktop and Web
 * Shared JetBrains Compose UI for Android and Desktop apps
+* JetBrains Compose UI for the Web browser app
 * SwiftUI for iOS app
 * Nested components
 * Shared routing with view state preservation
@@ -48,7 +49,7 @@ Please refer to the [sample's readme](https://github.com/JetBrains/compose-jb/bl
 
 ### Todo Source Code
 
-The Todo sample app can be found in the JetBrains Compose repository [here](https://github.com/JetBrains/compose-jb/tree/master/examples/todoapp).
+The sample Todo List App can be found in the JetBrains Compose repository [here](https://github.com/JetBrains/compose-jb/tree/master/examples/todoapp).
 
 ## Sample Master-Detail App
 
