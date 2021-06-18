@@ -26,7 +26,7 @@ struct RootView: View {
         self.listRouterState = ObservableValue(masterRoot.listRouterState)
         self.detailRouterState = ObservableValue(masterRoot.detailsRouterState)
 
-        if isIOS() {
+        if deviceRequiresMultiPane() {
             masterRoot.setMultiPane(isMultiPane: false)
         } else {
             masterRoot.setMultiPane(isMultiPane: true)
@@ -59,8 +59,7 @@ struct ListPane: View {
         case let list as MasterDetail.RootListChild.List:
             GeometryReader { metrics in
                 HStack {
-                    ListView(items: list.component.models.value.articles,
-                        onArticleClicked: list.component.onArticleClicked).frame(width: isMultiPane ? metrics.size.width * ListPaneScreenWidthPerc : metrics.size.width)
+                    ListView(list.component).frame(width: isMultiPane ? metrics.size.width * ListPaneScreenWidthPerc : metrics.size.width)
 
                     if isMultiPane {
                         Spacer().frame(width: metrics.size.width * DetailsPaneScreenWidthPerc)
@@ -92,9 +91,7 @@ struct DetailsPane: View {
                         Spacer().frame(width: metrics.size.width * ListPaneScreenWidthPerc)
                     }
 
-                    DetailsView(article: detail.component.models.value.article,
-                        onCloseClicked: detail.component.onCloseClicked,
-                        showToolbar: !isMultiPane
+                    DetailsView(detail.component, showToolbar: !isMultiPane
                     ).frame(width: isMultiPane ? metrics.size.width * DetailsPaneScreenWidthPerc : metrics.size.width)
                 }
             }
@@ -104,7 +101,7 @@ struct DetailsPane: View {
     }
 }
 
-func isIOS() -> Bool {
+func deviceRequiresMultiPane() -> Bool {
     if UIDevice.current.userInterfaceIdiom == .pad {
         return false
     } else {
@@ -115,7 +112,7 @@ func isIOS() -> Bool {
 struct RootView_Previews: PreviewProvider {
     static var previews: some View {
         RootView(RootViewPreview())
-            .previewDevice("iPad (8th generation)")
+            .previewDevice("iPhone 8")
     }
 
     class RootViewPreview: MasterDetail.Root {
@@ -125,22 +122,10 @@ struct RootView_Previews: PreviewProvider {
         var detailsRouterState: Value<RouterState<AnyObject, RootDetailsChild>> = simpleRouterState(RootDetailsChild.None())
 
         var listRouterState: Value<RouterState<AnyObject, RootListChild>> = simpleRouterState(RootListChild.List(component:
-                StubArticleList()
+                ListView_Previews.StubArticleList()
             ))
 
         var models: Value<RootModel> = valueOf(RootModel(isMultiPane: false))
-
-    }
-
-    class StubArticleList: ArticleList {
-        func onArticleClicked(id: Int64) { }
-
-        let models: Value<ArticleListModel> = valueOf(ArticleListModel(
-            articles:
-                [ArticleListArticle(id: 1, title: "Test Title 1"),
-                ArticleListArticle(id: 2, title: "Test Title 2"),
-                ArticleListArticle(id: 3, title: "Test Title 3")],
-            selectedArticleId: 123))
 
     }
 }
