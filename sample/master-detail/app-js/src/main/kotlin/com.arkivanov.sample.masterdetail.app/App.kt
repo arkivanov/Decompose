@@ -1,9 +1,9 @@
 package com.arkivanov.sample.masterdetail.app
 
 import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.lifecycle.LifecycleRegistry
-import com.arkivanov.decompose.lifecycle.destroy
-import com.arkivanov.decompose.lifecycle.resume
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.lifecycle.destroy
+import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.sample.masterdetail.shared.renderableChild
 import com.arkivanov.sample.masterdetail.shared.root.RootComponent
 import com.arkivanov.sample.masterdetail.shared.root.RootR

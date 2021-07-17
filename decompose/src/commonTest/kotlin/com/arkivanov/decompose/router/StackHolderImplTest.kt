@@ -1,12 +1,12 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.backpressed.BackPressedDispatcher
-import com.arkivanov.decompose.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.router.statekeeper.ParcelableStub
 import com.arkivanov.decompose.router.statekeeper.TestStateKeeperDispatcher
-import com.arkivanov.decompose.statekeeper.ParcelableContainer
-import com.arkivanov.decompose.statekeeper.consume
+import com.arkivanov.essenty.backpressed.BackPressedDispatcher
+import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.parcelable.ParcelableContainer
+import com.arkivanov.essenty.statekeeper.consume
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame

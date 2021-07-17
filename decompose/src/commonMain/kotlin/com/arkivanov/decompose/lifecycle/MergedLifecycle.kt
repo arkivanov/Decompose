@@ -1,6 +1,8 @@
 package com.arkivanov.decompose.lifecycle
 
 import com.arkivanov.decompose.InternalDecomposeApi
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 
 @InternalDecomposeApi
 class MergedLifecycle private constructor(
@@ -22,7 +24,7 @@ class MergedLifecycle private constructor(
     private inner class LifecycleObserverImpl(
         private val otherState: () -> Lifecycle.State,
         private val onStateChanged: (Lifecycle.State) -> Unit
-    ) : DefaultLifecycleCallbacks {
+    ) : Lifecycle.Callbacks {
         override fun onCreate() {
             onUp(Lifecycle.State.CREATED, registry::onCreate)
         }

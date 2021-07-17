@@ -1,5 +1,9 @@
 package com.arkivanov.decompose.statekeeper
 
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.Parcelize
+import com.arkivanov.essenty.statekeeper.StateKeeper
+import com.arkivanov.essenty.statekeeper.consume
 import kotlin.reflect.KClass
 
 internal fun StateKeeper.child(key: String): StateKeeper = ChildStateKeeper(this, key)

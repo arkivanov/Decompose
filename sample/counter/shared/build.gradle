@@ -12,6 +12,7 @@ kotlin {
             binaries {
                 framework {
                     baseName = "Counter"
+                    transitiveExport = true
                     export(project(":decompose"))
                 }
             }

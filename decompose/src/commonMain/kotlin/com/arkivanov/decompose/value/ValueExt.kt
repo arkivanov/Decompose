@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.value
 
-import com.arkivanov.decompose.lifecycle.Lifecycle
-import com.arkivanov.decompose.lifecycle.subscribe
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.subscribe
 import kotlin.reflect.KProperty
 
 operator fun <T : Any> Value<T>.getValue(thisRef: Any?, property: KProperty<*>): T = value

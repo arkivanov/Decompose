@@ -5,7 +5,7 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.Lifecycle
 
 @ExperimentalDecomposeApi
 interface ViewContext {
@@ -15,10 +15,13 @@ interface ViewContext {
 }
 
 @ExperimentalDecomposeApi
-val ViewContext.context: Context get() = parent.context
+val ViewContext.context: Context
+    get() = parent.context
 
 @ExperimentalDecomposeApi
-val ViewContext.resources: Resources get() = parent.resources
+val ViewContext.resources: Resources
+    get() = parent.resources
 
 @ExperimentalDecomposeApi
-val ViewContext.layoutInflater: LayoutInflater get() = LayoutInflater.from(context)
+val ViewContext.layoutInflater: LayoutInflater
+    get() = LayoutInflater.from(context)
