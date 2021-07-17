@@ -2,9 +2,7 @@ package com.arkivanov.sample.counter.shared
 
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.ValueObserver
-import com.arkivanov.sample.counter.shared.RenderableComponent.Props
 import react.RComponent
-import react.RProps
 import react.RState
 import react.setState
 
@@ -35,10 +33,6 @@ abstract class RenderableComponent<T : Any, S : RState>(props: Props<T>, initial
 
     protected fun <T : Any> Value<T>.bindToState(buildState: S.(T) -> Unit) {
         subscriptions += Subscription(this) { data -> setState { buildState(data) } }
-    }
-
-    interface Props<T : Any> : RProps {
-        var component: T
     }
 
     protected class Subscription<T : Any>(

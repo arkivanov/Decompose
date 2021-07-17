@@ -1,4 +1,4 @@
-setupMultiplatform(project, [Target.ANDROID, Target.IOS, Target.JS_LEGACY])
+setupMultiplatform(project, [Target.ANDROID, Target.IOS, Target.JS_IR])
 
 doIfAndroidEnabled {
     plugins.apply("kotlin-parcelize")
@@ -41,8 +41,8 @@ kotlin {
         doIfJsEnabled {
             jsMain {
                 dependencies {
-                    implementation "org.jetbrains:kotlin-react:$js_kotlin_react_version"
-                    implementation "org.jetbrains:kotlin-styled:$js_kotlin_styled_version"
+                    implementation "org.jetbrains.kotlin-wrappers:kotlin-react:$js_kotlin_react_version"
+                    implementation "org.jetbrains.kotlin-wrappers:kotlin-styled:$js_kotlin_styled_version"
                     implementation "com.ccfraser.muirwik:muirwik-components:$js_muirwik_version"
                 }
             }
