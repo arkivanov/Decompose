@@ -22,14 +22,14 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "org.jetbrains.compose.foundation:foundation:$compose_jetbrains_version"
-    implementation "org.jetbrains.compose.material:material:$compose_jetbrains_version"
-    implementation "androidx.core:core-ktx:$androidx_core_ktx_version"
-    implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_common_java8_version"
-    implementation "com.google.android.material:material:$android_material_version"
-    implementation("androidx.activity:activity-compose:$androidx_activity_compose_version")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "org.jetbrains.compose.foundation:foundation:$composeJetbrainsVersion"
+    implementation "org.jetbrains.compose.material:material:$composeJetbrainsVersion"
+    implementation "androidx.core:core-ktx:$androidxCoreKtxVersion"
+    implementation "androidx.appcompat:appcompat:$androidxAppcompatVersion"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$androidxLifecycleCommonJava8Version"
+    implementation "com.google.android.material:material:$androidMaterialVersion"
+    implementation("androidx.activity:activity-compose:$androidxActivityComposeVersion")
     implementation project(':decompose')
     implementation project(':extensions-compose-jetbrains')
     implementation project(':sample:master-detail:shared')

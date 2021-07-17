@@ -15,14 +15,14 @@ kotlin {
         commonMain {
             dependencies {
                 implementation project(':decompose')
-                implementation "org.jetbrains.compose.foundation:foundation:$compose_jetbrains_version"
+                implementation "org.jetbrains.compose.foundation:foundation:$composeJetbrainsVersion"
             }
         }
 
         doIfAndroidEnabled {
             androidMain {
                 dependencies {
-                    implementation "androidx.activity:activity-ktx:$androidx_activity_version"
+                    implementation "androidx.activity:activity-ktx:$androidxActivityVersion"
                 }
             }
         }
@@ -30,16 +30,13 @@ kotlin {
         doIfJvmEnabled {
             jvmTest {
                 dependencies {
-                    implementation "org.jetbrains.compose.ui:ui-test-junit4:$compose_jetbrains_version"
-                    implementation "junit:junit:$junit_version"
+                    implementation "org.jetbrains.compose.ui:ui-test-junit4:$composeJetbrainsVersion"
+                    implementation "junit:junit:$junitVersion"
                     implementation compose.desktop.currentOs
                 }
             }
         }
     }
 }
-
-group = "com.arkivanov.decompose"
-version = decompose_version
 
 setupMultiplatformPublications(project)

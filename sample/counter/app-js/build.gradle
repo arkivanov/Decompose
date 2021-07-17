@@ -14,10 +14,10 @@ kotlin {
 
 dependencies {
     implementation project(":sample:counter:shared")
-    implementation "org.jetbrains.kotlin-wrappers:kotlin-react:$js_kotlin_react_version"
-    implementation "org.jetbrains.kotlin-wrappers:kotlin-react-dom:$js_kotlin_react_dom_version"
-    implementation "org.jetbrains.kotlin-wrappers:kotlin-styled:$js_kotlin_styled_version"
-    implementation "org.jetbrains.kotlin-wrappers:kotlin-css-js:$js_kotlin_css_version"
+    implementation "org.jetbrains.kotlin-wrappers:kotlin-react:$jsKotlinReactVersion"
+    implementation "org.jetbrains.kotlin-wrappers:kotlin-react-dom:$jsKotlinReactDomVersion"
+    implementation "org.jetbrains.kotlin-wrappers:kotlin-styled:$jsKotlinStyledVersion"
+    implementation "org.jetbrains.kotlin-wrappers:kotlin-css-js:$jsKotlinCssVersion"
     implementation(npm("react-hot-loader", "^4.12.20"))
-    implementation "com.ccfraser.muirwik:muirwik-components:$js_muirwik_version"
+    implementation "com.ccfraser.muirwik:muirwik-components:$jsMuirwikVersion"
 }
