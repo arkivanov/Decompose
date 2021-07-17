@@ -22,7 +22,7 @@ kotlin {
         commonMain {
             dependencies {
                 api project(':decompose')
-                implementation "com.badoo.reaktive:reaktive:$reaktive_version"
+                implementation "com.badoo.reaktive:reaktive:$reaktiveVersion"
             }
         }
 
@@ -31,9 +31,9 @@ kotlin {
                 dependencies {
                     implementation project(':extensions-compose-jetpack')
                     implementation project(':extensions-android')
-                    implementation "androidx.compose.foundation:foundation:$compose_jetpack_version"
-                    implementation "androidx.compose.material:material:$compose_jetpack_version"
-                    implementation "com.google.android.material:material:$android_material_version"
+                    implementation "androidx.compose.foundation:foundation:$composeJetpackVersion"
+                    implementation "androidx.compose.material:material:$composeJetpackVersion"
+                    implementation "com.google.android.material:material:$androidMaterialVersion"
                 }
             }
         }
@@ -41,9 +41,9 @@ kotlin {
         doIfJsEnabled {
             jsMain {
                 dependencies {
-                    implementation "org.jetbrains.kotlin-wrappers:kotlin-react:$js_kotlin_react_version"
-                    implementation "org.jetbrains.kotlin-wrappers:kotlin-styled:$js_kotlin_styled_version"
-                    implementation "com.ccfraser.muirwik:muirwik-components:$js_muirwik_version"
+                    implementation "org.jetbrains.kotlin-wrappers:kotlin-react:$jsKotlinReactVersion"
+                    implementation "org.jetbrains.kotlin-wrappers:kotlin-styled:$jsKotlinStyledVersion"
+                    implementation "com.ccfraser.muirwik:muirwik-components:$jsMuirwikVersion"
                 }
             }
         }

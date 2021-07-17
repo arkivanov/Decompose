@@ -21,15 +21,12 @@ kotlin {
         doIfAndroidEnabled {
             androidMain {
                 dependencies {
-                    implementation "androidx.activity:activity-ktx:$androidx_activity_version"
-                    implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_common_java8_version"
+                    implementation "androidx.activity:activity-ktx:$androidxActivityVersion"
+                    implementation "androidx.lifecycle:lifecycle-common-java8:$androidxLifecycleCommonJava8Version"
                 }
             }
         }
     }
 }
-
-group = "com.arkivanov.decompose"
-version = decompose_version
 
 setupMultiplatformPublications(project)
