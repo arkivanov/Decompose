@@ -1,6 +1,7 @@
 package com.arkivanov.sample.counter.shared.inner
 
 import com.arkivanov.decompose.RouterState
+import com.arkivanov.sample.counter.shared.Props
 import com.arkivanov.sample.counter.shared.RenderableComponent
 import com.arkivanov.sample.counter.shared.counter.CounterR
 import com.arkivanov.sample.counter.shared.renderableChild

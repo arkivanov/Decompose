@@ -1,6 +1,7 @@
 package com.arkivanov.sample.masterdetail.shared.list
 
 import com.arkivanov.sample.masterdetail.shared.MasterDetailStyles
+import com.arkivanov.sample.masterdetail.shared.Props
 import com.arkivanov.sample.masterdetail.shared.RenderableComponent
 import com.arkivanov.sample.masterdetail.shared.list.ArticleListR.State
 import com.ccfraser.muirwik.components.list.mList

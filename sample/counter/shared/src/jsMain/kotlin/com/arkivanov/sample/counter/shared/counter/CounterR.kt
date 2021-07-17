@@ -1,5 +1,6 @@
 package com.arkivanov.sample.counter.shared.counter
 
+import com.arkivanov.sample.counter.shared.Props
 import com.arkivanov.sample.counter.shared.RenderableComponent
 import com.ccfraser.muirwik.components.MPaperVariant
 import com.ccfraser.muirwik.components.MTypographyAlign
