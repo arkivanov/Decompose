@@ -5,7 +5,7 @@ if (!setupMultiplatform(project, [Target.ANDROID, Target.JVM])) {
 plugins.apply('org.jetbrains.compose')
 
 kotlin {
-    doIfAndroidEnabled {
+    doIfAndroidEnabled(project) {
         android {
             publishLibraryVariants("release", "debug")
         }
@@ -19,21 +19,17 @@ kotlin {
             }
         }
 
-        doIfAndroidEnabled {
-            androidMain {
-                dependencies {
-                    implementation "androidx.activity:activity-ktx:$androidxActivityVersion"
-                }
+        androidMain {
+            dependencies {
+                implementation "androidx.activity:activity-ktx:$androidxActivityVersion"
             }
         }
 
-        doIfJvmEnabled {
-            jvmTest {
-                dependencies {
-                    implementation "org.jetbrains.compose.ui:ui-test-junit4:$composeJetbrainsVersion"
-                    implementation "junit:junit:$junitVersion"
-                    implementation compose.desktop.currentOs
-                }
+        jvmTest {
+            dependencies {
+                implementation "org.jetbrains.compose.ui:ui-test-junit4:$composeJetbrainsVersion"
+                implementation "junit:junit:$junitVersion"
+                implementation compose.desktop.currentOs
             }
         }
     }
