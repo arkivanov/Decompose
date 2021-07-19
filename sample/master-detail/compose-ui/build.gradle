@@ -4,7 +4,7 @@ if (!setupMultiplatform(project, [Target.ANDROID, Target.JVM])) {
 
 plugins.apply("org.jetbrains.compose")
 
-doIfAndroidEnabled {
+doIfAndroidEnabled(project) {
     plugins.apply("kotlin-parcelize")
 }
 

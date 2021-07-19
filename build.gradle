@@ -1,3 +1,5 @@
+import javax.annotation.Nullable
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
@@ -21,11 +23,13 @@ allprojects {
 }
 
 boolean setupMultiplatform(Project project, List<Target> targets = Target.values().toList()) {
+    setRequiredTargets(project, targets)
+
     if (!targets.any { isTargetEnabled(it) }) {
         return false
     }
 
-    doIfAndroidEnabled {
+    doIfAndroidEnabled(project) {
         if (Target.ANDROID in targets) {
             project.plugins.apply("com.android.library")
         }
@@ -35,44 +39,44 @@ boolean setupMultiplatform(Project project, List<Target> targets = Target.values
 
     setupMultiplatformCommon(project)
 
-    doIfAndroidEnabled {
+    doIfAndroidEnabled(project) {
         if (Target.ANDROID in targets) {
             setupMultiplatformAndroid(project)
             setupAndroid(project)
         }
     }
 
-    doIfJvmEnabled {
+    doIfJvmEnabled(project) {
         if (Target.JVM in targets) {
             setupMultiplatformJvm(project)
         }
     }
 
-    doIfIosEnabled {
+    doIfIosEnabled(project) {
         if (Target.IOS in targets) {
             setupMultiplatformIos(project)
         }
     }
 
-    doIfMacosX64Enabled {
+    doIfMacosX64Enabled(project) {
         if (Target.MACOS_X64 in targets) {
             setupMultiplatformMacosX64(project)
         }
     }
 
-    doIfWatchosEnabled {
+    doIfWatchosEnabled(project) {
         if (Target.WATCHOS in targets) {
             setupMultiplatformWatchos(project)
         }
     }
 
-    doIfTvosEnabled {
+    doIfTvosEnabled(project) {
         if (Target.TVOS in targets) {
             setupMultiplatformTvos(project)
         }
     }
 
-    doIfJsEnabled {
+    doIfJsEnabled(project) {
         if ((Target.JS_IR in targets) || (Target.JS_LEGACY in targets)) {
             setupMultiplatformJs(project, Target.JS_IR in targets, Target.JS_LEGACY in targets)
         }
@@ -306,7 +310,7 @@ void setupComposeMppWorkaround(Project project) {
     }
 }
 
-void setupAndroid(Project project) {
+private void setupAndroid(Project project) {
     project.android {
         compileSdkVersion 30
         buildToolsVersion "30.0.2"
@@ -342,7 +346,7 @@ void setupMultiplatformPublications(Project project) {
 
         setupPublicationRepository(project)
 
-        final isMetadata = findProperty("publish_metadata") != null
+        final isMetadata = System.getProperty("publish_metadata") != null
 
         final metadataPublicationNames =
                 [org.jetbrains.kotlin.gradle.plugin.mpp.KotlinMultiplatformPlugin.METADATA_TARGET_NAME, "kotlinMultiplatform"]
@@ -394,7 +398,7 @@ void setupPublicationPom(Project project, Publication publication) {
     }
 }
 
-void setupPublicationRepository(Project project) {
+private void setupPublicationRepository(Project project) {
     project.with {
         plugins.apply("signing")
 
@@ -417,57 +421,80 @@ void setupPublicationRepository(Project project) {
     }
 }
 
-void doIfAndroidEnabled(Closure block) {
-    if (isTargetEnabled(Target.ANDROID)) {
+static void doIfAndroidEnabled(Project project, Closure block) {
+    if (isTargetEnabled(project, Target.ANDROID)) {
         block()
     }
 }
 
-void doIfJvmEnabled(Closure block) {
-    if (isTargetEnabled(Target.JVM)) {
+static void doIfJvmEnabled(Project project, Closure block) {
+    if (isTargetEnabled(project, Target.JVM)) {
         block()
     }
 }
 
-void doIfJsEnabled(Closure block) {
-    if (isTargetEnabled(Target.JS_LEGACY) || isTargetEnabled(Target.JS_IR)) {
+static void doIfJsEnabled(Project project, Closure block) {
+    if (isTargetEnabled(project, Target.JS_LEGACY) || isTargetEnabled(project, Target.JS_IR)) {
         block()
     }
 }
 
-void doIfIosEnabled(Closure block) {
-    if (isTargetEnabled(Target.IOS)) {
+static void doIfLinuxX64Enabled(Project project, Closure block) {
+    if (isTargetEnabled(project, Target.LINUX_X64)) {
         block()
     }
 }
 
-void doIfMacosX64Enabled(Closure block) {
-    if (isTargetEnabled(Target.MACOS_X64)) {
+static void doIfIosEnabled(Project project, Closure block) {
+    if (isTargetEnabled(project, Target.IOS)) {
         block()
     }
 }
 
-void doIfWatchosEnabled(Closure block) {
-    if (isTargetEnabled(Target.WATCHOS)) {
+static void doIfWatchosEnabled(Project project, Closure block) {
+    if (isTargetEnabled(project, Target.WATCHOS)) {
         block()
     }
 }
 
-void doIfTvosEnabled(Closure block) {
-    if (isTargetEnabled(Target.TVOS)) {
+static void doIfTvosEnabled(Project project, Closure block) {
+    if (isTargetEnabled(project, Target.TVOS)) {
         block()
     }
 }
 
-boolean isTargetEnabled(Target target) {
-    return target in getTargets()
+static void doIfMacosX64Enabled(Project project, Closure block) {
+    if (isTargetEnabled(project, Target.MACOS_X64)) {
+        block()
+    }
 }
 
-Set<Target> getTargets() {
-    final String targets = findProperty("targets")
+static boolean isTargetEnabled(Project project, Target target) {
+    final Set<Target> requiredTargets = getRequiredTargets(project) ?: getAllTargets()
 
-    return targets
+    return isTargetEnabled(target) && requiredTargets.contains(target)
+}
+
+static boolean isTargetEnabled(Target target) {
+    return getEnabledTargets().contains(target)
+}
+
+private static void setRequiredTargets(Project project, Collection<Target> targets) {
+    project.ext.required_targets = new HashSet(targets)
+}
+
+@Nullable
+private static Set<Target> getRequiredTargets(Project project) {
+    return project.ext.required_targets
+}
+
+private static Set<Target> getEnabledTargets() {
+    return System.getProperty("targets")
             ?.split(",")
             ?.collect(new HashSet(), Target.&valueOf)
-            ?: EnumSet.allOf(Target.class)
+            ?: getAllTargets()
+}
+
+private static Set<Target> getAllTargets() {
+    return EnumSet.allOf(Target.class)
 }
