@@ -5,12 +5,12 @@ import androidx.compose.runtime.remember
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.InternalDecomposeApi
-import com.arkivanov.decompose.backpressed.BackPressedDispatcher
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.lifecycle
-import com.arkivanov.decompose.instancekeeper.InstanceKeeper
-import com.arkivanov.decompose.lifecycle.Lifecycle
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
-import com.arkivanov.decompose.statekeeper.StateKeeper
+import com.arkivanov.essenty.backpressed.BackPressedDispatcher
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.statekeeper.StateKeeper
 
 @OptIn(InternalDecomposeApi::class)
 @Composable

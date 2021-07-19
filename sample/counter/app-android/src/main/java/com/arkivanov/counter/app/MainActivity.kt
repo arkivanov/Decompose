@@ -12,13 +12,13 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.counter.app.ui.ComposeAppTheme
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.backpressed.BackPressedDispatcher
 import com.arkivanov.decompose.extensions.android.DefaultViewContext
 import com.arkivanov.decompose.extensions.android.child
 import com.arkivanov.decompose.extensions.compose.jetpack.rememberRootComponent
-import com.arkivanov.decompose.instancekeeper.InstanceKeeper
-import com.arkivanov.decompose.lifecycle.asDecomposeLifecycle
-import com.arkivanov.decompose.statekeeper.StateKeeper
+import com.arkivanov.essenty.backpressed.backPressedDispatcher
+import com.arkivanov.essenty.instancekeeper.instanceKeeper
+import com.arkivanov.essenty.lifecycle.essentyLifecycle
+import com.arkivanov.essenty.statekeeper.stateKeeper
 import com.arkivanov.sample.counter.shared.root.CounterRootComponent
 import com.arkivanov.sample.counter.shared.ui.android.CounterRootView
 import com.arkivanov.sample.counter.shared.ui.compose.CounterRootUi
@@ -53,14 +53,14 @@ class MainActivity : AppCompatActivity() {
     private fun drawViaViews() {
         setContentView(R.layout.main_activity)
 
-        val lifecycle = lifecycle.asDecomposeLifecycle()
+        val lifecycle = essentyLifecycle()
 
         val componentContext =
             DefaultComponentContext(
                 lifecycle = lifecycle,
-                stateKeeper = StateKeeper(savedStateRegistry),
-                instanceKeeper = InstanceKeeper(viewModelStore),
-                backPressedDispatcher = BackPressedDispatcher(onBackPressedDispatcher)
+                stateKeeper = stateKeeper(),
+                instanceKeeper = instanceKeeper(),
+                backPressedDispatcher = backPressedDispatcher()
             )
 
         val root = CounterRootComponent(componentContext)

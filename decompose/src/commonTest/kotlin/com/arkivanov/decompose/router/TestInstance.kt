@@ -1,6 +1,6 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 
 class TestInstance : InstanceKeeper.Instance {
 

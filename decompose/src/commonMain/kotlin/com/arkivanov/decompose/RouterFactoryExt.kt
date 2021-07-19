@@ -1,6 +1,6 @@
 package com.arkivanov.decompose
 
-import com.arkivanov.decompose.statekeeper.Parcelable
+import com.arkivanov.essenty.parcelable.Parcelable
 
 /**
  * A convenience extension function for [RouterFactory.router].

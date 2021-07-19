@@ -1,12 +1,12 @@
 package com.arkivanov.decompose.router
 
 import com.arkivanov.decompose.router.StackSaver.RestoredStack
-import com.arkivanov.decompose.statekeeper.Parcelable
-import com.arkivanov.decompose.statekeeper.ParcelableContainer
-import com.arkivanov.decompose.statekeeper.Parcelize
-import com.arkivanov.decompose.statekeeper.StateKeeper
-import com.arkivanov.decompose.statekeeper.consume
-import com.arkivanov.decompose.statekeeper.consumeRequired
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.ParcelableContainer
+import com.arkivanov.essenty.parcelable.Parcelize
+import com.arkivanov.essenty.parcelable.consumeRequired
+import com.arkivanov.essenty.statekeeper.StateKeeper
+import com.arkivanov.essenty.statekeeper.consume
 import kotlin.reflect.KClass
 
 internal class StackSaverImpl<C : Parcelable>(

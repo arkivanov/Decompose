@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.decompose.statekeeper.ParcelableContainer
+import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
+import com.arkivanov.essenty.parcelable.ParcelableContainer
 
 internal interface RouterEntryFactory<C, out T> {
 

@@ -18,6 +18,15 @@ kotlin {
             }
         }
 
+        commonMain {
+            dependencies {
+                api "com.arkivanov.essenty:lifecycle:$essentyVersion"
+                api "com.arkivanov.essenty:state-keeper:$essentyVersion"
+                api "com.arkivanov.essenty:instance-keeper:$essentyVersion"
+                api "com.arkivanov.essenty:back-pressed:$essentyVersion"
+            }
+        }
+
         doIfAndroidEnabled {
             androidMain {
                 dependencies {

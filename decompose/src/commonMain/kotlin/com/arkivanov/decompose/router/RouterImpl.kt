@@ -3,12 +3,12 @@ package com.arkivanov.decompose.router
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.Router
 import com.arkivanov.decompose.RouterState
-import com.arkivanov.decompose.backpressed.BackPressedRegistry
 import com.arkivanov.decompose.ensureNeverFrozen
-import com.arkivanov.decompose.lifecycle.Lifecycle
-import com.arkivanov.decompose.lifecycle.doOnDestroy
 import com.arkivanov.decompose.pop
 import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.essenty.backpressed.BackPressedRegistry
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.doOnDestroy
 
 internal class RouterImpl<C : Any, T : Any>(
     lifecycle: Lifecycle,

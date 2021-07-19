@@ -5,9 +5,9 @@ import com.arkivanov.decompose.RouterFactory
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.popWhile
 import com.arkivanov.decompose.router
-import com.arkivanov.decompose.statekeeper.Parcelable
-import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.sample.masterdetail.shared.database.ArticleDatabase
 import com.arkivanov.sample.masterdetail.shared.details.ArticleDetails
 import com.arkivanov.sample.masterdetail.shared.details.ArticleDetailsComponent

@@ -1,12 +1,12 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.instancekeeper.InstanceKeeper
-import com.arkivanov.decompose.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.decompose.instancekeeper.getOrCreate
-import com.arkivanov.decompose.lifecycle.Lifecycle
-import com.arkivanov.decompose.lifecycle.destroy
-import com.arkivanov.decompose.lifecycle.doOnDestroy
-import com.arkivanov.decompose.lifecycle.resume
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
+import com.arkivanov.essenty.instancekeeper.getOrCreate
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.destroy
+import com.arkivanov.essenty.lifecycle.doOnDestroy
+import com.arkivanov.essenty.lifecycle.resume
 import kotlin.properties.Delegates.observable
 
 internal class StackHolderImpl<C, T>(
