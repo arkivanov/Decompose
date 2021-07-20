@@ -64,7 +64,7 @@ class RouterTest {
     private fun router(initialStack: List<Config>): Router<Config, Config> =
         RouterImpl(
             lifecycle = LifecycleRegistry(),
-            backPressedRegistry = BackPressedDispatcher(),
+            backPressedHandler = BackPressedDispatcher(),
             popOnBackPressed = false,
             stackHolder = TestStackHolder(routerStack(initialStack)),
             navigator = navigator

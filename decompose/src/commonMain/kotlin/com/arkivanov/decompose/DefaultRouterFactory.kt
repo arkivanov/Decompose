@@ -5,7 +5,7 @@ import com.arkivanov.decompose.router.RouterImpl
 import com.arkivanov.decompose.router.StackHolderImpl
 import com.arkivanov.decompose.router.StackNavigatorImpl
 import com.arkivanov.decompose.router.StackSaverImpl
-import com.arkivanov.essenty.backpressed.BackPressedRegistry
+import com.arkivanov.essenty.backpressed.BackPressedHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.parcelable.Parcelable
@@ -17,7 +17,7 @@ internal class DefaultRouterFactory(
     private val lifecycle: Lifecycle,
     private val stateKeeper: StateKeeper,
     private val instanceKeeper: InstanceKeeper,
-    private val backPressedRegistry: BackPressedRegistry
+    private val backPressedHandler: BackPressedHandler
 ) : RouterFactory {
 
     override fun <C : Parcelable, T : Any> router(
@@ -32,7 +32,7 @@ internal class DefaultRouterFactory(
 
         return RouterImpl(
             lifecycle = lifecycle,
-            backPressedRegistry = backPressedRegistry,
+            backPressedHandler = backPressedHandler,
             popOnBackPressed = handleBackButton,
             stackHolder = StackHolderImpl(
                 initialConfiguration = initialConfiguration,
