@@ -3,18 +3,11 @@
 ## The Router
 
 A key unit is
-the [Router](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/Router.kt). It is
-responsible for managing components, just like `FragmentManager`.
+the [Router](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/Router.kt). It is responsible for managing components, just like `FragmentManager`.
 
-The `Router` supports back stack and so each component has its own `Lifecycle`. Each time a new component is pushed, the currently active
-component is stopped. When a component is popped from the back stack, the previous component is resumed. This allows business logic to run
-while the component is in the back stack.
+The `Router` supports back stack and so each component has its own `Lifecycle`. Each time a new component is pushed, the currently active component is stopped. When a component is popped from the back stack, the previous component is resumed. This allows business logic to run while the component is in the back stack.
 
-Each component is created based on an associated `Configuration`. `Configurations` can be persisted via Android's `saved state`, thus
-allowing back stack restoration after configurations change or process death. When the back stack is restored, only currently active
-components are recreated. All others in the back stack remain destroyed, and recreated on demand when navigating back. Decompose defines
-both `Parcelable` interface and `@Parcelize` annotation in common code using expect/actual, which works well with Kotlin Multiplatform. You
-can read more about it [here](https://kotlinlang.org/docs/reference/compiler-plugins.html#parcelable-implementations-generator).
+Each component is created based on an associated `Configuration`. `Configurations` can be persisted via Android's `saved state`, thus allowing back stack restoration after configurations change or process death. When the back stack is restored, only currently active components are recreated. All others in the back stack remain destroyed, and recreated on demand when navigating back. Decompose uses [Essenty](https://github.com/arkivanov/Essenty) library, which provides both `Parcelable` interface and `@Parcelize` annotation in common code using expect/actual, which works well with Kotlin Multiplatform. Please familiarise yourself with Essenty library.
 
 The `Router` has a state consisting of a currently active component and a back stack, so it can be rendered as any other state.
 
@@ -91,7 +84,7 @@ class RootComponent(
     private val router =
         router<Config, Root.Child>(
             initialConfiguration = Config.List,
-            handleBackButton = true,
+            handleBackButton = true, // Pop the back stack on back button press
             childFactory = ::createChild
         )
 

@@ -57,7 +57,7 @@ Finally, in your components you can create a new router that will utilize the ne
 
 ```kotlin
 class MyComponent(componentContext: AppComponentContext): AppComponentContext by componentContext {
-    
+
     private val router = appRouter(
         initialConfiguration = { Configuration.Home },
         childFactory = { configuration, appComponentContext ->
