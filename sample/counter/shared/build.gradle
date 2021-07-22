@@ -1,4 +1,4 @@
-if (!setupMultiplatform(project, [Target.ANDROID, Target.IOS, Target.JS_IR])) {
+if (!setupMultiplatform(project, [Target.ANDROID, Target.IOS, Target.JS_IR, Target.WATCHOS])) {
     return
 }
 
@@ -11,6 +11,17 @@ doIfAndroidEnabled(project) {
 kotlin {
     doIfIosEnabled(project) {
         ios {
+            binaries {
+                framework {
+                    baseName = "Counter"
+                    export(project(":decompose"))
+                }
+            }
+        }
+    }
+
+    doIfWatchosEnabled(project) {
+        watchos {
             binaries {
                 framework {
                     baseName = "Counter"
@@ -65,6 +76,30 @@ doIfIosEnabled(project) {
         inputs.property("mode", mode)
         dependsOn(framework.linkTask)
         def targetDir = new File(buildDir, "xcode-frameworks")
+        from(framework.outputDirectory)
+        into(targetDir)
+    }
+}
+
+static String getWatchosTargetName() {
+    def sdkName = System.getenv("SDK_NAME") ?: "watchsimulator"
+    def ret = "watchos" + (sdkName.startsWith("watchos") ? "Arm64" : "X64")
+    print("watchOsTarget: " + ret)
+    return ret
+}
+
+doIfWatchosEnabled(project) {
+    task packForXcodeWatch(type: Sync) {
+        group = "build"
+        def mode = System.getenv("CONFIGURATION")
+        if (mode == null) {
+            mode = "DEBUG"
+        }
+        def targetName = getWatchosTargetName()
+        def framework = kotlin.targets.getByName(targetName).binaries.getFramework(mode)
+        inputs.property("mode", mode)
+        dependsOn(framework.linkTask)
+        def targetDir = new File(buildDir, "xcode-frameworks-watchos")
         from(framework.outputDirectory)
         into(targetDir)
     }
