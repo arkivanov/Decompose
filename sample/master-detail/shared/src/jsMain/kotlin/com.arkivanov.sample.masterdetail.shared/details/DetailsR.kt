@@ -3,7 +3,6 @@ package com.arkivanov.sample.masterdetail.shared.details
 import com.arkivanov.sample.masterdetail.shared.MasterDetailStyles
 import com.arkivanov.sample.masterdetail.shared.Props
 import com.arkivanov.sample.masterdetail.shared.RenderableComponent
-import com.arkivanov.sample.masterdetail.shared.details.DetailsR.State
 import com.ccfraser.muirwik.components.MColor
 import com.ccfraser.muirwik.components.button.mIconButton
 import com.ccfraser.muirwik.components.mAppBar
@@ -17,11 +16,15 @@ import react.RState
 import styled.css
 import styled.styledDiv
 
-class DetailsR(props: Props<ArticleDetails>) : RenderableComponent<ArticleDetails, State>(
+external interface DetailsState : RState {
+    var model: ArticleDetails.Model
+}
+
+class DetailsR(props: Props<ArticleDetails>) : RenderableComponent<ArticleDetails, DetailsState>(
     props = props,
-    initialState = State(
-        model = props.component.models.value,
-    )
+    initialState = (js("{}") as DetailsState).apply {
+        model = props.component.models.value
+    }
 ) {
 
     init {
@@ -58,8 +61,4 @@ class DetailsR(props: Props<ArticleDetails>) : RenderableComponent<ArticleDetail
     }
 
     private fun onCloseClick() = component.onCloseClicked()
-
-    class State(
-        var model: ArticleDetails.Model,
-    ) : RState
 }

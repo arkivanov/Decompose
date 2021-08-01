@@ -19,12 +19,17 @@ import react.RState
 import react.dom.br
 import styled.styledDiv
 
-class InnerR(props: Props<CounterInner>) : RenderableComponent<CounterInner, InnerR.State>(
+external interface InnerState : RState {
+    var leftRouterState: RouterState<*, CounterInner.Child>
+    var rightRouterState: RouterState<*, CounterInner.Child>
+}
+
+class InnerR(props: Props<CounterInner>) : RenderableComponent<CounterInner, InnerState>(
     props = props,
-    initialState = State(
-        leftRouterState = props.component.leftRouterState.value,
+    initialState = (js("{}") as InnerState).apply {
+        leftRouterState = props.component.leftRouterState.value
         rightRouterState = props.component.rightRouterState.value
-    )
+    }
 ) {
 
     init {
@@ -88,9 +93,4 @@ class InnerR(props: Props<CounterInner>) : RenderableComponent<CounterInner, Inn
             renderableChild(CounterR::class, child.counter)
         }
     }
-
-    class State(
-        var leftRouterState: RouterState<*, CounterInner.Child>,
-        var rightRouterState: RouterState<*, CounterInner.Child>
-    ) : RState
 }

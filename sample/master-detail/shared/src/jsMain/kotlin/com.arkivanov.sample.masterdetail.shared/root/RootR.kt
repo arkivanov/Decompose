@@ -7,7 +7,6 @@ import com.arkivanov.sample.masterdetail.shared.RenderableComponent
 import com.arkivanov.sample.masterdetail.shared.details.DetailsR
 import com.arkivanov.sample.masterdetail.shared.list.ArticleListR
 import com.arkivanov.sample.masterdetail.shared.renderableChild
-import com.arkivanov.sample.masterdetail.shared.root.RootR.State
 import com.ccfraser.muirwik.components.mHidden
 import kotlinx.browser.window
 import org.w3c.dom.events.Event
@@ -18,13 +17,19 @@ import styled.styledDiv
 
 private const val MULTI_PANE_WIDTH_THRESHOLD = 960
 
-class RootR(props: Props<Root>) : RenderableComponent<Root, State>(
+external interface RootState : RState {
+    var model: Root.Model
+    var detailsRouterState: RouterState<*, Root.DetailsChild>
+    var listRouterState: RouterState<*, Root.ListChild>
+}
+
+class RootR(props: Props<Root>) : RenderableComponent<Root, RootState>(
     props = props,
-    initialState = State(
-        model = props.component.models.value,
-        detailsRouterState = props.component.detailsRouterState.value,
+    initialState = (js("{}") as RootState).apply {
+        model = props.component.models.value
+        detailsRouterState = props.component.detailsRouterState.value
         listRouterState = props.component.listRouterState.value
-    )
+    }
 ) {
 
     private val resizeEventType = "resize"
@@ -95,10 +100,4 @@ class RootR(props: Props<Root>) : RenderableComponent<Root, State>(
         super.componentWillUnmount()
         window.removeEventListener(type = resizeEventType, callback = {})
     }
-
-    class State(
-        var model: Root.Model,
-        var detailsRouterState: RouterState<*, Root.DetailsChild>,
-        var listRouterState: RouterState<*, Root.ListChild>,
-    ) : RState
 }
