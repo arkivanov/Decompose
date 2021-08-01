@@ -154,7 +154,9 @@ class ChildrenTest(
             )
     }
 
-    enum class Config {
-        A, B
+    // Can be enum, workaround https://issuetracker.google.com/issues/195185633
+    sealed class Config {
+        object A : Config()
+        object B : Config()
     }
 }

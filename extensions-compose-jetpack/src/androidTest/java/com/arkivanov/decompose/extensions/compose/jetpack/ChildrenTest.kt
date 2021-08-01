@@ -22,6 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import java.io.Serializable
 
 @Suppress("TestFunctionName")
 @RunWith(Parameterized::class)
@@ -140,7 +141,9 @@ class ChildrenTest(
             )
     }
 
-    enum class Config {
-        A, B
+    // Can be enum, workaround https://issuetracker.google.com/issues/195185633
+    sealed class Config : Serializable {
+        object A : Config()
+        object B : Config()
     }
 }
