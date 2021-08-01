@@ -9,9 +9,13 @@ import com.ccfraser.muirwik.components.mTypography
 import react.RBuilder
 import react.RState
 
-class CounterR(props: Props<Counter>) : RenderableComponent<Counter, CounterR.State>(
+external interface CounterState : RState {
+    var model: Counter.Model
+}
+
+class CounterR(props: Props<Counter>) : RenderableComponent<Counter, CounterState>(
     props = props,
-    initialState = State(model = props.component.model.value)
+    initialState = (js("{}") as CounterState).apply { model = props.component.model.value }
 ) {
 
     init {
@@ -23,8 +27,4 @@ class CounterR(props: Props<Counter>) : RenderableComponent<Counter, CounterR.St
             mTypography(state.model.text, align = MTypographyAlign.center)
         }
     }
-
-    class State(
-        var model: Counter.Model
-    ) : RState
 }

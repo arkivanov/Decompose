@@ -1,18 +1,31 @@
-setupMultiplatform(project, [Target.ANDROID, Target.IOS, Target.JS_IR])
+if (!setupMultiplatform(project, [Target.ANDROID, Target.IOS, Target.JS_IR, Target.WATCHOS])) {
+    return
+}
 
-doIfAndroidEnabled {
+doIfAndroidEnabled(project) {
     plugins.apply("kotlin-parcelize")
     setupCompose(project)
     setupComposeMppWorkaround(project)
 }
 
 kotlin {
-    doIfIosEnabled {
+    doIfIosEnabled(project) {
         ios {
             binaries {
                 framework {
                     baseName = "Counter"
                     transitiveExport = true
+                    export(project(":decompose"))
+                }
+            }
+        }
+    }
+
+    doIfWatchosEnabled(project) {
+        watchos {
+            binaries {
+                framework {
+                    baseName = "Counter"
                     export(project(":decompose"))
                 }
             }
@@ -27,25 +40,21 @@ kotlin {
             }
         }
 
-        doIfAndroidEnabled {
-            androidMain {
-                dependencies {
-                    implementation project(':extensions-compose-jetpack')
-                    implementation project(':extensions-android')
-                    implementation "androidx.compose.foundation:foundation:$composeJetpackVersion"
-                    implementation "androidx.compose.material:material:$composeJetpackVersion"
-                    implementation "com.google.android.material:material:$androidMaterialVersion"
-                }
+        androidMain {
+            dependencies {
+                implementation project(':extensions-compose-jetpack')
+                implementation project(':extensions-android')
+                implementation "androidx.compose.foundation:foundation:$composeJetpackVersion"
+                implementation "androidx.compose.material:material:$composeJetpackVersion"
+                implementation "com.google.android.material:material:$androidMaterialVersion"
             }
         }
 
-        doIfJsEnabled {
-            jsMain {
-                dependencies {
-                    implementation "org.jetbrains.kotlin-wrappers:kotlin-react:$jsKotlinReactVersion"
-                    implementation "org.jetbrains.kotlin-wrappers:kotlin-styled:$jsKotlinStyledVersion"
-                    implementation "com.ccfraser.muirwik:muirwik-components:$jsMuirwikVersion"
-                }
+        jsMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin-wrappers:kotlin-react:$jsKotlinReactVersion"
+                implementation "org.jetbrains.kotlin-wrappers:kotlin-styled:$jsKotlinStyledVersion"
+                implementation "com.ccfraser.muirwik:muirwik-components:$jsMuirwikVersion"
             }
         }
     }
@@ -56,7 +65,7 @@ static String getIosTargetName() {
     return "ios" + (sdkName.startsWith("iphoneos") ? "Arm64" : "X64")
 }
 
-doIfIosEnabled {
+doIfIosEnabled(project) {
     task packForXcode(type: Sync) {
         group = "build"
         def mode = System.getenv("CONFIGURATION")
@@ -68,6 +77,30 @@ doIfIosEnabled {
         inputs.property("mode", mode)
         dependsOn(framework.linkTask)
         def targetDir = new File(buildDir, "xcode-frameworks")
+        from(framework.outputDirectory)
+        into(targetDir)
+    }
+}
+
+static String getWatchosTargetName() {
+    def sdkName = System.getenv("SDK_NAME") ?: "watchsimulator"
+    def ret = "watchos" + (sdkName.startsWith("watchos") ? "Arm64" : "X64")
+    print("watchOsTarget: " + ret)
+    return ret
+}
+
+doIfWatchosEnabled(project) {
+    task packForXcodeWatch(type: Sync) {
+        group = "build"
+        def mode = System.getenv("CONFIGURATION")
+        if (mode == null) {
+            mode = "DEBUG"
+        }
+        def targetName = getWatchosTargetName()
+        def framework = kotlin.targets.getByName(targetName).binaries.getFramework(mode)
+        inputs.property("mode", mode)
+        dependsOn(framework.linkTask)
+        def targetDir = new File(buildDir, "xcode-frameworks-watchos")
         from(framework.outputDirectory)
         into(targetDir)
     }

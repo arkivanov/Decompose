@@ -22,9 +22,13 @@ import react.RState
 import react.dom.br
 import styled.styledDiv
 
-class RootR(props: Props<CounterRoot>) : RenderableComponent<CounterRoot, RootR.State>(
+external interface RootState : RState {
+    var routerState: RouterState<*, CounterRoot.Child>
+}
+
+class RootR(props: Props<CounterRoot>) : RenderableComponent<CounterRoot, RootState>(
     props = props,
-    initialState = State(routerState = props.component.routerState.value)
+    initialState = (js("{}") as RootState).apply { routerState = props.component.routerState.value }
 ) {
 
     init {
@@ -76,8 +80,4 @@ class RootR(props: Props<CounterRoot>) : RenderableComponent<CounterRoot, RootR.
             }
         }
     }
-
-    class State(
-        var routerState: RouterState<*, CounterRoot.Child>,
-    ) : RState
 }

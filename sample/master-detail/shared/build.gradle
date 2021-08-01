@@ -1,11 +1,13 @@
-setupMultiplatform(project, [Target.ANDROID, Target.JVM, Target.IOS, Target.JS_IR])
+if (!setupMultiplatform(project, [Target.ANDROID, Target.JVM, Target.IOS, Target.JS_IR])) {
+    return
+}
 
-doIfAndroidEnabled {
+doIfAndroidEnabled(project) {
     plugins.apply("kotlin-parcelize")
 }
 
 kotlin {
-    doIfIosEnabled {
+    doIfIosEnabled(project) {
         ios {
             binaries {
                 framework {
@@ -25,13 +27,11 @@ kotlin {
             }
         }
 
-        doIfJsEnabled {
-            jsMain {
-                dependencies {
-                    implementation "org.jetbrains.kotlin-wrappers:kotlin-react:$jsKotlinReactVersion"
-                    implementation "org.jetbrains.kotlin-wrappers:kotlin-styled:$jsKotlinStyledVersion"
-                    implementation "com.ccfraser.muirwik:muirwik-components:$jsMuirwikVersion"
-                }
+        jsMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin-wrappers:kotlin-react:$jsKotlinReactVersion"
+                implementation "org.jetbrains.kotlin-wrappers:kotlin-styled:$jsKotlinStyledVersion"
+                implementation "com.ccfraser.muirwik:muirwik-components:$jsMuirwikVersion"
             }
         }
     }
@@ -42,7 +42,7 @@ static String getIosTargetName() {
     return "ios" + (sdkName.startsWith("iphoneos") ? "Arm64" : "X64")
 }
 
-doIfIosEnabled {
+doIfIosEnabled(project) {
     task packForXcode(type: Sync) {
         group = "build"
         def mode = System.getenv("CONFIGURATION")

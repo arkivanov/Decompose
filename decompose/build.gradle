@@ -1,11 +1,11 @@
 setupMultiplatform(project)
 
-doIfAndroidEnabled {
+doIfAndroidEnabled(project) {
     plugins.apply("kotlin-parcelize")
 }
 
 kotlin {
-    doIfAndroidEnabled {
+    doIfAndroidEnabled(project) {
         android {
             publishLibraryVariants("release", "debug")
         }
@@ -27,12 +27,10 @@ kotlin {
             }
         }
 
-        doIfAndroidEnabled {
-            androidMain {
-                dependencies {
-                    implementation "androidx.activity:activity-ktx:$androidxActivityVersion"
-                    implementation "androidx.lifecycle:lifecycle-common-java8:$androidxLifecycleCommonJava8Version"
-                }
+        androidMain {
+            dependencies {
+                implementation "androidx.activity:activity-ktx:$androidxActivityVersion"
+                implementation "androidx.lifecycle:lifecycle-common-java8:$androidxLifecycleCommonJava8Version"
             }
         }
     }

@@ -46,7 +46,9 @@ Check out the [project website](https://arkivanov.github.io/Decompose/samples/) 
 
 * [Counter](https://github.com/arkivanov/Decompose/tree/master/sample/counter)
 
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterDemo.gif" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterIos.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterJs.png" width="196">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterDemo.gif" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterIos.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterJs.png" width="196"> 
+
+![](docs/media/watchos-counter.gif)
 
 * [Master - Detail](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail)
 
