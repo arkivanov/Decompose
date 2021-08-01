@@ -13,6 +13,12 @@ import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.statekeeper.StateKeeper
 
 @OptIn(InternalDecomposeApi::class)
+@Deprecated(
+    message = "Composition may run on a background thread, it is advised to create components on the main or UI thread. " +
+        "Consider creating ComponentContext and components manually. " +
+        "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-desktop/src/jvmMain/kotlin/com/arkivanov/masterdetail/app/Main.kt",
+    level = DeprecationLevel.WARNING
+)
 @Composable
 fun <T> rememberRootComponent(
     lifecycle: Lifecycle? = null,
@@ -36,9 +42,12 @@ fun <T> rememberRootComponent(
     }
 }
 
+@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
 @Deprecated(
-    "Use rememberRootComponent",
-    ReplaceWith("rememberRootComponent(lifecycle, stateKeeper, instanceKeeper, backPressedDispatcher, factory)")
+    message = "Composition may run on a background thread, it is advised to create components on the main or UI thread. " +
+        "Consider creating ComponentContext and components manually. " +
+        "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-desktop/src/jvmMain/kotlin/com/arkivanov/masterdetail/app/Main.kt",
+    level = DeprecationLevel.ERROR
 )
 @Composable
 fun <T> rootComponent(

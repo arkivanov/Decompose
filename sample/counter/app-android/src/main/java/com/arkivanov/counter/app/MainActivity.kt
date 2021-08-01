@@ -10,15 +10,12 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.arkivanov.counter.app.ui.ComposeAppTheme
-import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.android.DefaultViewContext
 import com.arkivanov.decompose.extensions.android.child
-import com.arkivanov.decompose.extensions.compose.jetpack.rememberRootComponent
-import com.arkivanov.essenty.backpressed.backPressedDispatcher
-import com.arkivanov.essenty.instancekeeper.instanceKeeper
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
-import com.arkivanov.essenty.statekeeper.stateKeeper
+import com.arkivanov.sample.counter.shared.root.CounterRoot
 import com.arkivanov.sample.counter.shared.root.CounterRootComponent
 import com.arkivanov.sample.counter.shared.ui.android.CounterRootView
 import com.arkivanov.sample.counter.shared.ui.compose.CounterRootUi
@@ -30,19 +27,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val root = CounterRootComponent(defaultComponentContext())
+
         when (mode) {
-            Mode.COMPOSE -> drawViaCompose()
-            Mode.VIEWS -> drawViaViews()
+            Mode.COMPOSE -> drawViaCompose(root)
+            Mode.VIEWS -> drawViaViews(root)
         }.let {}
     }
 
-    private fun drawViaCompose() {
+    private fun drawViaCompose(root: CounterRoot) {
         setContent {
             ComposeAppTheme {
                 Surface(color = MaterialTheme.colors.background) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        val component = rememberRootComponent(::CounterRootComponent)
-                        CounterRootUi(component)
+                        CounterRootUi(root)
                     }
                 }
             }
@@ -50,25 +48,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     @OptIn(ExperimentalDecomposeApi::class)
-    private fun drawViaViews() {
+    private fun drawViaViews(root: CounterRoot) {
         setContentView(R.layout.main_activity)
-
-        val lifecycle = essentyLifecycle()
-
-        val componentContext =
-            DefaultComponentContext(
-                lifecycle = lifecycle,
-                stateKeeper = stateKeeper(),
-                instanceKeeper = instanceKeeper(),
-                backPressedDispatcher = backPressedDispatcher()
-            )
-
-        val root = CounterRootComponent(componentContext)
 
         val viewContext =
             DefaultViewContext(
                 parent = findViewById(R.id.content),
-                lifecycle = lifecycle
+                lifecycle = essentyLifecycle()
             )
 
         viewContext.apply {
