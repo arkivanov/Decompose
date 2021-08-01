@@ -12,13 +12,13 @@ import android.widget.FrameLayout
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.R
 import com.arkivanov.decompose.RouterState
-import com.arkivanov.decompose.lifecycle.Lifecycle
-import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
-import com.arkivanov.decompose.lifecycle.destroy
-import com.arkivanov.decompose.lifecycle.resume
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.observe
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.lifecycle.destroy
+import com.arkivanov.essenty.lifecycle.resume
 
 @ExperimentalDecomposeApi
 class RouterView @JvmOverloads constructor(
@@ -41,7 +41,7 @@ class RouterView @JvmOverloads constructor(
         }
     }
 
-    override fun onSaveInstanceState(): Parcelable? {
+    override fun onSaveInstanceState(): Parcelable {
         val bundle = savedState?.let(::Bundle) ?: Bundle()
 
         inactiveChildren.forEach { (key, childState) ->

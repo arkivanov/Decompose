@@ -1,10 +1,10 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.backpressed.BackPressedDispatcher
-import com.arkivanov.decompose.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.decompose.lifecycle.LifecycleRegistry
-import com.arkivanov.decompose.statekeeper.ParcelableContainer
-import com.arkivanov.decompose.statekeeper.StateKeeperDispatcher
+import com.arkivanov.essenty.backpressed.BackPressedDispatcher
+import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.parcelable.ParcelableContainer
+import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
 internal sealed class RouterEntry<out C, out T> {
     abstract val configuration: C

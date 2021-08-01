@@ -1,15 +1,15 @@
 package com.arkivanov.sample.counter.shared.counter
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.instancekeeper.InstanceKeeper
-import com.arkivanov.decompose.instancekeeper.getOrCreate
-import com.arkivanov.decompose.statekeeper.Parcelable
-import com.arkivanov.decompose.statekeeper.Parcelize
-import com.arkivanov.decompose.statekeeper.consume
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.decompose.value.reduce
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.instancekeeper.getOrCreate
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.Parcelize
+import com.arkivanov.essenty.statekeeper.consume
 import com.arkivanov.sample.counter.shared.counter.Counter.Model
 import com.badoo.reaktive.disposable.scope.DisposableScope
 import com.badoo.reaktive.maybe.maybeTimer

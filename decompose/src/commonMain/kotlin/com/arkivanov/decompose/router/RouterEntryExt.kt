@@ -1,6 +1,6 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.lifecycle.destroy
+import com.arkivanov.essenty.lifecycle.destroy
 
 internal fun List<RouterEntry<*, *>>.destroy() {
     asReversed().forEach { entry ->

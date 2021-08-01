@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
-import com.arkivanov.decompose.backpressed.BackPressedDispatcher
-import com.arkivanov.decompose.instancekeeper.InstanceKeeper
-import com.arkivanov.decompose.lifecycle.asDecomposeLifecycle
-import com.arkivanov.decompose.statekeeper.StateKeeper
+import com.arkivanov.essenty.backpressed.BackPressedDispatcher
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.lifecycle.asEssentyLifecycle
+import com.arkivanov.essenty.statekeeper.StateKeeper
 import androidx.lifecycle.Lifecycle as AndroidLifecycle
 
 fun DefaultComponentContext(
@@ -20,7 +20,7 @@ fun DefaultComponentContext(
     onBackPressedDispatcher: OnBackPressedDispatcher? = null
 ): DefaultComponentContext =
     DefaultComponentContext(
-        lifecycle = lifecycle.asDecomposeLifecycle(),
+        lifecycle = lifecycle.asEssentyLifecycle(),
         stateKeeper = savedStateRegistry?.let(::StateKeeper),
         instanceKeeper = viewModelStore?.let(::InstanceKeeper),
         backPressedDispatcher = onBackPressedDispatcher?.let(::BackPressedDispatcher)

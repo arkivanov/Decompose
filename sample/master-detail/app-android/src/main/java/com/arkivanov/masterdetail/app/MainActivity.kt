@@ -5,20 +5,21 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.masterdetail.app.ui.ComposeAppTheme
-import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
-import com.arkivanov.sample.masterdetail.shared.root.RootComponent
 import com.arkivanov.sample.masterdetail.composeui.root.RootUi
+import com.arkivanov.sample.masterdetail.shared.root.RootComponent
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val root = RootComponent(defaultComponentContext())
+
         setContent {
             ComposeAppTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    val root = rememberRootComponent(::RootComponent)
                     RootUi(root)
                 }
             }

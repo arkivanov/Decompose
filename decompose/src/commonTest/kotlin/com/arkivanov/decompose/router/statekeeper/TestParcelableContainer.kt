@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.router.statekeeper
 
-import com.arkivanov.decompose.statekeeper.Parcelable
-import com.arkivanov.decompose.statekeeper.ParcelableContainer
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.ParcelableContainer
 import kotlin.reflect.KClass
 
 class TestParcelableContainer(

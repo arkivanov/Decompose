@@ -1,9 +1,9 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.lifecycle.destroy
-import com.arkivanov.decompose.lifecycle.pause
-import com.arkivanov.decompose.lifecycle.resume
-import com.arkivanov.decompose.lifecycle.stop
+import com.arkivanov.essenty.lifecycle.destroy
+import com.arkivanov.essenty.lifecycle.pause
+import com.arkivanov.essenty.lifecycle.resume
+import com.arkivanov.essenty.lifecycle.stop
 
 internal class StackNavigatorImpl<C : Any, T : Any>(
     private val routerEntryFactory: RouterEntryFactory<C, T>

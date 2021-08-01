@@ -3,16 +3,16 @@ package com.arkivanov.decompose.router
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.Router
 import com.arkivanov.decompose.RouterState
-import com.arkivanov.decompose.backpressed.BackPressedRegistry
 import com.arkivanov.decompose.ensureNeverFrozen
-import com.arkivanov.decompose.lifecycle.Lifecycle
-import com.arkivanov.decompose.lifecycle.doOnDestroy
 import com.arkivanov.decompose.pop
 import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.essenty.backpressed.BackPressedHandler
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.doOnDestroy
 
 internal class RouterImpl<C : Any, T : Any>(
     lifecycle: Lifecycle,
-    private val backPressedRegistry: BackPressedRegistry,
+    private val backPressedHandler: BackPressedHandler,
     private val popOnBackPressed: Boolean,
     private val stackHolder: StackHolder<C, T>,
     private val navigator: StackNavigator<C, T>
@@ -27,12 +27,12 @@ internal class RouterImpl<C : Any, T : Any>(
     private val queue = ArrayDeque<(List<C>) -> List<C>>()
 
     init {
-        backPressedRegistry.register(onBackPressedHandler)
+        backPressedHandler.register(onBackPressedHandler)
         lifecycle.doOnDestroy(::destroy)
     }
 
     private fun destroy() {
-        backPressedRegistry.unregister(onBackPressedHandler)
+        backPressedHandler.unregister(onBackPressedHandler)
     }
 
     override fun navigate(transformer: (stack: List<C>) -> List<C>) {

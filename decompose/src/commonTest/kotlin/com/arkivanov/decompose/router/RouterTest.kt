@@ -2,12 +2,12 @@ package com.arkivanov.decompose.router
 
 import com.arkivanov.decompose.Router
 import com.arkivanov.decompose.RouterState
-import com.arkivanov.decompose.backpressed.BackPressedDispatcher
-import com.arkivanov.decompose.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.router.statekeeper.TestStateKeeperDispatcher
-import com.arkivanov.decompose.statekeeper.Parcelable
-import com.arkivanov.decompose.statekeeper.Parcelize
+import com.arkivanov.essenty.backpressed.BackPressedDispatcher
+import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.Parcelize
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -64,7 +64,7 @@ class RouterTest {
     private fun router(initialStack: List<Config>): Router<Config, Config> =
         RouterImpl(
             lifecycle = LifecycleRegistry(),
-            backPressedRegistry = BackPressedDispatcher(),
+            backPressedHandler = BackPressedDispatcher(),
             popOnBackPressed = false,
             stackHolder = TestStackHolder(routerStack(initialStack)),
             navigator = navigator

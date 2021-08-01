@@ -17,17 +17,18 @@ nav:
   - Overview: index.md
 
   - Getting started:
-    - Installation: getting-started.md
-    - Samples: samples.md
-    - License: license.md
-    - Contributing: contributing.md
+    - Installation: getting-started/installation.md
+    - Samples: getting-started/samples.md
+    - License: getting-started/license.md
+    - Contributing: getting-started/contributing.md
 
 
   - Component: 
     - Overview: component/overview.md
     - Lifecycle: component/lifecycle.md
-    - StateKeeper: component/state-keeper.md
-    - InstanceKeeper: component/instance-keeper.md
+    - State preservation: component/state-preservation.md
+    - Instance retaining: component/instance-retaining.md
+    - Back button: component/back-button.md
     - Custom ComponentContext: component/custom-component-context.md
     
   - Router: 

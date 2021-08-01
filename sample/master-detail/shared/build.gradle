@@ -12,6 +12,7 @@ kotlin {
             binaries {
                 framework {
                     baseName = "MasterDetail"
+                    transitiveExport = true
                     export(project(":decompose"))
                 }
             }

@@ -12,15 +12,21 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.InternalDecomposeApi
-import com.arkivanov.decompose.backpressed.BackPressedDispatcher
 import com.arkivanov.decompose.extensions.compose.jetpack.lifecycle.lifecycle
-import com.arkivanov.decompose.instancekeeper.InstanceKeeper
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
-import com.arkivanov.decompose.lifecycle.asDecomposeLifecycle
-import com.arkivanov.decompose.statekeeper.StateKeeper
+import com.arkivanov.essenty.backpressed.BackPressedDispatcher
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.lifecycle.asEssentyLifecycle
+import com.arkivanov.essenty.statekeeper.StateKeeper
 import androidx.lifecycle.Lifecycle as AndroidLifecycle
 
 @OptIn(InternalDecomposeApi::class)
+@Deprecated(
+    message = "Composition may run on a background thread, it is advised to create components on the main thread. " +
+        "Consider creating ComponentContext and components manually. " +
+        "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-android/src/main/java/com/arkivanov/masterdetail/app/MainActivity.kt",
+    level = DeprecationLevel.WARNING
+)
 @Composable
 fun <T> rememberRootComponent(
     savedStateRegistry: SavedStateRegistry,
@@ -34,7 +40,7 @@ fun <T> rememberRootComponent(
     return remember {
         val componentContext =
             DefaultComponentContext(
-                lifecycle?.asDecomposeLifecycle()?.let { MergedLifecycle(it, composableLifecycle) } ?: composableLifecycle,
+                lifecycle?.asEssentyLifecycle()?.let { MergedLifecycle(it, composableLifecycle) } ?: composableLifecycle,
                 StateKeeper(savedStateRegistry),
                 InstanceKeeper(viewModelStore),
                 BackPressedDispatcher(onBackPressedDispatcher)
@@ -44,6 +50,13 @@ fun <T> rememberRootComponent(
     }
 }
 
+@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
+@Deprecated(
+    message = "Composition may run on a background thread, it is advised to create components on the main thread. " +
+        "Consider creating ComponentContext and components manually. " +
+        "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-android/src/main/java/com/arkivanov/masterdetail/app/MainActivity.kt",
+    level = DeprecationLevel.WARNING
+)
 @Composable
 fun <T, C> T.rememberRootComponent(
     factory: (ComponentContext) -> C
@@ -56,9 +69,12 @@ fun <T, C> T.rememberRootComponent(
         factory = factory
     )
 
+@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
 @Deprecated(
-    "Use rememberRootComponent",
-    ReplaceWith("rememberRootComponent(savedStateRegistry, viewModelStore, onBackPressedDispatcher, lifecycle, factory)")
+    message = "Composition may run on a background thread, it is advised to create components on the main thread. " +
+        "Consider creating ComponentContext and components manually. " +
+        "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-android/src/main/java/com/arkivanov/masterdetail/app/MainActivity.kt",
+    level = DeprecationLevel.ERROR
 )
 @Composable
 fun <T> rootComponent(
@@ -76,9 +92,12 @@ fun <T> rootComponent(
         factory = factory
     )
 
+@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
 @Deprecated(
-    "Use rememberRootComponent",
-    ReplaceWith("rememberRootComponent(factory)")
+    message = "Composition may run on a background thread, it is advised to create components on the main thread. " +
+        "Consider creating ComponentContext and components manually. " +
+        "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-android/src/main/java/com/arkivanov/masterdetail/app/MainActivity.kt",
+    level = DeprecationLevel.ERROR
 )
 @Composable
 fun <T, C> T.rootComponent(

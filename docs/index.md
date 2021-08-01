@@ -1,4 +1,4 @@
-# Overview 
+# Overview
 
 ## What is Decompose?
 
@@ -6,15 +6,15 @@ Decompose is a Kotlin Multiplatform lifecycle-aware business logic components (a
 
 ### Supported targets
 
-* Android
-* JVM
-* iosX64, iosArm64
-* macosX64
-* tvosX64, tvosArm64
-* watchosArm32, watchosArm64, watchosX86, watchosX64
-* JavaScript
+- `android`,
+- `jvm`
+- `js` (both `IR` and `Legacy` modes)
+- `iosX64`, `iosArm64`
+- `tvosArm64`, `tvosX64`
+- `watchosArm32`, `watchosArm64`, `watchosX64`
+- `macosX64`
 
-## Why Decompose? 
+## Why Decompose?
 
 - Decompose draws clear boundaries between UI and non-UI code, which gives the following benefits:
     - Better separation of concerns

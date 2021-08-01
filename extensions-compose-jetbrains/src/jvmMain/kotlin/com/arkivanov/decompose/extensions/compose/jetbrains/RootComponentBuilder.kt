@@ -5,14 +5,20 @@ import androidx.compose.runtime.remember
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.InternalDecomposeApi
-import com.arkivanov.decompose.backpressed.BackPressedDispatcher
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.lifecycle
-import com.arkivanov.decompose.instancekeeper.InstanceKeeper
-import com.arkivanov.decompose.lifecycle.Lifecycle
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
-import com.arkivanov.decompose.statekeeper.StateKeeper
+import com.arkivanov.essenty.backpressed.BackPressedDispatcher
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.statekeeper.StateKeeper
 
 @OptIn(InternalDecomposeApi::class)
+@Deprecated(
+    message = "Composition may run on a background thread, it is advised to create components on the main or UI thread. " +
+        "Consider creating ComponentContext and components manually. " +
+        "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-desktop/src/jvmMain/kotlin/com/arkivanov/masterdetail/app/Main.kt",
+    level = DeprecationLevel.WARNING
+)
 @Composable
 fun <T> rememberRootComponent(
     lifecycle: Lifecycle? = null,
@@ -36,9 +42,12 @@ fun <T> rememberRootComponent(
     }
 }
 
+@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
 @Deprecated(
-    "Use rememberRootComponent",
-    ReplaceWith("rememberRootComponent(lifecycle, stateKeeper, instanceKeeper, backPressedDispatcher, factory)")
+    message = "Composition may run on a background thread, it is advised to create components on the main or UI thread. " +
+        "Consider creating ComponentContext and components manually. " +
+        "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-desktop/src/jvmMain/kotlin/com/arkivanov/masterdetail/app/Main.kt",
+    level = DeprecationLevel.ERROR
 )
 @Composable
 fun <T> rootComponent(

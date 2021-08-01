@@ -2,22 +2,17 @@ Decompose provides a number of modules, they all published to Maven Central Repo
 
 ## The main Decompose module
 
-The main functionality is provided by the `decompose` module. It includes (but is not limited to) the following:
+The main functionality is provided by the `decompose` module. It contains the core functionality, like [Router](https://arkivanov.github.io/Decompose/router/overview/), [ComponentContext](https://arkivanov.github.io/Decompose/component/overview/#componentcontext), etc.
 
-- The [Router](https://arkivanov.github.io/Decompose/router/overview/)
-- The [ComponentContext](https://arkivanov.github.io/Decompose/component/overview/#componentcontext)
-- The [Lifecycle](https://arkivanov.github.io/Decompose/component/lifecycle/)
-- The [StateKeeper](https://arkivanov.github.io/Decompose/component/state-keeper/)
-- The [InstanceKeeper](https://arkivanov.github.io/Decompose/component/instance-keeper/)
+This module supports the following Kotlin Multiplatform targets:
 
-This module supports the following Kotlin Multiplatform targets: 
 - `android`,
 - `jvm`
-- `iosX64`, `iosArm64`
 - `js` (both `IR` and `Legacy` modes)
-- `macosX64`
+- `iosX64`, `iosArm64`
 - `tvosArm64`, `tvosX64`
-- `watchosArm32`, `watchosArm64`, `watchosX86`, `watchosX64`
+- `watchosArm32`, `watchosArm64`, `watchosX64`
+- `macosX64`
 
 ### Gradle setup
 
@@ -33,6 +28,10 @@ This module supports the following Kotlin Multiplatform targets:
     implementation("com.arkivanov.decompose:decompose:<version>")
     ```
 
+### Dependency on Essenty library
+
+Some functionality is actually provided by [Essenty](https://github.com/arkivanov/Essenty) library. Essenty is implemented by the same author and provides very basic things like `Lifecycle`, `StateKeeper`, etc. Most important Essenty modules are added to the `decompose` module as `api` dependency, so you don't have to add them manually to your project. Please familiarise yourself with Essenty library.
+
 ## Extensions for Jetpack/JetBrains Compose
 
 The Compose UI is currently published in two separate variants:
@@ -41,6 +40,7 @@ The Compose UI is currently published in two separate variants:
 - The Kotlin Multiplatform variant of Jetpack Compose maintained by both JetBrains and Google, we call it [JetBrains Compose](https://github.com/JetBrains/compose-jb)
 
 Due to this fragmentation Decompose provides two separate extension modules for Compose UI:
+
 - `extensions-compose-jetpack` - Android library for Jetpack Compose
 - `extensions-compose-jetbrains` - Kotlin Multiplatform library for JetBrains Compose, supports `android` and `jvm` targets
 

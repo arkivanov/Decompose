@@ -1,23 +1,23 @@
 package com.arkivanov.decompose
 
-import com.arkivanov.decompose.backpressed.BackPressedRegistry
-import com.arkivanov.decompose.instancekeeper.InstanceKeeper
-import com.arkivanov.decompose.lifecycle.Lifecycle
 import com.arkivanov.decompose.router.RouterEntryFactoryImpl
 import com.arkivanov.decompose.router.RouterImpl
 import com.arkivanov.decompose.router.StackHolderImpl
 import com.arkivanov.decompose.router.StackNavigatorImpl
 import com.arkivanov.decompose.router.StackSaverImpl
-import com.arkivanov.decompose.statekeeper.Parcelable
-import com.arkivanov.decompose.statekeeper.ParcelableContainer
-import com.arkivanov.decompose.statekeeper.StateKeeper
+import com.arkivanov.essenty.backpressed.BackPressedHandler
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.ParcelableContainer
+import com.arkivanov.essenty.statekeeper.StateKeeper
 import kotlin.reflect.KClass
 
 internal class DefaultRouterFactory(
     private val lifecycle: Lifecycle,
     private val stateKeeper: StateKeeper,
     private val instanceKeeper: InstanceKeeper,
-    private val backPressedRegistry: BackPressedRegistry
+    private val backPressedHandler: BackPressedHandler
 ) : RouterFactory {
 
     override fun <C : Parcelable, T : Any> router(
@@ -32,7 +32,7 @@ internal class DefaultRouterFactory(
 
         return RouterImpl(
             lifecycle = lifecycle,
-            backPressedRegistry = backPressedRegistry,
+            backPressedHandler = backPressedHandler,
             popOnBackPressed = handleBackButton,
             stackHolder = StackHolderImpl(
                 initialConfiguration = initialConfiguration,

@@ -1,22 +1,40 @@
 package com.arkivanov.masterdetail.app
 
 import androidx.compose.desktop.DesktopTheme
-import androidx.compose.desktop.Window
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.sample.masterdetail.composeui.root.RootUi
 import com.arkivanov.sample.masterdetail.shared.root.RootComponent
 
+@OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    Window("Decompose Master-Detail") {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            MaterialTheme {
-                DesktopTheme {
-                    val root = rememberRootComponent(factory = ::RootComponent)
-                    RootUi(root)
+    val lifecycle = LifecycleRegistry()
+    val root = RootComponent(DefaultComponentContext(lifecycle))
+
+    application {
+        val windowState = rememberWindowState()
+
+        LifecycleController(lifecycle, windowState)
+
+        Window(
+            onCloseRequest = ::exitApplication,
+            state = windowState,
+            title = "Decompose Master-Detail"
+        ) {
+            Surface(modifier = Modifier.fillMaxSize()) {
+                MaterialTheme {
+                    DesktopTheme {
+                        RootUi(root)
+                    }
                 }
             }
         }
