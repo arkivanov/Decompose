@@ -6,11 +6,11 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
-internal sealed class RouterEntry<out C, out T> {
+internal sealed class RouterEntry<out C : Any, out T : Any> {
     abstract val configuration: C
     abstract val savedState: ParcelableContainer?
 
-    data class Created<out C, out T>(
+    data class Created<out C : Any, out T : Any>(
         override val configuration: C,
         override val savedState: ParcelableContainer? = null,
         val instance: T,
@@ -20,7 +20,7 @@ internal sealed class RouterEntry<out C, out T> {
         val backPressedDispatcher: BackPressedDispatcher
     ) : RouterEntry<C, T>()
 
-    data class Destroyed<out C>(
+    data class Destroyed<out C : Any>(
         override val configuration: C,
         override val savedState: ParcelableContainer? = null
     ) : RouterEntry<C, Nothing>()
