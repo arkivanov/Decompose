@@ -2,7 +2,7 @@ package com.arkivanov.decompose.router
 
 import com.arkivanov.decompose.router.StackSaver.RestoredStack
 
-internal class TestStackSaver<C>(
+internal class TestStackSaver<C : Any>(
     private val copyConfiguration: (C) -> C,
     savedState: SavedState<C>? = null
 ) : StackSaver<C> {
@@ -44,7 +44,7 @@ internal class TestStackSaver<C>(
             }
         )
 
-    class SavedState<C>(
+    class SavedState<C : Any>(
         val map: MutableMap<String, RestoredStack<C>>
     )
 }

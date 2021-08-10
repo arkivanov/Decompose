@@ -9,7 +9,7 @@ import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.lifecycle.resume
 import kotlin.properties.Delegates.observable
 
-internal class StackHolderImpl<C, T>(
+internal class StackHolderImpl<C : Any, T : Any>(
     private val initialConfiguration: () -> C,
     private val initialBackStack: () -> List<C>,
     lifecycle: Lifecycle,
@@ -74,7 +74,7 @@ internal class StackHolderImpl<C, T>(
             backStack = backStack
         )
 
-    private class RetainedInstance<C, T> : InstanceKeeper.Instance {
+    private class RetainedInstance<C : Any, T : Any> : InstanceKeeper.Instance {
         var activeEntry: RouterEntry.Created<C, T>? = null
 
         override fun onDestroy() {
