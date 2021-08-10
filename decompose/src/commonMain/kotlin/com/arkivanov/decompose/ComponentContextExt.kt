@@ -8,7 +8,7 @@ fun ComponentContext.childContext(key: String): ComponentContext =
         lifecycle = lifecycle,
         stateKeeper = stateKeeper.child(key),
         instanceKeeper = instanceKeeper.child(key),
-        backPressedDispatcher = backPressedDispatcher
+        backPressedHandler = backPressedHandler
     )
 
 @Deprecated("Use childContext(key)", ReplaceWith("childContext(key)"))

@@ -14,7 +14,7 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.lifecycle
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
-import com.arkivanov.essenty.backpressed.BackPressedDispatcher
+import com.arkivanov.essenty.backpressed.BackPressedHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.lifecycle.asEssentyLifecycle
 import com.arkivanov.essenty.statekeeper.StateKeeper
@@ -43,7 +43,7 @@ fun <T> rememberRootComponent(
                 lifecycle?.asEssentyLifecycle()?.let { MergedLifecycle(it, composableLifecycle) } ?: composableLifecycle,
                 StateKeeper(savedStateRegistry),
                 InstanceKeeper(viewModelStore),
-                BackPressedDispatcher(onBackPressedDispatcher)
+                BackPressedHandler(onBackPressedDispatcher)
             )
 
         factory(componentContext)
