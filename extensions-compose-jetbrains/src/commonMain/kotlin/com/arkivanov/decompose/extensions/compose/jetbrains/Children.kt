@@ -24,7 +24,7 @@ fun <C : Any, T : Any> Children(
     holder.retainStates(routerState.getConfigurations())
 
     animation(routerState) { child ->
-        holder.SaveableStateProvider(child.configuration) {
+        holder.SaveableStateProvider(child.configuration.key()) {
             content(child)
         }
     }
@@ -45,13 +45,15 @@ fun <C : Any, T : Any> Children(
     )
 }
 
-private fun <C : Any> RouterState<C, *>.getConfigurations(): Set<C> {
-    val set = HashSet<C>()
-    backStack.forEach { set += it.configuration }
-    set += activeChild.configuration
+private fun RouterState<*, *>.getConfigurations(): Set<String> {
+    val set = HashSet<String>()
+    backStack.forEach { set += it.configuration.key() }
+    set += activeChild.configuration.key()
 
     return set
 }
+
+private fun Any.key(): String = "${this::class.simpleName}_${hashCode().toString(radix = 36)}"
 
 @Composable
 private fun SaveableStateHolder.retainStates(currentKeys: Set<Any>) {
