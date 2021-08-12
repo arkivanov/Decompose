@@ -1,4 +1,12 @@
-if (!setupMultiplatform(project, [Target.ANDROID, Target.IOS, Target.JS_IR, Target.WATCHOS])) {
+def configureDarwinBinaries = {
+    framework {
+        baseName = "Counter"
+        transitiveExport = true
+        export(project(":decompose"))
+    }
+}
+
+if (!setupMultiplatform(project, [Target.ANDROID, Target.IOS, Target.JS_IR, Target.WATCHOS], configureDarwinBinaries)) {
     return
 }
 
@@ -9,29 +17,6 @@ doIfAndroidEnabled(project) {
 }
 
 kotlin {
-    doIfIosEnabled(project) {
-        ios {
-            binaries {
-                framework {
-                    baseName = "Counter"
-                    transitiveExport = true
-                    export(project(":decompose"))
-                }
-            }
-        }
-    }
-
-    doIfWatchosEnabled(project) {
-        watchos {
-            binaries {
-                framework {
-                    baseName = "Counter"
-                    export(project(":decompose"))
-                }
-            }
-        }
-    }
-
     sourceSets {
         commonMain {
             dependencies {

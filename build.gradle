@@ -22,7 +22,11 @@ allprojects {
     }
 }
 
-boolean setupMultiplatform(Project project, List<Target> targets = Target.values().toList()) {
+boolean setupMultiplatform(
+        Project project,
+        List<Target> targets = Target.values().toList(),
+        @Nullable Closure configureDarwinBinaries = null
+) {
     setRequiredTargets(project, targets)
 
     if (!targets.any { isTargetEnabled(it) }) {
@@ -54,7 +58,7 @@ boolean setupMultiplatform(Project project, List<Target> targets = Target.values
 
     doIfIosEnabled(project) {
         if (Target.IOS in targets) {
-            setupMultiplatformIos(project)
+            setupMultiplatformIos(project, configureDarwinBinaries)
         }
     }
 
@@ -66,7 +70,7 @@ boolean setupMultiplatform(Project project, List<Target> targets = Target.values
 
     doIfWatchosEnabled(project) {
         if (Target.WATCHOS in targets) {
-            setupMultiplatformWatchos(project)
+            setupMultiplatformWatchos(project, configureDarwinBinaries)
         }
     }
 
@@ -170,9 +174,14 @@ private void setupMultiplatformJvm(Project project) {
     }
 }
 
-private void setupMultiplatformIos(Project project) {
+private void setupMultiplatformIos(Project project, @Nullable Closure configureBinaries) {
     project.kotlin {
-        ios()
+        ios {
+            if (configureBinaries != null) {
+                configureBinaries.delegate = binaries
+                configureBinaries()
+            }
+        }
 
         sourceSets {
             iosMain {
@@ -206,9 +215,14 @@ private void setupMultiplatformMacosX64(Project project) {
     }
 }
 
-private void setupMultiplatformWatchos(Project project) {
+private void setupMultiplatformWatchos(Project project, @Nullable Closure configureBinaries) {
     project.kotlin {
-        watchos()
+        watchos {
+            if (configureBinaries != null) {
+                configureBinaries.delegate = binaries
+                configureBinaries()
+            }
+        }
 
         sourceSets {
             watchosMain {
