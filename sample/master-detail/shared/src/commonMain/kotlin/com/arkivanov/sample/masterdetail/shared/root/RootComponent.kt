@@ -43,7 +43,7 @@ class RootComponent(
     override val detailsRouterState: Value<RouterState<*, DetailsChild>> = detailsRouter.state
 
     init {
-        backPressedDispatcher.register {
+        backPressedHandler.register {
             if (isMultiPaneMode() || !detailsRouter.isShown()) {
                 false
             } else {
