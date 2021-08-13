@@ -7,11 +7,32 @@ the [Router](https://github.com/arkivanov/Decompose/blob/master/decompose/src/co
 
 The `Router` supports back stack and so each component has its own `Lifecycle`. Each time a new component is pushed, the currently active component is stopped. When a component is popped from the back stack, the previous component is resumed. This allows business logic to run while the component is in the back stack.
 
-Each component is created based on an associated `Configuration`. `Configurations` can be persisted via Android's `saved state`, thus allowing back stack restoration after configurations change or process death. When the back stack is restored, only currently active components are recreated. All others in the back stack remain destroyed, and recreated on demand when navigating back. Decompose uses [Essenty](https://github.com/arkivanov/Essenty) library, which provides both `Parcelable` interface and `@Parcelize` annotation in common code using expect/actual, which works well with Kotlin Multiplatform. Please familiarise yourself with Essenty library.
-
 The `Router` has a state consisting of a currently active component and a back stack, so it can be rendered as any other state.
 
 Child components can also have `Routers` (nested navigation), and each component can have more than one `Router`.
+
+### Component Configurations
+
+Each component created and managed by the `Router` has its `Configuration`. It is just a class with all the data required for the component instantiation.
+
+`Configurations` must meet the following requirements:
+
+1. Be immutable
+2. [Correctly](https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#hashCode--) implement `equals()` and `hashCode()` methods
+3. Be unique (by equality) in the `Router` stack
+4. Implement `Parcelable` interface
+
+#### Configurations are the keys
+
+Each `Configuration` is a unique key of a component. The `Router` uses `Configurations` to check what components should be alive and what should be destroyed. On the client side, `Configurations` allow you to instantiate components with proper input parameters. For convenience and safety, you may define your `Configurations` as `data class`, and use only `val` properties and immutable data structures.
+
+#### Configurations are Parcelable
+
+`Configurations` can be persisted via Android's [saved state](https://developer.android.com/guide/components/activities/activity-lifecycle#save-simple,-lightweight-ui-state-using-onsaveinstancestate), thus allowing back stack restoration after configurations change or process death. When the back stack is restored, only currently active components are recreated. All others in the back stack remain destroyed, and recreated on demand when navigating back.
+
+Decompose uses [Essenty](https://github.com/arkivanov/Essenty) library, which provides both `Parcelable` interface and `@Parcelize` annotation in common code using expect/actual, which works well with Kotlin Multiplatform. Please familiarise yourself with Essenty library.
+
+> ⚠️ On Android the amount of data that can be preserved is [limited](https://developer.android.com/guide/components/activities/parcelables-and-bundles). Please take care of the `Configuration` sizes.
 
 ## Routing example
 
