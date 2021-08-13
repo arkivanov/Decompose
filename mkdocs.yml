@@ -33,6 +33,7 @@ nav:
     
   - Router: 
     - Overview: router/overview.md
+    - Navigation: router/navigation.md
     - Deep linking: router/deeplinking.md
 
 
