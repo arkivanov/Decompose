@@ -1,5 +1,7 @@
 # Extensions for Jetpack/JetBrains Compose
 
+Extensions and utilities for easier integration of Decompose with Jetpack/JetBrains Compose.
+
 ## Setup
 
 Since Jetpack and JetBrains Compose are published separately into different repositories, Decompose provides separate modules for each
