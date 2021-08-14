@@ -12,12 +12,12 @@ import com.arkivanov.sample.counter.shared.counter.Counter
 @ExperimentalDecomposeApi
 @Suppress("FunctionName") // Factory function
 fun ViewContext.CounterView(counter: Counter): View {
-    val root = layoutInflater.inflate(R.layout.counter, parent, false)
-    val counterText: TextView = root.findViewById(R.id.text_count)
+    val layout = layoutInflater.inflate(R.layout.counter, parent, false)
+    val counterText: TextView = layout.findViewById(R.id.text_count)
 
     counter.model.observe(lifecycle) { data ->
         counterText.text = data.text
     }
 
-    return root
+    return layout
 }
