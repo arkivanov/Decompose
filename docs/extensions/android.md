@@ -1,5 +1,7 @@
 # Extensions for Android views
 
+*Experimental* extensions and utilities for easier integration of Decompose with Android views.
+
 ## Setup
 
 Extensions for Android views are provided by the `extensions-android` module.
@@ -18,4 +20,104 @@ Extensions for Android views are provided by the `extensions-android` module.
 
 ## Content
 
-TBD
+Decompose is primarily designed for better integration with declarative UI frameworks, such as Jetpack/JetBrains Compose, SwiftUI, React, etc. However it still can be used with Android views. Because the main Decompose functionality is separate from UI, the latter has to be plugged externally. This module provides some essential extensions and utilities to improve the experience.
+
+### ViewContext
+
+As mentioned before, Decompose is not aware of any UI. Because the UI is plugged externally, it needs its own `Lifecycle`. The idea is to supply every view sub-tree with [ViewContext](https://github.com/arkivanov/Decompose/blob/master/extensions-android/src/main/java/com/arkivanov/decompose/extensions/android/ViewContext.kt), which exposes the following properties:
+
+`parent` - a `ViewGroup` where the view sub-tree should be [inflated](https://developer.android.com/reference/android/view/LayoutInflater)
+`lifecycle` - a `Lifecycle` of the view sub-tree
+
+The following `ViewContext` [extensions](https://github.com/arkivanov/Decompose/blob/master/extensions-android/src/main/java/com/arkivanov/decompose/extensions/android/ViewContextExt.kt) are available:
+
+- `val ViewContext.context: Context` - returns the Android `Context` of the view sub-tree
+- `val ViewContext.resources: Resources` - returns the Android `Resources` of the view sub-tree
+- `val ViewContext.layoutInflater: LayoutInflater` - returns the Android `LayoutInflater`
+- `fun ViewContext.child(ViewGroup, inflater): ViewContext` - creates a child `ViewContext` with another `parent` `ViewGroup`, which shares the `Lifecycle` of the parent `ViewContext`. The `inflater` arguments should inflate a sub-tree of views, but *without adding* it to the `parent`.
+
+[DefaultViewContext](https://github.com/arkivanov/Decompose/blob/master/extensions-android/src/main/java/com/arkivanov/decompose/extensions/android/DefaultViewContext.kt) - is a default implementation of `ViewContext`, which can be used to manually create new instances when needed.
+
+### RouterView
+
+[RouterView](https://github.com/arkivanov/Decompose/blob/master/extensions-android/src/main/java/com/arkivanov/decompose/extensions/android/RouterView.kt) is an Android `ViewGroup` which observes the `Router` and manages child views. Once `RouterView` is added to the view hierarchy, just call its `children(...)` method with the following arguments:
+
+- `routerState` - the observable `Value` of `RouterState`, typically the `Router.state` property
+- `lifecycle` - the lifecycle of the `RouterView` or its closest parent
+- `replaceChildView` - a function which replaces a currently active child view with a new one, this is also the place where transitions can be applied
+
+## Examples
+
+You can find an example of using this extensions module in the [Counter](https://github.com/arkivanov/Decompose/tree/master/sample/counter/shared/src/androidMain/kotlin/com/arkivanov/sample/counter/shared/ui/android) sample.
+
+Initializing the root in `Activity`:
+
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+
+    setContentView(R.layout.main_activity)
+
+    val root = CounterRootComponent(defaultComponentContext())
+
+    val viewContext =
+        DefaultViewContext(
+            parent = findViewById(R.id.content),
+            lifecycle = essentyLifecycle()
+        )
+
+    viewContext.apply {
+        child(parent) {
+            CounterRootView(root)
+        }
+    }
+}
+```
+
+A simple child view:
+
+```kotlin
+fun ViewContext.CounterView(counter: Counter): View {
+    // Inflate the layout without adding it to the parent
+    val layout = layoutInflater.inflate(R.layout.counter, parent, false)
+
+    // Find required views
+    val counterText: TextView = layout.findViewById(R.id.text_count)
+
+    // Observe Counter models and update the view
+    counter.model.observe(lifecycle) { data ->
+        counterText.text = data.text
+    }
+
+    return layout // Return the root of the inflated sub-tree
+}
+```
+
+`RouterView` example:
+
+```kotlin
+fun ViewContext.CounterRootView(counterRoot: CounterRoot): View {
+    val layout = layoutInflater.inflate(R.layout.counter_root, parent, false)
+    val nextButton: View = layout.findViewById(R.id.button_next)
+    val router: RouterView = layout.findViewById(R.id.router)
+
+    nextButton.setOnClickListener { counterRoot.onNextChild() }
+
+    // Create a child `ViewContext` for the inner `CounterView`
+    child(layout.findViewById(R.id.container_counter)) {
+        // Reuse the `CounterView`
+        CounterView(counterRoot.counter)
+    }
+
+    // Subscribe the `RouterView` to the `Router`
+    router.children(counterRoot.routerState, lifecycle) { parent, child, _ ->
+        // Remove all existing views
+        parent.removeAllViews()
+
+        // Add the child view for the currently active child component
+        parent.addView(CounterInnerView(child.inner))
+    }
+
+    return layout
+}
+```
