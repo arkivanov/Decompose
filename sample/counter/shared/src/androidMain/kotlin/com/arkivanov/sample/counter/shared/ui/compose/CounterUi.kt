@@ -9,9 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.counter.shared.counter.Counter
+import com.arkivanov.sample.counter.shared.counter.Counter.Model
 
 @Composable
 fun CounterUi(counter: Counter) {
@@ -24,4 +28,14 @@ fun CounterUi(counter: Counter) {
     ) {
         Text(text = model.text)
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CounterUiPreview() {
+    CounterUi(counter = CounterPreview())
+}
+
+class CounterPreview : Counter {
+    override val model: Value<Model> = MutableValue(Model(text = "53"))
 }
