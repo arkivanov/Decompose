@@ -17,11 +17,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.extensions.compose.jetpack.Children
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.slide
 import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.sample.counter.shared.counter.Counter
 import com.arkivanov.sample.counter.shared.inner.CounterInner
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -39,7 +45,10 @@ fun CounterInnerUi(counterInner: CounterInner) {
 
             Row {
 
-                Column(modifier = Modifier.clipToBounds()) {
+                Column(
+                    modifier = Modifier.clipToBounds(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     val activeChild = counterInner.leftRouterState.subscribeAsState().value.activeChild.instance
 
                     ChildButtons(
@@ -55,7 +64,10 @@ fun CounterInnerUi(counterInner: CounterInner) {
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                Column(modifier = Modifier.clipToBounds()) {
+                Column(
+                    modifier = Modifier.clipToBounds(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     val activeChild = counterInner.rightRouterState.subscribeAsState().value.activeChild.instance
 
                     ChildButtons(
@@ -92,4 +104,43 @@ private fun ChildButtons(
 
         Spacer(modifier = Modifier.height(16.dp))
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CounterInnerUiPreview() {
+    CounterInnerUi(CounterInnerPreview())
+}
+
+class CounterInnerPreview : CounterInner {
+    override val counter: Counter = CounterPreview()
+
+    override val leftRouterState: Value<RouterState<*, CounterInner.Child>> =
+        MutableValue(
+            RouterState(
+                activeChild = Child.Created(
+                    configuration = Unit,
+                    instance = CounterInner.Child(
+                        counter = CounterPreview(),
+                        isBackEnabled = true
+                    )
+                )
+            )
+        )
+
+    override val rightRouterState: Value<RouterState<*, CounterInner.Child>> =
+        MutableValue(
+            RouterState(
+                configuration = Unit,
+                instance = CounterInner.Child(
+                    counter = CounterPreview(),
+                    isBackEnabled = false
+                )
+            )
+        )
+
+    override fun onNextLeftChild() {}
+    override fun onPrevLeftChild() {}
+    override fun onNextRightChild() {}
+    override fun onPrevRightChild() {}
 }
