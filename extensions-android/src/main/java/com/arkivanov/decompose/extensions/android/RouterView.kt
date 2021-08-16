@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.decompose.R
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
@@ -88,6 +89,7 @@ class RouterView @JvmOverloads constructor(
             setTag(R.id.decompose_router_view_key, value)
         }
 
+    @OptIn(InternalDecomposeApi::class)
     private fun <C : Any, T : Any> onStateChanged(
         state: RouterState<C, T>,
         lifecycle: Lifecycle,

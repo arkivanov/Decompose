@@ -1,4 +1,12 @@
-if (!setupMultiplatform(project, [Target.ANDROID, Target.JVM, Target.IOS, Target.JS_IR])) {
+def configureDarwinBinaries = {
+    framework {
+        baseName = "MasterDetail"
+        transitiveExport = true
+        export(project(":decompose"))
+    }
+}
+
+if (!setupMultiplatform(project, [Target.ANDROID, Target.JVM, Target.IOS, Target.JS_IR], configureDarwinBinaries)) {
     return
 }
 
@@ -7,18 +15,6 @@ doIfAndroidEnabled(project) {
 }
 
 kotlin {
-    doIfIosEnabled(project) {
-        ios {
-            binaries {
-                framework {
-                    baseName = "MasterDetail"
-                    transitiveExport = true
-                    export(project(":decompose"))
-                }
-            }
-        }
-    }
-
     sourceSets {
         commonMain {
             dependencies {

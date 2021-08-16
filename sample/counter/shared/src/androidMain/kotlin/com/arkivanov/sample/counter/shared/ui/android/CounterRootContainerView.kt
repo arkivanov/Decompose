@@ -12,13 +12,13 @@ import com.arkivanov.sample.counter.shared.root.CounterRoot
 @ExperimentalDecomposeApi
 @Suppress("FunctionName") // Factory function
 fun ViewContext.CounterRootView(counterRoot: CounterRoot): View {
-    val root = layoutInflater.inflate(R.layout.counter_root, parent, false)
-    val nextButton: View = root.findViewById(R.id.button_next)
-    val router: RouterView = root.findViewById(R.id.router)
+    val layout = layoutInflater.inflate(R.layout.counter_root, parent, false)
+    val nextButton: View = layout.findViewById(R.id.button_next)
+    val router: RouterView = layout.findViewById(R.id.router)
 
     nextButton.setOnClickListener { counterRoot.onNextChild() }
 
-    child(root.findViewById(R.id.container_counter)) {
+    child(layout.findViewById(R.id.container_counter)) {
         CounterView(counterRoot.counter)
     }
 
@@ -27,5 +27,5 @@ fun ViewContext.CounterRootView(counterRoot: CounterRoot): View {
         parent.addView(CounterInnerView(child.inner))
     }
 
-    return root
+    return layout
 }

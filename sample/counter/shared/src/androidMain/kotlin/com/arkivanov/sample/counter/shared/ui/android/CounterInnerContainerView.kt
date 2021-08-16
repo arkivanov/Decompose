@@ -12,20 +12,20 @@ import com.arkivanov.sample.counter.shared.inner.CounterInner
 @ExperimentalDecomposeApi
 @Suppress("FunctionName") // Factory function
 fun ViewContext.CounterInnerView(counterInner: CounterInner): View {
-    val root = layoutInflater.inflate(R.layout.counter_inner, parent, false)
-    val leftNextButton: View = root.findViewById(R.id.button_left_next)
-    val leftPrevButton: View = root.findViewById(R.id.button_left_prev)
-    val leftRouter: RouterView = root.findViewById(R.id.router_left)
-    val rightNextButton: View = root.findViewById(R.id.button_right_next)
-    val rightPrevButton: View = root.findViewById(R.id.button_right_prev)
-    val rightRouter: RouterView = root.findViewById(R.id.router_right)
+    val layout = layoutInflater.inflate(R.layout.counter_inner, parent, false)
+    val leftNextButton: View = layout.findViewById(R.id.button_left_next)
+    val leftPrevButton: View = layout.findViewById(R.id.button_left_prev)
+    val leftRouter: RouterView = layout.findViewById(R.id.router_left)
+    val rightNextButton: View = layout.findViewById(R.id.button_right_next)
+    val rightPrevButton: View = layout.findViewById(R.id.button_right_prev)
+    val rightRouter: RouterView = layout.findViewById(R.id.router_right)
 
     leftNextButton.setOnClickListener { counterInner.onNextLeftChild() }
     leftPrevButton.setOnClickListener { counterInner.onPrevLeftChild() }
     rightNextButton.setOnClickListener { counterInner.onNextRightChild() }
     rightPrevButton.setOnClickListener { counterInner.onPrevRightChild() }
 
-    child(root.findViewById(R.id.container_counter)) {
+    child(layout.findViewById(R.id.container_counter)) {
         CounterView(counterInner.counter)
     }
 
@@ -41,5 +41,5 @@ fun ViewContext.CounterInnerView(counterInner: CounterInner): View {
         rightPrevButton.isEnabled = child.isBackEnabled
     }
 
-    return root
+    return layout
 }

@@ -16,11 +16,12 @@ class RootComponent(
 ) : Root, ComponentContext by componentContext {
 
     private val database = DefaultArticleDatabase()
-    private val isDetailsToolbarVisible = BehaviorSubject(false)
-    private val selectedArticleIdSubject = BehaviorSubject<Long?>(null)
 
     private val _models = MutableValue(Root.Model())
     override val models: Value<Root.Model> = _models
+
+    private val isDetailsToolbarVisible = BehaviorSubject(!_models.value.isMultiPane)
+    private val selectedArticleIdSubject = BehaviorSubject<Long?>(null)
 
     private val listRouter =
         ListRouter(
@@ -43,7 +44,7 @@ class RootComponent(
     override val detailsRouterState: Value<RouterState<*, DetailsChild>> = detailsRouter.state
 
     init {
-        backPressedDispatcher.register {
+        backPressedHandler.register {
             if (isMultiPaneMode() || !detailsRouter.isShown()) {
                 false
             } else {

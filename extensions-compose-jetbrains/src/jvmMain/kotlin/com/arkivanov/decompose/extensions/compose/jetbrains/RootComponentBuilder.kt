@@ -35,7 +35,7 @@ fun <T> rememberRootComponent(
                 lifecycle = lifecycle?.let { MergedLifecycle(it, composableLifecycle) } ?: composableLifecycle,
                 stateKeeper = stateKeeper,
                 instanceKeeper = instanceKeeper,
-                backPressedDispatcher = backPressedDispatcher
+                backPressedHandler = backPressedDispatcher
             )
 
         factory(componentContext)
