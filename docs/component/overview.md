@@ -87,7 +87,7 @@ class Counter {
 ```kotlin
 @Composable
 fun CounterUi(counter: Counter) {
-    val state by counter.state.asState()
+    val state by counter.state.subscribeAsState()
 
     Column {
         Text(text = state.count.toString())
