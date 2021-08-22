@@ -14,7 +14,7 @@
 
 Please see the [project website](https://arkivanov.github.io/Decompose/) for documentation and APIs. 
 
-Decompose is a Kotlin Multiplatform lifecycle-aware business logic components (aka BLoCs) with routing functionality and pluggable UI (Android Views, Jetpack Compose, SwiftUI, JS React, etc.) This project is inspired by [Badoos RIBs](https://github.com/badoo/RIBs) fork of the [Uber RIBs](https://github.com/uber/RIBs) framework.
+Decompose is a Kotlin Multiplatform lifecycle-aware business logic components (aka BLoCs) with routing functionality and pluggable UI (Android Views, Jetpack Compose, SwiftUI, JS React, etc.). This project is inspired by [Badoos RIBs](https://github.com/badoo/RIBs) fork of the [Uber RIBs](https://github.com/uber/RIBs) framework.
 
 ## Setup
 
@@ -43,24 +43,6 @@ Decompose is a Kotlin Multiplatform lifecycle-aware business logic components (a
 ## Samples
 
 Check out the [project website](https://arkivanov.github.io/Decompose/samples/) for a full description of each sample.
-
-* [Counter](https://github.com/arkivanov/Decompose/tree/master/sample/counter)
-
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterDemo.gif" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterIos.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterJs.png" width="196"> 
-
-![](docs/media/watchos-counter.gif)
-
-* [Master - Detail](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail)
-
-<img src="docs/media/SampleMasterDetailAndroid1.png" width="196"> <img src="docs/media/SampleMasterDetailAndroid2.png" width="196"> <img src="docs/media/SampleMasterDetailDesktop.gif" width="512"> <img src="docs/media/SampleMasterDetailJs.gif" width="512">
-
-* [Jetbrains Compose and SwiftUI todo app](https://github.com/JetBrains/compose-jb/tree/master/examples/todoapp)
-
-<img src="https://raw.githubusercontent.com/JetBrains/compose-jb/master/examples/todoapp/screenshots/todo.png" width="384"> 
-
-* [Simple Greetings Jetbrains Compose app](https://github.com/theapache64/decompose-desktop-example)  - desktop only
-
-<img src="docs/media/SampleGreetingsDemo.gif" width="512">
 
 ## Articles
 

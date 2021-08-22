@@ -1,0 +1,28 @@
+import com.arkivanov.Android
+import com.arkivanov.Jvm
+
+if (!setupMultiplatform(project, new Android(plugin: "dynamic-feature"), new Jvm())) {
+    return
+}
+
+plugins.apply("org.jetbrains.compose")
+
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation project(":decompose")
+                implementation project(":sample:dynamic-features:shared:feature2Api")
+                implementation compose.runtime
+                implementation compose.foundation
+                implementation compose.material
+            }
+        }
+
+        androidMain {
+            dependencies {
+                implementation project(":sample:dynamic-features:app-android")
+            }
+        }
+    }
+}

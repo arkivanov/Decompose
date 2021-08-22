@@ -22,6 +22,7 @@ static Set<Class<? extends Target>> allClasses() {
 }
 
 class Android implements Target {
+    String plugin = "library"
 }
 
 class Jvm implements Target {
