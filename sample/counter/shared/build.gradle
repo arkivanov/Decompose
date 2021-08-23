@@ -1,4 +1,9 @@
-def configureDarwinBinaries = {
+import com.arkivanov.Android
+import com.arkivanov.Ios
+import com.arkivanov.Js
+import com.arkivanov.Watchos
+
+def darwinBinaries = {
     framework {
         baseName = "Counter"
         transitiveExport = true
@@ -6,7 +11,13 @@ def configureDarwinBinaries = {
     }
 }
 
-if (!setupMultiplatform(project, [Target.ANDROID, Target.IOS, Target.JS_IR, Target.WATCHOS], configureDarwinBinaries)) {
+if (!setupMultiplatform(
+        project,
+        new Android(),
+        new Ios(binaries: darwinBinaries),
+        new Js(mode: Js.Mode.IR),
+        new Watchos(binaries: darwinBinaries)
+)) {
     return
 }
 
@@ -70,9 +81,7 @@ doIfIosEnabled(project) {
 
 static String getWatchosTargetName() {
     def sdkName = System.getenv("SDK_NAME") ?: "watchsimulator"
-    def ret = "watchos" + (sdkName.startsWith("watchos") ? "Arm64" : "X64")
-    print("watchOsTarget: " + ret)
-    return ret
+    return "watchos" + (sdkName.startsWith("watchos") ? "Arm64" : "X64")
 }
 
 doIfWatchosEnabled(project) {

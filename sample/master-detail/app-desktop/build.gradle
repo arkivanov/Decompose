@@ -1,6 +1,7 @@
+import com.arkivanov.Jvm
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
-if (!setupMultiplatform(project, [Target.JVM])) {
+if (!setupMultiplatform(project, new Jvm())) {
     return
 }
 

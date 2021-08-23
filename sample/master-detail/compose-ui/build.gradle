@@ -1,4 +1,7 @@
-if (!setupMultiplatform(project, [Target.ANDROID, Target.JVM])) {
+import com.arkivanov.Android
+import com.arkivanov.Jvm
+
+if (!setupMultiplatform(project, new Android(), new Jvm())) {
     return
 }
 

@@ -1,4 +1,4 @@
-import javax.annotation.Nullable
+import com.arkivanov.*
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
@@ -24,19 +24,16 @@ allprojects {
 
 boolean setupMultiplatform(
         Project project,
-        List<Target> targets = Target.values().toList(),
-        @Nullable Closure configureDarwinBinaries = null
+        Target... targets = Targets.allDefault()
 ) {
-    setRequiredTargets(project, targets)
+    setRequiredTargets(project, targets.toList())
 
-    if (!targets.any { isTargetEnabled(it) }) {
+    if (!targets.any { isTargetEnabled(it.class) }) {
         return false
     }
 
     doIfAndroidEnabled(project) {
-        if (Target.ANDROID in targets) {
-            project.plugins.apply("com.android.library")
-        }
+        project.plugins.apply("com.android.library")
     }
 
     project.plugins.apply("kotlin-multiplatform")
@@ -44,46 +41,32 @@ boolean setupMultiplatform(
     setupMultiplatformCommon(project)
 
     doIfAndroidEnabled(project) {
-        if (Target.ANDROID in targets) {
-            setupMultiplatformAndroid(project)
-            setupAndroid(project)
-        }
+        setupMultiplatformAndroid(project)
+        setupAndroid(project)
     }
 
     doIfJvmEnabled(project) {
-        if (Target.JVM in targets) {
-            setupMultiplatformJvm(project)
-        }
+        setupMultiplatformJvm(project)
     }
 
     doIfIosEnabled(project) {
-        if (Target.IOS in targets) {
-            setupMultiplatformIos(project, configureDarwinBinaries)
-        }
+        setupMultiplatformIos(project, it)
     }
 
-    doIfMacosX64Enabled(project) {
-        if (Target.MACOS_X64 in targets) {
-            setupMultiplatformMacosX64(project)
-        }
+    doIfMacosEnabled(project) {
+        setupMultiplatformMacos(project)
     }
 
     doIfWatchosEnabled(project) {
-        if (Target.WATCHOS in targets) {
-            setupMultiplatformWatchos(project, configureDarwinBinaries)
-        }
+        setupMultiplatformWatchos(project, it)
     }
 
     doIfTvosEnabled(project) {
-        if (Target.TVOS in targets) {
-            setupMultiplatformTvos(project)
-        }
+        setupMultiplatformTvos(project)
     }
 
     doIfJsEnabled(project) {
-        if ((Target.JS_IR in targets) || (Target.JS_LEGACY in targets)) {
-            setupMultiplatformJs(project, Target.JS_IR in targets, Target.JS_LEGACY in targets)
-        }
+        setupMultiplatformJs(project, it)
     }
 
     return true
@@ -174,12 +157,37 @@ private void setupMultiplatformJvm(Project project) {
     }
 }
 
-private void setupMultiplatformIos(Project project, @Nullable Closure configureBinaries) {
+private void setupMultiplatformJs(Project project, Js target) {
+    project.kotlin {
+        js(target.mode == Js.Mode.BOTH ? BOTH : (target.mode == Js.Mode.IR ? IR : LEGACY)) {
+            browser()
+            nodejs()
+        }
+
+        sourceSets {
+            jsMain {
+                dependsOn nonAndroidMain
+                dependsOn nonNativeMain
+            }
+
+            jsTest {
+                dependsOn nonAndroidTest
+                dependsOn nonNativeTest
+
+                dependencies {
+                    implementation "org.jetbrains.kotlin:kotlin-test-js:$kotlinVersion"
+                }
+            }
+        }
+    }
+}
+
+private void setupMultiplatformIos(Project project, Ios target) {
     project.kotlin {
         ios {
-            if (configureBinaries != null) {
-                configureBinaries.delegate = binaries
-                configureBinaries()
+            if (target.binaries != null) {
+                target.binaries.delegate = binaries
+                target.binaries()
             }
         }
 
@@ -197,30 +205,12 @@ private void setupMultiplatformIos(Project project, @Nullable Closure configureB
     }
 }
 
-private void setupMultiplatformMacosX64(Project project) {
-    project.kotlin {
-        macosX64()
-
-        sourceSets {
-            macosX64Main {
-                dependsOn nonAndroidMain
-                dependsOn nativeMain
-            }
-
-            macosX64Test {
-                dependsOn nonAndroidTest
-                dependsOn nativeTest
-            }
-        }
-    }
-}
-
-private void setupMultiplatformWatchos(Project project, @Nullable Closure configureBinaries) {
+private void setupMultiplatformWatchos(Project project, Watchos target) {
     project.kotlin {
         watchos {
-            if (configureBinaries != null) {
-                configureBinaries.delegate = binaries
-                configureBinaries()
+            if (target.binaries != null) {
+                target.binaries.delegate = binaries
+                target.binaries()
             }
         }
 
@@ -256,26 +246,19 @@ private void setupMultiplatformTvos(Project project) {
     }
 }
 
-private void setupMultiplatformJs(Project project, boolean isIr, boolean isLegacy) {
+private void setupMultiplatformMacos(Project project) {
     project.kotlin {
-        js(isIr ? (isLegacy ? BOTH : IR) : LEGACY) {
-            browser()
-            nodejs()
-        }
+        macosX64()
 
         sourceSets {
-            jsMain {
+            macosX64Main {
                 dependsOn nonAndroidMain
-                dependsOn nonNativeMain
+                dependsOn nativeMain
             }
 
-            jsTest {
+            macosX64Test {
                 dependsOn nonAndroidTest
-                dependsOn nonNativeTest
-
-                dependencies {
-                    implementation "org.jetbrains.kotlin:kotlin-test-js:$kotlinVersion"
-                }
+                dependsOn nativeTest
             }
         }
     }
@@ -436,79 +419,62 @@ private void setupPublicationRepository(Project project) {
 }
 
 static void doIfAndroidEnabled(Project project, Closure block) {
-    if (isTargetEnabled(project, Target.ANDROID)) {
-        block()
-    }
+    doIfTargetEnabled(project, Android.class, block)
 }
 
 static void doIfJvmEnabled(Project project, Closure block) {
-    if (isTargetEnabled(project, Target.JVM)) {
-        block()
-    }
+    doIfTargetEnabled(project, Jvm.class, block)
 }
 
 static void doIfJsEnabled(Project project, Closure block) {
-    if (isTargetEnabled(project, Target.JS_LEGACY) || isTargetEnabled(project, Target.JS_IR)) {
-        block()
-    }
-}
-
-static void doIfLinuxX64Enabled(Project project, Closure block) {
-    if (isTargetEnabled(project, Target.LINUX_X64)) {
-        block()
-    }
+    doIfTargetEnabled(project, Js.class, block)
 }
 
 static void doIfIosEnabled(Project project, Closure block) {
-    if (isTargetEnabled(project, Target.IOS)) {
-        block()
-    }
+    doIfTargetEnabled(project, Ios.class, block)
 }
 
 static void doIfWatchosEnabled(Project project, Closure block) {
-    if (isTargetEnabled(project, Target.WATCHOS)) {
-        block()
-    }
+    doIfTargetEnabled(project, Watchos.class, block)
 }
 
 static void doIfTvosEnabled(Project project, Closure block) {
-    if (isTargetEnabled(project, Target.TVOS)) {
-        block()
+    doIfTargetEnabled(project, Tvos.class, block)
+}
+
+static void doIfMacosEnabled(Project project, Closure block) {
+    doIfTargetEnabled(project, Macos.class, block)
+}
+
+private static void doIfTargetEnabled(Project project, Class<? extends Target> clazz, Closure block) {
+    if (isTargetEnabled(project, clazz)) {
+        block(getRequiredTarget(project, clazz))
     }
 }
 
-static void doIfMacosX64Enabled(Project project, Closure block) {
-    if (isTargetEnabled(project, Target.MACOS_X64)) {
-        block()
-    }
+private static boolean isTargetEnabled(Project project, Class<? extends Target> clazz) {
+    return isTargetEnabled(clazz) && getRequiredTargets(project).any { it.class == clazz }
 }
 
-static boolean isTargetEnabled(Project project, Target target) {
-    final Set<Target> requiredTargets = getRequiredTargets(project) ?: getAllTargets()
-
-    return isTargetEnabled(target) && requiredTargets.contains(target)
+private static boolean isTargetEnabled(Class<? extends Target> clazz) {
+    return clazz in getEnabledTargetClasses()
 }
 
-static boolean isTargetEnabled(Target target) {
-    return getEnabledTargets().contains(target)
+private static Target getRequiredTarget(Project project, Class<? extends Target> clazz) {
+    return getRequiredTargets(project).find { it.class == clazz }
 }
 
 private static void setRequiredTargets(Project project, Collection<Target> targets) {
-    project.ext.required_targets = new HashSet(targets)
+    project.ext.required_targets = targets
 }
 
-@Nullable
-private static Set<Target> getRequiredTargets(Project project) {
+private static Collection<Target> getRequiredTargets(Project project) {
     return project.ext.required_targets
 }
 
-private static Set<Target> getEnabledTargets() {
+private static Set<Class<? extends Target>> getEnabledTargetClasses() {
     return System.getProperty("targets")
             ?.split(",")
-            ?.collect(new HashSet(), Target.&valueOf)
-            ?: getAllTargets()
-}
-
-private static Set<Target> getAllTargets() {
-    return EnumSet.allOf(Target.class)
+            ?.collect(new HashSet()) { Class.forName("com.arkivanov.$it") }
+            ?: Targets.allClasses()
 }
