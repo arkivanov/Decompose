@@ -1,4 +1,9 @@
-def configureDarwinBinaries = {
+import com.arkivanov.Android
+import com.arkivanov.Ios
+import com.arkivanov.Js
+import com.arkivanov.Jvm
+
+def darwinBinaries = {
     framework {
         baseName = "MasterDetail"
         transitiveExport = true
@@ -6,7 +11,7 @@ def configureDarwinBinaries = {
     }
 }
 
-if (!setupMultiplatform(project, [Target.ANDROID, Target.JVM, Target.IOS, Target.JS_IR], configureDarwinBinaries)) {
+if (!setupMultiplatform(project, new Android(), new Jvm(), new Ios(binaries: darwinBinaries), new Js(mode: Js.Mode.IR))) {
     return
 }
 

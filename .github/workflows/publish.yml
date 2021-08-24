@@ -54,7 +54,7 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publish -Dtargets=ANDROID,JVM,JS_IR,JS_LEGACY
+        run: ./gradlew publish -Dtargets=Android,Jvm,Js
   macos-publish:
     name: Publish on Macos
     runs-on: macos-latest
@@ -72,7 +72,7 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publish -Dtargets=IOS,TVOS,MACOS_X64,WATCHOS
+        run: ./gradlew publish -Dtargets=Ios,Tvos,Macos,Watchos
   close-staging-repository:
     name: Close staging repository
     runs-on: ubuntu-latest

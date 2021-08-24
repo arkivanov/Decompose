@@ -1,4 +1,6 @@
-if (!isTargetEnabled(Target.JS_IR)) {
+import com.arkivanov.Js
+
+if (!isTargetEnabled(Js.class)) {
     return
 }
 

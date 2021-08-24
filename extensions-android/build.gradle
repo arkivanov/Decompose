@@ -1,4 +1,6 @@
-if (!isTargetEnabled(Target.ANDROID)) {
+import com.arkivanov.Android
+
+if (!isTargetEnabled(Android.class)) {
     return
 }
 
