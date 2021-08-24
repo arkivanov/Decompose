@@ -1,0 +1,43 @@
+import com.arkivanov.Android
+import com.arkivanov.Jvm
+
+if (!setupMultiplatform(project, new Android(), new Jvm())) {
+    return
+}
+
+plugins.apply("org.jetbrains.compose")
+
+doIfAndroidEnabled(project) {
+    plugins.apply("kotlin-parcelize")
+}
+
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation project(":decompose")
+                implementation project(":extensions-compose-jetbrains")
+                implementation project(":sample:dynamic-features:shared:main")
+                implementation project(":sample:dynamic-features:shared:feature1Api")
+                implementation project(":sample:dynamic-features:shared:feature2Api")
+                implementation "com.badoo.reaktive:reaktive:$reaktiveVersion"
+                implementation compose.runtime
+                implementation compose.foundation
+                implementation compose.material
+            }
+        }
+
+        androidMain {
+            dependencies {
+                implementation "com.google.android.play:core:$androidPlayVersion"
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation project(":sample:dynamic-features:shared:feature1Impl")
+                implementation project(":sample:dynamic-features:shared:feature2Impl")
+            }
+        }
+    }
+}

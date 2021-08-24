@@ -32,16 +32,12 @@ boolean setupMultiplatform(
         return false
     }
 
-    doIfAndroidEnabled(project) {
-        project.plugins.apply("com.android.library")
-    }
-
     project.plugins.apply("kotlin-multiplatform")
 
     setupMultiplatformCommon(project)
 
     doIfAndroidEnabled(project) {
-        setupMultiplatformAndroid(project)
+        setupMultiplatformAndroid(project, it)
         setupAndroid(project)
     }
 
@@ -115,7 +111,9 @@ private void setupMultiplatformCommon(Project project) {
     }
 }
 
-private void setupMultiplatformAndroid(Project project) {
+private void setupMultiplatformAndroid(Project project, Android target) {
+    project.plugins.apply("com.android.${target.plugin}")
+
     project.kotlin {
         android()
 

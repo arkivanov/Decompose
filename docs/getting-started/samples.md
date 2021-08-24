@@ -77,6 +77,33 @@ Content:
 * [Desktop sample app](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/app-desktop)
 * [JavaScript sample app](https://github.com/arkivanov/Decompose/tree/master/sample/master-detail/app-js)
 
+## Sample Dynamic Features App
+
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleDymamicFeaturesAndroid1.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleDymamicFeaturesAndroid2.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleDymamicFeaturesDesktop.gif" width="512">
+
+This sample demonstrates the following features:
+
+* [Play Feature Delivery](https://developer.android.com/guide/playcore/feature-delivery) for Android
+* Static features for JVM (Desktop)
+* Nested components
+* Routing
+* Multi-module structure
+* API and implementation modules for dynamic features
+* Pluggable UI (JetBrains Compose)
+
+> ⚠ For testing purposes all dynamic features are configured as `install-time`
+
+Content:
+
+* [shared/feature1Api](https://github.com/arkivanov/Decompose/tree/master/sample/dynamic-features/shared/feature1Api) - API module for dynamic `Feature1` component
+* [shared/feature1Impl](https://github.com/arkivanov/Decompose/tree/master/sample/dynamic-features/shared/feature1Impl) - implementation module for dynamic `Feature1` component
+* [shared/feature2Api](https://github.com/arkivanov/Decompose/tree/master/sample/dynamic-features/shared/feature2Api) - API module for dynamic `Feature2` component
+* [shared/feature2Impl](https://github.com/arkivanov/Decompose/tree/master/sample/dynamic-features/shared/feature2Impl) - implementation module for dynamic `Feature2` component
+* [shared/main](https://github.com/arkivanov/Decompose/tree/master/sample/dynamic-features/shared/main) - the `Main` component which is displayed at start
+* [shared/root](https://github.com/arkivanov/Decompose/tree/master/sample/dynamic-features/shared/root) - the `Root` component which navigates between the child components
+* [Android sample app](https://github.com/arkivanov/Decompose/tree/master/sample/dynamic-features/app-android)
+* [Desktop sample app](https://github.com/arkivanov/Decompose/tree/master/sample/dynamic-features/app-desktop)
+
 ## Sample Greetings App
 
 ![](media/SampleGreetingsDemo.gif)
