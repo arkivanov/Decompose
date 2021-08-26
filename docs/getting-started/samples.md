@@ -79,7 +79,7 @@ Content:
 
 ## Sample Dynamic Features App
 
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleDymamicFeaturesAndroid1.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleDymamicFeaturesAndroid2.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleDymamicFeaturesDesktop.gif" width="512">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleDynamicFeaturesAndroid1.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleDynamicFeaturesAndroid2.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleDynamicFeaturesDesktop.png" width="384">
 
 This sample demonstrates the following features:
 
