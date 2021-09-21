@@ -42,7 +42,7 @@ Decompose is a Kotlin Multiplatform library for breaking down your code into lif
 
 ## Samples
 
-Check out the [project website](https://arkivanov.github.io/Decompose/samples/) for a full description of each sample.
+Check out the [project website](https://arkivanov.github.io/Decompose/getting-started/samples/) for a full description of each sample.
 
 ## Articles
 
