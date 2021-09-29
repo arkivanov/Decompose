@@ -1,0 +1,57 @@
+[versions]
+
+decompose = "0.3.2"
+kotlin = "1.5.30"
+essenty = "0.1.3"
+reaktive = "1.2.0"
+junit = "4.13.2"
+jetbrainsCompose = "1.0.0-alpha4-build348"
+jetbrainsKotlinWrappers = "0.0.1-pre.213-kotlin-1.5.10"
+jetpackCompose = "1.0.3"
+androidGradle = "7.0.1"
+androidMaterial = "1.3.0"
+androidPlay = "1.10.0"
+androidxCore = "1.3.2"
+androidxAppcompat = "1.2.0"
+androidxLifecycle = "2.3.1"
+androidxActivity = "1.3.1"
+androidxTestCore = "1.4.0"
+muirwickMuirwickComponents = "0.8.2"
+
+[libraries]
+
+kotlin-kotlinGradlePlug = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+
+essenty-lifecycle = { group = "com.arkivanov.essenty", name = "lifecycle", version.ref = "essenty" }
+essenty-stateKeeper = { group = "com.arkivanov.essenty", name = "state-keeper", version.ref = "essenty" }
+essenty-instanceKeeper = { group = "com.arkivanov.essenty", name = "instance-keeper", version.ref = "essenty" }
+essenty-backPressed = { group = "com.arkivanov.essenty", name = "back-pressed", version.ref = "essenty" }
+
+reaktive-reaktive = { group = "com.badoo.reaktive", name = "reaktive", version.ref = "reaktive" }
+
+junit-junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+jetbrains-compose-composeGradlePlug = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "jetbrainsCompose" }
+jetbrains-compose-ui-uiTestJunit4 = { group = "org.jetbrains.compose.ui", name = "ui-test-junit4", version.ref = "jetbrainsCompose" }
+jetbrains-kotlinWrappers-kotlinWrappersBom = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-wrappers-bom", version.ref = "jetbrainsKotlinWrappers" }
+
+androidx-compose-compiler-compiler = { group = "androidx.compose.compiler", name = "compiler", version.ref = "jetpackCompose" }
+androidx-compose-foundation-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "jetpackCompose" }
+androidx-compose-material-material = { group = "androidx.compose.material", name = "material", version.ref = "jetpackCompose" }
+androidx-compose-ui-uiTestJunit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "jetpackCompose" }
+androidx-compose-ui-uiTestManifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "jetpackCompose" }
+androidx-compose-ui-uiTooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "jetpackCompose" }
+
+android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradle" }
+android-material-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
+android-play-core = { group = "com.google.android.play", name = "core", version.ref = "androidPlay" }
+
+androidx-core-coreKtx  = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-appcompat-appcompat  = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppcompat" }
+androidx-lifecycle-lifecycleCommonJava8 = { group = "androidx.lifecycle", name = "lifecycle-common-java8", version.ref = "androidxLifecycle" }
+androidx-activity-activityKtx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivity" }
+androidx-activity-activityCompose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
+androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
+
+muirwik-muirwikComponents = { group = "com.ccfraser.muirwik", name = "muirwik-components", version.ref = "muirwickMuirwickComponents" }
+#  = { group = "", name = "", version.ref = "" }
