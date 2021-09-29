@@ -35,7 +35,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$androidxCoreKtxVersion"
     implementation "androidx.appcompat:appcompat:$androidxAppcompatVersion"
     implementation "com.google.android.material:material:$androidMaterialVersion"
-    implementation "androidx.activity:activity-compose:$androidxActivityComposeVersion"
+    implementation "androidx.activity:activity-compose:$androidxActivityVersion"
     implementation "com.google.android.play:core:$androidPlayVersion"
     implementation compose.foundation
     implementation compose.material

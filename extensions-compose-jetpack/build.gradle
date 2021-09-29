@@ -34,6 +34,7 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$composeJetpackVersion"
     androidTestImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.compose.ui:ui-test-manifest:$composeJetpackVersion"
+    androidTestImplementation "androidx.test:core:$androidxTestCoreVersion"
 }
 
 afterEvaluate {
