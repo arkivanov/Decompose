@@ -39,7 +39,8 @@ public abstract interface class com/arkivanov/decompose/ComponentContext : com/a
 
 public final class com/arkivanov/decompose/ComponentContextExtKt {
 	public static final fun child (Lcom/arkivanov/decompose/ComponentContext;Ljava/lang/String;)Lcom/arkivanov/decompose/ComponentContext;
-	public static final fun childContext (Lcom/arkivanov/decompose/ComponentContext;Ljava/lang/String;)Lcom/arkivanov/decompose/ComponentContext;
+	public static final fun childContext (Lcom/arkivanov/decompose/ComponentContext;Ljava/lang/String;Lcom/arkivanov/essenty/lifecycle/Lifecycle;)Lcom/arkivanov/decompose/ComponentContext;
+	public static synthetic fun childContext$default (Lcom/arkivanov/decompose/ComponentContext;Ljava/lang/String;Lcom/arkivanov/essenty/lifecycle/Lifecycle;ILjava/lang/Object;)Lcom/arkivanov/decompose/ComponentContext;
 }
 
 public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivanov/decompose/ComponentContext {

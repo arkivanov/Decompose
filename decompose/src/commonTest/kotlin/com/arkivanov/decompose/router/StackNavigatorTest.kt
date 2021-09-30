@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.router.statekeeper.TestParcelableContainer
-import com.arkivanov.decompose.router.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.decompose.statekeeper.TestParcelableContainer
+import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.essenty.backpressed.BackPressedDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.Lifecycle

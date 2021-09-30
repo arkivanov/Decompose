@@ -1,10 +1,12 @@
-package com.arkivanov.decompose.router.statekeeper
+package com.arkivanov.decompose.statekeeper
 
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.parcelable.consume
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import kotlin.reflect.KClass
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class TestStateKeeperDispatcher(
     val initialSavedState: ParcelableContainer? = null
@@ -35,6 +37,14 @@ class TestStateKeeperDispatcher(
     override fun unregister(key: String) {
         check(key in suppliers)
         suppliers -= key
+    }
+
+    fun assertSupplierRegistered(key: String) {
+        assertTrue(key in suppliers)
+    }
+
+    fun assertSupplierNotRegistered(key: String) {
+        assertFalse(key in suppliers)
     }
 
     private class SavedState(
