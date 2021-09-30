@@ -3,6 +3,7 @@ package com.arkivanov.decompose.lifecycle
 import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.lifecycle.doOnDestroy
 
 @InternalDecomposeApi
 class MergedLifecycle private constructor(
@@ -13,17 +14,30 @@ class MergedLifecycle private constructor(
 
     constructor(lifecycle1: Lifecycle, lifecycle2: Lifecycle) : this(LifecycleRegistry(), lifecycle1, lifecycle2)
 
-    private var state1: Lifecycle.State = Lifecycle.State.INITIALIZED
-    private var state2: Lifecycle.State = Lifecycle.State.INITIALIZED
-
     init {
-        lifecycle1.subscribe(LifecycleObserverImpl(otherState = ::state2, onStateChanged = { state1 = it }))
-        lifecycle2.subscribe(LifecycleObserverImpl(otherState = ::state1, onStateChanged = { state2 = it }))
+        if ((lifecycle1.state == Lifecycle.State.DESTROYED) || (lifecycle2.state == Lifecycle.State.DESTROYED)) {
+            registry.onCreate()
+            registry.onDestroy()
+        } else {
+            var state1: Lifecycle.State = Lifecycle.State.INITIALIZED
+            var state2: Lifecycle.State = Lifecycle.State.INITIALIZED
+            val observer1 = CallbacksImpl(registry = registry, setState = { state1 = it }, getOtherState = { state2 })
+            val observer2 = CallbacksImpl(registry = registry, setState = { state2 = it }, getOtherState = { state1 })
+
+            lifecycle1.subscribe(observer1)
+            lifecycle2.subscribe(observer2)
+
+            registry.doOnDestroy {
+                lifecycle1.unsubscribe(observer1)
+                lifecycle2.unsubscribe(observer2)
+            }
+        }
     }
 
-    private inner class LifecycleObserverImpl(
-        private val otherState: () -> Lifecycle.State,
-        private val onStateChanged: (Lifecycle.State) -> Unit
+    private class CallbacksImpl(
+        private val registry: Lifecycle.Callbacks,
+        private val setState: (Lifecycle.State) -> Unit,
+        private val getOtherState: () -> Lifecycle.State,
     ) : Lifecycle.Callbacks {
         override fun onCreate() {
             onUp(Lifecycle.State.CREATED, registry::onCreate)
@@ -50,17 +64,18 @@ class MergedLifecycle private constructor(
         }
 
         private fun onUp(state: Lifecycle.State, call: () -> Unit) {
-            onStateChanged(state)
-            if (state <= otherState()) {
+            setState(state)
+            if (state <= getOtherState()) {
                 call()
             }
         }
 
         private fun onDown(state: Lifecycle.State, call: () -> Unit) {
-            if (state < otherState()) {
+            if (state < getOtherState()) {
                 call()
             }
-            onStateChanged(state)
+            setState(state)
         }
     }
 }
+
