@@ -307,12 +307,12 @@ void setupComposeMppWorkaround(Project project) {
 
 private void setupAndroid(Project project) {
     project.android {
-        compileSdkVersion 30
+        compileSdkVersion 31
         buildToolsVersion "30.0.2"
 
         defaultConfig {
             minSdkVersion 21
-            targetSdkVersion 30
+            targetSdkVersion 31
         }
 
         compileOptions {

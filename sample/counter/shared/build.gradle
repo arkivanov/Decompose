@@ -16,7 +16,10 @@ if (!setupMultiplatform(
         new Android(),
         new Ios(binaries: darwinBinaries),
         new Js(mode: Js.Mode.IR),
-        new Watchos(binaries: darwinBinaries)
+
+        // Temporary disabled watchos targets due to https://youtrack.jetbrains.com/issue/KT-48613
+        // Until Kotlin 1.5.31
+//        new Watchos(binaries: darwinBinaries)
 )) {
     return
 }
