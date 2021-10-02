@@ -15,27 +15,11 @@
 		9367CFAD2674C401005FC98B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9367CFAC2674C401005FC98B /* ContentView.swift */; };
 		9367CFAF2674C403005FC98B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9367CFAE2674C403005FC98B /* Assets.xcassets */; };
 		9367CFB22674C403005FC98B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9367CFB12674C403005FC98B /* Preview Assets.xcassets */; };
-		93C735282674C88A00CC7447 /* MasterDetail.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C735272674C88A00CC7447 /* MasterDetail.framework */; };
-		93C735292674C88A00CC7447 /* MasterDetail.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 93C735272674C88A00CC7447 /* MasterDetail.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		93C7352D2674CDF100CC7447 /* SimpleRouterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C7352C2674CDF100CC7447 /* SimpleRouterState.swift */; };
 		93C7352F2674CE2900CC7447 /* MutableStateBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C7352E2674CE2900CC7447 /* MutableStateBuilder.swift */; };
 		93C735312674CE5600CC7447 /* ObservableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C735302674CE5600CC7447 /* ObservableValue.swift */; };
 		93C735352674CEF900CC7447 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C735342674CEF900CC7447 /* RootView.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		93C7352A2674C88A00CC7447 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				93C735292674C88A00CC7447 /* MasterDetail.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		932B121E267737E500479C85 /* DetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsView.swift; sourceTree = "<group>"; };
@@ -61,7 +45,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93C735282674C88A00CC7447 /* MasterDetail.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,7 +116,6 @@
 				9367CFA32674C401005FC98B /* Sources */,
 				9367CFA42674C401005FC98B /* Frameworks */,
 				9367CFA52674C401005FC98B /* Resources */,
-				93C7352A2674C88A00CC7447 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -206,7 +188,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n#cd \"$SRCROOT\"\n#cd ../../..\n#./gradlew :sample:master-detail:shared:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION} -Dorg.gradle.java.home=//Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home\ncd $SRCROOT/../../..\n./gradlew :sample:counter:shared:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION}\ncd $SRCROOT\n";
+			shellScript = "cd $SRCROOT/../../..\n./gradlew :sample:master-detail:shared:embedAndSignAppleFrameworkForXcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -365,12 +347,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"ios-app/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = "ios-app/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					MasterDetail,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.arkivanov.decompose.sample.masterdetail.ios-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -387,12 +374,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"ios-app/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = "ios-app/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					MasterDetail,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.arkivanov.decompose.sample.masterdetail.ios-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -37,25 +37,3 @@ kotlin {
         }
     }
 }
-
-static String getIosTargetName() {
-    def sdkName = System.getenv("SDK_NAME") ?: "iphonesimulator"
-    return "ios" + (sdkName.startsWith("iphoneos") ? "Arm64" : "X64")
-}
-
-doIfIosEnabled(project) {
-    task packForXcode(type: Sync) {
-        group = "build"
-        def mode = System.getenv("CONFIGURATION")
-        if (mode == null) {
-            mode = "DEBUG"
-        }
-        def targetName = getIosTargetName()
-        def framework = kotlin.targets.getByName(targetName).binaries.getFramework(mode)
-        inputs.property("mode", mode)
-        dependsOn(framework.linkTask)
-        def targetDir = new File(buildDir, "xcode-frameworks")
-        from(framework.outputDirectory)
-        into(targetDir)
-    }
-}

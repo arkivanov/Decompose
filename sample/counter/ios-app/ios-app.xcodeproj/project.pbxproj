@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DC23136D250FF73A00BBC24B /* Counter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC23136C250FF73A00BBC24B /* Counter.framework */; };
-		DC23136E250FF73A00BBC24B /* Counter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DC23136C250FF73A00BBC24B /* Counter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DC95F2A2255320EE002EDDEA /* SimpleRouterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC95F2A1255320EE002EDDEA /* SimpleRouterState.swift */; };
 		DCA5803F250CE5BB002AFAEA /* ObservableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA5803E250CE5BB002AFAEA /* ObservableValue.swift */; };
 		DCA58041250CE6B0002AFAEA /* CounterInnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA58040250CE6B0002AFAEA /* CounterInnerView.swift */; };
@@ -22,20 +20,6 @@
 		DCD1E13A250C359A00F8C914 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCD1E138250C359A00F8C914 /* LaunchScreen.storyboard */; };
 		DCD1E148250C36FD00F8C914 /* CounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD1E147250C36FD00F8C914 /* CounterView.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		DC23136F250FF73A00BBC24B /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				DC23136E250FF73A00BBC24B /* Counter.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		DC23136C250FF73A00BBC24B /* Counter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Counter.framework; path = "../shared/build/xcode-frameworks/Counter.framework"; sourceTree = "<group>"; };
@@ -61,7 +45,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DC23136D250FF73A00BBC24B /* Counter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,7 +116,6 @@
 				DCD1E126250C359700F8C914 /* Sources */,
 				DCD1E127250C359700F8C914 /* Frameworks */,
 				DCD1E128250C359700F8C914 /* Resources */,
-				DC23136F250FF73A00BBC24B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -206,7 +188,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $SRCROOT/../../..\n./gradlew :sample:counter:shared:packForXCode -PXCODE_CONFIGURATION=${CONFIGURATION}\ncd $SRCROOT\n";
+			shellScript = "cd $SRCROOT/../../..\n./gradlew :sample:counter:shared:embedAndSignAppleFrameworkForXcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -362,11 +344,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"ios-app/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = "ios-app/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Counter,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.arkivanov.decompose.sample.counter.iosapp.ios-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -382,11 +369,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"ios-app/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = "ios-app/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Counter,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.arkivanov.decompose.sample.counter.iosapp.ios-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
