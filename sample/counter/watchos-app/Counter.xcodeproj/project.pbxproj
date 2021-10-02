@@ -23,8 +23,6 @@
 		428DE09B26A7FA7400A444E1 /* MutableStateBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DE09A26A7FA7400A444E1 /* MutableStateBuilder.swift */; };
 		428DE09D26A7FAA000A444E1 /* CounterInnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DE09C26A7FAA000A444E1 /* CounterInnerView.swift */; };
 		428DE09F26A7FAF500A444E1 /* SimpleRouterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428DE09E26A7FAF500A444E1 /* SimpleRouterState.swift */; };
-		428DE0A226A94CE200A444E1 /* Counter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 428DE0A126A94CE200A444E1 /* Counter.framework */; };
-		428DE0A326A94CE200A444E1 /* Counter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 428DE0A126A94CE200A444E1 /* Counter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,17 +79,6 @@
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		428DE0A426A94CE200A444E1 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				428DE0A326A94CE200A444E1 /* Counter.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -126,7 +113,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				428DE0A226A94CE200A444E1 /* Counter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,7 +248,6 @@
 				428DE04C26A7F59600A444E1 /* Sources */,
 				428DE04D26A7F59600A444E1 /* Frameworks */,
 				428DE04E26A7F59600A444E1 /* Resources */,
-				428DE0A426A94CE200A444E1 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -416,7 +401,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $SRCROOT/../../..\n./gradlew :sample:counter:shared:packForXCodeWatch -PXCODE_CONFIGURATION=${CONFIGURATION}\ncd $SRCROOT\n";
+			shellScript = "cd $SRCROOT/../../..\n./gradlew :sample:counter:shared:embedAndSignAppleFrameworkForXcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -602,12 +587,17 @@
 				DEVELOPMENT_TEAM = R358GFLTMU;
 				ENABLE_PREVIEWS = YES;
 				EXCLUDED_ARCHS = "armv7k arm64";
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks-watchos";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = "Counter WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Counter,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.arkivanov.decompose.Counter.watchkitapp.watchkitextension;
 				PRODUCT_NAME = "${TARGET_NAME}";
@@ -628,12 +618,17 @@
 				DEVELOPMENT_TEAM = R358GFLTMU;
 				ENABLE_PREVIEWS = YES;
 				EXCLUDED_ARCHS = "armv7k arm64";
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks-watchos";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)";
 				INFOPLIST_FILE = "Counter WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Counter,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.arkivanov.decompose.Counter.watchkitapp.watchkitextension;
 				PRODUCT_NAME = "${TARGET_NAME}";
