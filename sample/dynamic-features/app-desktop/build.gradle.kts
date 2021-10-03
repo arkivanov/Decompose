@@ -1,11 +1,17 @@
-import com.arkivanov.Jvm
+import com.arkivanov.gradle.Target
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
-if (!setupMultiplatform(project, new Jvm())) {
-    return
+plugins {
+    id("kotlin-multiplatform")
+    id("org.jetbrains.compose")
+    id("com.arkivanov.gradle.setup")
 }
 
-plugins.apply("org.jetbrains.compose")
+setup {
+    multiplatform(Target.Jvm)
+}
 
 kotlin {
     jvm {
@@ -13,12 +19,12 @@ kotlin {
     }
 
     sourceSets {
-        jvmMain {
+        named("jvmMain") {
             dependencies {
+                implementation(project(":decompose"))
+                implementation(project(":extensions-compose-jetbrains"))
+                implementation(project(":sample:dynamic-features:shared:root"))
                 implementation(compose.desktop.currentOs)
-                implementation project(':decompose')
-                implementation project(':extensions-compose-jetbrains')
-                implementation project(':sample:dynamic-features:shared:root')
             }
         }
     }
@@ -29,7 +35,7 @@ compose.desktop {
         mainClass = "com.arkivanov.dynamicfeatures.app.MainKt"
 
         nativeDistributions {
-            targetFormats = EnumSet.of(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats = setOf(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "DecomposeDynamicFeatures"
             packageVersion = "1.0.0"
 
@@ -41,4 +47,3 @@ compose.desktop {
         }
     }
 }
-

@@ -28,7 +28,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Build
-        run: ./gradlew build -Dtargets=Android,Jvm,Js
+        run: ./gradlew build -Dsplit_targets
       - name: Android instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -54,4 +54,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Build iOS
-        run: ./gradlew build --info -Dtargets=Ios,Tvos,Macos,Watchos
+        run: ./gradlew build --info -Dsplit_targets
