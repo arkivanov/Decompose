@@ -16,7 +16,8 @@ interface ComponentContext :
     @Deprecated(
         message = "ComponentContext now extends BackPressedHandlerOwner instead of BackPressedDispatcherOwner. " +
             "Please use backPressedHandler property.",
-        replaceWith = ReplaceWith("backPressedHandler")
+        replaceWith = ReplaceWith("backPressedHandler"),
+        level = DeprecationLevel.ERROR,
     )
     val backPressedDispatcher: BackPressedDispatcher
 }
