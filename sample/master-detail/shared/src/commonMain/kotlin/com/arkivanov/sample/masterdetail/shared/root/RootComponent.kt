@@ -25,7 +25,7 @@ class RootComponent(
 
     private val listRouter =
         ListRouter(
-            routerFactory = this,
+            componentContext = this,
             database = database,
             selectedArticleId = selectedArticleIdSubject,
             onArticleSelected = ::onArticleSelected
@@ -35,7 +35,7 @@ class RootComponent(
 
     private val detailsRouter =
         DetailsRouter(
-            routerFactory = this,
+            componentContext = this,
             database = database,
             isToolbarVisible = isDetailsToolbarVisible,
             onFinished = ::closeDetailsAndShowList

@@ -1,7 +1,6 @@
 package com.arkivanov.sample.masterdetail.shared.root
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.RouterFactory
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.popWhile
 import com.arkivanov.decompose.router
@@ -15,14 +14,14 @@ import com.arkivanov.sample.masterdetail.shared.root.Root.DetailsChild
 import com.badoo.reaktive.observable.Observable
 
 internal class DetailsRouter(
-    routerFactory: RouterFactory,
+    componentContext: ComponentContext,
     private val database: ArticleDatabase,
     private val isToolbarVisible: Observable<Boolean>,
     private val onFinished: () -> Unit
 ) {
 
     private val router =
-        routerFactory.router<Config, DetailsChild>(
+        componentContext.router<Config, DetailsChild>(
             initialConfiguration = Config.None,
             key = "DetailsRouter",
             childFactory = ::createChild

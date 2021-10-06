@@ -9,31 +9,22 @@ import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
-class DefaultComponentContext private constructor(
+class DefaultComponentContext(
     override val lifecycle: Lifecycle,
-    override val stateKeeper: StateKeeper,
-    override val instanceKeeper: InstanceKeeper,
-    override val backPressedHandler: BackPressedHandler,
-    routerFactory: RouterFactory = DefaultRouterFactory(lifecycle, stateKeeper, instanceKeeper, backPressedHandler)
-) : ComponentContext, RouterFactory by routerFactory {
+    stateKeeper: StateKeeper? = null,
+    instanceKeeper: InstanceKeeper? = null,
+    backPressedHandler: BackPressedHandler? = null,
+) : ComponentContext {
+
+    override val stateKeeper: StateKeeper = stateKeeper ?: StateKeeperDispatcher()
+    override val instanceKeeper: InstanceKeeper = instanceKeeper ?: InstanceKeeperDispatcher().attachTo(lifecycle)
+    override val backPressedHandler: BackPressedHandler = backPressedHandler ?: BackPressedDispatcher()
 
     override val backPressedDispatcher: BackPressedDispatcher by lazy {
         BackPressedDispatcher().also { dispatcher ->
-            backPressedHandler.register(dispatcher::onBackPressed)
+            this.backPressedHandler.register(dispatcher::onBackPressed)
         }
     }
-
-    constructor(
-        lifecycle: Lifecycle,
-        stateKeeper: StateKeeper? = null,
-        instanceKeeper: InstanceKeeper? = null,
-        backPressedHandler: BackPressedHandler? = null
-    ) : this(
-        lifecycle = lifecycle,
-        stateKeeper = stateKeeper ?: StateKeeperDispatcher(),
-        instanceKeeper = instanceKeeper ?: InstanceKeeperDispatcher().attachTo(lifecycle),
-        backPressedHandler = backPressedHandler ?: BackPressedDispatcher()
-    )
 
     constructor(lifecycle: Lifecycle) : this(
         lifecycle = lifecycle,
