@@ -17,7 +17,7 @@ import com.arkivanov.essenty.statekeeper.StateKeeper
     message = "Composition may run on a background thread, it is advised to create components on the main or UI thread. " +
         "Consider creating ComponentContext and components manually. " +
         "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-desktop/src/jvmMain/kotlin/com/arkivanov/masterdetail/app/Main.kt",
-    level = DeprecationLevel.WARNING
+    level = DeprecationLevel.ERROR,
 )
 @Composable
 fun <T> rememberRootComponent(
@@ -41,26 +41,3 @@ fun <T> rememberRootComponent(
         factory(componentContext)
     }
 }
-
-@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
-@Deprecated(
-    message = "Composition may run on a background thread, it is advised to create components on the main or UI thread. " +
-        "Consider creating ComponentContext and components manually. " +
-        "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-desktop/src/jvmMain/kotlin/com/arkivanov/masterdetail/app/Main.kt",
-    level = DeprecationLevel.ERROR
-)
-@Composable
-fun <T> rootComponent(
-    lifecycle: Lifecycle? = null,
-    stateKeeper: StateKeeper? = null,
-    instanceKeeper: InstanceKeeper? = null,
-    backPressedDispatcher: BackPressedDispatcher? = null,
-    factory: (ComponentContext) -> T,
-): T =
-    rememberRootComponent(
-        lifecycle = lifecycle,
-        stateKeeper = stateKeeper,
-        instanceKeeper = instanceKeeper,
-        backPressedDispatcher = backPressedDispatcher,
-        factory = factory
-    )

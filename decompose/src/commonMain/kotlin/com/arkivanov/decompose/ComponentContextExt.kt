@@ -11,5 +11,9 @@ fun ComponentContext.childContext(key: String): ComponentContext =
         backPressedHandler = backPressedHandler
     )
 
-@Deprecated("Use childContext(key)", ReplaceWith("childContext(key)"))
+@Deprecated(
+    message = "Use childContext(key)",
+    replaceWith = ReplaceWith("childContext(key)"),
+    level = DeprecationLevel.ERROR,
+)
 fun ComponentContext.child(key: String): ComponentContext = childContext(key = key)

@@ -25,7 +25,7 @@ import androidx.lifecycle.Lifecycle as AndroidLifecycle
     message = "Composition may run on a background thread, it is advised to create components on the main thread. " +
         "Consider creating ComponentContext and components manually. " +
         "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-android/src/main/java/com/arkivanov/masterdetail/app/MainActivity.kt",
-    level = DeprecationLevel.WARNING
+    level = DeprecationLevel.ERROR,
 )
 @Composable
 fun <T> rememberRootComponent(
@@ -50,12 +50,12 @@ fun <T> rememberRootComponent(
     }
 }
 
-@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
+@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION_ERROR")
 @Deprecated(
     message = "Composition may run on a background thread, it is advised to create components on the main thread. " +
         "Consider creating ComponentContext and components manually. " +
         "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-android/src/main/java/com/arkivanov/masterdetail/app/MainActivity.kt",
-    level = DeprecationLevel.WARNING
+    level = DeprecationLevel.ERROR,
 )
 @Composable
 fun <T, C> T.rememberRootComponent(
@@ -68,39 +68,3 @@ fun <T, C> T.rememberRootComponent(
         lifecycle = (this as LifecycleOwner).lifecycle,
         factory = factory
     )
-
-@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
-@Deprecated(
-    message = "Composition may run on a background thread, it is advised to create components on the main thread. " +
-        "Consider creating ComponentContext and components manually. " +
-        "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-android/src/main/java/com/arkivanov/masterdetail/app/MainActivity.kt",
-    level = DeprecationLevel.ERROR
-)
-@Composable
-fun <T> rootComponent(
-    savedStateRegistry: SavedStateRegistry,
-    viewModelStore: ViewModelStore,
-    onBackPressedDispatcher: OnBackPressedDispatcher,
-    lifecycle: AndroidLifecycle? = null,
-    factory: (ComponentContext) -> T,
-): T =
-    rememberRootComponent(
-        savedStateRegistry = savedStateRegistry,
-        viewModelStore = viewModelStore,
-        onBackPressedDispatcher = onBackPressedDispatcher,
-        lifecycle = lifecycle,
-        factory = factory
-    )
-
-@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
-@Deprecated(
-    message = "Composition may run on a background thread, it is advised to create components on the main thread. " +
-        "Consider creating ComponentContext and components manually. " +
-        "Please refer to examples: https://github.com/arkivanov/Decompose/blob/master/sample/master-detail/app-android/src/main/java/com/arkivanov/masterdetail/app/MainActivity.kt",
-    level = DeprecationLevel.ERROR
-)
-@Composable
-fun <T, C> T.rootComponent(
-    factory: (ComponentContext) -> C
-): C where T : SavedStateRegistryOwner, T : OnBackPressedDispatcherOwner, T : ViewModelStoreOwner, T : LifecycleOwner =
-    rememberRootComponent(factory = factory)
