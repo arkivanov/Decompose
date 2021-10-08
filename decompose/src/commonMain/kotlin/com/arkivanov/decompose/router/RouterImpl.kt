@@ -3,6 +3,7 @@ package com.arkivanov.decompose.router
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.Router
 import com.arkivanov.decompose.RouterState
+import com.arkivanov.decompose.SerializedQueue
 import com.arkivanov.decompose.ensureNeverFrozen
 import com.arkivanov.decompose.pop
 import com.arkivanov.decompose.value.MutableValue
@@ -24,7 +25,7 @@ internal class RouterImpl<C : Any, T : Any>(
 
     private val onBackPressedHandler = ::onBackPressed
     override val state: MutableValue<RouterState<C, T>> = MutableValue(stackHolder.stack.toState())
-    private val queue = ArrayDeque<(List<C>) -> List<C>>()
+    private val queue = SerializedQueue(::navigateActual)
 
     init {
         backPressedHandler.register(onBackPressedHandler)
@@ -36,19 +37,13 @@ internal class RouterImpl<C : Any, T : Any>(
     }
 
     override fun navigate(transformer: (stack: List<C>) -> List<C>) {
-        queue.addLast(transformer)
-        if (queue.size == 1) {
-            drainQueue()
-        }
+        queue.offer(transformer)
     }
 
-    private fun drainQueue() {
-        do {
-            val newStack = navigator.navigate(oldStack = stackHolder.stack, transformer = queue.first())
-            stackHolder.stack = newStack
-            state.value = newStack.toState()
-            queue.removeFirst()
-        } while (queue.isNotEmpty())
+    private fun navigateActual(transformer: (stack: List<C>) -> List<C>) {
+        val newStack = navigator.navigate(oldStack = stackHolder.stack, transformer = transformer)
+        stackHolder.stack = newStack
+        state.value = newStack.toState()
     }
 
     private fun onBackPressed(): Boolean =
