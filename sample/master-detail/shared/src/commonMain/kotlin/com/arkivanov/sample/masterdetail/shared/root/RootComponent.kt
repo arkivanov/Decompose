@@ -74,15 +74,13 @@ class RootComponent(
     }
 
     override fun setMultiPane(isMultiPane: Boolean) {
-        if (isMultiPane != isMultiPaneMode()) {
-            _models.reduce { it.copy(isMultiPane = isMultiPane) }
-            isDetailsToolbarVisible.onNext(!isMultiPane)
+        _models.reduce { it.copy(isMultiPane = isMultiPane) }
+        isDetailsToolbarVisible.onNext(!isMultiPane)
 
-            if (isMultiPane) {
-                switchToMultiPane()
-            } else {
-                switchToSinglePane()
-            }
+        if (isMultiPane) {
+            switchToMultiPane()
+        } else {
+            switchToSinglePane()
         }
     }
 
