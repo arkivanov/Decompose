@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.router
 
+import com.arkivanov.decompose.isUnique
 import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.pause
 import com.arkivanov.essenty.lifecycle.resume
@@ -13,6 +14,7 @@ internal class StackNavigatorImpl<C : Any, T : Any>(
         val newConfigurationStack = transformer((oldStack.backStack + oldStack.active).map(RouterEntry<C, *>::configuration))
 
         check(newConfigurationStack.isNotEmpty()) { "Configuration stack can not be empty" }
+        check(newConfigurationStack.isUnique()) { "Configurations in the stack must be unique" }
 
         val newActiveConfiguration = newConfigurationStack.last()
         val newActiveEntry: RouterEntry.Created<C, *>
