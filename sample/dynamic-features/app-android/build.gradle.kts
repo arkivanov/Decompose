@@ -6,7 +6,7 @@ plugins {
     id("com.arkivanov.gradle.setup")
 }
 
-setup {
+setupAndroidApp {
     androidApp(
         applicationId = "com.arkivanov.dynamicfeatures.app",
         versionCode = 1,

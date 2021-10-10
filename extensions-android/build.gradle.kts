@@ -4,9 +4,10 @@ plugins {
     id("com.arkivanov.gradle.setup")
 }
 
-setup {
+setupAndroidLibrary {
     androidLibrary()
-    androidLibraryPublications()
+    publications()
+    binaryCompatibilityValidator()
 }
 
 dependencies {

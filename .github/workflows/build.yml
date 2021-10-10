@@ -54,4 +54,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Build iOS
-        run: ./gradlew build --info -Dsplit_targets
+        run: ./gradlew build -Dsplit_targets

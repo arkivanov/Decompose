@@ -1,6 +1,4 @@
 import com.arkivanov.gradle.Target
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -9,8 +7,8 @@ plugins {
     id("com.arkivanov.gradle.setup")
 }
 
-setup {
-    multiplatform(Target.Jvm)
+setupMultiplatform {
+    targets(Target.Jvm)
 }
 
 kotlin {

@@ -3,7 +3,7 @@ plugins {
     id("com.arkivanov.gradle.setup")
 }
 
-setup {
+setupJsApp {
     jsApp()
 }
 

@@ -8,8 +8,8 @@ plugins {
     id("com.arkivanov.gradle.setup")
 }
 
-setup {
-    multiplatform(
+setupMultiplatform {
+    targets(
         Target.Android,
         Target.Jvm,
         Target.Js(mode = Target.Js.Mode.IR),

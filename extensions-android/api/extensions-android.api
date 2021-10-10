@@ -1,0 +1,33 @@
+public final class com/arkivanov/decompose/extensions/android/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class com/arkivanov/decompose/extensions/android/DefaultViewContext : com/arkivanov/decompose/extensions/android/ViewContext {
+	public fun <init> (Landroid/view/ViewGroup;Lcom/arkivanov/essenty/lifecycle/Lifecycle;)V
+	public fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/Lifecycle;
+	public fun getParent ()Landroid/view/ViewGroup;
+}
+
+public final class com/arkivanov/decompose/extensions/android/RouterView : android/widget/FrameLayout {
+	public fun <init> (Landroid/content/Context;)V
+	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;)V
+	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;I)V
+	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun children (Lcom/arkivanov/decompose/value/Value;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function4;)V
+}
+
+public abstract interface class com/arkivanov/decompose/extensions/android/ViewContext {
+	public abstract fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/Lifecycle;
+	public abstract fun getParent ()Landroid/view/ViewGroup;
+}
+
+public final class com/arkivanov/decompose/extensions/android/ViewContextExtKt {
+	public static final fun child (Lcom/arkivanov/decompose/extensions/android/ViewContext;Landroid/view/ViewGroup;Lkotlin/jvm/functions/Function1;)V
+	public static final fun getContext (Lcom/arkivanov/decompose/extensions/android/ViewContext;)Landroid/content/Context;
+	public static final fun getLayoutInflater (Lcom/arkivanov/decompose/extensions/android/ViewContext;)Landroid/view/LayoutInflater;
+	public static final fun getResources (Lcom/arkivanov/decompose/extensions/android/ViewContext;)Landroid/content/res/Resources;
+}
+
