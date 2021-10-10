@@ -30,10 +30,10 @@ setupDefaults {
         Target.Android,
         Target.Jvm,
         Target.Js(),
-        Target.Ios(isAppleSiliconEnabled = false),
-        Target.WatchOs(isAppleSiliconEnabled = false),
-        Target.TvOs(isAppleSiliconEnabled = false),
-        Target.MacOs(isAppleSiliconEnabled = false),
+        Target.Ios(),
+        Target.WatchOs(),
+        Target.TvOs(),
+        Target.MacOs(),
     )
 
     multiplatformSourceSets {
