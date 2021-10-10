@@ -18,15 +18,19 @@ Decompose is a Kotlin Multiplatform library for breaking down your code into lif
 
 ## Setup
 
-[Setup Decompose in your Gradle project](https://arkivanov.github.io/Decompose/getting-started/)
+Please check the [Installation](https://arkivanov.github.io/Decompose/getting-started/installation/) section of the documentation.
 
 ## Overview
 
-* [Components](https://arkivanov.github.io/Decompose/component/overview/) -  every component represents a piece of logic with lifecycle and optional pluggable UI. 
-* [ComponentContext](https://arkivanov.github.io/Decompose/component/overview/#componentcontext) - provided to every component with the tools for routing, state keeping, instance keeping and lifecycle
-* [Routers](https://arkivanov.github.io/Decompose/router/overview/) - responsible for managing components with a backstack and its own `Lifecycle`
-* [StateKeeper](https://arkivanov.github.io/Decompose/component/state-keeper/) - preserve state during configuration changes and/or process death
-* [InstanceKeeper](https://arkivanov.github.io/Decompose/component/instance-keeper/) - retain instances in your components (similar to AndroidX ViewModel)
+Here are some key concepts of the library, more details can be found in the documentation.
+
+* [Component](https://arkivanov.github.io/Decompose/component/overview/) - every component represents a piece of logic with its own lifecycle, the UI is optional an is plugged externally
+* [ComponentContext](https://arkivanov.github.io/Decompose/component/overview/#componentcontext) - every component has its own [ComponentContext], which makes components lifecycle-aware and allows state preservation, instances retaining (aka AndroidX `ViewModel`) and back button handling
+* [Router](https://arkivanov.github.io/Decompose/router/overview/) - enables navigation between child components, nested navigation is also supported
+* [Lifecycle](https://arkivanov.github.io/Decompose/component/lifecycle/) - provides a way to listen for lifecycle events in components
+* [StateKeeper](https://arkivanov.github.io/Decompose/component/state-preservation/) - makes it possible to preserve state or data in a component when it gets destroyed
+* [InstanceKeeper](https://arkivanov.github.io/Decompose/component/instance-retaining/) - retains instances in your components (similar to AndroidX `ViewModel`)
+* [BackPressedHandler](https://arkivanov.github.io/Decompose/component/back-button/) - provides a way to handle and intercept back button presses
 
 ### Component hierarchy
 

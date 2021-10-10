@@ -8,7 +8,7 @@ The `Router` can automatically navigate back when the back button is pressed. Al
 
 ## Manual back button handling
 
-The back button can be handled manually using `BackPressedDispatcher` (comes from [Essenty](https://github.com/arkivanov/Essenty) library), which is provided by `ComponentContext`. The `decompose` module adds Essenty's `back-pressed` module as `api` dependency, so you don't need to explicitly add it to your project. Please familiarise yourself with Essenty library, especially with the `BackPressedDispatcher`.
+The back button can be handled manually using `BackPressedHandler` (comes from [Essenty](https://github.com/arkivanov/Essenty) library), which is provided by `ComponentContext`. The `decompose` module adds Essenty's `back-pressed` module as `api` dependency, so you don't need to explicitly add it to your project. Please familiarise yourself with Essenty library, especially with the `BackPressedDispatcher`.
 
 ### Usage example
 
@@ -20,7 +20,7 @@ class SomeComponent(
 ) : ComponentContext by componentContext {
 
     init {
-        backPressedDispatcher.register(::onBackPressed)
+        backPressedHandler.register(::onBackPressed)
     }
 
     private fun onBackPressed(): Boolean {
