@@ -5,7 +5,7 @@ plugins {
     id("com.arkivanov.gradle.setup")
 }
 
-setup {
+setupAndroidApp {
     androidApp(
         applicationId = "com.arkivanov.counter.app",
         versionCode = 1,

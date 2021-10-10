@@ -4,8 +4,8 @@ plugins {
     id("com.arkivanov.gradle.setup")
 }
 
-setup {
-    multiplatform()
+setupMultiplatform {
+    targets()
 }
 
 repositories {

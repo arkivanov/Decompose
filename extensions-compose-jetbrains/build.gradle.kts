@@ -7,9 +7,10 @@ plugins {
     id("com.arkivanov.gradle.setup")
 }
 
-setup {
-    multiplatform(Target.Android, Target.Jvm)
-    multiplatformPublications()
+setupMultiplatform {
+    targets(Target.Android, Target.Jvm)
+    publications()
+    binaryCompatibilityValidator()
 }
 
 kotlin {

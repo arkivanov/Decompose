@@ -2,12 +2,12 @@ plugins {
     id("com.android.library")
     id("kotlin-android")
     id("com.arkivanov.gradle.setup")
-    id("maven-publish")
 }
 
-setup {
+setupAndroidLibrary {
     androidLibrary()
-    androidLibraryPublications()
+    publications()
+    binaryCompatibilityValidator()
 }
 
 android {
