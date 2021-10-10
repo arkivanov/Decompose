@@ -48,3 +48,7 @@ include(":sample:dynamic-features:shared:main")
 include(":sample:dynamic-features:shared:root")
 include(":sample:dynamic-features:app-android")
 include(":sample:dynamic-features:app-desktop")
+
+if (startParameter.projectProperties.containsKey("check_publication")) {
+    include(":tools:check-publication")
+}

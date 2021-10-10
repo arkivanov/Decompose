@@ -56,7 +56,7 @@ jobs:
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         run: ./gradlew publish -Dsplit_targets
   macos-publish:
-    name: Publish on Macos
+    name: Publish on macOS
     runs-on: macos-latest
     needs: create-staging-repository
     steps:
@@ -85,3 +85,33 @@ jobs:
           password: ${{ secrets.SONATYPE_PASSWORD }}
           staging_repository_id: ${{ needs.create-staging-repository.outputs.repository-id }}
           close_only: 'true'
+  linux-check-publication:
+    name: Check publication on Linux
+    runs-on: ubuntu-latest
+    needs: close-staging-repository
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Update dependencies
+        run: sudo apt-get update
+      - name: Install dependencies
+        run: sudo apt-get install nodejs chromium-browser
+      - name: Check publication on Linux
+        run: ./gradlew :tools:check-publication:build -Pcheck_publication -Dsplit_targets
+  macos-check-publication:
+    name: Check publication on macOS
+    runs-on: macos-latest
+    needs: close-staging-repository
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Check macOS publication
+        run: ./gradlew :tools:check-publication:build -Pcheck_publication -Dsplit_targets
