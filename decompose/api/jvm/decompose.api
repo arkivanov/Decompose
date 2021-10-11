@@ -52,20 +52,17 @@ public abstract interface annotation class com/arkivanov/decompose/ExperimentalD
 public abstract interface annotation class com/arkivanov/decompose/InternalDecomposeApi : java/lang/annotation/Annotation {
 }
 
-public abstract interface class com/arkivanov/decompose/Navigator {
+public abstract interface class com/arkivanov/decompose/Router {
+	public abstract fun getState ()Lcom/arkivanov/decompose/value/Value;
 	public abstract fun navigate (Lkotlin/jvm/functions/Function1;)V
 }
 
-public final class com/arkivanov/decompose/NavigatorExtKt {
-	public static final fun bringToFront (Lcom/arkivanov/decompose/Navigator;Ljava/lang/Object;)V
-	public static final fun pop (Lcom/arkivanov/decompose/Navigator;)V
-	public static final fun popWhile (Lcom/arkivanov/decompose/Navigator;Lkotlin/jvm/functions/Function1;)V
-	public static final fun push (Lcom/arkivanov/decompose/Navigator;Ljava/lang/Object;)V
-	public static final fun replaceCurrent (Lcom/arkivanov/decompose/Navigator;Ljava/lang/Object;)V
-}
-
-public abstract interface class com/arkivanov/decompose/Router : com/arkivanov/decompose/Navigator {
-	public abstract fun getState ()Lcom/arkivanov/decompose/value/Value;
+public final class com/arkivanov/decompose/RouterExtKt {
+	public static final fun bringToFront (Lcom/arkivanov/decompose/Router;Ljava/lang/Object;)V
+	public static final fun pop (Lcom/arkivanov/decompose/Router;)V
+	public static final fun popWhile (Lcom/arkivanov/decompose/Router;Lkotlin/jvm/functions/Function1;)V
+	public static final fun push (Lcom/arkivanov/decompose/Router;Ljava/lang/Object;)V
+	public static final fun replaceCurrent (Lcom/arkivanov/decompose/Router;Ljava/lang/Object;)V
 }
 
 public final class com/arkivanov/decompose/RouterFactoryExtKt {

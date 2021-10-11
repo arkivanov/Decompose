@@ -1,22 +1,23 @@
 # Navigation
 
-## Navigator & Router
+## Router
 
-All navigation in Decompose is done through the [`Navigator`](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/Navigator.kt) interface. This has one function called `navigate { }` which when called will transform the current stack with the provided lambda. 
+All navigation in Decompose is done through the [`Router`](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/Router.kt) interface. It has one function `navigate(transformer: (List<C>) -> List<C>)` which transforms the current stack of configurations into a new one by the provided `transformer` function. The stack is represented as `List`, where the last element is the top of the stack, and the first element is the bottom of the stack.
 
-!!! note
-    The [`Router`](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/Router.kt) interface extends the `Navigator` interface. 
+> ⚠️ The returned stack must not be empty.
 
-    ![](../media/navigator-router.png)
+The navigation is always performed synchronously during the `navigate` method call. The only exception to this rule is when the `navigate` method is called recursively. All recursive invocations are queued and performed one by one once the current navigation is finished.
 
-## Navigator Extensions
+During the navigation process, the `Router` compares the new stack of configurations with the previous one. The `Router` ensures that all removed components are destroyed, and that there is only one component resumed at a time - the top one. All components in the back stack are always either stopped or destroyed.
 
-There are a few `Navigator` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/NavigatorExt.kt) that provide conveniences for navigating, some of which were already used in the [router overview example](../overview/#routing-example). 
+## Router extension functions
 
-The preceding examples will utilize the following sealed class & router for showcasing the usage of the `Navigator` extensions.
+There are `Router` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/RouterExt.kt) that provide conveniences for navigating, some of which were already used in the [router overview example](../overview/#routing-example).
+
+The preceding examples will utilize the following `sealed class` & `router` for showcasing the usage of the `Router` extensions.
 
 ```kotlin
-sealed class Configuration { 
+sealed class Configuration {
     object A : Configuration()
     object B : Configuration()
     object C : Configuration()
@@ -28,34 +29,34 @@ val router: Router<Configuration>
 
 ### Push
 
-Pushes the provided `Configuration` at the top of the stack. 
+Pushes the provided `Configuration` at the top of the stack.
 
 ```kotlin
 router.push(Configuration.B)
 router.push(Configuration.C)
 ```
 
-![](../media/navigator-push.png)
+![](../media/RouterPush.png)
 
 ### Pop
 
-Pops the latest configuration at the top of the stack. 
+Pops the latest configuration at the top of the stack.
 
 ```kotlin
 router.pop()
 ```
 
-![](../media/navigator-pop.png)
+![](../media/RouterPop.png)
 
-### Pop While 
+### Pop While
 
-Drops the configurations at the top of the stack while the provided predicate returns true. 
+Drops the configurations at the top of the stack while the provided predicate returns true.
 
 ```kotlin
 router.popWhile { topOfStack: Configuration -> topOfStack !is B }
 ```
 
-![](../media/navigator-popwhile.png)
+![](../media/RouterPopWhile.png)
 
 ### Replace Current
 
@@ -65,9 +66,9 @@ Replaces the current configuration at the top of the stack with the provided `Co
 router.replaceCurrent(Configuration.D)
 ```
 
-![](../media/navigator-replacecurrent.png)
+![](../media/RouterReplaceCurrent.png)
 
-### Bring to Front 
+### Bring to Front
 
 Removes all components with configurations of the provided `Configuration`'s class, and adds the provided `Configuration` to the top of the stack. This is primarily helpful when implementing a Decompose app with [bottom navigation](https://github.com/arkivanov/Decompose/discussions/178)
 
@@ -78,4 +79,4 @@ Removes all components with configurations of the provided `Configuration`'s cla
 router.bringToFront(Configuration.B)
 ```
 
-![](../media/navigator-bringtofront.png)
+![](../media/RouterBringToFront.png)
