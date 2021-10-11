@@ -33,7 +33,7 @@ public final class com/arkivanov/decompose/Child$Destroyed : com/arkivanov/decom
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class com/arkivanov/decompose/ComponentContext : com/arkivanov/decompose/RouterFactory, com/arkivanov/essenty/backpressed/BackPressedHandlerOwner, com/arkivanov/essenty/instancekeeper/InstanceKeeperOwner, com/arkivanov/essenty/lifecycle/LifecycleOwner, com/arkivanov/essenty/statekeeper/StateKeeperOwner {
+public abstract interface class com/arkivanov/decompose/ComponentContext : com/arkivanov/essenty/backpressed/BackPressedHandlerOwner, com/arkivanov/essenty/instancekeeper/InstanceKeeperOwner, com/arkivanov/essenty/lifecycle/LifecycleOwner, com/arkivanov/essenty/statekeeper/StateKeeperOwner {
 	public abstract fun getBackPressedDispatcher ()Lcom/arkivanov/essenty/backpressed/BackPressedDispatcher;
 }
 
@@ -42,7 +42,7 @@ public final class com/arkivanov/decompose/ComponentContextExtKt {
 	public static final fun childContext (Lcom/arkivanov/decompose/ComponentContext;Ljava/lang/String;)Lcom/arkivanov/decompose/ComponentContext;
 }
 
-public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivanov/decompose/ComponentContext, com/arkivanov/decompose/RouterFactory {
+public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivanov/decompose/ComponentContext {
 	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;)V
 	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Lcom/arkivanov/essenty/backpressed/BackPressedHandler;)V
 	public synthetic fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Lcom/arkivanov/essenty/backpressed/BackPressedHandler;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -51,7 +51,6 @@ public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivan
 	public fun getInstanceKeeper ()Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;
 	public fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/Lifecycle;
 	public fun getStateKeeper ()Lcom/arkivanov/essenty/statekeeper/StateKeeper;
-	public fun router (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/Router;
 }
 
 public final class com/arkivanov/decompose/DefaultComponentContextBuilderKt {
@@ -82,12 +81,9 @@ public abstract interface class com/arkivanov/decompose/Router : com/arkivanov/d
 	public abstract fun getState ()Lcom/arkivanov/decompose/value/Value;
 }
 
-public abstract interface class com/arkivanov/decompose/RouterFactory {
-	public abstract fun router (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/Router;
-}
-
-public final class com/arkivanov/decompose/RouterFactory$DefaultImpls {
-	public static synthetic fun router$default (Lcom/arkivanov/decompose/RouterFactory;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/Router;
+public final class com/arkivanov/decompose/RouterFactoryExtKt {
+	public static final fun router (Lcom/arkivanov/decompose/ComponentContext;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/Router;
+	public static synthetic fun router$default (Lcom/arkivanov/decompose/ComponentContext;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/Router;
 }
 
 public final class com/arkivanov/decompose/RouterState {

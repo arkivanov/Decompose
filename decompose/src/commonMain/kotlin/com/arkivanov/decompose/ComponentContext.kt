@@ -7,7 +7,6 @@ import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import com.arkivanov.essenty.statekeeper.StateKeeperOwner
 
 interface ComponentContext :
-    RouterFactory,
     LifecycleOwner,
     StateKeeperOwner,
     InstanceKeeperOwner,

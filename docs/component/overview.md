@@ -20,7 +20,6 @@ UI is optional and is pluggable from outside of components. Components do not de
 
 Each component has an associated [`ComponentContext`](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/ComponentContext.kt) which implements the following interfaces:
 
-* [RouterFactory](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/RouterFactory.kt), so you can create nested `Routers` in your `Componenets`
 * `LifecycleOwner`, provided by Essenty library, so each component has its own lifecycle
 * `StateKeeperOwner`, provided by Essenty library, so you can preserve any state during configuration changes and/or process death
 * `InstanceKeeperOwner`, provided by Essenty library, so you can retain arbitrary object instances in your components (like with AndroidX ViewModels)
