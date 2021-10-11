@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.bringToFront
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

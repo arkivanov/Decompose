@@ -438,7 +438,7 @@ class MergedLifecycleTest {
 
     private class TestLifecycleRegistry(
         private val registry: LifecycleRegistry = LifecycleRegistry()
-    ): LifecycleRegistry by registry {
+    ) : LifecycleRegistry by registry {
         private val callbacks = HashSet<Lifecycle.Callbacks>()
 
         override fun subscribe(callbacks: Lifecycle.Callbacks) {

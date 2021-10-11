@@ -12,8 +12,8 @@ import android.widget.FrameLayout
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.decompose.R
-import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
+import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.observe
 import com.arkivanov.essenty.lifecycle.Lifecycle

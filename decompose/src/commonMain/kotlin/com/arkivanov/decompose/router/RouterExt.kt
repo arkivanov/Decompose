@@ -1,4 +1,4 @@
-package com.arkivanov.decompose
+package com.arkivanov.decompose.router
 
 /**
  * Pushes the provided [configuration] at the top of the stack

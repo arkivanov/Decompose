@@ -1,10 +1,6 @@
-package com.arkivanov.decompose
+package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.router.RouterEntryFactoryImpl
-import com.arkivanov.decompose.router.RouterImpl
-import com.arkivanov.decompose.router.StackHolderImpl
-import com.arkivanov.decompose.router.StackNavigatorImpl
-import com.arkivanov.decompose.router.StackSaverImpl
+import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.ParcelableContainer
 import kotlin.reflect.KClass

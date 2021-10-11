@@ -1,4 +1,4 @@
-package com.arkivanov.decompose
+package com.arkivanov.decompose.router
 
 import com.arkivanov.decompose.value.Value
 

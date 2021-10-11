@@ -1,6 +1,6 @@
 package com.arkivanov.sample.dynamicfeatures.shared.root
 
-import com.arkivanov.decompose.RouterState
+import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.dynamicfeatures.shared.feature1.Feature1
 import com.arkivanov.sample.dynamicfeatures.shared.feature2.Feature2
