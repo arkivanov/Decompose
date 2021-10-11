@@ -1,6 +1,6 @@
 package com.arkivanov.sample.masterdetail.shared.root
 
-import com.arkivanov.decompose.RouterState
+import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.masterdetail.shared.details.ArticleDetails
 import com.arkivanov.sample.masterdetail.shared.list.ArticleList

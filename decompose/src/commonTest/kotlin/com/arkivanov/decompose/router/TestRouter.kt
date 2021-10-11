@@ -1,7 +1,5 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.Router
-import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.value.Value
 
 class TestRouter<C : Any>(

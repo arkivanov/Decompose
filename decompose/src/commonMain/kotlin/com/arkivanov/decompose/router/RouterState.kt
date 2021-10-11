@@ -1,4 +1,6 @@
-package com.arkivanov.decompose
+package com.arkivanov.decompose.router
+
+import com.arkivanov.decompose.Child
 
 data class RouterState<out C : Any, out T : Any>(
     val activeChild: Child.Created<C, T>,

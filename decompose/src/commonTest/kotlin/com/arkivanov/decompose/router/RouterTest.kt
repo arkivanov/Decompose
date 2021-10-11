@@ -1,7 +1,5 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.Router
-import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.router.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.essenty.backpressed.BackPressedDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher

@@ -66,7 +66,7 @@ fun SomeUi(component: SomeComponent) {
 ### Navigating between Composable components
 
 The [Router](https://arkivanov.github.io/Decompose/router/overview/) provides
-the [RouterState](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/RouterState.kt)
+the [RouterState](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/RouterState.kt)
 as `Value<RouterState>` which can be observed in a `Composable` component. This makes it possible to switch child `Composable` components
 following the `Router`.
 

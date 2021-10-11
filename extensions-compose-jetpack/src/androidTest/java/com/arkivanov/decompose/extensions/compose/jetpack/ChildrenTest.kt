@@ -14,10 +14,10 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.crossfade
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.crossfadeScale
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.slide
+import com.arkivanov.decompose.router.RouterState
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

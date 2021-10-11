@@ -1,10 +1,10 @@
 package com.arkivanov.sample.dynamicfeatures.shared.root.dynamicfeature
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.Router
-import com.arkivanov.decompose.RouterState
-import com.arkivanov.decompose.replaceCurrent
-import com.arkivanov.decompose.router
+import com.arkivanov.decompose.router.Router
+import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.replaceCurrent
+import com.arkivanov.decompose.router.router
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.essenty.parcelable.Parcelable

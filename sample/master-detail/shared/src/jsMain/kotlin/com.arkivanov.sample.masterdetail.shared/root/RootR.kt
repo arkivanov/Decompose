@@ -1,6 +1,6 @@
 package com.arkivanov.sample.masterdetail.shared.root
 
-import com.arkivanov.decompose.RouterState
+import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.sample.masterdetail.shared.MasterDetailStyles
 import com.arkivanov.sample.masterdetail.shared.Props
 import com.arkivanov.sample.masterdetail.shared.RenderableComponent

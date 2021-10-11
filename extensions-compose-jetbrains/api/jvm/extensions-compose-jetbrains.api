@@ -1,5 +1,5 @@
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/ChildrenKt {
-	public static final fun Children (Lcom/arkivanov/decompose/RouterState;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Children (Lcom/arkivanov/decompose/router/RouterState;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 	public static final fun Children (Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
 

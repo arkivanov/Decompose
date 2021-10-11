@@ -2,7 +2,7 @@ package com.arkivanov.sample.masterdetail.composeui.root
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
-import com.arkivanov.decompose.RouterState
+import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.masterdetail.composeui.details.ArticleDetailsPreview

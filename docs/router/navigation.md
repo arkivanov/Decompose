@@ -2,7 +2,7 @@
 
 ## Router
 
-All navigation in Decompose is done through the [`Router`](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/Router.kt) interface. It has one function `navigate(transformer: (List<C>) -> List<C>)` which transforms the current stack of configurations into a new one by the provided `transformer` function. The stack is represented as `List`, where the last element is the top of the stack, and the first element is the bottom of the stack.
+All navigation in Decompose is done through the [`Router`](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/Router.kt) interface. It has one function `navigate(transformer: (List<C>) -> List<C>)` which transforms the current stack of configurations into a new one by the provided `transformer` function. The stack is represented as `List`, where the last element is the top of the stack, and the first element is the bottom of the stack.
 
 > ⚠️ The returned stack must not be empty.
 
@@ -12,7 +12,7 @@ During the navigation process, the `Router` compares the new stack of configurat
 
 ## Router extension functions
 
-There are `Router` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/RouterExt.kt) that provide conveniences for navigating, some of which were already used in the [router overview example](../overview/#routing-example).
+There are `Router` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/RouterExt.kt) that provide conveniences for navigating, some of which were already used in the [router overview example](../overview/#routing-example).
 
 The preceding examples will utilize the following `sealed class` & `router` for showcasing the usage of the `Router` extensions.
 
