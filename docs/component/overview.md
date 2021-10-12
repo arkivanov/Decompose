@@ -45,18 +45,54 @@ Decompose provides ability to organize components into trees, so each parent com
 There are two common ways to add a child component:
 
 - Using the `Router` - prefer this option when a navigation between components is required. Please head to the [Router documentation page](https://arkivanov.github.io/Decompose/router/overview/) for more information.
-- Adding a component as a permanent child - prefer this option if the child component should exist as long as the parent component.
+- Manually - prefer this option if you need to add a permanent child component, or to manually control its `Lifecycle`.
 
-### Adding a permanent child component
+### Adding a child component manually
 
-To create the `ComponentContext` for a permanent child component use `ComponentContext.childContext(...)` extension function:
+In order to add a child component manually, you need to create a separate child `ComponentContext` for it. There is `ComponentContext.childContext(key: String, lifecycle: Lifecycle? = null)` extension function provided by the library, which creates a new instance of `ComponentContext` and attaches it to the parent one. This function has two arguments: 
+
+* `key` - A key of the child `ComponentContext`, must be unique within the parent `ComponentContext`
+* `lifecycle` - An optional `Lifecycle` of the child `ComponentContext`, can be used if the child component needs to be destroyed earlier, or if you need manual control. If supplied, then the following conditions apply:
+
+    * the resulting `Lifecycle` of the child component will honour both the parent `Lifecycle` and the supplied one
+    * when the supplied `Lifecycle` is explicitly destroyed, the child `ComponentContext` detaches from its parent
+
+Here is an example of creating a permanent child component:
 
 ```kotlin
 class SomeParent(
     componentContext: ComponentContext
 ) : ComponentContext by componentContext {
 
-    private val counter = Counter(childContext(key = "Counter"))
+    private val counter: Counter = Counter(childContext(key = "Counter"))
+}
+```
+
+Here is an example of creating a child component with manual lifecycle:
+
+```kotlin
+class SomeParent(
+    componentContext: ComponentContext
+) : ComponentContext by componentContext {
+
+    private var counterHolder: CounterHolder? = null
+
+    fun createCounter() {
+        val lifecycle = LifecycleRegistry()
+        val counter = Counter(childContext(key = "Counter", lifecycle = lifecycle))
+        lifecycle.resume()
+        counterHolder = CounterHolder(counter, lifecycle)
+    }
+
+    fun destroyCounter() {
+        counterHolder?.lifecycle?.destroy()
+        counterHolder = null
+    }
+
+    private class CounterHolder(
+        val counter: Counter,
+        val lifecycle: LifecycleRegistry,
+    )
 }
 ```
 

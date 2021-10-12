@@ -1,4 +1,4 @@
-package com.arkivanov.decompose.router.statekeeper
+package com.arkivanov.decompose.statekeeper
 
 import android.os.Parcel
 import com.arkivanov.essenty.parcelable.Parcelable
