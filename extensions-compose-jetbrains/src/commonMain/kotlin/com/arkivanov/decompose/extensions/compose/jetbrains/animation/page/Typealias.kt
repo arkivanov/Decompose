@@ -13,7 +13,7 @@ internal typealias PageArranger<T> = (new: T, old: T) -> PageArrangement
 /**
  * Called for every animation frame, displays the current frame using the provided `content` callback.
  *
- * `key` - a key of the page being animated
+ * `key` - a page being animated
  * `factor` - the progress of the page animation.
  *  From 0 to 1 for [PageAnimationDirection.ENTER], from 1 to 0 for [PageAnimationDirection.EXIT].
  * `arrangement` - the arrangement of the page being animated, see [PageArrangement] for details
@@ -23,7 +23,7 @@ internal typealias PageArranger<T> = (new: T, old: T) -> PageArrangement
 // @ExperimentalDecomposeApi (can not be applied to typealias)
 typealias PageAnimator<T> =
     @Composable BoxWithConstraintsScope.(
-        key: T,
+        page: T,
         factor: Float,
         arrangement: PageArrangement,
         direction: PageAnimationDirection,
