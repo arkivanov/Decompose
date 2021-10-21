@@ -1,12 +1,11 @@
 package com.arkivanov.decompose.extensions.compose.jetpack.animation.child
 
 import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetpack.ChildAnimation
-import com.arkivanov.decompose.extensions.compose.jetpack.animation.page.PageArrangement
 
 /**
  * A crossfade-scale animation. Entering children are scaling from `enterScaleFactor` to 1.0.
@@ -18,15 +17,17 @@ fun <C : Any, T : Any> crossfadeScale(
     enterScaleFactor: Float = 1.15F,
     exitScaleFactor: Float = 0.95F
 ): ChildAnimation<C, T> =
-    childAnimation(animationSpec = animationSpec) { _, factor, arrangement, _, content ->
-        content(
-            Modifier
+    childAnimation(animationSpec = animationSpec) { _, factor, placement, _, content ->
+        Box(
+            modifier = Modifier
                 .scale(
-                    when (arrangement) {
-                        PageArrangement.PREVIOUS -> exitScaleFactor + (1F - exitScaleFactor) * factor
-                        PageArrangement.FOLLOWING -> enterScaleFactor - (enterScaleFactor - 1F) * factor
+                    when (placement) {
+                        ChildPlacement.BACK -> exitScaleFactor + (1F - exitScaleFactor) * factor
+                        ChildPlacement.FRONT -> enterScaleFactor - (enterScaleFactor - 1F) * factor
                     }
                 )
                 .alpha(factor)
-        )
+        ) {
+            content()
+        }
     }

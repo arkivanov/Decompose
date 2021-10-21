@@ -33,7 +33,11 @@ import com.arkivanov.sample.counter.shared.inner.CounterInner
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun CounterInnerUi(counterInner: CounterInner) {
-    Box(modifier = Modifier.border(BorderStroke(width = 1.dp, color = Color.Black))) {
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+            .border(BorderStroke(width = 1.dp, color = Color.Black))
+    ) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -3,7 +3,7 @@ package com.arkivanov.decompose.extensions.compose.jetbrains.animation.child
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.FiniteAnimationSpec
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetbrains.ChildAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.ChildAnimation
 
 /**
  * A simple crossfade animation between children. See [Crossfade] for details.

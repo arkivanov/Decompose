@@ -14,6 +14,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.ChildAnimation
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.crossfade
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.crossfadeScale
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.slide
