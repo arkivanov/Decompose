@@ -18,6 +18,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.Chil
 import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.crossfade
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.crossfadeScale
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.emptyChildAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.slide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -103,7 +104,7 @@ class ChildrenTest(
 
     private suspend fun setContent(state: State<RouterState<Config, Config>>) {
         composeRule.setContent {
-            Children(state.value, animation) { child ->
+            Children(routerState = state.value, animation = animation) { child ->
                 when (child.configuration) {
                     Config.A -> Child(name = "A")
                     Config.B -> Child(name = "B")
@@ -148,7 +149,7 @@ class ChildrenTest(
 
         private fun getParameters(): List<ChildAnimation<Config, Config>> =
             listOf(
-                { state, childContent -> childContent(state.activeChild) },
+                emptyChildAnimation(),
                 crossfade(),
                 crossfadeScale(),
                 slide()

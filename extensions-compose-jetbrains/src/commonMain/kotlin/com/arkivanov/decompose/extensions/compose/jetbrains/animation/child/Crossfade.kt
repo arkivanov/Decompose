@@ -3,7 +3,6 @@ package com.arkivanov.decompose.extensions.compose.jetbrains.animation.child
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.FiniteAnimationSpec
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.ChildAnimation
 
 /**
  * A simple crossfade animation between children. See [Crossfade] for details.
@@ -12,9 +11,10 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.Chil
 fun <C : Any, T : Any> crossfade(
     animationSpec: FiniteAnimationSpec<Float> = defaultChildAnimationSpec
 ): ChildAnimation<C, T> =
-    { routerState, content ->
+    { routerState, modifier, content ->
         Crossfade(
             targetState = ChildWrapper(routerState.activeChild, routerState.activeChild.configuration),
+            modifier = modifier,
             animationSpec = animationSpec
         ) {
             content(it.child)

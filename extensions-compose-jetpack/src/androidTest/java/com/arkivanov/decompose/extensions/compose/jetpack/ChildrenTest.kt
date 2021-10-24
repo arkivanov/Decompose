@@ -17,6 +17,7 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.ChildAnimation
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.crossfade
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.crossfadeScale
+import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.emptyChildAnimation
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.slide
 import com.arkivanov.decompose.router.RouterState
 import org.junit.Rule
@@ -91,7 +92,7 @@ class ChildrenTest(
 
     private fun setContent(state: State<RouterState<Config, Config>>) {
         composeRule.setContent {
-            Children(state.value, animation) { child ->
+            Children(routerState = state.value, animation = animation) { child ->
                 when (child.configuration) {
                     Config.A -> Child(name = "A")
                     Config.B -> Child(name = "B")
@@ -135,7 +136,7 @@ class ChildrenTest(
 
         private fun getParameters(): List<ChildAnimation<Config, Config>> =
             listOf(
-                { state, childContent -> childContent(state.activeChild) },
+                emptyChildAnimation(),
                 crossfade(),
                 crossfadeScale(),
                 slide()

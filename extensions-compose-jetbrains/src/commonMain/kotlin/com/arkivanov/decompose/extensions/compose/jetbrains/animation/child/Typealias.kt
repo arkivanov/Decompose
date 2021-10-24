@@ -3,12 +3,13 @@
 package com.arkivanov.decompose.extensions.compose.jetbrains.animation.child
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.ChildContent
 import com.arkivanov.decompose.router.RouterState
 
-typealias ChildAnimation<C, T> = @Composable (RouterState<C, T>, ChildContent<C, T>) -> Unit
+typealias ChildAnimation<C, T> = @Composable (RouterState<C, T>, Modifier, ChildContent<C, T>) -> Unit
 
 /**
  * Called for every animation frame, displays the current frame using the provided `content` callback.

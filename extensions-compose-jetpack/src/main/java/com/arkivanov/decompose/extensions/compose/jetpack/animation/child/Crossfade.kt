@@ -11,9 +11,10 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 fun <C : Any, T : Any> crossfade(
     animationSpec: FiniteAnimationSpec<Float> = defaultChildAnimationSpec
 ): ChildAnimation<C, T> =
-    { routerState, content ->
+    { routerState, modifier, content ->
         Crossfade(
             targetState = ChildWrapper(routerState.activeChild, routerState.activeChild.configuration),
+            modifier = modifier,
             animationSpec = animationSpec
         ) {
             content(it.child)
