@@ -3,11 +3,9 @@ package com.arkivanov.sample.counter.shared.ui.compose
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -29,27 +27,25 @@ import com.arkivanov.sample.counter.shared.root.CounterRoot
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun CounterRootUi(counterRoot: CounterRoot) {
-    Box(modifier = Modifier.border(BorderStroke(width = 1.dp, color = Color.Black))) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .clipToBounds()
-                .padding(16.dp)
-        ) {
-            CounterUi(counterRoot.counter)
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .border(BorderStroke(width = 1.dp, color = Color.Black))
+            .clipToBounds()
+    ) {
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+        CounterUi(counterRoot.counter)
 
-            Button(onClick = counterRoot::onNextChild) {
-                Text(text = "Next Child")
-            }
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = counterRoot::onNextChild) {
+            Text(text = "Next Child")
+        }
 
-            Children(routerState = counterRoot.routerState, animation = slide()) {
-                CounterInnerUi(it.instance.inner)
-            }
+        Children(routerState = counterRoot.routerState, animation = slide()) {
+            CounterInnerUi(it.instance.inner)
         }
     }
 }

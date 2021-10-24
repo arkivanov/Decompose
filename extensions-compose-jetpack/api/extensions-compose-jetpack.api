@@ -32,16 +32,30 @@ public final class com/arkivanov/decompose/extensions/compose/jetpack/ValueCompo
 	public static final fun asState (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
 }
 
+public final class com/arkivanov/decompose/extensions/compose/jetpack/animation/child/ChildAnimationDirection : java/lang/Enum {
+	public static final field ENTER Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/child/ChildAnimationDirection;
+	public static final field EXIT Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/child/ChildAnimationDirection;
+	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/child/ChildAnimationDirection;
+	public static fun values ()[Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/child/ChildAnimationDirection;
+}
+
 public final class com/arkivanov/decompose/extensions/compose/jetpack/animation/child/ChildAnimationKt {
-	public static final fun childAnimation (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function8;)Lkotlin/jvm/functions/Function4;
-	public static synthetic fun childAnimation$default (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function8;ILjava/lang/Object;)Lkotlin/jvm/functions/Function4;
+	public static final fun childAnimation (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function7;)Lkotlin/jvm/functions/Function4;
+	public static synthetic fun childAnimation$default (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function7;ILjava/lang/Object;)Lkotlin/jvm/functions/Function4;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetpack/animation/child/ChildPlacement : java/lang/Enum {
+	public static final field BACK Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/child/ChildPlacement;
+	public static final field FRONT Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/child/ChildPlacement;
+	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/child/ChildPlacement;
+	public static fun values ()[Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/child/ChildPlacement;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetpack/animation/child/ComposableSingletons$SlideKt {
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/child/ComposableSingletons$SlideKt;
-	public static field lambda-1 Lkotlin/jvm/functions/Function8;
+	public static field lambda-1 Lkotlin/jvm/functions/Function7;
 	public fun <init> ()V
-	public final fun getLambda-1$extensions_compose_jetpack_release ()Lkotlin/jvm/functions/Function8;
+	public final fun getLambda-1$extensions_compose_jetpack_release ()Lkotlin/jvm/functions/Function7;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetpack/animation/child/CrossfadeKt {
@@ -57,19 +71,5 @@ public final class com/arkivanov/decompose/extensions/compose/jetpack/animation/
 public final class com/arkivanov/decompose/extensions/compose/jetpack/animation/child/SlideKt {
 	public static final fun slide (Landroidx/compose/animation/core/FiniteAnimationSpec;)Lkotlin/jvm/functions/Function4;
 	public static synthetic fun slide$default (Landroidx/compose/animation/core/FiniteAnimationSpec;ILjava/lang/Object;)Lkotlin/jvm/functions/Function4;
-}
-
-public final class com/arkivanov/decompose/extensions/compose/jetpack/animation/page/PageAnimationDirection : java/lang/Enum {
-	public static final field ENTER Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/page/PageAnimationDirection;
-	public static final field EXIT Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/page/PageAnimationDirection;
-	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/page/PageAnimationDirection;
-	public static fun values ()[Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/page/PageAnimationDirection;
-}
-
-public final class com/arkivanov/decompose/extensions/compose/jetpack/animation/page/PageArrangement : java/lang/Enum {
-	public static final field FOLLOWING Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/page/PageArrangement;
-	public static final field PREVIOUS Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/page/PageArrangement;
-	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/page/PageArrangement;
-	public static fun values ()[Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/page/PageArrangement;
 }
 
