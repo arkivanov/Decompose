@@ -5,8 +5,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.ChildAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.emptyChildAnimation
 import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.value.Value
 
@@ -15,14 +17,15 @@ typealias ChildContent<C, T> = @Composable (child: Child.Created<C, T>) -> Unit
 @Composable
 fun <C : Any, T : Any> Children(
     routerState: RouterState<C, T>,
-    animation: ChildAnimation<C, T> = { state, childContent -> childContent(state.activeChild) },
+    modifier: Modifier = Modifier,
+    animation: ChildAnimation<C, T> = emptyChildAnimation(),
     content: ChildContent<C, T>
 ) {
     val holder = rememberSaveableStateHolder()
 
     holder.retainStates(routerState.getConfigurations())
 
-    animation(routerState) { child ->
+    animation(routerState, modifier) { child ->
         holder.SaveableStateProvider(child.configuration.key()) {
             content(child)
         }
@@ -32,13 +35,15 @@ fun <C : Any, T : Any> Children(
 @Composable
 fun <C : Any, T : Any> Children(
     routerState: Value<RouterState<C, T>>,
-    animation: ChildAnimation<C, T> = { state, childContent -> childContent(state.activeChild) },
+    modifier: Modifier = Modifier,
+    animation: ChildAnimation<C, T> = emptyChildAnimation(),
     content: ChildContent<C, T>
 ) {
     val state = routerState.subscribeAsState()
 
     Children(
         routerState = state.value,
+        modifier = modifier,
         animation = animation,
         content = content
     )

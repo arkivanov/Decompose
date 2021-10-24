@@ -15,6 +15,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.ChildContent
@@ -32,9 +33,10 @@ fun <C : Any, T : Any> childAnimation(
     animationSpec: FiniteAnimationSpec<Float> = defaultChildAnimationSpec,
     animator: ChildAnimator<C, T>
 ): ChildAnimation<C, T> =
-    { routerState, content ->
+    { routerState, modifier, content ->
         ChildAnimation(
             targetPage = Page(routerState.activeChild, routerState.backStack.size),
+            modifier = modifier,
             animationSpec = animationSpec,
             animator = animator,
             content = content
@@ -45,6 +47,7 @@ fun <C : Any, T : Any> childAnimation(
 @Composable
 private fun <C : Any, T : Any> ChildAnimation(
     targetPage: Page<C, T>,
+    modifier: Modifier,
     animationSpec: FiniteAnimationSpec<Float>,
     animator: ChildAnimator<C, T>,
     content: ChildContent<C, T>,
@@ -71,7 +74,7 @@ private fun <C : Any, T : Any> ChildAnimation(
 
     val items = rememberAnimationItems(targetPage = new, previousPage = old)
 
-    Box {
+    Box(modifier = modifier) {
         items.forEach { item ->
             key(item.page.child.configuration) {
                 animator(
