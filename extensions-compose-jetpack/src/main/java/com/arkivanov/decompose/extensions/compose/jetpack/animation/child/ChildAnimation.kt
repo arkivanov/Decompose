@@ -34,7 +34,7 @@ fun <C : Any, T : Any> childAnimation(
     animator: ChildAnimator<C, T>
 ): ChildAnimation<C, T> =
     { routerState, modifier, content ->
-        ChildAnimation(
+        ChildAnimationImpl(
             targetPage = Page(routerState.activeChild, routerState.backStack.size),
             modifier = modifier,
             animationSpec = animationSpec,
@@ -45,7 +45,7 @@ fun <C : Any, T : Any> childAnimation(
 
 @Suppress("TransitionPropertiesLabel")
 @Composable
-private fun <C : Any, T : Any> ChildAnimation(
+private fun <C : Any, T : Any> ChildAnimationImpl(
     targetPage: Page<C, T>,
     modifier: Modifier,
     animationSpec: FiniteAnimationSpec<Float>,
