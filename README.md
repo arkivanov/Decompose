@@ -22,7 +22,7 @@ Having spent 5 years working on a variety of projects for Badoo/Bumble, I’m no
 
 Now I **continue my work** on this project **as a fork**.
 
-There should be no breaking changes related to this transfer. All the external links remain the same and should not be broken. The repository link is also the same: [arkivanov/Decompose](https://github.com/arkivanov/Decompose).
+There should be no breaking changes related to this transfer. Most of the external links should not be broken. The repository link is also the same: [arkivanov/Decompose](https://github.com/arkivanov/Decompose). Please file an issue in this repository, if you think something is broken or does not work properly.
 
 Here is what is mostly affected by the transfer:
 
