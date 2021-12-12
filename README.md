@@ -35,7 +35,7 @@ I will continue doing all my best for this project and for the community! Busine
 
 Additional resources:
 
-- A thread on Hacker News: https://news.ycombinator.com/item?id=29447854
+- [A thread on Hacker News](https://news.ycombinator.com/item?id=29447854)
 
 ## Setup
 
