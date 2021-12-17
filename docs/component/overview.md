@@ -1,6 +1,6 @@
 # Component Overview
 
-A component is just a normal class that encapsulates some logic and possibly another (child) components. Every component has its own lifecycle, which is automatically managed by Decompose. So everything encapsulated by a component is scoped. Please head to the [Lifecycle documentation page](https://arkivanov.github.io/Decompose/router/lifecycle/) for more information.
+A component is just a normal class that encapsulates some logic and possibly another (child) components. Every component has its own lifecycle, which is automatically managed by Decompose. So everything encapsulated by a component is scoped. Please head to the [Lifecycle documentation page](https://arkivanov.github.io/Decompose/component/lifecycle/) for more information.
 
 UI is optional and is pluggable from outside of components. Components do not depend on UI, the UI depends on components.
 
