@@ -42,7 +42,7 @@ Additional resources:
 * Decompose draws clear boundaries between UI and non-UI code, which gives the following benefits:
   * Better separation of concerns
   * Pluggable platform-specific UI (Compose, SwiftUI, React, etc.)
-  * Business logic code is testable with pure multiplatform unit tets
+  * Business logic code is testable with pure multiplatform unit tests
 * Proper dependency injection (DI) and inversion of control (IoC) via constructor
 * Shared navigation logic
 * Lifecycle-aware components
@@ -58,7 +58,7 @@ Please check the [Installation](https://arkivanov.github.io/Decompose/getting-st
 
 Here are some key concepts of the library, more details can be found in the documentation.
 
-* [Component](https://arkivanov.github.io/Decompose/component/overview/) - every component represents a piece of logic with its own lifecycle, the UI is optional an is plugged externally
+* [Component](https://arkivanov.github.io/Decompose/component/overview/) - every component represents a piece of logic with its own lifecycle, the UI is optional and is plugged externally
 * [ComponentContext](https://arkivanov.github.io/Decompose/component/overview/#componentcontext) - every component has its own [ComponentContext], which makes components lifecycle-aware and allows state preservation, instances retaining (aka AndroidX `ViewModel`) and back button handling
 * [Router](https://arkivanov.github.io/Decompose/router/overview/) - enables navigation between child components, nested navigation is also supported
 * [Lifecycle](https://arkivanov.github.io/Decompose/component/lifecycle/) - provides a way to listen for lifecycle events in components
