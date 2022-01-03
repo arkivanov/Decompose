@@ -95,6 +95,10 @@ public final class com/arkivanov/decompose/router/RouterState {
 	public fun toString ()Ljava/lang/String;
 }
 
+public abstract interface class com/arkivanov/decompose/router/webhistory/WebHistoryController {
+	public abstract fun attach (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+}
+
 public abstract class com/arkivanov/decompose/value/MutableValue : com/arkivanov/decompose/value/Value {
 	public fun <init> ()V
 	public abstract fun getValue ()Ljava/lang/Object;

@@ -1,14 +1,33 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.value.MutableValue
 
-class TestRouter<C : Any>(
-    var stack: List<C> = emptyList()
-) : Router<C, Nothing> {
+class TestRouter<C : Any>(stack: List<C>) : Router<C, Any> {
 
-    override val state: Value<RouterState<C, Nothing>> get() = TODO("Not yet implemented")
+    override val state: MutableValue<RouterState<C, Any>> = MutableValue(stack.toRouterState())
+
+    var stack: List<C>
+        get() = state.value.backStack.map(Child<C, *>::configuration) + state.value.activeChild.configuration
+        set(value) {
+            state.value = value.toRouterState()
+        }
+
+    private fun List<C>.toRouterState(): RouterState<C, Any> =
+        RouterState<C, Any>(
+            activeChild = Child.Created(
+                configuration = last(),
+                instance = last(),
+            ),
+            backStack = dropLast(1).map {
+                Child.Created(
+                    configuration = it,
+                    instance = it,
+                )
+            }
+        )
 
     override fun navigate(transformer: (stack: List<C>) -> List<C>) {
-        stack = stack.let(transformer)
+        stack = transformer(stack)
     }
 }
