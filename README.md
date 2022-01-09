@@ -27,7 +27,7 @@ There should be no breaking changes related to this transfer. Most of the extern
 Here is what is mostly affected by the transfer:
 
 - All the stars were transferred
-- Search in the code will not work **unless this repository has less stars than the parent** (your help is needed!)
+- Search in the code will not work **unless this repository has more stars than the parent** (your help is needed!)
 - All the Issues and Discussions were transferred as well. I will do all my best to fill the gap here.
 - All pull requests with all the comment history are also gone.
 
