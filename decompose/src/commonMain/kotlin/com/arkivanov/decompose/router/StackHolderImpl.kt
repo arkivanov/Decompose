@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.router
 
+import com.arkivanov.decompose.isUnique
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.instancekeeper.getOrCreate
@@ -10,8 +11,7 @@ import com.arkivanov.essenty.lifecycle.resume
 import kotlin.properties.Delegates.observable
 
 internal class StackHolderImpl<C : Any, T : Any>(
-    private val initialConfiguration: () -> C,
-    private val initialBackStack: () -> List<C>,
+    private val initialStack: () -> List<C>,
     lifecycle: Lifecycle,
     private val key: String,
     private val stackSaver: StackSaver<C>,
@@ -22,7 +22,7 @@ internal class StackHolderImpl<C : Any, T : Any>(
     private val retainedInstance: RetainedInstance<C, T> = instanceKeeper.getOrCreate(key, ::RetainedInstance)
 
     override var stack: RouterStack<C, T>
-        by observable(restoreStack() ?: initialStack()) { _, _, newValue ->
+        by observable(restoreStack() ?: createInitialStack()) { _, _, newValue ->
             retainedInstance.activeEntry = newValue.active
         }
 
@@ -42,11 +42,17 @@ internal class StackHolderImpl<C : Any, T : Any>(
         stack.backStack.destroy()
     }
 
-    private fun initialStack(): RouterStack<C, T> =
-        RouterStack(
-            active = routerEntryFactory(initialConfiguration()),
-            backStack = initialBackStack().map { RouterEntry.Destroyed(configuration = it) }
+    private fun createInitialStack(): RouterStack<C, T> {
+        val initialStack = initialStack()
+
+        check(initialStack.isNotEmpty()) { "Initial stack can not be empty" }
+        check(initialStack.isUnique()) { "Configurations in the initial stack must be unique" }
+
+        return RouterStack(
+            active = routerEntryFactory(initialStack.last()),
+            backStack = initialStack.dropLast(1).map { RouterEntry.Destroyed(configuration = it) }
         )
+    }
 
     private fun restoreStack(): RouterStack<C, T>? {
         val savedStack: StackSaver.RestoredStack<C>? = stackSaver.restore(key)

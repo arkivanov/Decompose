@@ -30,16 +30,14 @@ create the `Router` and provide child `AppComponentContext`.
 
 ```kotlin
 fun <C : Parcelable, T : Any> AppComponentContext.appRouter(
-    initialConfiguration: () -> C,
-    initialBackStack: () -> List<C> = ::emptyList,
+    initialStack: () -> List<C>,
     configurationClass: KClass<out C>,
     key: String = "DefaultRouter",
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, AppComponentContext) -> T
 ): Router<C, T> =
     router(
-        initialConfiguration = initialConfiguration,
-        initialBackStack = initialBackStack,
+        initialStack = initialStack,
         configurationClass = configurationClass,
         key = key,
         handleBackButton = handleBackButton
@@ -59,7 +57,7 @@ Finally, in your components you can create a new router that will utilize the ne
 class MyComponent(componentContext: AppComponentContext): AppComponentContext by componentContext {
 
     private val router = appRouter(
-        initialConfiguration = { Configuration.Home },
+        initialStack = { listOf(Configuration.Home) },
         childFactory = { configuration, appComponentContext ->
             // return child components using the custom component context
         }
