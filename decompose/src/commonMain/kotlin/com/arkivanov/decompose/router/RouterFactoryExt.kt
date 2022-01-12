@@ -8,7 +8,8 @@ import kotlin.reflect.KClass
 /**
  * Creates a new [Router].
  *
- * @param initialStack a stack of component configurations that should be set if there is no saved state, must be not empty and unique
+ * @param initialStack a stack of component configurations (from tail to head) that should be set if there is
+ * no saved state, must be not empty and unique
  * @param configurationClass a [KClass] of the component configurations
  * @param key a key of the [Router], should be unique if there are multiple [Router]s in the same component
  * @param handleBackButton determines whether the [Router] should handle back button clicks or not
