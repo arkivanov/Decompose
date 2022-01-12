@@ -123,8 +123,7 @@ class StackHolderImplTest {
         routerEntryFactory: RouterEntryFactory<Config, Component> = TestRouterEntryFactory
     ): StackHolderImpl<Config, Component> =
         StackHolderImpl(
-            initialConfiguration = { initialConfiguration },
-            initialBackStack = ::emptyList,
+            initialStack = { listOf(initialConfiguration) },
             lifecycle = LifecycleRegistry(),
             key = "key",
             stackSaver = stackSaver,

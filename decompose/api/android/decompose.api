@@ -88,7 +88,9 @@ public final class com/arkivanov/decompose/router/RouterExtKt {
 
 public final class com/arkivanov/decompose/router/RouterFactoryExtKt {
 	public static final fun router (Lcom/arkivanov/decompose/ComponentContext;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/router/Router;
+	public static final fun router (Lcom/arkivanov/decompose/ComponentContext;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/router/Router;
 	public static synthetic fun router$default (Lcom/arkivanov/decompose/ComponentContext;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/Router;
+	public static synthetic fun router$default (Lcom/arkivanov/decompose/ComponentContext;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/Router;
 }
 
 public final class com/arkivanov/decompose/router/RouterState {

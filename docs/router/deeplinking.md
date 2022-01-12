@@ -22,8 +22,12 @@ class RootComponent(
 
     private val router =
         router<Config, Root.Child>(
-            initialConfiguration = if (initialItemId == null) Config.List else Config.Details(itemId = initialItemId),
-            initialBackStack = if (initialItemId == null) emptyList() else listOf(Config.List),
+            initialStack = {
+                listOfNotNull(
+                    Config.List,
+                    if (initialItemId != null) Config.Details(itemId = initialItemId) else null,
+                )
+            },
             handleBackButton = true,
             childFactory = ::createChild
         )
@@ -32,5 +36,5 @@ class RootComponent(
 }
 ```
 
-Now, if the `initialItemId` is supplied, the first screen will be the `ItemDetails` component. The `ItemList` component will be in the back
-stack, so the user will be able to go back.
+Now, if the `initialItemId` is supplied, the initial screen will be the `ItemDetails` component. The `ItemList` component will be in the
+back stack, so the user will be able to go back.
