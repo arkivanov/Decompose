@@ -22,7 +22,6 @@ nav:
     - License: getting-started/license.md
     - Contributing: getting-started/contributing.md
 
-
   - Component: 
     - Overview: component/overview.md
     - Lifecycle: component/lifecycle.md
@@ -35,13 +34,12 @@ nav:
     - Overview: router/overview.md
     - Navigation: router/navigation.md
     - Deep linking: router/deeplinking.md
-
+    - Web browser history: router/browser-history.md
 
   - Extensions:
     - Overview: extensions/overview.md
     - Extensions for Jetpack/JetBrains Compose: extensions/compose.md
     - Extensions for Android views: extensions/android.md
-
 
   # Configuration
 theme:
