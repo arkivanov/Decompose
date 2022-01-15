@@ -27,8 +27,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = deps.versions.jetpackCompose.get()
-        kotlinCompilerVersion = deps.versions.kotlin.get()
+        kotlinCompilerExtensionVersion = deps.versions.jetpackComposeCompiler.get()
     }
 }
 
@@ -86,7 +85,7 @@ configurations {
 }
 
 dependencies {
-    add("composeCompiler", "androidx.compose.compiler:compiler:${deps.versions.jetpackCompose.get()}")
+    add("composeCompiler", "androidx.compose.compiler:compiler:${deps.versions.jetpackComposeCompiler.get()}")
 }
 
 afterEvaluate {

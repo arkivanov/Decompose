@@ -16,8 +16,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = deps.versions.jetpackCompose.get()
-        kotlinCompilerVersion = deps.versions.kotlin.get()
+        kotlinCompilerExtensionVersion = deps.versions.jetpackComposeCompiler.get()
     }
 
     defaultConfig {
