@@ -14,10 +14,7 @@ setupMultiplatform {
         Target.Android,
         Target.Js(mode = Target.Js.Mode.IR),
         Target.Ios(isAppleSiliconEnabled = false),
-
-        // Temporary disabled watchos targets due to https://youtrack.jetbrains.com/issue/KT-48613
-        // Until Kotlin 1.5.31
-//        Target.WatchOs(isAppleSiliconEnabled = false),
+        Target.WatchOs(isAppleSiliconEnabled = false),
     )
 }
 
