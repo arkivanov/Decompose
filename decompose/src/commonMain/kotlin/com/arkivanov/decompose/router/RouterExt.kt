@@ -38,4 +38,5 @@ fun <C : Any> Router<C, *>.bringToFront(configuration: C) {
     }
 }
 
-val <C : Any> Router<C, *>.activeConfiguration: C get() = state.value.activeChild.configuration
+val <C : Any> RouterState<C, *>.activeConfiguration: C get() = activeChild.configuration
+val <C : Any> Router<C, *>.activeConfiguration: C get() = state.value.activeConfiguration
