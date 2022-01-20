@@ -37,3 +37,5 @@ fun <C : Any> Router<C, *>.bringToFront(configuration: C) {
         stack.filterNot { it::class == configuration::class } + configuration
     }
 }
+
+val <C : Any> Router<C, *>.activeConfiguration: C get() = state.value.activeChild.configuration
