@@ -1,5 +1,7 @@
 package com.arkivanov.decompose.router
 
+import com.arkivanov.decompose.Child
+
 /**
  * Pushes the provided [configuration] at the top of the stack
  */
@@ -38,5 +40,4 @@ fun <C : Any> Router<C, *>.bringToFront(configuration: C) {
     }
 }
 
-val <C : Any> RouterState<C, *>.activeConfiguration: C get() = activeChild.configuration
-val <C : Any> Router<C, *>.activeConfiguration: C get() = state.value.activeConfiguration
+val <C : Any, T : Any> Router<C, T>.activeChild: Child.Created<C, T> get() = state.value.activeChild
