@@ -2,6 +2,7 @@ package com.arkivanov.sample.masterdetail.shared.root
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.activeChild
 import com.arkivanov.decompose.router.popWhile
 import com.arkivanov.decompose.router.router
 import com.arkivanov.decompose.value.Value
@@ -57,7 +58,7 @@ internal class DetailsRouter(
     }
 
     fun isShown(): Boolean =
-        when (router.state.value.activeChild.configuration) {
+        when (router.activeChild.configuration) {
             is Config.None -> false
             is Config.Details -> true
         }

@@ -2,6 +2,7 @@ package com.arkivanov.sample.masterdetail.shared.root
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.activeChild
 import com.arkivanov.decompose.router.pop
 import com.arkivanov.decompose.router.push
 import com.arkivanov.decompose.router.router
@@ -45,13 +46,13 @@ internal class ListRouter(
         )
 
     fun moveToBackStack() {
-        if (router.state.value.activeChild.configuration !is Config.None) {
+        if (router.activeChild.configuration !is Config.None) {
             router.push(Config.None)
         }
     }
 
     fun show() {
-        if (router.state.value.activeChild.configuration !is Config.List) {
+        if (router.activeChild.configuration !is Config.List) {
             router.pop()
         }
     }
