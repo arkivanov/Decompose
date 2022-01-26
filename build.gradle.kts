@@ -12,9 +12,6 @@ buildscript {
     }
 
     dependencies {
-        @Suppress("UnstableApiUsage")
-        val deps = project.extensions.getByType<VersionCatalogsExtension>().named("deps") as org.gradle.accessors.dm.LibrariesForDeps
-
         classpath(deps.kotlin.kotlinGradlePlug)
         classpath(deps.android.gradle)
         classpath(deps.jetbrains.compose.composeGradlePlug)
@@ -26,7 +23,7 @@ plugins {
     id("com.arkivanov.gradle.setup")
 }
 
-setupDefaults {
+setupAllProjects {
     multiplatformTargets(
         Target.Android,
         Target.Jvm,
@@ -84,4 +81,9 @@ allprojects {
         google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
+}
+
+// Workaround for https://youtrack.jetbrains.com/issue/KT-49109 until Kotlin 1.6.20
+plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
+    the<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension>().nodeVersion = "16.0.0"
 }

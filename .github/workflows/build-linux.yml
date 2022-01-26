@@ -36,22 +36,3 @@ jobs:
           arch: x86
           disable-animations: true
           script: ./gradlew :extensions-compose-jetpack:connectedDebugAndroidTest --stacktrace
-  macos-build:
-    name: Build on Macos
-    runs-on: macos-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Install Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Set up cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-      - name: Build iOS
-        run: ./gradlew build -Dsplit_targets
