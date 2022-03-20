@@ -15,9 +15,11 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.ChildAnimation
-import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.crossfade
-import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.crossfadeScale
+import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.childAnimation
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.emptyChildAnimation
+import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.fade
+import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.plus
+import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.scale
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.slide
 import com.arkivanov.decompose.router.RouterState
 import org.junit.Rule
@@ -137,9 +139,10 @@ class ChildrenTest(
         private fun getParameters(): List<ChildAnimation<Config, Config>> =
             listOf(
                 emptyChildAnimation(),
-                crossfade(),
-                crossfadeScale(),
-                slide()
+                childAnimation(scale()),
+                childAnimation(fade()),
+                childAnimation(slide()),
+                childAnimation(scale() + fade() + slide()),
             )
     }
 

@@ -15,11 +15,13 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.ChildAnimation
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.crossfade
-import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.crossfadeScale
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.childAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.emptyChildAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.plus
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.slide
+import com.arkivanov.decompose.router.RouterState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
@@ -150,9 +152,10 @@ class ChildrenTest(
         private fun getParameters(): List<ChildAnimation<Config, Config>> =
             listOf(
                 emptyChildAnimation(),
-                crossfade(),
-                crossfadeScale(),
-                slide()
+                childAnimation(scale()),
+                childAnimation(fade()),
+                childAnimation(slide()),
+                childAnimation(scale() + fade() + slide()),
             )
     }
 

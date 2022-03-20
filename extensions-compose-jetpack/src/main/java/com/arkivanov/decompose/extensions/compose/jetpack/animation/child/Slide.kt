@@ -1,29 +1,18 @@
 package com.arkivanov.decompose.extensions.compose.jetpack.animation.child
 
 import androidx.compose.animation.core.FiniteAnimationSpec
-import androidx.compose.foundation.layout.Box
+import androidx.compose.animation.core.tween
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 
 /**
- * A simple sliding animation. Children enter from the right side and exit from the left.
+ * A simple sliding animation. Children enter from one side and exit to another side.
  */
 @ExperimentalDecomposeApi
-fun <C : Any, T : Any> slide(
-    animationSpec: FiniteAnimationSpec<Float> = defaultChildAnimationSpec,
-): ChildAnimation<C, T> =
-    childAnimation(animationSpec = animationSpec) { _, factor, placement, _, content ->
-        Box(
-            modifier = Modifier.offsetXFactor(
-                factor = when (placement) {
-                    ChildPlacement.BACK -> factor - 1F
-                    ChildPlacement.FRONT -> 1F - factor
-                }
-            )
-        ) {
-            content()
-        }
+fun slide(animationSpec: FiniteAnimationSpec<Float> = tween()): ChildAnimator =
+    childAnimator(animationSpec = animationSpec) { factor, _, content ->
+        content(Modifier.offsetXFactor(factor = factor))
     }
 
 private fun Modifier.offsetXFactor(factor: Float): Modifier =

@@ -3,14 +3,19 @@ package com.arkivanov.sample.dynamicfeatures.shared.root
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.crossfadeScale
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.childAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.plus
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.scale
 import com.arkivanov.sample.dynamicfeatures.shared.main.MainContent
 import com.arkivanov.sample.dynamicfeatures.shared.root.dynamicfeature.DynamicFeatureContent
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun RootContent(root: Root, modifier: Modifier = Modifier) {
-    Children(routerState = root.routerState, animation = crossfadeScale()) {
+    Children(routerState = root.routerState, animation = childAnimation(fade() + scale())) {
         when (val child = it.instance) {
             is Root.Child.MainChild -> MainContent(main = child.main, modifier = modifier)
 

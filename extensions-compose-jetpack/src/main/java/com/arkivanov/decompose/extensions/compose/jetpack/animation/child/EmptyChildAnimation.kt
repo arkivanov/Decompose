@@ -1,9 +1,11 @@
 package com.arkivanov.decompose.extensions.compose.jetpack.animation.child
 
 import androidx.compose.foundation.layout.Box
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 
+@ExperimentalDecomposeApi
 internal fun <C : Any, T : Any> emptyChildAnimation(): ChildAnimation<C, T> =
-    { routerState, modifier, childContent ->
+    ChildAnimation { routerState, modifier, childContent ->
         Box(modifier = modifier) {
             childContent(routerState.activeChild)
         }

@@ -9,8 +9,12 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.crossfade
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.childAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.plus
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.value.Value
@@ -57,11 +61,12 @@ fun RootUi(component: Root) {
     }
 }
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 private fun ListPane(routerState: Value<RouterState<*, Root.ListChild>>) {
     Children(
         routerState = routerState,
-        animation = crossfade()
+        animation = childAnimation(fade() + scale())
     ) {
         when (val child = it.instance) {
             is Root.ListChild.List -> ArticleListUi(child.component)
@@ -70,11 +75,12 @@ private fun ListPane(routerState: Value<RouterState<*, Root.ListChild>>) {
     }
 }
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 private fun DetailsPane(routerState: Value<RouterState<*, Root.DetailsChild>>) {
     Children(
         routerState = routerState,
-        animation = crossfade()
+        animation = childAnimation(fade() + scale())
     ) {
         when (val child = it.instance) {
             is Root.DetailsChild.None -> Box {}
