@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.Children
+import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.childAnimation
 import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.slide
 import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.arkivanov.decompose.router.RouterState
@@ -61,7 +62,7 @@ fun CounterInnerUi(counterInner: CounterInner) {
                         onPrev = counterInner::onPrevLeftChild
                     )
 
-                    Children(routerState = counterInner.leftRouterState, animation = slide()) {
+                    Children(routerState = counterInner.leftRouterState, animation = childAnimation(slide())) {
                         CounterUi(it.instance.counter)
                     }
                 }
@@ -80,7 +81,7 @@ fun CounterInnerUi(counterInner: CounterInner) {
                         onPrev = counterInner::onPrevRightChild
                     )
 
-                    Children(routerState = counterInner.rightRouterState, animation = slide()) {
+                    Children(routerState = counterInner.rightRouterState, animation = childAnimation(slide())) {
                         CounterUi(it.instance.counter)
                     }
                 }

@@ -7,6 +7,7 @@ import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.ChildAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.emptyChildAnimation
 import com.arkivanov.decompose.router.RouterState
@@ -14,6 +15,7 @@ import com.arkivanov.decompose.value.Value
 
 typealias ChildContent<C, T> = @Composable (child: Child.Created<C, T>) -> Unit
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun <C : Any, T : Any> Children(
     routerState: RouterState<C, T>,
@@ -32,6 +34,7 @@ fun <C : Any, T : Any> Children(
     }
 }
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun <C : Any, T : Any> Children(
     routerState: Value<RouterState<C, T>>,

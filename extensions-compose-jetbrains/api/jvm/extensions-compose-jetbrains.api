@@ -1,6 +1,6 @@
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/ChildrenKt {
-	public static final fun Children (Lcom/arkivanov/decompose/router/RouterState;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
-	public static final fun Children (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function5;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Children (Lcom/arkivanov/decompose/router/RouterState;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimation;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Children (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimation;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/RootComponentBuilderKt {
@@ -15,27 +15,30 @@ public final class com/arkivanov/decompose/extensions/compose/jetbrains/ValueCom
 	public static final fun asState (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
 }
 
-public final class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimationDirection : java/lang/Enum {
-	public static final field ENTER Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimationDirection;
-	public static final field EXIT Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimationDirection;
-	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimationDirection;
-	public static fun values ()[Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimationDirection;
+public abstract interface class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimation {
+	public abstract fun invoke (Lcom/arkivanov/decompose/router/RouterState;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimationKt {
-	public static final fun childAnimation (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function7;)Lkotlin/jvm/functions/Function5;
-	public static synthetic fun childAnimation$default (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function7;ILjava/lang/Object;)Lkotlin/jvm/functions/Function5;
+	public static final fun ChildAnimation (Lkotlin/jvm/functions/Function5;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimation;
+	public static final fun childAnimation (Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimation;
+	public static final fun childAnimation (Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimation;
+	public static synthetic fun childAnimation$default (Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimation;
 }
 
-public final class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildPlacement : java/lang/Enum {
-	public static final field BACK Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildPlacement;
-	public static final field FRONT Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildPlacement;
-	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildPlacement;
-	public static fun values ()[Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildPlacement;
+public abstract interface class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator {
+	public abstract fun invoke (Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/Direction;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
 }
 
-public final class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ComposableSingletons$EmptyChildAnimationKt {
-	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ComposableSingletons$EmptyChildAnimationKt;
+public final class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimatorKt {
+	public static final fun ChildAnimator (Lkotlin/jvm/functions/Function5;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;
+	public static final fun childAnimator (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function5;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;
+	public static synthetic fun childAnimator$default (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function5;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;
+	public static final fun plus (Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ComposableSingletons$FadeKt {
+	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ComposableSingletons$FadeKt;
 	public static field lambda-1 Lkotlin/jvm/functions/Function5;
 	public fun <init> ()V
 	public final fun getLambda-1$extensions_compose_jetbrains ()Lkotlin/jvm/functions/Function5;
@@ -43,24 +46,34 @@ public final class com/arkivanov/decompose/extensions/compose/jetbrains/animatio
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ComposableSingletons$SlideKt {
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ComposableSingletons$SlideKt;
-	public static field lambda-1 Lkotlin/jvm/functions/Function7;
+	public static field lambda-1 Lkotlin/jvm/functions/Function5;
 	public fun <init> ()V
-	public final fun getLambda-1$extensions_compose_jetbrains ()Lkotlin/jvm/functions/Function7;
+	public final fun getLambda-1$extensions_compose_jetbrains ()Lkotlin/jvm/functions/Function5;
 }
 
-public final class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/CrossfadeKt {
-	public static final fun crossfade (Landroidx/compose/animation/core/FiniteAnimationSpec;)Lkotlin/jvm/functions/Function5;
-	public static synthetic fun crossfade$default (Landroidx/compose/animation/core/FiniteAnimationSpec;ILjava/lang/Object;)Lkotlin/jvm/functions/Function5;
+public final class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/Direction : java/lang/Enum {
+	public static final field ENTER_BACK Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/Direction;
+	public static final field ENTER_FRONT Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/Direction;
+	public static final field EXIT_BACK Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/Direction;
+	public static final field EXIT_FRONT Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/Direction;
+	public static final field IDLE Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/Direction;
+	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/Direction;
+	public static fun values ()[Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/Direction;
 }
 
-public final class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/CrossfadeScaleKt {
-	public static final fun crossfadeScale (Landroidx/compose/animation/core/FiniteAnimationSpec;FF)Lkotlin/jvm/functions/Function5;
-	public static synthetic fun crossfadeScale$default (Landroidx/compose/animation/core/FiniteAnimationSpec;FFILjava/lang/Object;)Lkotlin/jvm/functions/Function5;
+public final class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/FadeKt {
+	public static final fun fade (Landroidx/compose/animation/core/FiniteAnimationSpec;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;
+	public static synthetic fun fade$default (Landroidx/compose/animation/core/FiniteAnimationSpec;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ScaleKt {
+	public static final fun scale (Landroidx/compose/animation/core/FiniteAnimationSpec;FF)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;
+	public static synthetic fun scale$default (Landroidx/compose/animation/core/FiniteAnimationSpec;FFILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/SlideKt {
-	public static final fun slide (Landroidx/compose/animation/core/FiniteAnimationSpec;)Lkotlin/jvm/functions/Function5;
-	public static synthetic fun slide$default (Landroidx/compose/animation/core/FiniteAnimationSpec;ILjava/lang/Object;)Lkotlin/jvm/functions/Function5;
+	public static final fun slide (Landroidx/compose/animation/core/FiniteAnimationSpec;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;
+	public static synthetic fun slide$default (Landroidx/compose/animation/core/FiniteAnimationSpec;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimator;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/lifecycle/LifecycleControllerKt {
