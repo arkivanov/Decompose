@@ -10,6 +10,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.consumeAllChanges
+import androidx.compose.ui.input.pointer.pointerInput
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.RouterState
@@ -55,7 +57,27 @@ internal class DefaultChildAnimation<C : Any, T : Any>(
                     }
                 }
             }
+
+            // A workaround until https://issuetracker.google.com/issues/214231672.
+            // Normally only the exiting child be disabled.
+            if (items.size > 1) {
+                Overlay(modifier = Modifier.matchParentSize())
+            }
         }
+    }
+
+    @Composable
+    private fun Overlay(modifier: Modifier) {
+        Box(
+            modifier = modifier.pointerInput(Unit) {
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        event.changes.forEach { it.consumeAllChanges() }
+                    }
+                }
+            }
+        )
     }
 
     private fun RouterState<C, T>.activePage(): Page<C, T> =
