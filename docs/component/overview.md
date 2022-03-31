@@ -36,7 +36,55 @@ class Counter(
 }
 ```
 
-When instantiating a root component we have to create `ComponentContext` manually. There is [DefaultComponentContext](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/DefaultComponentContext.kt) which is the default implementation class of the `ComponentContext`. There are also handy helper functions provided by Jetpack/JetBrains Compose extension modules.
+## Root ComponentContext
+
+When instantiating a root component, the `ComponentContext` should be created manually. There is [DefaultComponentContext](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/DefaultComponentContext.kt) which is the default implementation class of the `ComponentContext`.
+
+### Root ComponentContext in Android
+
+Decompose provides a few handy [helper functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/androidMain/kotlin/com/arkivanov/decompose/DefaultComponentContextBuilder.kt) for creating the root `ComponentContext` in Android. The preferred way is to create the root `ComponentContext` in an `Activity` or a `Fragment`. For this case Decompose provides `defaultComponentContext()` extension function, which can be called in scope of an `Activity` or a `Fragment`. Alternatively, there is Android-specific `DefaultComponentContext(AndroidLifecycle, SavedStateRegistry?, ViewModelStore?, OnBackPressedDispatcher?)` factory function.
+
+### Root ComponentContext in Jetpack/JetBrains Compose
+
+It is advised to not create the root `ComponentContext` (and a root component) directly in a `Composable` function. Compositions may be performed in a background thread, which may brake things. The preferred way is to create the root component outside of Compose.
+
+> ⚠️ If you can't avoid creating the root component in a `Composable` function, please make sure you use `remember`. This will prevent the root component and its `ComponentContext` from being recreated on each composition.
+
+#### Android with Compose
+
+Prefer creating the root `ComponentContext` (and a root component) before starting Compose, e.g. in an `Activity` or a `Fragment`.
+
+```kotlin
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Create the root component before starting Compose
+        val root = RootComponent(componentContext = defaultComponentContext())
+
+        // Start Compose
+        setContent {
+            // The rest of the code
+        }
+    }
+}
+```
+
+#### Other platforms with Compose
+
+Prefer creating the root `ComponentContext` (and a root component) before starting Compose, e.g. in directly in the `main` function.
+
+```kotlin
+fun main() {
+    // Create the root component before starting Compose
+    val root = RootComponent(componentContext = DefaultComponentContext(...))
+
+    // Start Compose
+    application {
+        // The rest of the code
+    }
+}
+```
 
 ## Child components
 
