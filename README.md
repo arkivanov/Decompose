@@ -38,6 +38,7 @@ Additional resources:
 
 ## Why Decompose?
 
+* Decompose breaks the code down into small and independent components and organizes them into trees. Each parent component is only aware of its immediate children.
 * Decompose draws clear boundaries between UI and non-UI code, which gives the following benefits:
   * Better separation of concerns
   * Pluggable platform-specific UI (Compose, SwiftUI, React, etc.)
