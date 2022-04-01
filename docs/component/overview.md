@@ -42,7 +42,52 @@ When instantiating a root component, the `ComponentContext` should be created ma
 
 ### Root ComponentContext in Android
 
-Decompose provides a few handy [helper functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/androidMain/kotlin/com/arkivanov/decompose/DefaultComponentContextBuilder.kt) for creating the root `ComponentContext` in Android. The preferred way is to create the root `ComponentContext` in an `Activity` or a `Fragment`. For this case Decompose provides `defaultComponentContext()` extension function, which can be called in scope of an `Activity` or a `Fragment`. Alternatively, there is Android-specific `DefaultComponentContext(AndroidLifecycle, SavedStateRegistry?, ViewModelStore?, OnBackPressedDispatcher?)` factory function.
+Decompose provides a few handy [helper functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/androidMain/kotlin/com/arkivanov/decompose/DefaultComponentContextBuilder.kt) for creating the root `ComponentContext` in Android. The preferred way is to create the root `ComponentContext` in an `Activity` or a `Fragment`.
+
+#### Root ComponentContext in Activity
+
+For this case Decompose provides `defaultComponentContext()` extension function, which can be called in scope of an `Activity`.
+
+#### Root ComponentContext in Fragment
+
+The `defaultComponentContext()` extension function can not be used in a Fragment. This is because the `Fragment` class does not implement the `OnBackPressedDispatcherOwner` interface, and so by default can't handle back button events. It is advised to use the Android-specific `DefaultComponentContext(AndroidLifecycle, SavedStateRegistry?, ViewModelStore?, OnBackPressedDispatcher?)` factory function, and supply all the arguments manually. The first three arguments (`AndroidLifecycle`, `SavedStateRegistry` and `ViewModelStore`) can be obtained directly from `Fragment`. However the last argument `OnBackPressedDispatcher` - can not. If you don't need to handle back button events in your Decompose components, then you can just ignore this argument. Otherwise, a manual solution is required.
+
+> ⚠️ Don't take any argument values from the hosting `Activity` (e.g. `requireActivity().onBackPressedDispatcher`), as it may produce memory leaks.
+
+Here is an example with using Decompose in a `DialogFragment`.
+
+```kotlin
+class MyFragment : DialogFragment() {
+    // Create custom OnBackPressedDispatcher
+    private val onBackPressedDispatcher = OnBackPressedDispatcher(::dismiss)
+
+    private lateinit var root: Root
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        root =
+            Root(
+                DefaultComponentContext(
+                    lifecycle = lifecycle,
+                    savedStateRegistry = savedStateRegistry,
+                    viewModelStore = viewModelStore,
+                    onBackPressedDispatcher = onBackPressedDispatcher,
+                )
+            )
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
+        object : Dialog(requireContext(), theme) {
+            override fun onBackPressed() {
+                onBackPressedDispatcher.onBackPressed()
+            }
+        }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        // Start Compose here
+}
+```
 
 ### Root ComponentContext in Jetpack/JetBrains Compose
 
