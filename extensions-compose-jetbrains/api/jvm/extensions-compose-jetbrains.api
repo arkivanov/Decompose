@@ -3,16 +3,8 @@ public final class com/arkivanov/decompose/extensions/compose/jetbrains/Children
 	public static final fun Children (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimation;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
 
-public final class com/arkivanov/decompose/extensions/compose/jetbrains/RootComponentBuilderKt {
-	public static final fun rememberRootComponent (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Lcom/arkivanov/essenty/backpressed/BackPressedDispatcher;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)Ljava/lang/Object;
-}
-
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/SubscribeAsStateKt {
 	public static final fun subscribeAsState (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
-}
-
-public final class com/arkivanov/decompose/extensions/compose/jetbrains/ValueComposableKt {
-	public static final fun asState (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
 }
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/jetbrains/animation/child/ChildAnimation {

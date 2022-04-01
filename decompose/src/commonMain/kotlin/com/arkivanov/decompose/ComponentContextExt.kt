@@ -22,10 +22,3 @@ fun ComponentContext.childContext(key: String, lifecycle: Lifecycle? = null): Co
         instanceKeeper = instanceKeeper.child(key, lifecycle),
         backPressedHandler = backPressedHandler.child(lifecycle),
     )
-
-@Deprecated(
-    message = "Use childContext(key)",
-    replaceWith = ReplaceWith("childContext(key)"),
-    level = DeprecationLevel.ERROR,
-)
-fun ComponentContext.child(key: String): ComponentContext = childContext(key = key)

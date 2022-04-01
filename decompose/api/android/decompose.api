@@ -34,11 +34,9 @@ public final class com/arkivanov/decompose/Child$Destroyed : com/arkivanov/decom
 }
 
 public abstract interface class com/arkivanov/decompose/ComponentContext : com/arkivanov/essenty/backpressed/BackPressedHandlerOwner, com/arkivanov/essenty/instancekeeper/InstanceKeeperOwner, com/arkivanov/essenty/lifecycle/LifecycleOwner, com/arkivanov/essenty/statekeeper/StateKeeperOwner {
-	public abstract fun getBackPressedDispatcher ()Lcom/arkivanov/essenty/backpressed/BackPressedDispatcher;
 }
 
 public final class com/arkivanov/decompose/ComponentContextExtKt {
-	public static final fun child (Lcom/arkivanov/decompose/ComponentContext;Ljava/lang/String;)Lcom/arkivanov/decompose/ComponentContext;
 	public static final fun childContext (Lcom/arkivanov/decompose/ComponentContext;Ljava/lang/String;Lcom/arkivanov/essenty/lifecycle/Lifecycle;)Lcom/arkivanov/decompose/ComponentContext;
 	public static synthetic fun childContext$default (Lcom/arkivanov/decompose/ComponentContext;Ljava/lang/String;Lcom/arkivanov/essenty/lifecycle/Lifecycle;ILjava/lang/Object;)Lcom/arkivanov/decompose/ComponentContext;
 }
@@ -47,7 +45,6 @@ public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivan
 	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;)V
 	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Lcom/arkivanov/essenty/backpressed/BackPressedHandler;)V
 	public synthetic fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Lcom/arkivanov/essenty/backpressed/BackPressedHandler;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getBackPressedDispatcher ()Lcom/arkivanov/essenty/backpressed/BackPressedDispatcher;
 	public fun getBackPressedHandler ()Lcom/arkivanov/essenty/backpressed/BackPressedHandler;
 	public fun getInstanceKeeper ()Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;
 	public fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/Lifecycle;

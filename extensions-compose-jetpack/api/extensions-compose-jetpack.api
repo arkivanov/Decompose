@@ -10,17 +10,8 @@ public final class com/arkivanov/decompose/extensions/compose/jetpack/ChildrenKt
 	public static final fun Children (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetpack/animation/child/ChildAnimation;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
 
-public final class com/arkivanov/decompose/extensions/compose/jetpack/RootComponentBuilderKt {
-	public static final fun rememberRootComponent (Landroidx/savedstate/SavedStateRegistry;Landroidx/lifecycle/ViewModelStore;Landroidx/activity/OnBackPressedDispatcher;Landroidx/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)Ljava/lang/Object;
-	public static final fun rememberRootComponent (Landroidx/savedstate/SavedStateRegistryOwner;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;I)Ljava/lang/Object;
-}
-
 public final class com/arkivanov/decompose/extensions/compose/jetpack/SubscribeAsStateKt {
 	public static final fun subscribeAsState (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
-}
-
-public final class com/arkivanov/decompose/extensions/compose/jetpack/ValueComposableKt {
-	public static final fun asState (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
 }
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/jetpack/animation/child/ChildAnimation {

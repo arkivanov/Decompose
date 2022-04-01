@@ -20,12 +20,6 @@ class DefaultComponentContext(
     override val instanceKeeper: InstanceKeeper = instanceKeeper ?: InstanceKeeperDispatcher().attachTo(lifecycle)
     override val backPressedHandler: BackPressedHandler = backPressedHandler ?: BackPressedDispatcher()
 
-    override val backPressedDispatcher: BackPressedDispatcher by lazy {
-        BackPressedDispatcher().also { dispatcher ->
-            this.backPressedHandler.register(dispatcher::onBackPressed)
-        }
-    }
-
     constructor(lifecycle: Lifecycle) : this(
         lifecycle = lifecycle,
         stateKeeper = null,
