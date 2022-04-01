@@ -83,7 +83,10 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.router(
  * A convenience extension function for [ComponentContext.router].
  */
 @Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated(message = "Please use ComponentContext.router extension function with initialStack argument")
+@Deprecated(
+    message = "Please use ComponentContext.router extension function with initialStack argument",
+    level = DeprecationLevel.ERROR,
+)
 fun <C : Parcelable, T : Any> ComponentContext.router(
     initialConfiguration: () -> C,
     initialBackStack: () -> List<C> = ::emptyList,
@@ -103,8 +106,11 @@ fun <C : Parcelable, T : Any> ComponentContext.router(
 /**
  * A convenience extension function for [ComponentContext.router].
  */
-@Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated(message = "Please use ComponentContext.router extension function with initialStack argument")
+@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION_ERROR")
+@Deprecated(
+    message = "Please use ComponentContext.router extension function with initialStack argument",
+    level = DeprecationLevel.ERROR,
+)
 inline fun <reified C : Parcelable, T : Any> ComponentContext.router(
     initialConfiguration: C,
     initialBackStack: List<C> = emptyList(),
@@ -124,8 +130,11 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.router(
 /**
  * A convenience extension function for [ComponentContext.router].
  */
-@Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated(message = "Please use ComponentContext.router extension function with initialStack argument")
+@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION_ERROR")
+@Deprecated(
+    message = "Please use ComponentContext.router extension function with initialStack argument",
+    level = DeprecationLevel.ERROR,
+)
 inline fun <reified C : Parcelable, T : Any> ComponentContext.router(
     noinline initialConfiguration: () -> C,
     noinline initialBackStack: () -> List<C> = ::emptyList,

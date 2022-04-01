@@ -251,7 +251,5 @@ class ChildContextTest {
         override val lifecycle: LifecycleRegistry = LifecycleRegistry()
         override val stateKeeper: TestStateKeeperDispatcher = TestStateKeeperDispatcher(savedState)
         override val backPressedHandler: BackPressedDispatcher = BackPressedDispatcher()
-
-        override val backPressedDispatcher: BackPressedDispatcher get() = TODO("Not yet implemented")
     }
 }
