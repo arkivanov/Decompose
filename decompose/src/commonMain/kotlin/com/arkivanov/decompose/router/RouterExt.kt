@@ -3,17 +3,31 @@ package com.arkivanov.decompose.router
 import com.arkivanov.decompose.Child
 
 /**
- * Pushes the provided [configuration] at the top of the stack
+ * A convenience method for [Router.navigate].
+ */
+fun <C : Any> Router<C, *>.navigate(transformer: (stack: List<C>) -> List<C>) {
+    navigate(transformer = transformer, onComplete = { _, _ -> })
+}
+
+/**
+ * Pushes the provided [configuration] at the top of the stack..
  */
 fun <C : Any> Router<C, *>.push(configuration: C) {
     navigate { it + configuration }
 }
 
 /**
- * Pops the latest configuration at the top of the stack
+ * Pops the latest configuration at the top of the stack.
+ *
+ * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
+ * The `isSuccess` argument is `true` if the stack size was greater than 1 and a component was popped,
+ * `false` otherwise.
  */
-fun <C : Any> Router<C, *>.pop() {
-    navigate { it.dropLast(1) }
+fun <C : Any> Router<C, *>.pop(onComplete: (isSuccess: Boolean) -> Unit = {}) {
+    navigate(
+        transformer = { stack -> stack.takeIf { it.size > 1 }?.dropLast(1) ?: stack },
+        onComplete = { newStack, oldStack -> onComplete(newStack.size < oldStack.size) }
+    )
 }
 
 /**
@@ -24,7 +38,7 @@ inline fun <C : Any> Router<C, *>.popWhile(crossinline predicate: (C) -> Boolean
 }
 
 /**
- * Replaces the current configuration at the top of the stack with the provided [configuration]
+ * Replaces the current configuration at the top of the stack with the provided [configuration].
  */
 fun <C : Any> Router<C, *>.replaceCurrent(configuration: C) {
     navigate { it.dropLast(1) + configuration }

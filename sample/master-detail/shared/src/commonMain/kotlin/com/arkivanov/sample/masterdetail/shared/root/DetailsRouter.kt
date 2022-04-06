@@ -3,6 +3,7 @@ package com.arkivanov.sample.masterdetail.shared.root
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.router.activeChild
+import com.arkivanov.decompose.router.navigate
 import com.arkivanov.decompose.router.popWhile
 import com.arkivanov.decompose.router.router
 import com.arkivanov.decompose.value.Value

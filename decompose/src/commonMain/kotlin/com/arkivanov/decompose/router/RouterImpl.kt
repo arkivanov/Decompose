@@ -33,14 +33,16 @@ internal class RouterImpl<C : Any, T : Any>(
         backPressedHandler.unregister(onBackPressedHandler)
     }
 
-    override fun navigate(transformer: (stack: List<C>) -> List<C>) {
-        queue.offer(transformer)
+    override fun navigate(transformer: (stack: List<C>) -> List<C>, onComplete: (newStack: List<C>, oldStack: List<C>) -> Unit) {
+        queue.offer(NavigationItem(transformer = transformer, onComplete = onComplete))
     }
 
-    private fun navigateActual(transformer: (stack: List<C>) -> List<C>) {
-        val newStack = navigator.navigate(oldStack = stackHolder.stack, transformer = transformer)
+    private fun navigateActual(item: NavigationItem<C>) {
+        val oldStack = stackHolder.stack
+        val newStack = navigator.navigate(oldStack = oldStack, transformer = item.transformer)
         stackHolder.stack = newStack
         state.value = newStack.toState()
+        item.onComplete(newStack.configurationStack, oldStack.configurationStack)
     }
 
     private fun onBackPressed(): Boolean =
@@ -66,4 +68,9 @@ internal class RouterImpl<C : Any, T : Any>(
             is RouterEntry.Created -> Child.Created(configuration = configuration, instance = instance)
             is RouterEntry.Destroyed -> Child.Destroyed(configuration = configuration)
         }
+
+    private class NavigationItem<C : Any>(
+        val transformer: (stack: List<C>) -> List<C>,
+        val onComplete: (newStack: List<C>, oldStack: List<C>) -> Unit,
+    )
 }

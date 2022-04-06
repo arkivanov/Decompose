@@ -1,14 +1,21 @@
 # Navigation
 
-## Router
+## The Router
 
-All navigation in Decompose is done through the [`Router`](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/Router.kt) interface. It has one function `navigate(transformer: (List<C>) -> List<C>)` which transforms the current stack of configurations into a new one by the provided `transformer` function. The stack is represented as `List`, where the last element is the top of the stack, and the first element is the bottom of the stack.
+All navigation in Decompose is done through the [`Router`](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/Router.kt) interface. There is `navigate(transformer: (List<C>) -> List<C>, onComplete: (newStack: List<C>, oldStack: List<C>) -> Unit)` method with two arguments:
 
-> ⚠️ The returned stack must not be empty.
+- `transformer` - converts the current stack of configurations into a new one. The stack is represented as `List`, where the last element is the top of the stack, and the first element is the bottom of the stack.
+- `onComplete` - called when navigation is finished.
 
-The navigation is always performed synchronously during the `navigate` method call. The only exception to this rule is when the `navigate` method is called recursively. All recursive invocations are queued and performed one by one once the current navigation is finished.
+There is also `navigate(transformer: (stack: List<C>) -> List<C>)` extension function for convenience, without the `onComplete` callback.
+
+> ⚠️ The configuration stack returned by the `transformer` function must not be empty.
+
+### The navigation process
 
 During the navigation process, the `Router` compares the new stack of configurations with the previous one. The `Router` ensures that all removed components are destroyed, and that there is only one component resumed at a time - the top one. All components in the back stack are always either stopped or destroyed.
+
+The `Router` usually performs the navigation synchronously, which means that by the time the `navigate` method returns, the navigation is finished and all component lifecycles are moved into required states. However the navigation is performed asynchronously in case of recursive invocations - e.g. `pop` is called from `onResume` lifecycle callback of a component being pushed. All recursive invocations are queued and performed one by one once the current navigation is finished.
 
 ## Router extension functions
 
@@ -44,6 +51,13 @@ Pops the latest configuration at the top of the stack.
 
 ```kotlin
 router.pop()
+```
+
+```kotlin
+router.pop { isSuccess ->
+    // Called when the navigation is finished.
+    // isSuccess - `true` if the stack size was greater than 1 and a component was popped, `false` otherwise.
+}
 ```
 
 ![](../media/RouterPop.png)

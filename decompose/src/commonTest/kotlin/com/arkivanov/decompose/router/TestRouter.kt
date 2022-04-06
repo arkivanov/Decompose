@@ -27,7 +27,10 @@ class TestRouter<C : Any>(stack: List<C>) : Router<C, Any> {
             }
         )
 
-    override fun navigate(transformer: (stack: List<C>) -> List<C>) {
-        stack = transformer(stack)
+    override fun navigate(transformer: (stack: List<C>) -> List<C>, onComplete: (newStack: List<C>, oldStack: List<C>) -> Unit) {
+        val oldStack = stack
+        val newStack = transformer(stack)
+        stack = newStack
+        onComplete(newStack, oldStack)
     }
 }
