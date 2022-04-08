@@ -111,41 +111,25 @@ fun SettingsUi(settingsComponent: SettingsComponent) {
 }
 ```
 
-### Animations
+### Animations (experimental)
 
-Decompose provides the [Child Animation API](https://github.com/arkivanov/Decompose/tree/master/extensions-compose-jetpack/src/main/java/com/arkivanov/decompose/extensions/compose/jetpack/animation/child) for Compose, as well as some predefined animation specs. To enable child animations you need to pass   the `animation` argument to the `Children` function.
+Decompose provides the [Child Animation API](https://github.com/arkivanov/Decompose/tree/master/extensions-compose-jetpack/src/main/java/com/arkivanov/decompose/extensions/compose/jetpack/animation/child) for Compose, as well as some predefined animation specs. To enable child animations you need to pass the `animation` argument to the `Children` function. There are predefined animators provided by Decompose.
 
-#### Crossfade animation
-
-```kotlin
-@Composable
-fun RootUi(rootComponent: RootComponent) {
-    Children(
-        routerState = rootComponent.routerState,
-        animation = crossfade()
-    ) {
-        // Omitted code
-    }
-}
-```
-
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationCrossfade.gif" width="512">
-
-#### Crossfade-Scale animation
+#### Fade animation
 
 ```kotlin
 @Composable
 fun RootUi(rootComponent: RootComponent) {
     Children(
         routerState = rootComponent.routerState,
-        animation = crossfadeScale()
+        animation = childAnimation(fade())
     ) {
         // Omitted code
     }
 }
 ```
 
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationCrossfadeScale.gif" width="512">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationFade.gif" width="512">
 
 #### Slide animation
 
@@ -154,7 +138,7 @@ fun RootUi(rootComponent: RootComponent) {
 fun RootUi(rootComponent: RootComponent) {
     Children(
         routerState = rootComponent.routerState,
-        animation = slide()
+        animation = childAnimation(slide())
     ) {
         // Omitted code
     }
@@ -163,11 +147,29 @@ fun RootUi(rootComponent: RootComponent) {
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationSlide.gif" width="512">
 
+#### Fade+Scale animation
+
+It is also possible to combine animators using the `plus` operator. Please note that the order matters - the right animator is applied after the left animator.
+
+```kotlin
+@Composable
+fun RootUi(rootComponent: RootComponent) {
+    Children(
+        routerState = rootComponent.routerState,
+        animation = childAnimation(fade() + scale())
+    ) {
+        // Omitted code
+    }
+}
+```
+
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationFadeScale.gif" width="512">
+
 #### Custom animations
 
-It is possible to define custom animations in two ways.
+It is also possible to define custom animations.
 
-Implementing the `ChildAnimation` manually:
+Implementing `ChildAnimation` manually. This is the most flexible low-level API. The animation block receives the current `RouterState` and animates children using the provided `content` slot.
 
 ```kotlin
 @Composable
@@ -181,27 +183,53 @@ fun RootUi(rootComponent: RootComponent) {
 }
 
 fun <C : Any, T : Any> someAnimation(): ChildAnimation<C, T> =
-    { routerState: RouterState<C, T>, childContent: ChildContent<C, T> ->
+    ChildAnimation { routerState: RouterState<C, T>,
+                     modifier: Modifier,
+                     content: @Composable (Child.Created<C, T>) -> Unit ->
         // Render each frame here
     }
 ```
 
-Implementing the `ChildAnimation` using the `childAnimation` builder function:
+Using the `childAnimation` helper function and implementing `ChildAnimator`. The `childAnimation` function takes care of tracking the `RouterState` changes. `ChildAnimator` is only responsible for manipulating the `Modifier` in the given `direction`, and calling `onFinished` at the end.
 
 ```kotlin
-fun <C : Any, T : Any> someAnimation(
-    animationSpec: FiniteAnimationSpec<Float> = defaultChildAnimationSpec,
-): ChildAnimation<C, T> =
-    childAnimation(
-        animationSpec = animationSpec
+@Composable
+fun RootUi(rootComponent: RootComponent) {
+    Children(
+        routerState = rootComponent.routerState,
+        animation = childAnimation(someAnimator())
     ) {
-        child: Child.Created<C, T>,
-        factor: Float,
-        placement: ChildPlacement,
-        direction: ChildAnimationDirection,
-        content: @Composable () -> Unit ->
-        // Render the current frame here
+        // Omitted code
+    }
+}
+
+fun someAnimator(): ChildAnimator =
+    ChildAnimator { direction: Direction,
+                    onFinished: () -> Unit,
+                    content: @Composable (Modifier) -> Unit ->
+        // Manipulate the Modifier in the given direction and call onFinished at the end
     }
 ```
 
-Please refer to the predefined animations for implementation examples.
+Using `childAnimation` and `childAnimator` helper functions. This is the simplest, but less powerful way. The `childAnimator` function takes care of running the animation. Its block has a very limited responsibility - to render the current frame using the provided `factor` and `direction`.
+
+```kotlin
+@Composable
+fun RootUi(rootComponent: RootComponent) {
+    Children(
+        routerState = rootComponent.routerState,
+        animation = childAnimation(someAnimator())
+    ) {
+        // Omitted code
+    }
+}
+
+fun someAnimator(): ChildAnimator =
+    childAnimator { factor: Float,
+                    direction: Direction,
+                    content: (Modifier) -> Unit ->
+        // Render the current frame
+    }
+```
+
+Please refer to the predefined animators (`fade`, `slide`, etc.) for implementation examples.
