@@ -2,6 +2,7 @@ package com.arkivanov.decompose.router.webhistory
 
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.TestRouter
+import com.arkivanov.decompose.router.navigate
 import com.arkivanov.decompose.router.pop
 import com.arkivanov.decompose.router.push
 import com.arkivanov.essenty.parcelable.Parcelable

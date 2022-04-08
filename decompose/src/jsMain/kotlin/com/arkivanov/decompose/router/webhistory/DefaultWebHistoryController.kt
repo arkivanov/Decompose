@@ -5,6 +5,7 @@ import com.arkivanov.decompose.router.Router
 import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.router.configurations
 import com.arkivanov.decompose.router.findFirstDifferentIndex
+import com.arkivanov.decompose.router.navigate
 import com.arkivanov.decompose.router.startsWith
 import com.arkivanov.decompose.router.subscribe
 import org.w3c.dom.PopStateEvent

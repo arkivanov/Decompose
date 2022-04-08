@@ -11,7 +11,12 @@ internal class StackNavigatorImpl<C : Any, T : Any>(
 ) : StackNavigator<C, T> {
 
     override fun navigate(oldStack: RouterStack<C, T>, transformer: (stack: List<C>) -> List<C>): RouterStack<C, T> {
-        val newConfigurationStack = transformer((oldStack.backStack + oldStack.active).map(RouterEntry<C, *>::configuration))
+        val oldConfigurationStack = oldStack.configurationStack
+        val newConfigurationStack = transformer(oldConfigurationStack)
+
+        if (newConfigurationStack === oldConfigurationStack) {
+            return oldStack
+        }
 
         check(newConfigurationStack.isNotEmpty()) { "Configuration stack can not be empty" }
         check(newConfigurationStack.isUnique()) { "Configurations in the stack must be unique" }
