@@ -54,7 +54,7 @@ interface SomeComponent {
 }
 
 @Composable
-fun SomeUi(component: SomeComponent) {
+fun SomeContent(component: SomeComponent) {
     val models: State<Model> by component.models.subscribeAsState()
 }
 ```
@@ -79,34 +79,34 @@ interface RootComponent {
     val routerState: Value<RouterState<*, Child>>
 
     sealed class Child {
-        data class Profile(val component: ProfileComponent) : Child()
-        data class Settings(val component: SettingsComponent) : Child()
+        data class Main(val component: MainComponent) : Child()
+        data class Details(val component: DetailsComponent) : Child()
     }
 }
 
 @Composable
-fun RootUi(rootComponent: RootComponent) {
+fun RootContent(rootComponent: RootComponent) {
     Children(rootComponent.routerState) {
         when (val child = it.instance) {
-            is RootComponent.Child.Profile -> ProfileUi(child.component)
-            is RootComponent.Child.Settings -> SettingsUi(child.component)
+            is RootComponent.Child.Main -> MainContent(child.component)
+            is RootComponent.Child.Details -> DetailsContent(child.component)
         }
     }
 }
 
 // Children
 
-interface ProfileComponent
+interface MainComponent
 
-interface SettingsComponent
+interface DetailsComponent
 
 @Composable
-fun ProfileUi(profileComponent: ProfileComponent) {
+fun MainContent(profileComponent: MainComponent) {
     // Omitted code
 }
 
 @Composable
-fun SettingsUi(settingsComponent: SettingsComponent) {
+fun DetailsContent(settingsComponent: DetailsComponent) {
     // Omitted code
 }
 ```
@@ -119,7 +119,7 @@ Decompose provides the [Child Animation API](https://github.com/arkivanov/Decomp
 
 ```kotlin
 @Composable
-fun RootUi(rootComponent: RootComponent) {
+fun RootContent(rootComponent: RootComponent) {
     Children(
         routerState = rootComponent.routerState,
         animation = childAnimation(fade())
@@ -135,7 +135,7 @@ fun RootUi(rootComponent: RootComponent) {
 
 ```kotlin
 @Composable
-fun RootUi(rootComponent: RootComponent) {
+fun RootContent(rootComponent: RootComponent) {
     Children(
         routerState = rootComponent.routerState,
         animation = childAnimation(slide())
@@ -147,13 +147,13 @@ fun RootUi(rootComponent: RootComponent) {
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationSlide.gif" width="512">
 
-#### Fade+Scale animation
+#### Combining animators
 
 It is also possible to combine animators using the `plus` operator. Please note that the order matters - the right animator is applied after the left animator.
 
 ```kotlin
 @Composable
-fun RootUi(rootComponent: RootComponent) {
+fun RootContent(rootComponent: RootComponent) {
     Children(
         routerState = rootComponent.routerState,
         animation = childAnimation(fade() + scale())
@@ -165,6 +165,29 @@ fun RootUi(rootComponent: RootComponent) {
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationFadeScale.gif" width="512">
 
+#### Separate animations for children
+
+Previous examples demonstrate simple cases, when all children have the same animation. But it is also possible to specify separate animations for children.
+
+```kotlin
+@Composable
+fun RootContent(rootComponent: RootComponent) {
+    Children(
+        routerState = rootComponent.routerState,
+        animation = childAnimation { child, direction ->
+            when (child.instance) {
+                is RootComponent.Child.Main -> fade() + scale()
+                is RootComponent.Child.Details -> fade() + slide()
+            }
+        }
+    ) {
+        // Omitted code
+    }
+}
+```
+
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationSeparate.gif" width="512">
+
 #### Custom animations
 
 It is also possible to define custom animations.
@@ -173,7 +196,7 @@ Implementing `ChildAnimation` manually. This is the most flexible low-level API.
 
 ```kotlin
 @Composable
-fun RootUi(rootComponent: RootComponent) {
+fun RootContent(rootComponent: RootComponent) {
     Children(
         routerState = rootComponent.routerState,
         animation = someAnimation()
@@ -194,7 +217,7 @@ Using the `childAnimation` helper function and implementing `ChildAnimator`. The
 
 ```kotlin
 @Composable
-fun RootUi(rootComponent: RootComponent) {
+fun RootContent(rootComponent: RootComponent) {
     Children(
         routerState = rootComponent.routerState,
         animation = childAnimation(someAnimator())
@@ -215,7 +238,7 @@ Using `childAnimation` and `childAnimator` helper functions. This is the simples
 
 ```kotlin
 @Composable
-fun RootUi(rootComponent: RootComponent) {
+fun RootContent(rootComponent: RootComponent) {
     Children(
         routerState = rootComponent.routerState,
         animation = childAnimation(someAnimator())
