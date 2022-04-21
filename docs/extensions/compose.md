@@ -59,7 +59,7 @@ fun SomeContent(component: SomeComponent) {
 }
 ```
 
-### Lifecycle
+### Controlling the Lifecycle on Desktop
 
 When using JetBrains Compose, you can have a `LifecycleRegistry` react to changes in the window state using the `LifecycleController()` composable. This will trigger appropriate lifecycle events when the window is minimized, restored or closed.
 
@@ -86,9 +86,7 @@ fun main() {
 }
 ```
 
-
-
-> Warning: When using Compose in desktop platforms, make sure to always use one of the methods above, or your components might not receive lifecycle events correctly.
+> ⚠️ When using Compose in desktop platforms, make sure to always use one of the methods above, or your components might not receive lifecycle events correctly.
 
 ### Navigating between Composable components
 
