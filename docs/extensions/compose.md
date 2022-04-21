@@ -59,6 +59,35 @@ fun SomeContent(component: SomeComponent) {
 }
 ```
 
+### Controlling the Lifecycle on Desktop
+
+When using JetBrains Compose, you can have a `LifecycleRegistry` react to changes in the window state using the `LifecycleController()` composable. This will trigger appropriate lifecycle events when the window is minimized, restored or closed.
+
+It is also possible to manually start the lifecycle using `LifecycleRegistry.resume()` when the instance is created.
+
+```kotlin
+fun main() {
+    val lifecycle = LifecycleRegistry()
+    val root = RootComponent(DefaultComponentContext(lifecycle))
+    
+    // Alternative: manually start the lifecycle (no reaction to window state)
+    // lifecycle.resume()
+    
+    application {
+        val windowState = rememberWindowState()
+        
+        // Bind the registry to the life cycle of the window
+        LifecycleController(lifecycle, windowState)
+        
+        Window(state = windowState, ...) {
+            // The rest of your content
+        }
+    }
+}
+```
+
+> ⚠️ When using Compose in desktop platforms, make sure to always use one of the methods above, or your components might not receive lifecycle events correctly.
+
 ### Navigating between Composable components
 
 The [Router](https://arkivanov.github.io/Decompose/router/overview/) provides
