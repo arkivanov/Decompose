@@ -1,47 +1,26 @@
 package com.arkivanov.sample.masterdetail.shared.list
 
-import com.arkivanov.sample.masterdetail.shared.MasterDetailStyles
-import com.arkivanov.sample.masterdetail.shared.Props
-import com.arkivanov.sample.masterdetail.shared.RenderableComponent
-import com.ccfraser.muirwik.components.list.mList
-import com.ccfraser.muirwik.components.list.mListItem
-import com.ccfraser.muirwik.components.mTypography
-import react.RBuilder
-import react.RState
-import styled.css
+import com.arkivanov.sample.masterdetail.shared.RProps
+import com.arkivanov.sample.masterdetail.shared.useAsState
+import mui.material.ListItemButton
+import mui.material.Typography
+import react.FC
 
-external interface ArticleListState : RState {
-    var models: ArticleList.Model
-}
+val ArticleListR: FC<RProps<ArticleList>> = FC { props ->
+    val model by props.component.models.useAsState()
 
-class ArticleListR(props: Props<ArticleList>) : RenderableComponent<ArticleList, ArticleListState>(
-    props = props,
-    initialState = (js("{}") as ArticleListState).apply {
-        models = props.component.models.value
-    }
-) {
+    mui.material.List {
+        sx = props.sx
 
-    init {
-        component.models.bindToState { models = it }
-    }
+        model.articles.forEach { article ->
+            ListItemButton {
+                selected = article.id == model.selectedArticleId
+                onClick = { props.component.onArticleClicked(id = article.id) }
 
-    override fun RBuilder.render() {
-        mList {
-            state.models.articles.forEach { article ->
-                val isSelected = article.id == state.models.selectedArticleId
-                mListItem(
-                    selected = isSelected,
-                    onClick = { handleArticleClick(article.id) },
-                    button = true
-                ) {
-                    css(MasterDetailStyles.listItemCss)
-                    mTypography(article.title)
+                Typography {
+                    +article.title
                 }
             }
         }
-    }
-
-    private fun handleArticleClick(id: Long) {
-        component.onArticleClicked(id = id)
     }
 }

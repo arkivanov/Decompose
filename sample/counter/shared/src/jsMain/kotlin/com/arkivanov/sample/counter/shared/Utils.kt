@@ -1,11 +1,20 @@
 package com.arkivanov.sample.counter.shared
 
-import react.RBuilder
-import kotlin.reflect.KClass
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.ValueObserver
+import react.StateInstance
+import react.useEffectOnce
+import react.useState
 
-fun <M : Any, T : RenderableComponent<M, *>> RBuilder.renderableChild(clazz: KClass<out T>, model: M) {
-    child(clazz) {
-        key = model.uniqueId().toString()
-        attrs.component = model
+fun <T : Any> Value<T>.useAsState(): StateInstance<T> {
+    val state = useState { value }
+    val (_, set) = state
+
+    useEffectOnce {
+        val observer: ValueObserver<T> = { set(it) }
+        subscribe(observer)
+        cleanup { unsubscribe(observer) }
     }
+
+    return state
 }

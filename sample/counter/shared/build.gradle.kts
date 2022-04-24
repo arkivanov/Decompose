@@ -47,7 +47,6 @@ kotlin {
             dependencies {
                 api(project(":decompose"))
                 implementation(deps.reaktive.reaktive)
-                implementation("com.badoo.reaktive:reaktive:1.2.0")
             }
         }
 
@@ -67,7 +66,8 @@ kotlin {
                 implementation(project.dependencies.enforcedPlatform(deps.jetbrains.kotlinWrappers.kotlinWrappersBom.get()))
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-styled")
-                implementation(deps.muirwik.muirwikComponents)
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui")
             }
         }
     }
