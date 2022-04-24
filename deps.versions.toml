@@ -3,7 +3,7 @@
 decompose = "0.6.0"
 kotlin = "1.6.10"
 essenty = "0.2.2"
-reaktive = "1.2.0"
+reaktive = "1.2.1"
 junit = "4.13.2"
 jetbrainsCompose = "1.1.0"
 jetbrainsKotlinWrappers = "0.0.1-pre.325-kotlin-1.6.10"
