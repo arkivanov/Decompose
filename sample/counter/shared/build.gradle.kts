@@ -14,7 +14,7 @@ setupMultiplatform {
         Target.Android,
         Target.Js(mode = Target.Js.Mode.IR),
         Target.Ios(
-            arm64 = false, // Uncomment to enable arm64 target
+            arm64 = false, // Uncomment to enable arm64 target, also check other modules
         ),
     )
 }

@@ -36,6 +36,7 @@ if (!startParameter.projectProperties.containsKey("check_publication")) {
     include(":sample:counter:ui-android")
     include(":sample:counter:ui-compose")
     include(":sample:counter:app-android")
+    include(":sample:counter:app-darwin-compose")
     include(":sample:counter:app-js")
     include(":sample:master-detail:shared")
     include(":sample:master-detail:ui-compose")

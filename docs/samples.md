@@ -20,7 +20,8 @@ Content:
     * [CounterInnerContainer](https://github.com/arkivanov/Decompose/blob/master/sample/counter/shared/src/commonMain/kotlin/com/arkivanov/sample/counter/shared/inner) - this component contains the `Counter` and two `Routers` on the left and on the right side. Each `Router` displays its stack of `Counters` and two buttons for navigation. "Next" button pushes another `Counter` to the corresponding `Router`, "Prev" button pops the active `Counter` for the `Router`.
     * [CounterRootComponent](https://github.com/arkivanov/Decompose/blob/master/sample/counter/shared/src/commonMain/kotlin/com/arkivanov/sample/counter/shared/root) - this component contains the `Counter`, the `Router` of `CounterInnerContainer` and a button pushing another `CounterInnerContainer` to the stack. System back button is used for backward navigation.
 * [Android sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app-android)
-* [iOS sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/ios-app)
+* [iOS SwiftUI sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/ios-app)
+* [iOS Compose sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app-darwin-compose)
 * [JavaScript sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app-js)
 
 ### Counter Component Structure 
