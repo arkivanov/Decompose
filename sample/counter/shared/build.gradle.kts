@@ -1,6 +1,5 @@
 import com.arkivanov.gradle.Target
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("kotlin-multiplatform")
@@ -16,16 +15,6 @@ setupMultiplatform {
         Target.Ios(),
         Target.WatchOs(),
     )
-}
-
-android {
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = deps.versions.jetpackComposeCompiler.get()
-    }
 }
 
 kotlin {
@@ -49,52 +38,5 @@ kotlin {
                 implementation(deps.reaktive.reaktive)
             }
         }
-
-        named("androidMain") {
-            dependencies {
-                implementation(project(":extensions-compose-jetpack"))
-                implementation(project(":extensions-android"))
-                implementation(deps.androidx.compose.foundation.foundation)
-                implementation(deps.androidx.compose.material.material)
-                implementation(deps.androidx.compose.ui.uiTooling)
-                implementation(deps.android.material.material)
-            }
-        }
-
-        named("jsMain") {
-            dependencies {
-                implementation(project.dependencies.enforcedPlatform(deps.jetbrains.kotlinWrappers.kotlinWrappersBom.get()))
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-styled")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui")
-            }
-        }
-    }
-}
-
-// As per KT-38694 (https://github.com/avdim/compose_mpp_workaround)
-
-configurations {
-    create("composeCompiler") {
-        isCanBeConsumed = false
-    }
-}
-
-dependencies {
-    add("composeCompiler", "androidx.compose.compiler:compiler:${deps.versions.jetpackComposeCompiler.get()}")
-}
-
-afterEvaluate {
-    val composeCompilerJar =
-        project
-            .configurations
-            .getByName("composeCompiler")
-            .resolve()
-            .firstOrNull()
-            ?: throw Exception("Please add \"androidx.compose.compiler:compiler\" (and only that) as a \"composeCompiler\" dependency")
-
-    project.tasks.withType<KotlinCompile> {
-        kotlinOptions.freeCompilerArgs += listOf("-Xuse-ir", "-Xplugin=$composeCompilerJar")
     }
 }

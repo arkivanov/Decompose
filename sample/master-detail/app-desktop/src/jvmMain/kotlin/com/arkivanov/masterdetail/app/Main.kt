@@ -12,7 +12,7 @@ import androidx.compose.ui.window.rememberWindowState
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.sample.masterdetail.composeui.root.RootUi
+import com.arkivanov.sample.masterdetail.uicompose.root.RootUi
 import com.arkivanov.sample.masterdetail.shared.root.RootComponent
 
 @OptIn(ExperimentalComposeUiApi::class)

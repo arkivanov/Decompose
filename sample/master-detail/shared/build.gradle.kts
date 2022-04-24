@@ -38,15 +38,5 @@ kotlin {
                 implementation(deps.reaktive.reaktive)
             }
         }
-
-        named("jsMain") {
-            dependencies {
-                implementation(project.dependencies.enforcedPlatform(deps.jetbrains.kotlinWrappers.kotlinWrappersBom.get()))
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-styled")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui")
-            }
-        }
     }
 }

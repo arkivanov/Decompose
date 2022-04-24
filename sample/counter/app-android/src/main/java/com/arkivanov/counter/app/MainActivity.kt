@@ -17,8 +17,8 @@ import com.arkivanov.decompose.extensions.android.child
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.arkivanov.sample.counter.shared.root.CounterRoot
 import com.arkivanov.sample.counter.shared.root.CounterRootComponent
-import com.arkivanov.sample.counter.shared.ui.android.CounterRootView
-import com.arkivanov.sample.counter.shared.ui.compose.CounterRootUi
+import com.arkivanov.sample.counter.uiandroid.CounterRootView
+import com.arkivanov.sample.counter.uicompose.CounterRootUi
 
 class MainActivity : AppCompatActivity() {
 

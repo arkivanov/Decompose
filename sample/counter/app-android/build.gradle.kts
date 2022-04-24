@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    id("org.jetbrains.compose")
     id("kotlin-parcelize")
     id("com.arkivanov.gradle.setup")
 }
@@ -23,19 +24,17 @@ android {
     buildFeatures {
         compose = true
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = deps.versions.jetpackComposeCompiler.get()
-    }
 }
 
 dependencies {
     implementation(project(":decompose"))
-    implementation(project(":extensions-compose-jetpack"))
+    implementation(project(":extensions-compose-jetbrains"))
     implementation(project(":extensions-android"))
     implementation(project(":sample:counter:shared"))
-    implementation(deps.androidx.compose.foundation.foundation)
-    implementation(deps.androidx.compose.material.material)
+    implementation(project(":sample:counter:ui-android"))
+    implementation(project(":sample:counter:ui-compose"))
+    implementation(compose.foundation)
+    implementation(compose.material)
     implementation(deps.androidx.core.coreKtx)
     implementation(deps.androidx.appcompat.appcompat)
     implementation(deps.androidx.lifecycle.lifecycleCommonJava8)

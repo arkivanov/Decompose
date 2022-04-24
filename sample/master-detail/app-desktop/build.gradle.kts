@@ -22,7 +22,7 @@ kotlin {
                 implementation(project(":decompose"))
                 implementation(project(":extensions-compose-jetbrains"))
                 implementation(project(":sample:master-detail:shared"))
-                implementation(project(":sample:master-detail:compose-ui"))
+                implementation(project(":sample:master-detail:ui-compose"))
                 implementation(compose.desktop.currentOs)
             }
         }
