@@ -8,7 +8,13 @@ plugins {
 }
 
 setupMultiplatform {
-    targets(Target.Android, Target.Jvm)
+    targets(
+        Target.Android,
+        Target.Jvm,
+        Target.MacOs(),
+        Target.Ios(isAppleSiliconEnabled = false),
+    )
+
     publications()
     binaryCompatibilityValidator()
 }
@@ -31,6 +37,7 @@ kotlin {
         named("jvmTest") {
             dependencies {
                 implementation(deps.jetbrains.compose.ui.uiTestJunit4)
+                implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesSwing)
                 implementation(deps.junit.junit)
                 implementation(compose.desktop.currentOs)
             }
