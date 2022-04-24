@@ -31,11 +31,34 @@ kotlin {
             dependencies {
                 implementation("com.arkivanov.decompose:extensions-android:$version")
                 implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$version")
-                implementation("com.arkivanov.decompose:extensions-compose-jetpack:$version")
             }
         }
 
         named("jvmMain") {
+            dependencies {
+                implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$version")
+            }
+        }
+
+        named("iosX64Main") {
+            dependencies {
+                implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$version")
+            }
+        }
+
+        named("iosArm64Main") {
+            dependencies {
+                implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$version")
+            }
+        }
+
+        named("macosX64Main") {
+            dependencies {
+                implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$version")
+            }
+        }
+
+        named("macosArm64Main") {
             dependencies {
                 implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$version")
             }
