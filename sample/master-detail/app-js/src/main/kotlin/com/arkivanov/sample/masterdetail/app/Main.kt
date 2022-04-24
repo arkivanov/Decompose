@@ -5,7 +5,6 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.sample.masterdetail.shared.root.RootComponent
-import com.arkivanov.sample.masterdetail.shared.root.RootR
 import kotlinx.browser.document
 import org.w3c.dom.Document
 import react.create

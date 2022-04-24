@@ -30,14 +30,15 @@ pluginManagement {
 
 if (!startParameter.projectProperties.containsKey("check_publication")) {
     include(":decompose")
-    include(":extensions-compose-jetpack")
     include(":extensions-compose-jetbrains")
     include(":extensions-android")
     include(":sample:counter:shared")
+    include(":sample:counter:ui-android")
+    include(":sample:counter:ui-compose")
     include(":sample:counter:app-android")
     include(":sample:counter:app-js")
     include(":sample:master-detail:shared")
-    include(":sample:master-detail:compose-ui")
+    include(":sample:master-detail:ui-compose")
     include(":sample:master-detail:app-android")
     include(":sample:master-detail:app-desktop")
     include(":sample:master-detail:app-js")

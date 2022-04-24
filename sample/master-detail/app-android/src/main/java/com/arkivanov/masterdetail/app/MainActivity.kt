@@ -7,7 +7,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.masterdetail.app.ui.ComposeAppTheme
-import com.arkivanov.sample.masterdetail.composeui.root.RootUi
+import com.arkivanov.sample.masterdetail.uicompose.root.RootUi
 import com.arkivanov.sample.masterdetail.shared.root.RootComponent
 
 class MainActivity : AppCompatActivity() {

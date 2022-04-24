@@ -6,7 +6,6 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.sample.counter.shared.root.CounterRootComponent
-import com.arkivanov.sample.counter.shared.root.RootR
 import kotlinx.browser.document
 import kotlinx.browser.window
 import mui.material.Container
