@@ -13,8 +13,8 @@ setupMultiplatform {
     targets(
         Target.Android,
         Target.Js(mode = Target.Js.Mode.IR),
-        Target.Ios(isAppleSiliconEnabled = false),
-        Target.WatchOs(isAppleSiliconEnabled = false),
+        Target.Ios(),
+        Target.WatchOs(),
     )
 }
 

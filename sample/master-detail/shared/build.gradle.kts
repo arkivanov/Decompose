@@ -13,7 +13,7 @@ setupMultiplatform {
         Target.Android,
         Target.Jvm,
         Target.Js(mode = Target.Js.Mode.IR),
-        Target.Ios(isAppleSiliconEnabled = false),
+        Target.Ios(),
     )
 }
 

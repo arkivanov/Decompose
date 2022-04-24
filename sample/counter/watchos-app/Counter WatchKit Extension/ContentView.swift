@@ -11,7 +11,13 @@ import Counter
 struct ContentView: View {
     
     @State
-    private var componentHolder = ComponentHolder(factory: CounterRootComponent.init)
+    private var componentHolder = ComponentHolder { context in
+        CounterRootComponent(
+            componentContext: context,
+            deepLink: CounterRootComponentDeepLinkNone.shared,
+            webHistoryController: nil
+        )
+    }
     
     var body: some View {
         CounterRootView(componentHolder.component)
@@ -35,7 +41,7 @@ class ComponentHolder<T> {
         let component = factory(DefaultComponentContext(lifecycle: lifecycle))
         self.lifecycle = lifecycle
         self.component = component
-
+        
         lifecycle.onCreate()
     }
     
