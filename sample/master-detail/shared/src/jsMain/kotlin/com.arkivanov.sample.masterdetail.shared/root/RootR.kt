@@ -1,103 +1,147 @@
 package com.arkivanov.sample.masterdetail.shared.root
 
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.sample.masterdetail.shared.MasterDetailStyles
-import com.arkivanov.sample.masterdetail.shared.Props
-import com.arkivanov.sample.masterdetail.shared.RenderableComponent
-import com.arkivanov.sample.masterdetail.shared.details.DetailsR
+import com.arkivanov.sample.masterdetail.shared.RProps
+import com.arkivanov.sample.masterdetail.shared.details.ArticleDetailsR
 import com.arkivanov.sample.masterdetail.shared.list.ArticleListR
-import com.arkivanov.sample.masterdetail.shared.renderableChild
-import com.ccfraser.muirwik.components.mHidden
+import com.arkivanov.sample.masterdetail.shared.useAsState
+import csstype.Display
+import csstype.Flex
+import csstype.Overflow
+import csstype.number
+import csstype.pct
+import csstype.px
 import kotlinx.browser.window
+import mui.material.Box
+import mui.system.sx
 import org.w3c.dom.events.Event
-import react.RBuilder
-import react.RState
-import styled.css
-import styled.styledDiv
+import react.FC
+import react.Props
+import react.useEffectOnce
 
 private const val MULTI_PANE_WIDTH_THRESHOLD = 960
 
-external interface RootState : RState {
-    var model: Root.Model
-    var detailsRouterState: RouterState<*, Root.DetailsChild>
-    var listRouterState: RouterState<*, Root.ListChild>
+val RootR: FC<RProps<Root>> = FC { props ->
+    val model by props.component.models.useAsState()
+    val listRouterState by props.component.listRouterState.useAsState()
+    val detailsRouterState by props.component.detailsRouterState.useAsState()
+
+    fun onWindowResized() {
+        props.component.setMultiPane(window.innerWidth >= MULTI_PANE_WIDTH_THRESHOLD)
+    }
+
+    useEffectOnce {
+        onWindowResized()
+
+        val resizeCallback: (Event) -> Unit = { onWindowResized() }
+        window.addEventListener(type = "resize", callback = resizeCallback)
+        cleanup { window.removeEventListener(type = "resize", callback = resizeCallback) }
+    }
+
+    if (model.isMultiPane) {
+        MultiPane {
+            listChild = listRouterState.activeChild.instance
+            detailsChild = detailsRouterState.activeChild.instance
+        }
+    } else {
+        SinglePane {
+            listChild = listRouterState.activeChild.instance
+            detailsChild = detailsRouterState.activeChild.instance
+        }
+    }
 }
 
-class RootR(props: Props<Root>) : RenderableComponent<Root, RootState>(
-    props = props,
-    initialState = (js("{}") as RootState).apply {
-        model = props.component.models.value
-        detailsRouterState = props.component.detailsRouterState.value
-        listRouterState = props.component.listRouterState.value
-    }
-) {
+private external interface SinglePaneProps : Props {
+    var listChild: Root.ListChild
+    var detailsChild: Root.DetailsChild
+}
 
-    private val resizeEventType = "resize"
-
-    init {
-        onWindowResize()
-        component.detailsRouterState.bindToState { detailsRouterState = it }
-        component.listRouterState.bindToState { listRouterState = it }
-        component.models.bindToState { model = it }
-    }
-
-    override fun componentDidMount() {
-        super.componentDidMount()
-        window.addEventListener(
-            type = resizeEventType,
-            callback = ::onWindowResize
-        )
-    }
-
-    private fun onWindowResize(event: Event? = null) {
-        val isMultiPaneRequired = window.innerWidth >= MULTI_PANE_WIDTH_THRESHOLD
-        component.setMultiPane(isMultiPaneRequired)
-    }
-
-    override fun RBuilder.render() {
-        mHidden(mdUp = true) { //mdup = hide, if more than 960px
-            list()
-            details()
+private val SinglePane: FC<SinglePaneProps> = FC { props ->
+    Box {
+        ListPane {
+            child = props.listChild
         }
-        mHidden(smDown = true) {//smdown = hide, if less than 960px
-            styledDiv {
-                css(MasterDetailStyles.singlePaneContainerCss)
-                listPane()
-                detailsPane()
+
+        DetailsPane {
+            child = props.detailsChild
+        }
+    }
+}
+
+private external interface MultiPaneProps : Props {
+    var listChild: Root.ListChild
+    var detailsChild: Root.DetailsChild
+}
+
+private val MultiPane: FC<MultiPaneProps> = FC { props ->
+    Box {
+        sx {
+            display = Display.flex
+        }
+
+        Box {
+            sx {
+                height = 100.pct
+                flex = Flex(grow = number(4.0), shrink = number(0.0), basis = 0.px)
+                overflowX = Overflow.clip
+                overflowY = Overflow.scroll
+            }
+
+            ListPane {
+                child = props.listChild
+            }
+        }
+
+        Box {
+            sx {
+                height = 100.pct
+                flex = Flex(grow = number(6.0), shrink = number(0.0), basis = 0.px)
+                overflowX = Overflow.clip
+                overflowY = Overflow.scroll
+            }
+
+            DetailsPane {
+                child = props.detailsChild
             }
         }
     }
+}
 
-    private fun RBuilder.listPane() {
-        styledDiv {
-            css(MasterDetailStyles.listPaneContainerCss)
-            list()
-        }
-    }
+private external interface ListPaneProps : Props {
+    var child: Root.ListChild
+}
 
-    private fun RBuilder.detailsPane() {
-        styledDiv {
-            css(MasterDetailStyles.detailsPaneContainerCss)
-            details()
-        }
-    }
+private val ListPane: FC<ListPaneProps> = FC { props ->
+    when (val child = props.child) {
+        is Root.ListChild.List ->
+            ArticleListR {
+                component = child.component
 
-    private fun RBuilder.list() {
-        when (val instance = state.listRouterState.activeChild.instance) {
-            is Root.ListChild.List -> renderableChild(ArticleListR::class, instance.component)
-            is Root.ListChild.None -> styledDiv { }
-        }
-    }
+                sx {
+                    width = 100.pct
+                    height = 100.pct
+                }
+            }
 
-    private fun RBuilder.details() {
-        when (val instance = state.detailsRouterState.activeChild.instance) {
-            is Root.DetailsChild.None -> styledDiv { }
-            is Root.DetailsChild.Details -> renderableChild(DetailsR::class, instance.component)
-        }
-    }
+        is Root.ListChild.None -> Unit
+    }.let {}
+}
 
-    override fun componentWillUnmount() {
-        super.componentWillUnmount()
-        window.removeEventListener(type = resizeEventType, callback = {})
-    }
+private external interface DetailsPaneProps : Props {
+    var child: Root.DetailsChild
+}
+
+private val DetailsPane: FC<DetailsPaneProps> = FC { props ->
+    when (val child = props.child) {
+        is Root.DetailsChild.Details ->
+            ArticleDetailsR {
+                component = child.component
+
+                sx {
+                    width = 100.pct
+                    height = 100.pct
+                }
+            }
+
+        is Root.DetailsChild.None -> Unit
+    }.let {}
 }

@@ -13,6 +13,4 @@ dependencies {
     implementation("org.jetbrains.kotlin-wrappers:kotlin-react")
     implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom")
     implementation("org.jetbrains.kotlin-wrappers:kotlin-styled")
-    implementation("org.jetbrains.kotlin-wrappers:kotlin-css-js")
-    implementation(deps.muirwik.muirwikComponents)
 }

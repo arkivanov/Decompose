@@ -1,96 +1,108 @@
 package com.arkivanov.sample.counter.shared.inner
 
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.sample.counter.shared.Props
-import com.arkivanov.sample.counter.shared.RenderableComponent
+import com.arkivanov.sample.counter.shared.RProps
 import com.arkivanov.sample.counter.shared.counter.CounterR
-import com.arkivanov.sample.counter.shared.renderableChild
-import com.ccfraser.muirwik.components.MColor
-import com.ccfraser.muirwik.components.MGridJustify
-import com.ccfraser.muirwik.components.MGridSpacing
-import com.ccfraser.muirwik.components.MPaperVariant
-import com.ccfraser.muirwik.components.button.MButtonVariant
-import com.ccfraser.muirwik.components.button.mButton
-import com.ccfraser.muirwik.components.mGridContainer
-import com.ccfraser.muirwik.components.mGridItem
-import com.ccfraser.muirwik.components.mPaper
-import react.RBuilder
-import react.RState
-import react.dom.br
-import styled.styledDiv
+import com.arkivanov.sample.counter.shared.uniqueKey
+import com.arkivanov.sample.counter.shared.useAsState
+import csstype.BoxSizing
+import csstype.JustifyContent
+import csstype.pct
+import csstype.px
+import mui.material.Button
+import mui.material.ButtonColor
+import mui.material.ButtonVariant
+import mui.material.Paper
+import mui.material.PaperVariant
+import mui.material.Stack
+import mui.material.StackDirection
+import mui.system.ResponsiveStyleValue
+import mui.system.sx
+import react.FC
+import react.Props
+import react.key
 
-external interface InnerState : RState {
-    var leftRouterState: RouterState<*, CounterInner.Child>
-    var rightRouterState: RouterState<*, CounterInner.Child>
-}
+val InnerR: FC<RProps<CounterInner>> = FC { props ->
+    val leftRouterState by props.component.leftRouterState.useAsState()
+    val rightRouterState by props.component.rightRouterState.useAsState()
 
-class InnerR(props: Props<CounterInner>) : RenderableComponent<CounterInner, InnerState>(
-    props = props,
-    initialState = (js("{}") as InnerState).apply {
-        leftRouterState = props.component.leftRouterState.value
-        rightRouterState = props.component.rightRouterState.value
-    }
-) {
+    Paper {
+        variant = PaperVariant.outlined
+        sx = props.sx
 
-    init {
-        component.leftRouterState.bindToState { leftRouterState = it }
-        component.rightRouterState.bindToState { rightRouterState = it }
-    }
+        Stack {
+            direction = ResponsiveStyleValue(StackDirection.column)
+            spacing = ResponsiveStyleValue(2)
 
-    override fun RBuilder.render() {
-        mPaper(variant = MPaperVariant.outlined) {
-            renderableChild(CounterR::class, this@InnerR.component.counter)
-
-            br {}
-
-            mGridContainer(justify = MGridJustify.spaceAround, spacing = MGridSpacing.spacing3) {
-                mGridItem {}
-                childWithButtons(
-                    child = state.leftRouterState.activeChild.instance,
-                    onNext = component::onNextLeftChild,
-                    onPrev = component::onPrevLeftChild
-                )
-                childWithButtons(
-                    child = state.rightRouterState.activeChild.instance,
-                    onNext = component::onNextRightChild,
-                    onPrev = component::onPrevRightChild
-                )
-                mGridItem {}
+            sx {
+                boxSizing = BoxSizing.borderBox
+                width = 100.pct
+                padding = 16.px
             }
 
-            br {}
+            CounterR {
+                component = props.component.counter
+                key = component.uniqueKey()
+
+                sx {
+                    width = 100.pct
+                }
+            }
+
+            Stack {
+                direction = ResponsiveStyleValue(StackDirection.row)
+                spacing = ResponsiveStyleValue(2)
+
+                sx {
+                    justifyContent = JustifyContent.center
+                    width = 100.pct
+                }
+
+                ChildItem {
+                    child = leftRouterState.activeChild.instance
+                    onNext = props.component::onNextLeftChild
+                    onPrev = props.component::onPrevLeftChild
+                }
+
+                ChildItem {
+                    child = rightRouterState.activeChild.instance
+                    onNext = props.component::onNextRightChild
+                    onPrev = props.component::onPrevRightChild
+                }
+            }
         }
     }
+}
 
-    private fun RBuilder.childWithButtons(
-        child: CounterInner.Child,
-        onNext: () -> Unit,
-        onPrev: () -> Unit
-    ) {
-        mGridItem {
-            styledDiv {
-                mButton(
-                    caption = "Next counter",
-                    variant = MButtonVariant.contained,
-                    color = MColor.primary,
-                    onClick = { onNext() }
-                )
-            }
+external interface ChildItemProps : Props {
+    var child: CounterInner.Child
+    var onNext: () -> Unit
+    var onPrev: () -> Unit
+}
 
-            br {}
+private val ChildItem: FC<ChildItemProps> = FC { props ->
+    Stack {
+        direction = ResponsiveStyleValue(StackDirection.column)
+        spacing = ResponsiveStyleValue(2)
 
-            styledDiv {
-                mButton(
-                    caption = "Prev counter",
-                    variant = MButtonVariant.contained,
-                    disabled = !child.isBackEnabled,
-                    onClick = { onPrev() }
-                )
-            }
+        Button {
+            variant = ButtonVariant.contained
+            color = ButtonColor.primary
+            onClick = { props.onNext() }
 
-            br {}
+            +"Next counter"
+        }
 
-            renderableChild(CounterR::class, child.counter)
+        Button {
+            variant = ButtonVariant.contained
+            disabled = !props.child.isBackEnabled
+            onClick = { props.onPrev() }
+
+            +"Prev counter"
+        }
+
+        CounterR {
+            component = props.child.counter
+            key = component.uniqueKey()
         }
     }
 }

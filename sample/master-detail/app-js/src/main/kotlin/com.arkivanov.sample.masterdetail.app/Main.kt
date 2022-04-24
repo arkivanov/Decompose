@@ -1,16 +1,46 @@
 package com.arkivanov.sample.masterdetail.app
 
-import com.ccfraser.muirwik.components.mThemeProvider
-import com.ccfraser.muirwik.components.styles.mStylesProvider
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.lifecycle.resume
+import com.arkivanov.essenty.lifecycle.stop
+import com.arkivanov.sample.masterdetail.shared.root.RootComponent
+import com.arkivanov.sample.masterdetail.shared.root.RootR
 import kotlinx.browser.document
-import react.dom.render
+import org.w3c.dom.Document
+import react.create
+import react.dom.client.createRoot
 
 fun main() {
-    render(document.getElementById("app")) {
-        mStylesProvider("jss-insertion-point") {
-            mThemeProvider {
-                child(App::class) {}
-            }
+    val lifecycle = LifecycleRegistry()
+
+    val root =
+        RootComponent(
+            componentContext = DefaultComponentContext(lifecycle = lifecycle),
+        )
+
+    lifecycle.attachToDocument()
+
+    createRoot(document.getElementById("app")!!).render(
+        RootR.create {
+            component = root
+        }
+    )
+}
+
+private fun LifecycleRegistry.attachToDocument() {
+    fun onVisibilityChanged() {
+        if (document.visibilityState == "visible") {
+            resume()
+        } else {
+            stop()
         }
     }
+
+    onVisibilityChanged()
+
+    document.addEventListener(type = "visibilitychange", callback = { onVisibilityChanged() })
 }
+
+private val Document.visibilityState: String get() = asDynamic().visibilityState.unsafeCast<String>()
+
