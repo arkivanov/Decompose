@@ -1,7 +1,7 @@
 [versions]
 
 decompose = "0.6.0-native-compose"
-kotlin = "1.6.20"
+kotlin = "1.6.21"
 essenty = "0.2.2"
 reaktive = "1.2.1"
 junit = "4.13.2"
