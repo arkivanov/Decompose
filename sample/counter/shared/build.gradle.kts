@@ -1,6 +1,7 @@
 import com.arkivanov.gradle.Target
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.konan.target.Family
 
 plugins {
     id("kotlin-multiplatform")
@@ -14,7 +15,6 @@ setupMultiplatform {
         Target.Android,
         Target.Js(mode = Target.Js.Mode.IR),
         Target.Ios(),
-        Target.WatchOs(),
     )
 }
 
@@ -31,7 +31,7 @@ android {
 kotlin {
     targets
         .filterIsInstance<KotlinNativeTarget>()
-        .filter { it.name.startsWith("ios") || it.name.startsWith("watchos") }
+        .filter { it.konanTarget.family == Family.IOS }
         .forEach {
             it.binaries {
                 framework {
