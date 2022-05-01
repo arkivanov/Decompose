@@ -38,8 +38,8 @@ kotlin {
             it.binaries {
                 framework {
                     baseName = "Counter"
-                    transitiveExport = true
                     export(project(":decompose"))
+                    export(deps.essenty.lifecycle)
                 }
             }
         }
@@ -48,6 +48,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":decompose"))
+                api(deps.essenty.lifecycle)
                 implementation(deps.reaktive.reaktive)
             }
         }
