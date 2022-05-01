@@ -4,8 +4,6 @@ There are two sample apps: [Counter](#sample-counter-app) and [Todo List](#sampl
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterDemo.gif" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterIos.png" width="196"> <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCounterJs.png" width="196"> 
 
-![](media/watchos-counter.gif)
-
 This sample demonstrates the following features:
 
 * Nested components
@@ -23,7 +21,6 @@ Content:
     * [CounterRootComponent](https://github.com/arkivanov/Decompose/blob/master/sample/counter/shared/src/commonMain/kotlin/com/arkivanov/sample/counter/shared/root) - this component contains the `Counter`, the `Router` of `CounterInnerContainer` and a button pushing another `CounterInnerContainer` to the stack. System back button is used for backward navigation.
 * [Android sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app-android)
 * [iOS sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/ios-app)
-* [watchOS sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/watchos-app)
 * [JavaScript sample app](https://github.com/arkivanov/Decompose/tree/master/sample/counter/app-js)
 
 ### Counter Component Structure 
