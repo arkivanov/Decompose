@@ -12,7 +12,7 @@ setupMultiplatform {
         Target.Android,
         Target.Jvm,
         Target.MacOs(),
-        Target.Ios(isAppleSiliconEnabled = false),
+        Target.Ios(simulatorArm64 = false),
     )
 
     publications()
