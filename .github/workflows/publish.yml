@@ -19,44 +19,9 @@ jobs:
           password: ${{ secrets.SONATYPE_PASSWORD }}
           staging-profile-id: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
           description: Created by GitHub Actions
-  metadata-publish:
-    name: Publish Metadata
-    runs-on: ubuntu-latest
-    needs: create-staging-repository
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Publish Metadata
-        env:
-          SONATYPE_REPOSITORY_ID: ${{ needs.create-staging-repository.outputs.repository-id }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publish -Dmetadata_only
-  linux-publish:
-    name: Publish on Linux
-    runs-on: ubuntu-latest
-    needs: create-staging-repository
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Publish
-        env:
-          SONATYPE_REPOSITORY_ID: ${{ needs.create-staging-repository.outputs.repository-id }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publish -Dsplit_targets
-  macos-publish:
-    name: Publish on macOS
+          base_url: https://oss.sonatype.org/service/local/
+  publish:
+    name: Publish
     runs-on: macos-latest
     needs: create-staging-repository
     steps:
@@ -72,38 +37,22 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publish -Dsplit_targets
+        run: ./gradlew publish
   close-staging-repository:
     name: Close staging repository
     runs-on: ubuntu-latest
-    needs: [ create-staging-repository, metadata-publish, linux-publish, macos-publish ]
+    needs: [ create-staging-repository, publish ]
     steps:
       - name: Close staging repository
-        uses: nexus-actions/release-nexus-staging-repo@main
+        uses: nexus-actions/release-nexus-staging-repo@v1.1
         with:
           username: arkivanov
           password: ${{ secrets.SONATYPE_PASSWORD }}
           staging_repository_id: ${{ needs.create-staging-repository.outputs.repository-id }}
+          base_url: https://oss.sonatype.org/service/local/
           close_only: 'true'
-  linux-check-publication:
-    name: Check publication on Linux
-    runs-on: ubuntu-latest
-    needs: close-staging-repository
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Update dependencies
-        run: sudo apt-get update
-      - name: Install dependencies
-        run: sudo apt-get install nodejs chromium-browser
-      - name: Check publication on Linux
-        run: ./gradlew :tools:check-publication:build -Pcheck_publication -Dsplit_targets
-  macos-check-publication:
-    name: Check publication on macOS
+  check-publication:
+    name: Check publication
     runs-on: macos-latest
     needs: close-staging-repository
     steps:
@@ -113,5 +62,5 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Check macOS publication
-        run: ./gradlew :tools:check-publication:build -Pcheck_publication -Dsplit_targets
+      - name: Check publication
+        run: ./gradlew :tools:check-publication:build -Pcheck_publication
