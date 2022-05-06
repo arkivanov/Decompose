@@ -5,7 +5,7 @@ import com.arkivanov.decompose.value.ValueObserver
 
 fun <T: Any> Value<Value<T>>.flatten() : Value<T> = FlattenedValue(this)
 
-private class FlattenedValue<out T : Any>(
+private class FlattenedValue<T : Any>(
     private val upstream : Value<Value<T>>
 ) : Value<T>(){
     override val value: T
@@ -24,10 +24,8 @@ private class FlattenedValue<out T : Any>(
     }
 
     fun changeValueT(value: Value<T>){
-        if (valueT!=value){
-            valueT.unsubscribe(valueObserver)
-            value.subscribe(valueObserver)
-        }
+        valueT.unsubscribe(valueObserver)
+        value.subscribe(valueObserver)
         valueT = value
     }
 
