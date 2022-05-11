@@ -1,4 +1,4 @@
-Decompose provides a number of modules, they all published to Maven Central Repository.
+Decompose provides a number of modules, they are all published to Maven Central Repository. [![Maven Central](https://img.shields.io/maven-central/v/com.arkivanov.decompose/decompose?color=blue)](https://search.maven.org/artifact/com.arkivanov.decompose/decompose)
 
 ## The main Decompose module
 
