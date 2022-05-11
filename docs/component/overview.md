@@ -189,7 +189,8 @@ class SomeParent(
 }
 ```
 
-> ⚠️ Never pass parent's `ComponentContext` to children, always use either the `Router` or the `childContext(...)` function.
+!!!warning 
+    Never pass parent's `ComponentContext` to children, always use either the `Router` or the `childContext(...)` function.
 
 ## Examples
 
