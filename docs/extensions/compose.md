@@ -86,7 +86,8 @@ fun main() {
 }
 ```
 
-> ⚠️ When using Compose in desktop platforms, make sure to always use one of the methods above, or your components might not receive lifecycle events correctly.
+!!!warning
+    When using Compose in desktop platforms, make sure to always use one of the methods above, or your components might not receive lifecycle events correctly.
 
 ### Navigating between Composable components
 
