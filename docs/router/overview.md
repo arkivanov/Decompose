@@ -31,7 +31,8 @@ Each `Configuration` is a unique key of a component. The `Router` uses `Configur
 
 Decompose uses [Essenty](https://github.com/arkivanov/Essenty) library, which provides both `Parcelable` interface and `@Parcelize` annotation in common code using expect/actual, which works well with Kotlin Multiplatform. Please familiarise yourself with Essenty library.
 
-> ⚠️ On Android the amount of data that can be preserved is [limited](https://developer.android.com/guide/components/activities/parcelables-and-bundles). Please take care of the `Configuration` sizes.
+!!!warning
+    On Android the amount of data that can be preserved is [limited](https://developer.android.com/guide/components/activities/parcelables-and-bundles). Please take care of the `Configuration` sizes.
 
 ## Routing example
 

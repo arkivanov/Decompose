@@ -9,7 +9,8 @@ All navigation in Decompose is done through the [`Router`](https://github.com/ar
 
 There is also `navigate(transformer: (stack: List<C>) -> List<C>)` extension function for convenience, without the `onComplete` callback.
 
-> ⚠️ The configuration stack returned by the `transformer` function must not be empty.
+!!!warning
+    The configuration stack returned by the `transformer` function must not be empty.
 
 ### The navigation process
 

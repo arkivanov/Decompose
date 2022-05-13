@@ -52,7 +52,8 @@ For this case Decompose provides `defaultComponentContext()` extension function,
 
 The `defaultComponentContext()` extension function can not be used in a Fragment. This is because the `Fragment` class does not implement the `OnBackPressedDispatcherOwner` interface, and so by default can't handle back button events. It is advised to use the Android-specific `DefaultComponentContext(AndroidLifecycle, SavedStateRegistry?, ViewModelStore?, OnBackPressedDispatcher?)` factory function, and supply all the arguments manually. The first three arguments (`AndroidLifecycle`, `SavedStateRegistry` and `ViewModelStore`) can be obtained directly from `Fragment`. However the last argument `OnBackPressedDispatcher` - can not. If you don't need to handle back button events in your Decompose components, then you can just ignore this argument. Otherwise, a manual solution is required.
 
-> ⚠️ Don't take any argument values from the hosting `Activity` (e.g. `requireActivity().onBackPressedDispatcher`), as it may produce memory leaks.
+!!!warning
+    Don't take any argument values from the hosting `Activity` (e.g. `requireActivity().onBackPressedDispatcher`), as it may produce memory leaks.
 
 Here is an example with using Decompose in a `DialogFragment`.
 
@@ -93,7 +94,8 @@ class MyFragment : DialogFragment() {
 
 It is advised to not create the root `ComponentContext` (and a root component) directly in a `Composable` function. Compositions may be performed in a background thread, which may brake things. The preferred way is to create the root component outside of Compose.
 
-> ⚠️ If you can't avoid creating the root component in a `Composable` function, please make sure you use `remember`. This will prevent the root component and its `ComponentContext` from being recreated on each composition.
+!!!warning
+    If you can't avoid creating the root component in a `Composable` function, please make sure you use `remember`. This will prevent the root component and its `ComponentContext` from being recreated on each composition.
 
 #### Android with Compose
 
