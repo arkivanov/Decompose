@@ -68,7 +68,8 @@ public final class com/arkivanov/decompose/router/RouterExtKt {
 	public static final fun navigate (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;)V
 	public static final fun pop (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;)V
 	public static synthetic fun pop$default (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static final fun popWhile (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;)V
+	public static final fun popWhile (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun popWhile$default (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public static final fun push (Lcom/arkivanov/decompose/router/Router;Ljava/lang/Object;)V
 	public static final fun replaceCurrent (Lcom/arkivanov/decompose/router/Router;Ljava/lang/Object;)V
 }

@@ -34,8 +34,7 @@ fun <C : Any> Router<C, *>.pop(onComplete: (isSuccess: Boolean) -> Unit = {}) {
  * Drops the configurations at the top of the stack while the [predicate] returns true
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
- * The `isSuccess` argument is `true` if the stack size was greater than 1 and a component was popped,
- * `false` otherwise.
+ * The `isSuccess` argument is `true` if at least one component has been popped.
  */
 inline fun <C : Any> Router<C, *>.popWhile(
     crossinline predicate: (C) -> Boolean,
