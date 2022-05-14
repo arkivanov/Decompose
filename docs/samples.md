@@ -42,16 +42,16 @@ Content:
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCountersAndroid.gif" width="196">
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCountersIos.png" width="196">
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCountersDesktop.png" width="196">
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCountersWeb.png" width="196">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCountersDesktop.png" width="294">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCountersWeb.png" width="294">
 
 ### Multi-Pane Screenshots
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMultiPaneListAndroid.png" width="196">
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMultiPaneDetailsAndroid.png" width="196">
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMultiPaneIos.png" width="196">
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMultiPaneDesktop.png" width="196">
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMultiPaneWeb.gif" width="196">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMultiPaneIos.png" width="392">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMultiPaneDesktop.png" width="392">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMultiPaneWeb.gif" width="392">
 
 ## Sample Todo List App
 
