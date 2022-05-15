@@ -32,13 +32,25 @@ fun <C : Any> Router<C, *>.pop(onComplete: (isSuccess: Boolean) -> Unit = {}) {
 
 /**
  * Drops the configurations at the top of the stack while the [predicate] returns true
+ */
+inline fun <C : Any> Router<C, *>.popWhile(
+    crossinline predicate: (C) -> Boolean
+) {
+    popWhile(
+        predicate = predicate,
+        onComplete = {}
+    )
+}
+
+/**
+ * Drops the configurations at the top of the stack while the [predicate] returns true
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  * The `isSuccess` argument is `true` if at least one component has been popped.
  */
 inline fun <C : Any> Router<C, *>.popWhile(
     crossinline predicate: (C) -> Boolean,
-    crossinline onComplete: (isSuccess: Boolean) -> Unit = {}
+    crossinline onComplete: (isSuccess: Boolean) -> Unit
 ) {
     navigate(
         transformer = { stack -> stack.dropLastWhile(predicate) },
