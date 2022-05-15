@@ -127,7 +127,7 @@ class RootComponent(
         ItemDetailsComponent(
             componentContext = componentContext,
             itemId = config.itemId,
-            onFinished = router::pop
+            onFinished = { router.pop() }
         )
 
     private sealed class Config : Parcelable {
@@ -137,6 +137,163 @@ class RootComponent(
         @Parcelize
         data class Details(val itemId: Long) : Config()
     }
+}
+```
+
+## Delivering a result when navigating back
+
+To deliver a result from one component to another:
+
+- Pass a callback to the `second` component.
+- Call the callback with a `result` from the `second` component.
+- In the `parent` component, supply the callback when instantiating the `second` component.
+- When the callback is invoked, navigate the `Router`, e.g. by using `router.pop { ... }`.
+- After the navigation is performed, call a method on the `first` component with the `result`.
+
+```kotlin
+interface ItemList {
+
+    fun onItemClicked(id: Long)
+
+    fun onItemDeleted(id: Long)
+}
+
+interface ItemDetails {
+
+    fun onDeleteClicked()
+}
+
+class ItemListComponent(
+    componentContext: ComponentContext,
+    private val onItemSelected: (id: Long) -> Unit,
+) : ItemList, ComponentContext by componentContext {
+
+    override fun onItemClicked(id: Long) {
+        onItemSelected(id)
+    }
+
+    override fun onItemDeleted(id: Long) {
+        // TODO: Handle item deleted
+    }
+}
+
+class ItemDetailsComponent(
+    componentContext: ComponentContext,
+    private val itemId: Long,
+    private val onDeleted: (itemId: Long) -> Unit
+) : ItemDetails, ComponentContext by componentContext {
+
+    override fun onDeleteClicked() {
+        // TODO: Delete the item
+        onDeleted(itemId = itemId)
+    }
+}
+
+class RootComponent(
+    componentContext: ComponentContext
+) : Root, ComponentContext by componentContext {
+
+    // Omitted code
+
+    private fun itemList(componentContext: ComponentContext): ItemList =
+        ItemListComponent(
+            componentContext = componentContext,
+            onItemSelected = { router.push(Config.Details(itemId = it)) }
+        )
+
+    private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetails =
+        ItemDetailsComponent(
+            componentContext = componentContext,
+            itemId = config.itemId,
+            onDeleted = { itemId ->
+                router.pop { // Pop ItemDetails component
+                    // Deliver the result to ItemList component
+                    (router.activeChild.instance as? ItemList)?.onItemDeleted(id = itemId)
+                }
+            }
+        )
+
+    // Omitted code
+}
+
+### Alternative way
+
+It is also possible to deliver results using reactive streams - e.g. coroutines `Flow` or Rx `Observable`.
+
+Here is an example using Reaktive library. Kotlin coroutines `SharedFlow` should be very similar.
+
+```kotlin
+interface ItemList {
+
+    fun onItemClicked(id: Long)
+
+    sealed interface Input {
+        class ItemDeleted(val id: Long) : Input
+    }
+}
+
+interface ItemDetails {
+
+    fun onDeleteClicked()
+}
+
+// Helper factory function creating DisposableScope attached to the Lifecycle.
+// Creating CoroutineScope is very similar.
+fun LifecycleOwner.disposableScope(): DisposableScope {
+    val scope = DisposableScope()
+    lifecycle.doOnDestroy(scope::dispose)
+    return scope
+}
+
+class ItemListComponent(
+    componentContext: ComponentContext,
+    input: Observable<ItemList.Input>,
+    private val onItemSelected: (id: Long) -> Unit,
+) : ItemList, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
+
+    init {
+        // Subscribe to input
+        input.subscribeScoped {
+            when (it) {
+                is ItemList.Input.ItemDeleted -> // TODO: Handle item deleted
+            }
+        }
+    }
+
+    override fun onItemClicked(id: Long) {
+        onItemSelected(id)
+    }
+}
+
+class RootComponent(
+    componentContext: ComponentContext
+) : Root, ComponentContext by componentContext {
+
+    // Omitted code
+
+    // Or MutableSharedFlow<ItemList.Input>(extraBufferCapacity = Int.MAX_VALUE)
+    private val listInput = PublishSubject<ItemList.Input>()
+
+    private fun itemList(componentContext: ComponentContext): ItemList =
+        ItemListComponent(
+            componentContext = componentContext,
+            input = listInput, // Pass listInput to ItemListComponent
+            onItemSelected = { router.push(Config.Details(itemId = it)) },
+        )
+
+    private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetails =
+        ItemDetailsComponent(
+            componentContext = componentContext,
+            itemId = config.itemId,
+            onItemDeleted = { id ->
+                router.pop { // Pop ItemDetails component
+                    // Deliver the result to ItemList component
+                    listInput.onNext(ItemList.Input.ItemDeleted(id = id))
+                }
+            },
+        )
+
+    // Omitted code
 }
 ```
 
