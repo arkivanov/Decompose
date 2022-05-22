@@ -1,4 +1,5 @@
-import com.arkivanov.gradle.Target
+import com.arkivanov.gradle.iosCompat
+import com.arkivanov.gradle.setupMultiplatform
 
 plugins {
     id("kotlin-multiplatform")
@@ -7,13 +8,11 @@ plugins {
 }
 
 setupMultiplatform {
-    targets(
-        Target.Android,
-        Target.Jvm,
-        Target.Js(mode = Target.Js.Mode.IR),
-        Target.Ios(
-            arm64 = false, // Uncomment to enable arm64 target
-        ),
+    android()
+    jvm()
+    js(IR) { browser() }
+    iosCompat(
+        arm64 = null, // Comment out to enable arm64 target
     )
 }
 

@@ -1,11 +1,11 @@
+import com.arkivanov.gradle.setupJsApp
+
 plugins {
     id("org.jetbrains.kotlin.js")
     id("com.arkivanov.gradle.setup")
 }
 
-setupJsApp {
-    jsApp()
-}
+setupJsApp()
 
 dependencies {
     implementation(project(":decompose"))

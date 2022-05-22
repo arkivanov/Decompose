@@ -1,4 +1,6 @@
-import com.arkivanov.gradle.Target
+import com.arkivanov.gradle.bundle
+import com.arkivanov.gradle.setupMultiplatform
+import com.arkivanov.gradle.setupSourceSets
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -8,23 +10,21 @@ plugins {
 }
 
 setupMultiplatform {
-    targets(Target.Jvm)
-}
-
-kotlin {
     jvm {
         withJava()
     }
+}
 
-    sourceSets {
-        named("jvmMain") {
-            dependencies {
-                implementation(project(":decompose"))
-                implementation(project(":extensions-compose-jetbrains"))
-                implementation(project(":sample:shared:shared"))
-                implementation(project(":sample:shared:compose"))
-                implementation(compose.desktop.currentOs)
-            }
+kotlin {
+    setupSourceSets {
+        val jvm by bundle()
+
+        jvm.main.dependencies {
+            implementation(project(":decompose"))
+            implementation(project(":extensions-compose-jetbrains"))
+            implementation(project(":sample:shared:shared"))
+            implementation(project(":sample:shared:compose"))
+            implementation(compose.desktop.currentOs)
         }
     }
 }
