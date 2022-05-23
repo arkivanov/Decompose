@@ -1,4 +1,8 @@
-import com.arkivanov.gradle.Target
+import com.arkivanov.gradle.bundle
+import com.arkivanov.gradle.dependsOn
+import com.arkivanov.gradle.iosCompat
+import com.arkivanov.gradle.setupMultiplatform
+import com.arkivanov.gradle.setupSourceSets
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.konan.target.Family
 
@@ -10,13 +14,11 @@ plugins {
 }
 
 setupMultiplatform {
-    targets(
-        Target.Android,
-        Target.Jvm,
-        Target.Js(mode = Target.Js.Mode.IR),
-        Target.Ios(
-            arm64 = false, // Uncomment to enable arm64 target
-        ),
+    android()
+    jvm()
+    js(IR) { browser() }
+    iosCompat(
+        arm64 = null, // Comment out to enable arm64 target
     )
 }
 
@@ -34,39 +36,38 @@ kotlin {
             }
         }
 
-    sourceSets {
-        commonMain {
-            dependencies {
-                api(project(":decompose"))
-                implementation(project(":sample:shared:dynamic-features:api"))
-                api(deps.essenty.lifecycle)
-                implementation(deps.reaktive.reaktive)
-            }
+    setupSourceSets {
+        val android by bundle()
+        val js by bundle()
+        val nonAndroid by bundle()
+
+        nonAndroid.dependsOn(common)
+        (allSet - android).dependsOn(nonAndroid)
+
+        common.main.dependencies {
+            api(project(":decompose"))
+            implementation(project(":sample:shared:dynamic-features:api"))
+            api(deps.essenty.lifecycle)
+            implementation(deps.reaktive.reaktive)
         }
 
-        named("androidMain") {
-            dependencies {
-                implementation(project(":extensions-android"))
-                implementation(deps.android.material.material)
-                implementation(deps.android.play.core)
-            }
+        android.main.dependencies {
+            implementation(project(":extensions-android"))
+            implementation(deps.android.material.material)
+            implementation(deps.android.play.core)
         }
 
-        named("nonAndroidMain") {
-            dependencies {
-                implementation(project(":sample:shared:dynamic-features:feature1Impl"))
-                implementation(project(":sample:shared:dynamic-features:feature2Impl"))
-            }
+        nonAndroid.main.dependencies {
+            implementation(project(":sample:shared:dynamic-features:feature1Impl"))
+            implementation(project(":sample:shared:dynamic-features:feature2Impl"))
         }
 
-        named("jsMain") {
-            dependencies {
-                implementation(project.dependencies.enforcedPlatform(deps.jetbrains.kotlinWrappers.kotlinWrappersBom.get()))
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-styled")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui")
-            }
+        js.main.dependencies {
+            implementation(project.dependencies.enforcedPlatform(deps.jetbrains.kotlinWrappers.kotlinWrappersBom.get()))
+            implementation("org.jetbrains.kotlin-wrappers:kotlin-react")
+            implementation("org.jetbrains.kotlin-wrappers:kotlin-styled")
+            implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion")
+            implementation("org.jetbrains.kotlin-wrappers:kotlin-mui")
         }
     }
 }

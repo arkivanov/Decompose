@@ -1,4 +1,8 @@
-import com.arkivanov.gradle.Target
+import com.arkivanov.gradle.bundle
+import com.arkivanov.gradle.setupBinaryCompatibilityValidator
+import com.arkivanov.gradle.setupMultiplatform
+import com.arkivanov.gradle.setupPublication
+import com.arkivanov.gradle.setupSourceSets
 
 plugins {
     id("kotlin-multiplatform")
@@ -8,32 +12,31 @@ plugins {
 }
 
 setupMultiplatform {
-    targets(Target.Android, Target.Jvm)
-    publications()
-    binaryCompatibilityValidator()
+    android()
+    jvm()
 }
 
+setupPublication()
+setupBinaryCompatibilityValidator()
+
 kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
-                implementation(project(":decompose"))
-                implementation(compose.foundation)
-            }
+    setupSourceSets {
+        val android by bundle()
+        val jvm by bundle()
+
+        common.main.dependencies {
+            implementation(project(":decompose"))
+            implementation(compose.foundation)
         }
 
-        named("androidMain") {
-            dependencies {
-                implementation(deps.androidx.activity.activityKtx)
-            }
+        android.main.dependencies {
+            implementation(deps.androidx.activity.activityKtx)
         }
 
-        named("jvmTest") {
-            dependencies {
-                implementation(deps.jetbrains.compose.ui.uiTestJunit4)
-                implementation(deps.junit.junit)
-                implementation(compose.desktop.currentOs)
-            }
+        jvm.test.dependencies {
+            implementation(deps.jetbrains.compose.ui.uiTestJunit4)
+            implementation(deps.junit.junit)
+            implementation(compose.desktop.currentOs)
         }
     }
 }

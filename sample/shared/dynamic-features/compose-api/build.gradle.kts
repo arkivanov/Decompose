@@ -1,4 +1,5 @@
-import com.arkivanov.gradle.Target
+import com.arkivanov.gradle.setupMultiplatform
+import com.arkivanov.gradle.setupSourceSets
 
 plugins {
     id("kotlin-multiplatform")
@@ -8,20 +9,16 @@ plugins {
 }
 
 setupMultiplatform {
-    targets(
-        Target.Android,
-        Target.Jvm,
-    )
+    android()
+    jvm()
 }
 
 kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
-                implementation(project(":sample:shared:dynamic-features:api"))
-                implementation(compose.runtime)
-                implementation(compose.ui)
-            }
+    setupSourceSets {
+        common.main.dependencies {
+            implementation(project(":sample:shared:dynamic-features:api"))
+            implementation(compose.runtime)
+            implementation(compose.ui)
         }
     }
 }

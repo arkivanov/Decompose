@@ -1,4 +1,7 @@
-import com.arkivanov.gradle.Target
+import com.arkivanov.gradle.bundle
+import com.arkivanov.gradle.iosCompat
+import com.arkivanov.gradle.setupMultiplatform
+import com.arkivanov.gradle.setupSourceSets
 
 plugins {
     id("kotlin-multiplatform")
@@ -8,49 +11,43 @@ plugins {
 }
 
 setupMultiplatform {
-    targets(
-        Target.Android,
-        Target.Jvm,
-        Target.Js(mode = Target.Js.Mode.IR),
-        Target.Ios(
-            arm64 = false, // Uncomment to enable arm64 target
-        ),
+    android()
+    jvm()
+    js(IR) { browser() }
+    iosCompat(
+        arm64 = null // Comment out to enable arm64 target
     )
 }
 
 kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
-                implementation(project(":decompose"))
-                implementation(project(":sample:shared:dynamic-features:api"))
-                implementation(deps.reaktive.reaktive)
-            }
+    setupSourceSets {
+        val android by bundle()
+        val jvm by bundle()
+        val js by bundle()
+
+        common.main.dependencies {
+            implementation(project(":decompose"))
+            implementation(project(":sample:shared:dynamic-features:api"))
+            implementation(deps.reaktive.reaktive)
         }
 
-        named("androidMain") {
-            dependencies {
-                implementation(project(":sample:app-android"))
-                implementation(project(":sample:shared:dynamic-features:compose-api"))
-                implementation(compose.material)
-            }
+        android.main.dependencies {
+            implementation(project(":sample:app-android"))
+            implementation(project(":sample:shared:dynamic-features:compose-api"))
+            implementation(compose.material)
         }
 
-        named("jvmMain") {
-            dependencies {
-                implementation(project(":sample:shared:dynamic-features:compose-api"))
-                implementation(compose.material)
-            }
+        jvm.main.dependencies {
+            implementation(project(":sample:shared:dynamic-features:compose-api"))
+            implementation(compose.material)
         }
 
-        named("jsMain") {
-            dependencies {
-                implementation(project.dependencies.enforcedPlatform(deps.jetbrains.kotlinWrappers.kotlinWrappersBom.get()))
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-styled")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-mui")
-            }
+        js.main.dependencies {
+            implementation(project.dependencies.enforcedPlatform(deps.jetbrains.kotlinWrappers.kotlinWrappersBom.get()))
+            implementation("org.jetbrains.kotlin-wrappers:kotlin-react")
+            implementation("org.jetbrains.kotlin-wrappers:kotlin-styled")
+            implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion")
+            implementation("org.jetbrains.kotlin-wrappers:kotlin-mui")
         }
     }
 }

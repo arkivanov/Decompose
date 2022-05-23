@@ -1,3 +1,5 @@
+import com.arkivanov.gradle.setupAndroidApp
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -6,13 +8,11 @@ plugins {
     id("com.arkivanov.gradle.setup")
 }
 
-setupAndroidApp {
-    androidApp(
-        applicationId = "com.arkivanov.sample.app",
-        versionCode = 1,
-        versionName = "1.0",
-    )
-}
+setupAndroidApp(
+    applicationId = "com.arkivanov.sample.app",
+    versionCode = 1,
+    versionName = "1.0",
+)
 
 android {
     packagingOptions {

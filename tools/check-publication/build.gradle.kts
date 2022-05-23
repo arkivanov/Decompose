@@ -1,11 +1,15 @@
+import com.arkivanov.gradle.bundle
+import com.arkivanov.gradle.iosCompat
+import com.arkivanov.gradle.macosCompat
+import com.arkivanov.gradle.setupMultiplatform
+import com.arkivanov.gradle.setupSourceSets
+import com.arkivanov.gradle.tvosCompat
+import com.arkivanov.gradle.watchosCompat
+
 plugins {
     id("kotlin-multiplatform")
     id("com.android.library")
     id("com.arkivanov.gradle.setup")
-}
-
-setupMultiplatform {
-    targets()
 }
 
 repositories {
@@ -17,28 +21,27 @@ repositories {
     }
 }
 
+setupMultiplatform()
+
 val version = deps.versions.decompose.get()
 
 kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
-                implementation("com.arkivanov.decompose:decompose:$version")
-            }
+    setupSourceSets {
+        val android by bundle()
+        val jvm by bundle()
+
+        common.main.dependencies {
+            implementation("com.arkivanov.decompose:decompose:$version")
         }
 
-        named("androidMain") {
-            dependencies {
-                implementation("com.arkivanov.decompose:extensions-android:$version")
-                implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$version")
-                implementation("com.arkivanov.decompose:extensions-compose-jetpack:$version")
-            }
+        android.main.dependencies {
+            implementation("com.arkivanov.decompose:extensions-android:$version")
+            implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$version")
+            implementation("com.arkivanov.decompose:extensions-compose-jetpack:$version")
         }
 
-        named("jvmMain") {
-            dependencies {
-                implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$version")
-            }
+        jvm.main.dependencies {
+            implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$version")
         }
     }
 }
