@@ -18,7 +18,7 @@ buildscript {
         classpath(deps.kotlin.kotlinGradlePlug)
         classpath(deps.android.gradle)
         classpath(deps.jetbrains.compose.composeGradlePlug)
-        classpath("org.jetbrains.kotlinx.binary-compatibility-validator:org.jetbrains.kotlinx.binary-compatibility-validator.gradle.plugin:0.8.0-RC")
+        classpath(deps.jetbrains.kotlinx.binaryCompatibilityValidator)
     }
 }
 
