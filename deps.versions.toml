@@ -7,6 +7,7 @@ reaktive = "1.2.1"
 junit = "4.13.2"
 jetbrainsCompose = "1.1.0"
 jetbrainsKotlinWrappers = "0.0.1-pre.325-kotlin-1.6.10"
+jetbrainsBinaryCompatibilityValidator = "0.10.0"
 jetpackCompose = "1.1.1"
 jetpackComposeCompiler = "1.1.1"
 androidGradle = "7.1.0"
@@ -34,6 +35,7 @@ junit-junit = { group = "junit", name = "junit", version.ref = "junit" }
 jetbrains-compose-composeGradlePlug = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "jetbrainsCompose" }
 jetbrains-compose-ui-uiTestJunit4 = { group = "org.jetbrains.compose.ui", name = "ui-test-junit4", version.ref = "jetbrainsCompose" }
 jetbrains-kotlinWrappers-kotlinWrappersBom = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-wrappers-bom", version.ref = "jetbrainsKotlinWrappers" }
+jetbrains-kotlinx-binaryCompatibilityValidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version.ref = "jetbrainsBinaryCompatibilityValidator" }
 
 androidx-compose-compiler-compiler = { group = "androidx.compose.compiler", name = "compiler", version.ref = "jetpackCompose" }
 androidx-compose-foundation-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "jetpackCompose" }
