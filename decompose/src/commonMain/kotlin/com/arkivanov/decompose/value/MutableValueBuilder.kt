@@ -3,6 +3,9 @@ package com.arkivanov.decompose.value
 import com.arkivanov.decompose.ensureNeverFrozen
 import kotlin.properties.Delegates
 
+/**
+ * Returns a new instance of [MutableValue] initialized with the provided [initialValue].
+ */
 @Suppress("FunctionName") // Factory function
 fun <T : Any> MutableValue(initialValue: T): MutableValue<T> = MutableValueImpl(initialValue)
 
