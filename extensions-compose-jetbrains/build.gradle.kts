@@ -1,4 +1,6 @@
 import com.arkivanov.gradle.bundle
+import com.arkivanov.gradle.iosCompat
+import com.arkivanov.gradle.macosCompat
 import com.arkivanov.gradle.setupBinaryCompatibilityValidator
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupPublication
@@ -14,6 +16,8 @@ plugins {
 setupMultiplatform {
     android()
     jvm()
+    macosCompat()
+    iosCompat(simulatorArm64 = null)
 }
 
 setupPublication()
@@ -35,6 +39,7 @@ kotlin {
 
         jvm.test.dependencies {
             implementation(deps.jetbrains.compose.ui.uiTestJunit4)
+            implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesSwing)
             implementation(deps.junit.junit)
             implementation(compose.desktop.currentOs)
         }
