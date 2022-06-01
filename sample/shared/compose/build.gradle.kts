@@ -1,4 +1,6 @@
 import com.arkivanov.gradle.bundle
+import com.arkivanov.gradle.dependsOn
+import com.arkivanov.gradle.iosCompat
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupSourceSets
 
@@ -12,11 +14,19 @@ plugins {
 setupMultiplatform {
     android()
     jvm()
+    iosCompat(
+        arm64 = null, // Comment out to enable arm64 target
+        simulatorArm64 = null, // Not supported by Compose yet
+    )
 }
 
 kotlin {
     setupSourceSets {
         val jvm by bundle()
+        val ios by bundle()
+
+        ios dependsOn common
+        iosSet dependsOn ios
 
         common.main.dependencies {
             implementation(project(":decompose"))
