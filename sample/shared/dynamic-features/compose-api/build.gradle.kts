@@ -1,3 +1,4 @@
+import com.arkivanov.gradle.iosCompat
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupSourceSets
 
@@ -11,6 +12,10 @@ plugins {
 setupMultiplatform {
     android()
     jvm()
+    iosCompat(
+        arm64 = null, // Comment out to enable arm64 target
+        simulatorArm64 = null, // Not supported by Compose yet
+    )
 }
 
 kotlin {
