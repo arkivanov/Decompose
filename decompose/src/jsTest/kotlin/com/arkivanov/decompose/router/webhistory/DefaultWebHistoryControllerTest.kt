@@ -5,6 +5,7 @@ import com.arkivanov.decompose.router.TestRouter
 import com.arkivanov.decompose.router.navigate
 import com.arkivanov.decompose.router.pop
 import com.arkivanov.decompose.router.push
+import com.arkivanov.decompose.router.replaceCurrent
 import com.arkivanov.essenty.parcelable.Parcelable
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -336,6 +337,48 @@ class DefaultWebHistoryControllerTest {
         window.runPendingOperations()
 
         assertEquals(listOf(Config(0), Config(1)), router.stack)
+    }
+
+    @Test
+    fun GIVEN_router_with_initial_stack_of_a_and_pushed_b_and_go_back_and_replace_current_with_c_WHEN_go_forward_THEN_history_is_c_b_and_b_is_active() {
+        if (isNode()) {
+            return
+        }
+
+        val router = TestRouter(listOf(Config(0)))
+        attach(router)
+        router.push(Config(1))
+        window.runPendingOperations()
+        window.history.go(delta = -1)
+        window.runPendingOperations()
+        router.replaceCurrent(Config(2))
+        window.runPendingOperations()
+
+        window.history.go(delta = 1)
+        window.runPendingOperations()
+
+        window.history.assertStack(listOf("/2", "/1"))
+    }
+
+    @Test
+    fun GIVEN_router_with_initial_stack_of_a_and_pushed_b_and_go_back_and_replace_current_with_c_WHEN_go_forward_THEN_stack_is_c_b() {
+        if (isNode()) {
+            return
+        }
+
+        val router = TestRouter(listOf(Config(0)))
+        attach(router)
+        router.push(Config(1))
+        window.runPendingOperations()
+        window.history.go(delta = -1)
+        window.runPendingOperations()
+        router.replaceCurrent(Config(2))
+        window.runPendingOperations()
+
+        window.history.go(delta = 1)
+        window.runPendingOperations()
+
+        assertEquals(listOf(Config(2), Config(1)), router.stack)
     }
 
     @Test

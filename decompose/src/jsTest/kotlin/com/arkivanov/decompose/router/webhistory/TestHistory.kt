@@ -35,18 +35,20 @@ class TestHistory(
             stack.removeLast()
         }
 
-        stack += Entry(data = data, url = url)
+        stack += Entry(data = data?.serializeAndDeserialize(), url = url)
         index++
     }
 
     override fun replaceState(data: Any?, url: String?) {
-        stack[index] = Entry(data = data, url = url)
+        stack[index] = Entry(data = data?.serializeAndDeserialize(), url = url)
     }
 
     fun assertStack(urls: List<String?>, index: Int = urls.lastIndex) {
         assertEquals(urls, stack.map(Entry::url))
         assertEquals(index, this.index)
     }
+
+    private fun Any.serializeAndDeserialize(): Any = JSON.parse(JSON.stringify(this))
 
     class Entry(
         val data: Any? = null,
