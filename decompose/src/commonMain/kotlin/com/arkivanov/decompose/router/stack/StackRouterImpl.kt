@@ -33,7 +33,10 @@ internal class StackRouterImpl<C : Any, T : Any>(
         backPressedHandler.unregister(onBackPressedHandler)
     }
 
-    override fun navigate(transformer: (stack: List<C>) -> List<C>, onComplete: (newStack: List<C>, oldStack: List<C>) -> Unit) {
+    override fun navigate(
+        transformer: (stack: List<C>) -> List<C>,
+        onComplete: (newStack: List<C>, oldStack: List<C>) -> Unit
+    ) {
         queue.offer(NavigationItem(transformer = transformer, onComplete = onComplete))
     }
 

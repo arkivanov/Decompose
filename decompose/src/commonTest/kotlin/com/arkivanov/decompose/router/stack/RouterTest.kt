@@ -163,7 +163,10 @@ class RouterTest {
     private class TestStackController : StackController<Config, Config> {
         var onNavigate: (newConfigs: List<Config>) -> Unit = {}
 
-        override fun navigate(oldStack: RouterStack<Config, Config>, transformer: (stack: List<Config>) -> List<Config>): RouterStack<Config, Config> {
+        override fun navigate(
+            oldStack: RouterStack<Config, Config>,
+            transformer: (stack: List<Config>) -> List<Config>
+        ): RouterStack<Config, Config> {
             val oldConfigs = oldStack.configurationStack
             val newConfigs = transformer(oldConfigs)
             onNavigate(newConfigs)

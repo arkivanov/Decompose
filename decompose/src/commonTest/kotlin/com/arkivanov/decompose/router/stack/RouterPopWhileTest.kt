@@ -9,19 +9,19 @@ class RouterPopWhileTest {
 
     @Test
     fun WHEN_popWhile_THEN_popped() {
-        val router = TestRouter(listOf(1, 2, 3, 4))
+        val navigator = TestStackNavigator(listOf(1, 2, 3, 4))
 
-        router.popWhile { it != 2 }
+        navigator.popWhile { it != 2 }
 
-        assertEquals(listOf(1, 2), router.configs)
+        assertEquals(listOf(1, 2), navigator.configurations)
     }
 
     @Test
     fun WHEN_popWhile_THEN_onComplete_called() {
-        val router = TestRouter(listOf(1, 2, 3, 4))
+        val navigator = TestStackNavigator(listOf(1, 2, 3, 4))
         var isCalled = false
 
-        router.popWhile(predicate = { it != 2 }, onComplete = { isCalled = true })
+        navigator.popWhile(predicate = { it != 2 }, onComplete = { isCalled = true })
 
         assertTrue(isCalled)
     }

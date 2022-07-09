@@ -9,19 +9,19 @@ class RouterReplaceCurrentTest {
 
     @Test
     fun WHEN_replaceCurrent_THEN_last_configuration_replaced() {
-        val router = TestRouter(listOf(1, 2, 3))
+        val navigator = TestStackNavigator(listOf(1, 2, 3))
 
-        router.replaceCurrent(4)
+        navigator.replaceCurrent(4)
 
-        assertEquals(listOf(1, 2, 4), router.configs)
+        assertEquals(listOf(1, 2, 4), navigator.configurations)
     }
 
     @Test
     fun WHEN_replaceCurrent_THEN_onComplete_called() {
-        val router = TestRouter(listOf(1, 2, 3))
+        val navigator = TestStackNavigator(listOf(1, 2, 3))
         var isCalled = false
 
-        router.replaceCurrent(4) { isCalled = true }
+        navigator.replaceCurrent(4) { isCalled = true }
 
         assertTrue(isCalled)
     }
