@@ -41,13 +41,13 @@ val MultiPaneContent: FC<RProps<MultiPane>> = FC { props ->
 
     if (model.isMultiPane) {
         DoublePane {
-            listChild = listRouterState.activeChild.instance
-            detailsChild = detailsRouterState.activeChild.instance
+            listChild = listRouterState.active.instance
+            detailsChild = detailsRouterState.active.instance
         }
     } else {
         SinglePane {
-            listChild = listRouterState.activeChild.instance
-            detailsChild = detailsRouterState.activeChild.instance
+            listChild = listRouterState.active.instance
+            detailsChild = detailsRouterState.active.instance
         }
     }
 }

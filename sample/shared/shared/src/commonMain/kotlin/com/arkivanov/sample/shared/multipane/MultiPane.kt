@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.multipane
 
-import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.stack.RouterState
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.multipane.details.ArticleDetails
 import com.arkivanov.sample.shared.multipane.list.ArticleList

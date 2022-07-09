@@ -1,7 +1,7 @@
 package com.arkivanov.sample.shared.multipane
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.stack.RouterState
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.observe
@@ -55,7 +55,7 @@ internal class MultiPaneComponent(
         }
 
         detailsRouter.state.observe(lifecycle) {
-            selectedArticleIdSubject.onNext(it.activeChild.configuration.getArticleId())
+            selectedArticleIdSubject.onNext(it.active.configuration.getArticleId())
         }
     }
 

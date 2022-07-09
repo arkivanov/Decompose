@@ -10,11 +10,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetbrains.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.childAnimation
-import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.stack.RouterState
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.multipane.MultiPane.DetailsChild
 import com.arkivanov.sample.shared.multipane.MultiPane.ListChild
@@ -68,7 +68,7 @@ private fun ListPane(routerState: Value<RouterState<*, ListChild>>, modifier: Mo
     Children(
         routerState = routerState,
         modifier = modifier,
-        animation = childAnimation(fade()),
+        animation = stackAnimation(fade()),
     ) {
         when (val child = it.instance) {
             is ListChild.List -> ArticleListContent(component = child.component, modifier = Modifier.fillMaxSize())
@@ -83,7 +83,7 @@ private fun DetailsPane(routerState: Value<RouterState<*, DetailsChild>>, modifi
     Children(
         routerState = routerState,
         modifier = modifier,
-        animation = childAnimation(fade()),
+        animation = stackAnimation(fade()),
     ) {
         when (val child = it.instance) {
             is DetailsChild.None -> Box {}

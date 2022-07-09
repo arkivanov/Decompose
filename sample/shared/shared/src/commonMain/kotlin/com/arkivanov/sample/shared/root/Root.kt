@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.root
 
-import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.stack.RouterState
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.counters.Counters
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeatures

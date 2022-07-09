@@ -1,10 +1,10 @@
 package com.arkivanov.sample.shared.dynamicfeatures
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.pop
-import com.arkivanov.decompose.router.push
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.stackRouter
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -22,10 +22,10 @@ internal class DynamicFeaturesComponent(
 ) : DynamicFeatures, ComponentContext by componentContext {
 
     private val router =
-        router<Config, Child>(
+        stackRouter<Config, Child>(
             initialConfiguration = Config.Feature1,
             handleBackButton = true,
-            childFactory = ::child
+            childFactory = ::child,
         )
 
     override val routerState: Value<RouterState<*, Child>> = router.state

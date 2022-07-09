@@ -9,6 +9,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 /**
  * A simple sliding animation. Children enter from one side and exit to another side.
  */
+@Deprecated("Use com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.slide instead")
 @ExperimentalDecomposeApi
 fun slide(animationSpec: FiniteAnimationSpec<Float> = tween()): ChildAnimator =
     childAnimator(animationSpec = animationSpec) { factor, _, content ->

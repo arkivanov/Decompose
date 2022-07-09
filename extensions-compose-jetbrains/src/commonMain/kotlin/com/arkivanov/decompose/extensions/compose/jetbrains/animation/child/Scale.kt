@@ -10,6 +10,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
  * A simple scaling animation. Front (above) children are scaling from [frontFactor] to 1.0.
  * Back (below) children are scaling from 1.0 to [backFactor].
  */
+@Deprecated("Use com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale instead")
 @ExperimentalDecomposeApi
 fun scale(
     animationSpec: FiniteAnimationSpec<Float> = tween(),

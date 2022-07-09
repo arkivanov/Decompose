@@ -2,6 +2,13 @@ package com.arkivanov.decompose.router
 
 import com.arkivanov.decompose.value.Value
 
+@Deprecated(
+    message = "Use StackRouter instead",
+    replaceWith = ReplaceWith(
+        "StackRouter<C, T>",
+        "com.arkivanov.decompose.router.stack.StackRouter",
+    )
+)
 interface Router<C : Any, out T : Any> {
 
     /**

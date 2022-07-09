@@ -48,8 +48,8 @@ val CountersContent: FC<RProps<Counters>> = FC { props ->
                     padding = 16.px
                 }
 
-                componentContent(component = firstRouterState.activeChild.instance, content = CounterContent)
-                componentContent(component = secondRouterState.activeChild.instance, content = CounterContent)
+                componentContent(component = firstRouterState.active.instance, content = CounterContent)
+                componentContent(component = secondRouterState.active.instance, content = CounterContent)
             }
         }
     }

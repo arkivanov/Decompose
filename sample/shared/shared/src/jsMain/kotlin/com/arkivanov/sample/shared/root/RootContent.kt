@@ -50,7 +50,7 @@ var RootContent: FC<RProps<Root>> = FC { props ->
                 overflowY = Overflow.clip
             }
 
-            when (val child = routerState.activeChild.instance) {
+            when (val child = routerState.active.instance) {
                 is CountersChild -> componentContent(component = child.component, content = CountersContent)
                 is MultiPaneChild -> componentContent(component = child.component, content = MultiPaneContent)
                 is DynamicFeaturesChild -> componentContent(component = child.component, content = DynamicFeaturesContent)
@@ -65,7 +65,7 @@ var RootContent: FC<RProps<Root>> = FC { props ->
 
             showLabels = true
 
-            value = when (routerState.activeChild.instance) {
+            value = when (routerState.active.instance) {
                 is CountersChild -> TabItem.COUNTERS
                 is MultiPaneChild -> TabItem.MULTI_PANE
                 is DynamicFeaturesChild -> TabItem.DYNAMIC_FEATURES

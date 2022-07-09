@@ -5,7 +5,7 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.arkivanov.decompose.extensions.android.RouterView
+    <com.arkivanov.decompose.extensions.android.stack.StackRouterView
         android:id="@+id/router_first"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -14,7 +14,7 @@
         android:layout_width="16dp"
         android:layout_height="16dp" />
 
-    <com.arkivanov.decompose.extensions.android.RouterView
+    <com.arkivanov.decompose.extensions.android.stack.StackRouterView
         android:id="@+id/router_second"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

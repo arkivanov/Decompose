@@ -4,7 +4,7 @@ import android.content.res.Configuration
 import android.view.View
 import android.widget.LinearLayout
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.android.RouterView
+import com.arkivanov.decompose.extensions.android.stack.StackRouterView
 import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.layoutInflater
 import com.arkivanov.decompose.extensions.android.resources
@@ -15,8 +15,8 @@ import com.arkivanov.sample.shared.counters.counter.CounterView
 @Suppress("FunctionName") // Factory function
 internal fun ViewContext.CountersView(counters: Counters): View {
     val layout = layoutInflater.inflate(R.layout.counters, parent, false) as LinearLayout
-    val firstRouter: RouterView = layout.findViewById(R.id.router_first)
-    val secondRouter: RouterView = layout.findViewById(R.id.router_second)
+    val firstRouter: StackRouterView = layout.findViewById(R.id.router_first)
+    val secondRouter: StackRouterView = layout.findViewById(R.id.router_second)
 
     layout.orientation =
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {

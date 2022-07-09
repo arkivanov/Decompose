@@ -16,9 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetbrains.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.stack.RouterState
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.counters.CountersContent
@@ -33,7 +33,7 @@ import com.arkivanov.sample.shared.root.Root.Child.MultiPaneChild
 @Composable
 fun RootContent(root: Root, modifier: Modifier = Modifier) {
     val routerState by root.routerState.subscribeAsState()
-    val activeComponent = routerState.activeChild.instance
+    val activeComponent = routerState.active.instance
 
     Column(modifier = modifier) {
         Children(
