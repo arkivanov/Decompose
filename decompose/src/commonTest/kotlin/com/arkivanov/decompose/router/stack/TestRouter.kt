@@ -5,16 +5,16 @@ import com.arkivanov.decompose.value.MutableValue
 
 class TestRouter<C : Any>(stack: List<C>) : StackRouter<C, Any> {
 
-    override val state: MutableValue<RouterState<C, Any>> = MutableValue(stack.toRouterState())
+    override val stack: MutableValue<ChildStack<C, Any>> = MutableValue(stack.toRouterState())
 
-    var stack: List<C>
-        get() = state.value.backStack.map(Child<C, *>::configuration) + state.value.active.configuration
+    var configs: List<C>
+        get() = stack.value.items.map { it.configuration }
         set(value) {
-            state.value = value.toRouterState()
+            stack.value = value.toRouterState()
         }
 
-    private fun List<C>.toRouterState(): RouterState<C, Any> =
-        RouterState<C, Any>(
+    private fun List<C>.toRouterState(): ChildStack<C, Any> =
+        ChildStack<C, Any>(
             active = Child.Created(
                 configuration = last(),
                 instance = last(),
@@ -28,9 +28,9 @@ class TestRouter<C : Any>(stack: List<C>) : StackRouter<C, Any> {
         )
 
     override fun navigate(transformer: (stack: List<C>) -> List<C>, onComplete: (newStack: List<C>, oldStack: List<C>) -> Unit) {
-        val oldStack = stack
-        val newStack = transformer(stack)
-        stack = newStack
-        onComplete(newStack, oldStack)
+        val oldConfigs = this.configs
+        val newConfigs = transformer(this.configs)
+        this.configs = newConfigs
+        onComplete(newConfigs, oldConfigs)
     }
 }

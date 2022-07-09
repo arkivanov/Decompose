@@ -14,7 +14,7 @@
 		798DB84A282F08670072CCBD /* CounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB849282F08670072CCBD /* CounterView.swift */; };
 		798DB84C282F088C0072CCBD /* ObservableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB84B282F088C0072CCBD /* ObservableValue.swift */; };
 		798DB84E282F08E00072CCBD /* MutableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB84D282F08E00072CCBD /* MutableValue.swift */; };
-		798DB850282F08FC0072CCBD /* SimpleRouterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB84F282F08FC0072CCBD /* SimpleRouterState.swift */; };
+		798DB850282F08FC0072CCBD /* SimpleChildStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB84F282F08FC0072CCBD /* SimpleChildStack.swift */; };
 		798DB852282F096C0072CCBD /* CountersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB851282F096C0072CCBD /* CountersView.swift */; };
 		798DB854282F09FE0072CCBD /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB853282F09FE0072CCBD /* RootView.swift */; };
 		798DB856282F0E6F0072CCBD /* MultiPaneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB855282F0E6F0072CCBD /* MultiPaneView.swift */; };
@@ -31,7 +31,7 @@
 		798DB849282F08670072CCBD /* CounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView.swift; sourceTree = "<group>"; };
 		798DB84B282F088C0072CCBD /* ObservableValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableValue.swift; sourceTree = "<group>"; };
 		798DB84D282F08E00072CCBD /* MutableValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableValue.swift; sourceTree = "<group>"; };
-		798DB84F282F08FC0072CCBD /* SimpleRouterState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleRouterState.swift; sourceTree = "<group>"; };
+		798DB84F282F08FC0072CCBD /* SimpleChildStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleChildStack.swift; sourceTree = "<group>"; };
 		798DB851282F096C0072CCBD /* CountersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountersView.swift; sourceTree = "<group>"; };
 		798DB853282F09FE0072CCBD /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		798DB855282F0E6F0072CCBD /* MultiPaneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPaneView.swift; sourceTree = "<group>"; };
@@ -76,7 +76,7 @@
 				798DB849282F08670072CCBD /* CounterView.swift */,
 				798DB84B282F088C0072CCBD /* ObservableValue.swift */,
 				798DB84D282F08E00072CCBD /* MutableValue.swift */,
-				798DB84F282F08FC0072CCBD /* SimpleRouterState.swift */,
+				798DB84F282F08FC0072CCBD /* SimpleChildStack.swift */,
 				798DB851282F096C0072CCBD /* CountersView.swift */,
 				798DB853282F09FE0072CCBD /* RootView.swift */,
 				798DB855282F0E6F0072CCBD /* MultiPaneView.swift */,
@@ -192,7 +192,7 @@
 				798DB84E282F08E00072CCBD /* MutableValue.swift in Sources */,
 				798DB856282F0E6F0072CCBD /* MultiPaneView.swift in Sources */,
 				798DB84C282F088C0072CCBD /* ObservableValue.swift in Sources */,
-				798DB850282F08FC0072CCBD /* SimpleRouterState.swift in Sources */,
+				798DB850282F08FC0072CCBD /* SimpleChildStack.swift in Sources */,
 				798DB852282F096C0072CCBD /* CountersView.swift in Sources */,
 				798DB85A282F11800072CCBD /* ArticleDetailsView.swift in Sources */,
 				798DB84A282F08670072CCBD /* CounterView.swift in Sources */,

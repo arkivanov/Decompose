@@ -7,7 +7,7 @@ interface StackRouter<C : Any, out T : Any> {
     /**
      * Returns the current stack of components, which can also be observed for changes
      */
-    val state: Value<RouterState<C, T>>
+    val stack: Value<ChildStack<C, T>>
 
     /**
      * Transforms the current stack of configurations into a new one.

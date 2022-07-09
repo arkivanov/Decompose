@@ -25,12 +25,12 @@ internal fun ViewContext.CountersView(counters: Counters): View {
             LinearLayout.VERTICAL
         }
 
-    firstRouter.children(counters.firstRouterState, lifecycle) { parent, child, _ ->
+    firstRouter.children(counters.firstChildStack, lifecycle) { parent, child, _ ->
         parent.removeAllViews()
         parent.addView(CounterView(child))
     }
 
-    secondRouter.children(counters.secondRouterState, lifecycle) { parent, child, _ ->
+    secondRouter.children(counters.secondChildStack, lifecycle) { parent, child, _ ->
         parent.removeAllViews()
         parent.addView(CounterView(child))
     }

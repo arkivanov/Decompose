@@ -14,7 +14,7 @@ class RouterPopTest {
 
         router.pop()
 
-        assertEquals(listOf(Config.A), router.stack)
+        assertEquals(listOf(Config.A), router.configs)
     }
 
     @Test
@@ -33,7 +33,7 @@ class RouterPopTest {
 
         router.pop()
 
-        assertEquals(listOf(Config.A), router.stack)
+        assertEquals(listOf(Config.A), router.configs)
     }
 
 

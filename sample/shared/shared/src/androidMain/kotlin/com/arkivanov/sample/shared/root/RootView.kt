@@ -19,7 +19,7 @@ fun ViewContext.RootView(root: Root): View {
     val layout = layoutInflater.inflate(R.layout.root, parent, false)
     val router: StackRouterView = layout.findViewById(R.id.router)
 
-    router.children(root.routerState, lifecycle) { parent, child, _ ->
+    router.children(root.childStack, lifecycle) { parent, child, _ ->
         parent.removeAllViews()
 
         parent.addView(
@@ -47,7 +47,7 @@ fun ViewContext.RootView(root: Root): View {
 
     navigationView.setOnNavigationItemSelectedListener(listener)
 
-    root.routerState.observe(lifecycle) { state ->
+    root.childStack.observe(lifecycle) { state ->
         navigationView.setOnNavigationItemSelectedListener(null)
 
         navigationView.selectedItemId =

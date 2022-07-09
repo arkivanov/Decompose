@@ -21,7 +21,7 @@ fun <T : Any> DynamicFeatureContent(
     contentSupplier: () -> DynamicFeatureContent<T>,
 ) {
     Children(
-        routerState = dynamicFeature.routerState,
+        stack = dynamicFeature.childStack,
         modifier = modifier,
         animation = stackAnimation(fade()),
     ) {

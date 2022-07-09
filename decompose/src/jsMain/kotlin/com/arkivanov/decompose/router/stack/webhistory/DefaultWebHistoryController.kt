@@ -2,7 +2,7 @@ package com.arkivanov.decompose.router.stack.webhistory
 
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.findFirstDifferentIndex
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackRouter
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.startsWith
@@ -23,7 +23,7 @@ class DefaultWebHistoryController internal constructor(
         getConfiguration: (path: String) -> C,
     ) {
         val impl = Impl(router, window, getPath, getConfiguration)
-        router.state.subscribe(impl::onStateChanged)
+        router.stack.subscribe(impl::onStackChanged)
         window.onPopState = impl::onPopState
     }
 
@@ -36,47 +36,47 @@ class DefaultWebHistoryController internal constructor(
         private var isStateObserverFirstPass = true
         private var isStateObserverEnabled = true
 
-        fun onStateChanged(newState: RouterState<C, *>, oldState: RouterState<C, *>) {
+        fun onStackChanged(newStack: ChildStack<C, *>, oldStack: ChildStack<C, *>) {
             if (!isStateObserverEnabled) {
                 return
             }
 
-            val newStack = newState.configurations()
-            val oldStack = oldState.configurations()
-            val firstDifferentIndex = oldStack.findFirstDifferentIndex(newStack)
+            val newConfigurationStack = newStack.configurations()
+            val oldConfigurationStack = oldStack.configurations()
+            val firstDifferentIndex = oldConfigurationStack.findFirstDifferentIndex(newConfigurationStack)
 
             when {
                 // Initialize the history
                 isStateObserverFirstPass -> {
                     isStateObserverFirstPass = false
-                    window.history.replaceState(newStack[0])
-                    for (i in 1..newStack.lastIndex) {
-                        window.history.pushState(newStack[i])
+                    window.history.replaceState(newConfigurationStack[0])
+                    for (i in 1..newConfigurationStack.lastIndex) {
+                        window.history.pushState(newConfigurationStack[i])
                     }
                 }
 
-                newStack == oldStack -> return
+                newConfigurationStack == oldConfigurationStack -> return
 
                 // One or more configurations were popped from the stack
-                oldStack.startsWith(newStack) -> { // Pop removed pages from the history
-                    window.history.go(delta = newStack.size - oldStack.size)
+                oldConfigurationStack.startsWith(newConfigurationStack) -> { // Pop removed pages from the history
+                    window.history.go(delta = newConfigurationStack.size - oldConfigurationStack.size)
                 }
 
                 // One or more configurations were pushed to the history
-                newStack.startsWith(oldStack) -> { // Push new pages to the history
-                    for (i in oldStack.size..newStack.lastIndex) {
-                        window.history.pushState(newStack[i])
+                newConfigurationStack.startsWith(oldConfigurationStack) -> { // Push new pages to the history
+                    for (i in oldConfigurationStack.size..newConfigurationStack.lastIndex) {
+                        window.history.pushState(newConfigurationStack[i])
                     }
                 }
 
                 // The active configuration was changed, and new configurations could be pushed
-                firstDifferentIndex == oldStack.lastIndex -> {
+                firstDifferentIndex == oldConfigurationStack.lastIndex -> {
                     // Replace the current page with a new one
-                    window.history.replaceState(newStack[firstDifferentIndex])
+                    window.history.replaceState(newConfigurationStack[firstDifferentIndex])
 
                     // Push the rest of the pages to the history
-                    for (i in (firstDifferentIndex + 1)..newStack.lastIndex) {
-                        window.history.pushState(newStack[i])
+                    for (i in (firstDifferentIndex + 1)..newConfigurationStack.lastIndex) {
+                        window.history.pushState(newConfigurationStack[i])
                     }
                 }
 
@@ -86,13 +86,13 @@ class DefaultWebHistoryController internal constructor(
                         window.onPopState = ::onPopState
 
                         // Push new pages to the history
-                        for (i in firstDifferentIndex..newStack.lastIndex) {
-                            window.history.pushState(newStack[i])
+                        for (i in firstDifferentIndex..newConfigurationStack.lastIndex) {
+                            window.history.pushState(newConfigurationStack[i])
                         }
                     }
 
                     // Pop removed pages from the history
-                    window.history.go(delta = firstDifferentIndex - oldStack.size)
+                    window.history.go(delta = firstDifferentIndex - oldConfigurationStack.size)
                 }
 
                 // All configurations were popped, and one or more configurations were pushed
@@ -101,17 +101,17 @@ class DefaultWebHistoryController internal constructor(
                         window.onPopState = ::onPopState
 
                         // Replace the current page with a new one
-                        window.history.replaceState(newStack[firstDifferentIndex])
+                        window.history.replaceState(newConfigurationStack[firstDifferentIndex])
 
                         // Push the rest of the pages to the history
                         // Corner case: if there is nothing to push, old pages will remain in the history
-                        for (i in (firstDifferentIndex + 1)..newStack.lastIndex) {
-                            window.history.pushState(newStack[i])
+                        for (i in (firstDifferentIndex + 1)..newConfigurationStack.lastIndex) {
+                            window.history.pushState(newConfigurationStack[i])
                         }
                     }
 
                     // Pop removed pages from the history, except the first one
-                    window.history.go(delta = -oldStack.lastIndex)
+                    window.history.go(delta = -oldConfigurationStack.lastIndex)
                 }
             }
         }

@@ -12,13 +12,13 @@ struct RootView: View {
     private let root: Root
     
     @ObservedObject
-    private var routerState: ObservableValue<RouterState<AnyObject, RootChild>>
+    private var childStack: ObservableValue<ChildStack<AnyObject, RootChild>>
     
-    private var activeChild: RootChild { routerState.value.activeChild.instance }
+    private var activeChild: RootChild { childStack.value.active.instance }
     
     init(_ root: Root) {
         self.root = root
-        routerState = ObservableValue(root.routerState)
+        childStack = ObservableValue(root.childStack)
     }
     
     var body: some View {
@@ -71,8 +71,8 @@ struct RootView_Previews: PreviewProvider {
 }
 
 class RootPreview : Root {
-    let routerState: Value<RouterState<AnyObject, RootChild>> =
-        simpleRouterState(RootChild.CountersChild(component: CountersPreview()))
+    let childStack: Value<ChildStack<AnyObject, RootChild>> =
+        simpleChildStack(RootChild.CountersChild(component: CountersPreview()))
 
     func onCountersTabClicked() {}
     func onMultiPaneTabClicked() {}

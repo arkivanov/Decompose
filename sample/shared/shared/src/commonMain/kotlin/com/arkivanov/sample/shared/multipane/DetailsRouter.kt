@@ -1,7 +1,7 @@
 package com.arkivanov.sample.shared.multipane
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.activeChild
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.popWhile
@@ -29,7 +29,7 @@ internal class DetailsRouter(
             childFactory = ::createChild,
         )
 
-    val state: Value<RouterState<Config, DetailsChild>> = router.state
+    val stack: Value<ChildStack<Config, DetailsChild>> = router.stack
 
     private fun createChild(config: Config, componentContext: ComponentContext): DetailsChild =
         when (config) {

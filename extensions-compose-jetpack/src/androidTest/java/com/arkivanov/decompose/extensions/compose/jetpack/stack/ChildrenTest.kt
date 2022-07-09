@@ -22,7 +22,7 @@ import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.stackAnimation
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -94,9 +94,9 @@ class ChildrenTest(
         composeRule.onNodeWithText(text = "ChildB=0").assertExists()
     }
 
-    private fun setContent(state: State<RouterState<Config, Config>>) {
+    private fun setContent(stack: State<ChildStack<Config, Config>>) {
         composeRule.setContent {
-            Children(routerState = state.value, animation = animation) { child ->
+            Children(stack = stack.value, animation = animation) { child ->
                 when (child.configuration) {
                     Config.A -> Child(name = "A")
                     Config.B -> Child(name = "B")
@@ -107,8 +107,8 @@ class ChildrenTest(
         runOnIdle {}
     }
 
-    private fun routerState(activeConfig: Config, backstack: List<Config> = emptyList()): RouterState<Config, Config> =
-        RouterState(
+    private fun routerState(activeConfig: Config, backstack: List<Config> = emptyList()): ChildStack<Config, Config> =
+        ChildStack(
             active = Child.Created(configuration = activeConfig, instance = activeConfig),
             backStack = backstack.map { Child.Destroyed(configuration = it) }
         )

@@ -11,22 +11,22 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun <C : Any, T : Any> Children(
-    routerState: RouterState<C, T>,
+    stack: ChildStack<C, T>,
     modifier: Modifier = Modifier,
     animation: StackAnimation<C, T> = emptyStackAnimation(),
     content: @Composable (child: Child.Created<C, T>) -> Unit,
 ) {
     val holder = rememberSaveableStateHolder()
 
-    holder.retainStates(routerState.getConfigurations())
+    holder.retainStates(stack.getConfigurations())
 
-    animation(state = routerState, modifier = modifier) { child ->
+    animation(stack = stack, modifier = modifier) { child ->
         holder.SaveableStateProvider(child.configuration.key()) {
             content(child)
         }
@@ -36,28 +36,23 @@ fun <C : Any, T : Any> Children(
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun <C : Any, T : Any> Children(
-    routerState: Value<RouterState<C, T>>,
+    stack: Value<ChildStack<C, T>>,
     modifier: Modifier = Modifier,
     animation: StackAnimation<C, T> = emptyStackAnimation(),
     content: @Composable (child: Child.Created<C, T>) -> Unit,
 ) {
-    val state = routerState.subscribeAsState()
+    val state = stack.subscribeAsState()
 
     Children(
-        routerState = state.value,
+        stack = state.value,
         modifier = modifier,
         animation = animation,
         content = content
     )
 }
 
-private fun RouterState<*, *>.getConfigurations(): Set<String> {
-    val set = HashSet<String>()
-    backStack.forEach { set += it.configuration.key() }
-    set += active.configuration.key()
-
-    return set
-}
+private fun ChildStack<*, *>.getConfigurations(): Set<String> =
+    items.mapTo(HashSet()) { it.configuration.key() }
 
 private fun Any.key(): String = "${this::class.simpleName}_${hashCode().toString(radix = 36)}"
 

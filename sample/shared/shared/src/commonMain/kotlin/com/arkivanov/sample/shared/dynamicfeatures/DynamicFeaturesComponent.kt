@@ -1,7 +1,7 @@
 package com.arkivanov.sample.shared.dynamicfeatures
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.stackRouter
@@ -28,7 +28,7 @@ internal class DynamicFeaturesComponent(
             childFactory = ::child,
         )
 
-    override val routerState: Value<RouterState<*, Child>> = router.state
+    override val childStack: Value<ChildStack<*, Child>> = router.stack
 
     private fun child(config: Config, componentContext: ComponentContext): Child =
         when (config) {

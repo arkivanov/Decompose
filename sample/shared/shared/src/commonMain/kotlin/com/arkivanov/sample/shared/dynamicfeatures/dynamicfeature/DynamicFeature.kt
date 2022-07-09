@@ -1,11 +1,11 @@
 package com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature
 
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 
 interface DynamicFeature<out T : Any> {
 
-    val routerState: Value<RouterState<*, Child<T>>>
+    val childStack: Value<ChildStack<*, Child<T>>>
 
     sealed interface Child<out T : Any> {
         class Loading(val name: String) : Child<Nothing>

@@ -5,8 +5,8 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 
 @ExperimentalDecomposeApi
 internal fun <C : Any, T : Any> emptyStackAnimation(): StackAnimation<C, T> =
-    StackAnimation { routerState, modifier, childContent ->
+    StackAnimation { stack, modifier, childContent ->
         Box(modifier = modifier) {
-            childContent(routerState.active)
+            childContent(stack.active)
         }
     }

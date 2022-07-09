@@ -17,7 +17,7 @@ import com.arkivanov.sample.shared.dynamicfeatures.feature2.feature2Content
 @Composable
 internal fun DynamicFeaturesContent(component: DynamicFeatures, modifier: Modifier = Modifier) {
     Children(
-        routerState = component.routerState,
+        stack = component.childStack,
         modifier = modifier,
         animation = stackAnimation(fade()),
     ) {
