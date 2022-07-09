@@ -1,4 +1,4 @@
-package com.arkivanov.decompose.extensions.android
+package com.arkivanov.decompose.extensions.android.stack
 
 import android.content.Context
 import android.os.Bundle
@@ -12,8 +12,11 @@ import android.widget.FrameLayout
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.decompose.R
+import com.arkivanov.decompose.extensions.android.DefaultViewContext
+import com.arkivanov.decompose.extensions.android.ViewContext
+import com.arkivanov.decompose.extensions.android.forEachChild
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
-import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.stack.RouterState
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.observe
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -22,7 +25,7 @@ import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.resume
 
 @ExperimentalDecomposeApi
-class RouterView @JvmOverloads constructor(
+class StackRouterView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -95,7 +98,7 @@ class RouterView @JvmOverloads constructor(
         lifecycle: Lifecycle,
         replaceChildView: ViewContext.(ViewGroup, T, C) -> Unit
     ) {
-        val activeChild = state.activeChild
+        val activeChild = state.active
         val currentChild: ActiveChild? = currentChild
 
         if (currentChild?.configuration === activeChild.configuration) {

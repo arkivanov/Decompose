@@ -1,7 +1,6 @@
-package com.arkivanov.decompose.router.lifecycle
+package com.arkivanov.decompose.lifecycle
 
-import com.arkivanov.decompose.lifecycle.MergedLifecycle
-import com.arkivanov.decompose.router.lifecycle.MergedLifecycleTest.TestLifecycleCallbacks.Event
+import com.arkivanov.decompose.lifecycle.MergedLifecycleTest.TestLifecycleCallbacks.Event
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.create

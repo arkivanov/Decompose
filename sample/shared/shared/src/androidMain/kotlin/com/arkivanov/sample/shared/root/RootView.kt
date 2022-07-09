@@ -2,7 +2,7 @@ package com.arkivanov.sample.shared.root
 
 import android.view.View
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.android.RouterView
+import com.arkivanov.decompose.extensions.android.stack.StackRouterView
 import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.layoutInflater
 import com.arkivanov.decompose.value.observe
@@ -17,7 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 @Suppress("FunctionName") // Factory function
 fun ViewContext.RootView(root: Root): View {
     val layout = layoutInflater.inflate(R.layout.root, parent, false)
-    val router: RouterView = layout.findViewById(R.id.router)
+    val router: StackRouterView = layout.findViewById(R.id.router)
 
     router.children(root.routerState, lifecycle) { parent, child, _ ->
         parent.removeAllViews()
@@ -51,7 +51,7 @@ fun ViewContext.RootView(root: Root): View {
         navigationView.setOnNavigationItemSelectedListener(null)
 
         navigationView.selectedItemId =
-            when (state.activeChild.instance) {
+            when (state.active.instance) {
                 is CountersChild -> R.id.tab_counters
                 is MultiPaneChild -> R.id.tab_multipane
                 is DynamicFeaturesChild -> R.id.tab_dynamic_features

@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature
 
-import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.stack.RouterState
 import com.arkivanov.decompose.value.Value
 
 interface DynamicFeature<out T : Any> {

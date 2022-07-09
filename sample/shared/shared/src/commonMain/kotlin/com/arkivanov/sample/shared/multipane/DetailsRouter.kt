@@ -1,11 +1,11 @@
 package com.arkivanov.sample.shared.multipane
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.activeChild
-import com.arkivanov.decompose.router.navigate
-import com.arkivanov.decompose.router.popWhile
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.activeChild
+import com.arkivanov.decompose.router.stack.navigate
+import com.arkivanov.decompose.router.stack.popWhile
+import com.arkivanov.decompose.router.stack.stackRouter
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -23,10 +23,10 @@ internal class DetailsRouter(
 ) {
 
     private val router =
-        componentContext.router<Config, DetailsChild>(
+        componentContext.stackRouter<Config, DetailsChild>(
             initialConfiguration = Config.None,
             key = "DetailsRouter",
-            childFactory = ::createChild
+            childFactory = ::createChild,
         )
 
     val state: Value<RouterState<Config, DetailsChild>> = router.state

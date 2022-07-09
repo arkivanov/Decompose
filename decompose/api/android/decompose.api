@@ -115,6 +115,50 @@ public final class com/arkivanov/decompose/router/RouterState {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/arkivanov/decompose/router/stack/RouterFactoryKt {
+	public static final fun stackRouter (Lcom/arkivanov/decompose/ComponentContext;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/router/stack/StackRouter;
+	public static synthetic fun stackRouter$default (Lcom/arkivanov/decompose/ComponentContext;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/stack/StackRouter;
+}
+
+public final class com/arkivanov/decompose/router/stack/RouterState {
+	public fun <init> (Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;)V
+	public synthetic fun <init> (Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;)V
+	public final fun component1 ()Lcom/arkivanov/decompose/Child$Created;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;)Lcom/arkivanov/decompose/router/stack/RouterState;
+	public static synthetic fun copy$default (Lcom/arkivanov/decompose/router/stack/RouterState;Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/stack/RouterState;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActive ()Lcom/arkivanov/decompose/Child$Created;
+	public final fun getBackStack ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/arkivanov/decompose/router/stack/StackRouter {
+	public abstract fun getState ()Lcom/arkivanov/decompose/value/Value;
+	public abstract fun navigate (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+}
+
+public final class com/arkivanov/decompose/router/stack/StackRouterExtKt {
+	public static final fun bringToFront (Lcom/arkivanov/decompose/router/stack/StackRouter;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V
+	public static synthetic fun bringToFront$default (Lcom/arkivanov/decompose/router/stack/StackRouter;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static final fun getActiveChild (Lcom/arkivanov/decompose/router/stack/StackRouter;)Lcom/arkivanov/decompose/Child$Created;
+	public static final fun navigate (Lcom/arkivanov/decompose/router/stack/StackRouter;Lkotlin/jvm/functions/Function1;)V
+	public static final fun pop (Lcom/arkivanov/decompose/router/stack/StackRouter;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun pop$default (Lcom/arkivanov/decompose/router/stack/StackRouter;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun popWhile (Lcom/arkivanov/decompose/router/stack/StackRouter;Lkotlin/jvm/functions/Function1;)V
+	public static final fun popWhile (Lcom/arkivanov/decompose/router/stack/StackRouter;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public static final fun push (Lcom/arkivanov/decompose/router/stack/StackRouter;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V
+	public static synthetic fun push$default (Lcom/arkivanov/decompose/router/stack/StackRouter;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static final fun replaceCurrent (Lcom/arkivanov/decompose/router/stack/StackRouter;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V
+	public static synthetic fun replaceCurrent$default (Lcom/arkivanov/decompose/router/stack/StackRouter;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+}
+
+public abstract interface class com/arkivanov/decompose/router/stack/webhistory/WebHistoryController {
+	public abstract fun attach (Lcom/arkivanov/decompose/router/stack/StackRouter;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+}
+
 public abstract interface class com/arkivanov/decompose/router/webhistory/WebHistoryController {
 	public abstract fun attach (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 }

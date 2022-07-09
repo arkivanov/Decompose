@@ -12,7 +12,7 @@ fun <T : Any> DynamicFeatureContent(
 ): FC<RProps<DynamicFeature<T>>> = FC { props ->
     val routerState by props.component.routerState.useAsState()
 
-    when (val child = routerState.activeChild.instance) {
+    when (val child = routerState.active.instance) {
         is DynamicFeature.Child.Loading -> Typography { +"Loading ${child.name}" }
         is DynamicFeature.Child.Feature -> content(child.feature)
         is DynamicFeature.Child.Error -> Typography { +"Error loading ${child.name}" }

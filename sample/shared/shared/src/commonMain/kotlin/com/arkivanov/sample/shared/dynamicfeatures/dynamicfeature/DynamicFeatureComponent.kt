@@ -1,10 +1,10 @@
 package com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.Router
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.replaceCurrent
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.StackRouter
+import com.arkivanov.decompose.router.stack.replaceCurrent
+import com.arkivanov.decompose.router.stack.stackRouter
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.essenty.parcelable.Parcelable
@@ -20,10 +20,10 @@ internal class DynamicFeatureComponent<out T : Any>(
     private val factory: (ComponentContext) -> T
 ) : DynamicFeature<T>, ComponentContext by componentContext {
 
-    private val router: Router<Config, Child<T>> =
-        router(
+    private val router: StackRouter<Config, Child<T>> =
+        stackRouter(
             initialConfiguration = Config.Loading,
-            childFactory = ::child
+            childFactory = ::child,
         )
 
     override val routerState: Value<RouterState<*, Child<T>>> = router.state

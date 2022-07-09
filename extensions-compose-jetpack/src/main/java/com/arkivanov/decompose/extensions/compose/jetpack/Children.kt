@@ -14,6 +14,7 @@ import com.arkivanov.decompose.extensions.compose.jetpack.animation.child.emptyC
 import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.value.Value
 
+@Deprecated("Use com.arkivanov.decompose.extensions.compose.jetpack.stack.Children instead")
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun <C : Any, T : Any> Children(
@@ -33,6 +34,7 @@ fun <C : Any, T : Any> Children(
     }
 }
 
+@Deprecated("Use com.arkivanov.decompose.extensions.compose.jetpack.stack.Children")
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun <C : Any, T : Any> Children(

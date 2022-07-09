@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetbrains.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.childAnimation
-import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeatures.Child.Feature1Child
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeatures.Child.Feature2Child
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeatureContent
@@ -19,7 +19,7 @@ internal fun DynamicFeaturesContent(component: DynamicFeatures, modifier: Modifi
     Children(
         routerState = component.routerState,
         modifier = modifier,
-        animation = childAnimation(fade()),
+        animation = stackAnimation(fade()),
     ) {
         when (val child = it.instance) {
             is Feature1Child ->

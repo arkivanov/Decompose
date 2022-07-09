@@ -39,7 +39,7 @@ val DynamicFeaturesContent: FC<RProps<DynamicFeatures>> = FC { props ->
                 padding = 16.px
             }
 
-            when (val child = routerState.activeChild.instance) {
+            when (val child = routerState.active.instance) {
                 is Feature1Child ->
                     componentContent(
                         component = child.feature1,

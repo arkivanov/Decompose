@@ -16,6 +16,13 @@ import kotlin.reflect.KClass
  * @param childFactory a factory function that creates new child instances
  * @return a new instance of [Router]
  */
+@Deprecated(
+    message = "Use stackRouter instead",
+    replaceWith = ReplaceWith(
+        "this.stackRouter(initialStack = initialStack, configurationClass = configurationClass, key = key, handleBackButton = handleBackButton, childFactory = childFactory)",
+        "com.arkivanov.decompose.router.stack.stackRouter"
+    ),
+)
 fun <C : Parcelable, T : Any> ComponentContext.router(
     initialStack: () -> List<C>,
     configurationClass: KClass<out C>,
@@ -48,6 +55,13 @@ fun <C : Parcelable, T : Any> ComponentContext.router(
 /**
  * A convenience extension function for [ComponentContext.router].
  */
+@Deprecated(
+    message = "Use stackRouter instead",
+    replaceWith = ReplaceWith(
+        "this.stackRouter(initialStack = initialStack, key = key, handleBackButton = handleBackButton, childFactory = childFactory)",
+        "com.arkivanov.decompose.router.stack.stackRouter"
+    ),
+)
 inline fun <reified C : Parcelable, T : Any> ComponentContext.router(
     noinline initialStack: () -> List<C>,
     key: String = "DefaultRouter",
@@ -65,6 +79,13 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.router(
 /**
  * A convenience extension function for [ComponentContext.router].
  */
+@Deprecated(
+    message = "Use stackRouter instead",
+    replaceWith = ReplaceWith(
+        "this.stackRouter(initialConfiguration = initialConfiguration, key = key, handleBackButton = handleBackButton, childFactory = childFactory)",
+        "com.arkivanov.decompose.router.stack.stackRouter"
+    ),
+)
 inline fun <reified C : Parcelable, T : Any> ComponentContext.router(
     initialConfiguration: C,
     key: String = "DefaultRouter",

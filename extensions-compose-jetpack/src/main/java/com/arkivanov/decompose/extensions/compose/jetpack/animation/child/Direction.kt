@@ -5,6 +5,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 /**
  * Represents a direction in which child widgets are animated.
  */
+@Deprecated("Use com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.Direction instead")
 @ExperimentalDecomposeApi
 enum class Direction {
 

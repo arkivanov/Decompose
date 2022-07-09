@@ -8,9 +8,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetbrains.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.childAnimation
-import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeatureContent
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -23,7 +23,7 @@ fun <T : Any> DynamicFeatureContent(
     Children(
         routerState = dynamicFeature.routerState,
         modifier = modifier,
-        animation = childAnimation(fade()),
+        animation = stackAnimation(fade()),
     ) {
         when (val child = it.instance) {
             is DynamicFeature.Child.Loading -> Loading(name = child.name, modifier = Modifier.fillMaxSize())
