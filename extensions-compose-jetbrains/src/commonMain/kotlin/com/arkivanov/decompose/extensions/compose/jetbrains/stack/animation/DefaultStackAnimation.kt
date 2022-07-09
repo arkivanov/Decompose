@@ -14,7 +14,7 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 
 @ExperimentalDecomposeApi
 internal class DefaultStackAnimation<C : Any, T : Any>(
@@ -22,13 +22,13 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 ) : StackAnimation<C, T> {
 
     @Composable
-    override operator fun invoke(state: RouterState<C, T>, modifier: Modifier, content: @Composable (child: Child.Created<C, T>) -> Unit) {
-        var activePage by remember { mutableStateOf(state.activePage()) }
+    override operator fun invoke(stack: ChildStack<C, T>, modifier: Modifier, content: @Composable (child: Child.Created<C, T>) -> Unit) {
+        var activePage by remember { mutableStateOf(stack.activePage()) }
         var items by remember { mutableStateOf(getAnimationItems(newPage = activePage, oldPage = null)) }
 
-        if (state.active.configuration != activePage.child.configuration) {
+        if (stack.active.configuration != activePage.child.configuration) {
             val oldPage = activePage
-            activePage = state.activePage()
+            activePage = stack.activePage()
             items = getAnimationItems(newPage = activePage, oldPage = oldPage)
         }
 
@@ -80,8 +80,8 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         )
     }
 
-    private fun RouterState<C, T>.activePage(): Page<C, T> =
-        Page(child = active, index = backStack.size)
+    private fun ChildStack<C, T>.activePage(): Page<C, T> =
+        Page(child = active, index = items.lastIndex)
 
     private fun getAnimationItems(newPage: Page<C, T>, oldPage: Page<C, T>?): Map<C, AnimationItem<C, T>> =
         when {

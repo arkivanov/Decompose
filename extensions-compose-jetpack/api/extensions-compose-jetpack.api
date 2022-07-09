@@ -76,7 +76,7 @@ public final class com/arkivanov/decompose/extensions/compose/jetpack/animation/
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/ChildrenKt {
-	public static final fun Children (Lcom/arkivanov/decompose/router/stack/RouterState;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Children (Lcom/arkivanov/decompose/router/stack/ChildStack;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 	public static final fun Children (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
 
@@ -120,7 +120,7 @@ public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/anim
 }
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation {
-	public abstract fun invoke (Lcom/arkivanov/decompose/router/stack/RouterState;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
+	public abstract fun invoke (Lcom/arkivanov/decompose/router/stack/ChildStack;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimationKt {

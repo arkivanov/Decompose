@@ -147,10 +147,10 @@ class RouterTest {
             )
 
         private val StackRouter<Config, *>.configurations: List<Config>
-            get() = state.value.configurations
+            get() = stack.value.configurations
 
-        private val RouterState<Config, *>.configurations: List<Config>
-            get() = backStack.map { it.configuration } + active.configuration
+        private val ChildStack<Config, *>.configurations: List<Config>
+            get() = items.map { it.configuration }
     }
 
     @Parcelize

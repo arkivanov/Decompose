@@ -14,7 +14,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.multipane.MultiPane.DetailsChild
 import com.arkivanov.sample.shared.multipane.MultiPane.ListChild
@@ -33,7 +33,7 @@ internal fun MultiPaneContent(component: MultiPane, modifier: Modifier = Modifie
 
         Row(modifier = Modifier.fillMaxSize()) {
             ListPane(
-                routerState = component.listRouterState,
+                stack = component.listChildStack,
                 modifier = Modifier.weight(if (isMultiPane) LIST_PANE_WEIGHT else 1F),
             )
 
@@ -48,7 +48,7 @@ internal fun MultiPaneContent(component: MultiPane, modifier: Modifier = Modifie
             }
 
             DetailsPane(
-                routerState = component.detailsRouterState,
+                stack = component.detailsChildStack,
                 modifier = Modifier.weight(if (isMultiPane) DETAILS_PANE_WEIGHT else 1F),
             )
         }
@@ -64,9 +64,9 @@ internal fun MultiPaneContent(component: MultiPane, modifier: Modifier = Modifie
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
-private fun ListPane(routerState: Value<RouterState<*, ListChild>>, modifier: Modifier) {
+private fun ListPane(stack: Value<ChildStack<*, ListChild>>, modifier: Modifier) {
     Children(
-        routerState = routerState,
+        stack = stack,
         modifier = modifier,
         animation = stackAnimation(fade()),
     ) {
@@ -79,9 +79,9 @@ private fun ListPane(routerState: Value<RouterState<*, ListChild>>, modifier: Mo
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
-private fun DetailsPane(routerState: Value<RouterState<*, DetailsChild>>, modifier: Modifier) {
+private fun DetailsPane(stack: Value<ChildStack<*, DetailsChild>>, modifier: Modifier) {
     Children(
-        routerState = routerState,
+        stack = stack,
         modifier = modifier,
         animation = stackAnimation(fade()),
     ) {

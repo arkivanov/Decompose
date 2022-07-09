@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.counters.CountersContent
@@ -32,12 +32,12 @@ import com.arkivanov.sample.shared.root.Root.Child.MultiPaneChild
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun RootContent(root: Root, modifier: Modifier = Modifier) {
-    val routerState by root.routerState.subscribeAsState()
-    val activeComponent = routerState.active.instance
+    val childStack by root.childStack.subscribeAsState()
+    val activeComponent = childStack.active.instance
 
     Column(modifier = modifier) {
         Children(
-            routerState = routerState,
+            stack = childStack,
             modifier = Modifier.weight(weight = 1F),
         ) {
             when (val child = it.instance) {
@@ -94,9 +94,9 @@ internal fun RootContentPreview() {
 }
 
 internal class RootPreview : Root {
-    override val routerState: Value<RouterState<*, Root.Child>> =
+    override val childStack: Value<ChildStack<*, Root.Child>> =
         MutableValue(
-            RouterState(
+            ChildStack(
                 configuration = Unit,
                 instance = CountersChild(component = CountersPreview()),
             )

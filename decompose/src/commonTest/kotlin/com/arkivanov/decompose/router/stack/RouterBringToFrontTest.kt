@@ -12,7 +12,7 @@ class RouterBringToFrontTest {
 
         router.bringToFront(Config.C(0))
 
-        assertEquals(listOf(Config.A, Config.B, Config.C(0)), router.stack)
+        assertEquals(listOf(Config.A, Config.B, Config.C(0)), router.configs)
     }
 
     @Test
@@ -21,7 +21,7 @@ class RouterBringToFrontTest {
 
         router.bringToFront(Config.C(0))
 
-        assertEquals(listOf(Config.A, Config.B, Config.C(0)), router.stack)
+        assertEquals(listOf(Config.A, Config.B, Config.C(0)), router.configs)
     }
 
     @Test
@@ -30,7 +30,7 @@ class RouterBringToFrontTest {
 
         router.bringToFront(Config.C(0))
 
-        assertEquals(listOf(Config.A, Config.B, Config.C(0)), router.stack)
+        assertEquals(listOf(Config.A, Config.B, Config.C(0)), router.configs)
     }
 
     @Test
@@ -39,7 +39,7 @@ class RouterBringToFrontTest {
 
         router.bringToFront(Config.C(0))
 
-        assertEquals(listOf(Config.A, Config.B, Config.C(0)), router.stack)
+        assertEquals(listOf(Config.A, Config.B, Config.C(0)), router.configs)
     }
 
     @Test
@@ -48,7 +48,7 @@ class RouterBringToFrontTest {
 
         router.bringToFront(Config.C(1))
 
-        assertEquals(listOf(Config.A, Config.B, Config.C(1)), router.stack)
+        assertEquals(listOf(Config.A, Config.B, Config.C(1)), router.configs)
     }
 
     @Test
@@ -57,7 +57,7 @@ class RouterBringToFrontTest {
 
         router.bringToFront(Config.C(1))
 
-        assertEquals(listOf(Config.A, Config.B, Config.C(1)), router.stack)
+        assertEquals(listOf(Config.A, Config.B, Config.C(1)), router.configs)
     }
 
     @Test
@@ -66,7 +66,7 @@ class RouterBringToFrontTest {
 
         router.bringToFront(Config.C(1))
 
-        assertEquals(listOf(Config.A, Config.B, Config.C(1)), router.stack)
+        assertEquals(listOf(Config.A, Config.B, Config.C(1)), router.configs)
     }
 
     @Test
@@ -75,7 +75,7 @@ class RouterBringToFrontTest {
 
         router.bringToFront(Config.C(1))
 
-        assertEquals(listOf(Config.A, Config.B, Config.C(1)), router.stack)
+        assertEquals(listOf(Config.A, Config.B, Config.C(1)), router.configs)
     }
 
     private sealed class Config {

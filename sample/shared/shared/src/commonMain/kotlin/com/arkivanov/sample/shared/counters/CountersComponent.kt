@@ -1,7 +1,7 @@
 package com.arkivanov.sample.shared.counters
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackRouter
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
@@ -23,7 +23,7 @@ internal class CountersComponent(
             childFactory = ::firstChild,
         )
 
-    override val firstRouterState: Value<RouterState<*, Counter>> get() = firstRouter.state
+    override val firstChildStack: Value<ChildStack<*, Counter>> get() = firstRouter.stack
 
     private val secondRouter: StackRouter<Config, Counter> =
         stackRouter(
@@ -32,7 +32,7 @@ internal class CountersComponent(
             childFactory = ::secondChild,
         )
 
-    override val secondRouterState: Value<RouterState<*, Counter>> get() = secondRouter.state
+    override val secondChildStack: Value<ChildStack<*, Counter>> get() = secondRouter.stack
 
     private fun firstChild(
         config: Config,

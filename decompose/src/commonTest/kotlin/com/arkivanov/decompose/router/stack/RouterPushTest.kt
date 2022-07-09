@@ -13,7 +13,7 @@ class RouterPushTest {
 
         router.push(3)
 
-        assertEquals(listOf(1, 2, 3), router.stack)
+        assertEquals(listOf(1, 2, 3), router.configs)
     }
 
     @Test

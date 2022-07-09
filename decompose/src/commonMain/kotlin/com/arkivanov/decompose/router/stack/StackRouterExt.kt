@@ -78,4 +78,4 @@ fun <C : Any> StackRouter<C, *>.bringToFront(configuration: C, onComplete: () ->
     )
 }
 
-val <C : Any, T : Any> StackRouter<C, T>.activeChild: Child.Created<C, T> get() = state.value.active
+val <C : Any, T : Any> StackRouter<C, T>.activeChild: Child.Created<C, T> get() = stack.value.active

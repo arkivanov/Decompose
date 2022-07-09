@@ -13,7 +13,7 @@ class RouterReplaceCurrentTest {
 
         router.replaceCurrent(4)
 
-        assertEquals(listOf(1, 2, 4), router.stack)
+        assertEquals(listOf(1, 2, 4), router.configs)
     }
 
     @Test

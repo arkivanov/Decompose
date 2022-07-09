@@ -1,7 +1,7 @@
 package com.arkivanov.sample.shared.multipane
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.observe
@@ -32,7 +32,7 @@ internal class MultiPaneComponent(
             onArticleSelected = ::onArticleSelected
         )
 
-    override val listRouterState: Value<RouterState<*, ListChild>> = listRouter.state
+    override val listChildStack: Value<ChildStack<*, ListChild>> = listRouter.stack
 
     private val detailsRouter =
         DetailsRouter(
@@ -42,7 +42,7 @@ internal class MultiPaneComponent(
             onFinished = ::closeDetailsAndShowList
         )
 
-    override val detailsRouterState: Value<RouterState<*, DetailsChild>> = detailsRouter.state
+    override val detailsChildStack: Value<ChildStack<*, DetailsChild>> = detailsRouter.stack
 
     init {
         backPressedHandler.register {
@@ -54,7 +54,7 @@ internal class MultiPaneComponent(
             }
         }
 
-        detailsRouter.state.observe(lifecycle) {
+        detailsRouter.stack.observe(lifecycle) {
             selectedArticleIdSubject.onNext(it.active.configuration.getArticleId())
         }
     }

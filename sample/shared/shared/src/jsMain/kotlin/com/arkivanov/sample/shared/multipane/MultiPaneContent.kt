@@ -24,8 +24,8 @@ private const val MULTI_PANE_WIDTH_THRESHOLD = 960
 
 val MultiPaneContent: FC<RProps<MultiPane>> = FC { props ->
     val model by props.component.models.useAsState()
-    val listRouterState by props.component.listRouterState.useAsState()
-    val detailsRouterState by props.component.detailsRouterState.useAsState()
+    val listChildStack by props.component.listChildStack.useAsState()
+    val detailsChildStack by props.component.detailsChildStack.useAsState()
 
     fun onWindowResized() {
         props.component.setMultiPane(window.innerWidth >= MULTI_PANE_WIDTH_THRESHOLD)
@@ -41,13 +41,13 @@ val MultiPaneContent: FC<RProps<MultiPane>> = FC { props ->
 
     if (model.isMultiPane) {
         DoublePane {
-            listChild = listRouterState.active.instance
-            detailsChild = detailsRouterState.active.instance
+            listChild = listChildStack.active.instance
+            detailsChild = detailsChildStack.active.instance
         }
     } else {
         SinglePane {
-            listChild = listRouterState.active.instance
-            detailsChild = detailsRouterState.active.instance
+            listChild = listChildStack.active.instance
+            detailsChild = detailsChildStack.active.instance
         }
     }
 }

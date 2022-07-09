@@ -13,7 +13,7 @@ class RouterPopWhileTest {
 
         router.popWhile { it != 2 }
 
-        assertEquals(listOf(1, 2), router.stack)
+        assertEquals(listOf(1, 2), router.configs)
     }
 
     @Test

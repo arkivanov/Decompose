@@ -22,7 +22,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
@@ -106,9 +106,9 @@ class ChildrenTest(
         }
     }
 
-    private suspend fun setContent(state: State<RouterState<Config, Config>>) {
+    private suspend fun setContent(state: State<ChildStack<Config, Config>>) {
         composeRule.setContent {
-            Children(routerState = state.value, animation = animation) { child ->
+            Children(stack = state.value, animation = animation) { child ->
                 when (child.configuration) {
                     Config.A -> Child(name = "A")
                     Config.B -> Child(name = "B")
@@ -119,8 +119,8 @@ class ChildrenTest(
         runOnIdle {}
     }
 
-    private fun routerState(activeConfig: Config, backstack: List<Config> = emptyList()): RouterState<Config, Config> =
-        RouterState(
+    private fun routerState(activeConfig: Config, backstack: List<Config> = emptyList()): ChildStack<Config, Config> =
+        ChildStack(
             active = Child.Created(configuration = activeConfig, instance = activeConfig),
             backStack = backstack.map { Child.Destroyed(configuration = it) },
         )

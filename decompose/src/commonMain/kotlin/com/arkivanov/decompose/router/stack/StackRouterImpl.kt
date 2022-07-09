@@ -21,7 +21,7 @@ internal class StackRouterImpl<C : Any, T : Any>(
     }
 
     private val onBackPressedHandler = ::onBackPressed
-    override val state: MutableValue<RouterState<C, T>> = MutableValue(stackHolder.stack.toState())
+    override val stack: MutableValue<ChildStack<C, T>> = MutableValue(stackHolder.stack.toState())
     private val queue = SerializedQueue(::navigateActual)
 
     init {
@@ -41,7 +41,7 @@ internal class StackRouterImpl<C : Any, T : Any>(
         val oldStack = stackHolder.stack
         val newStack = navigator.navigate(oldStack = oldStack, transformer = item.transformer)
         stackHolder.stack = newStack
-        state.value = newStack.toState()
+        stack.value = newStack.toState()
         item.onComplete(newStack.configurationStack, oldStack.configurationStack)
     }
 
@@ -57,13 +57,13 @@ internal class StackRouterImpl<C : Any, T : Any>(
             else -> false
         }
 
-    private fun RouterStack<C, T>.toState(): RouterState<C, T> =
-        RouterState(
+    private fun RouterStack<C, T>.toState(): ChildStack<C, T> =
+        ChildStack(
             active = Child.Created(configuration = active.configuration, instance = active.instance),
-            backStack = backStack.map { it.toRouterStateEntry() }
+            backStack = backStack.map { it.toChild() }
         )
 
-    private fun RouterEntry<C, T>.toRouterStateEntry(): Child<C, T> =
+    private fun RouterEntry<C, T>.toChild(): Child<C, T> =
         when (this) {
             is RouterEntry.Created -> Child.Created(configuration = configuration, instance = instance)
             is RouterEntry.Destroyed -> Child.Destroyed(configuration = configuration)

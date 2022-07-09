@@ -6,17 +6,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 
 /**
- * Tracks the [RouterState] changes and animates between child widget.
+ * Tracks the [ChildStack] changes and animates between child widget.
  */
 @ExperimentalDecomposeApi
 interface StackAnimation<C : Any, T : Any> {
 
     @Composable
     operator fun invoke(
-        state: RouterState<C, T>,
+        stack: ChildStack<C, T>,
         modifier: Modifier,
         content: @Composable (child: Child.Created<C, T>) -> Unit,
     )
@@ -30,7 +30,7 @@ interface StackAnimation<C : Any, T : Any> {
 @ExperimentalDecomposeApi
 inline fun <C : Any, T : Any> StackAnimation(
     crossinline content: @Composable (
-        state: RouterState<C, T>,
+        stack: ChildStack<C, T>,
         modifier: Modifier,
         content: @Composable (child: Child.Created<C, T>) -> Unit,
     ) -> Unit
@@ -38,11 +38,11 @@ inline fun <C : Any, T : Any> StackAnimation(
     object : StackAnimation<C, T> {
         @Composable
         override operator fun invoke(
-            state: RouterState<C, T>,
+            stack: ChildStack<C, T>,
             modifier: Modifier,
             content: @Composable (child: Child.Created<C, T>) -> Unit,
         ) {
-            content(state, modifier, content)
+            content(stack, modifier, content)
         }
     }
 

@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.root
 
-import com.arkivanov.decompose.router.stack.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.counters.Counters
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeatures
@@ -8,7 +8,7 @@ import com.arkivanov.sample.shared.multipane.MultiPane
 
 interface Root {
 
-    val routerState: Value<RouterState<*, Child>>
+    val childStack: Value<ChildStack<*, Child>>
 
     fun onCountersTabClicked()
     fun onMultiPaneTabClicked()
