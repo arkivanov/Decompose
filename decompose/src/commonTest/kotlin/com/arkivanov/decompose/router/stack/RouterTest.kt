@@ -50,10 +50,10 @@ class RouterTest {
         val config1 = Config()
         val config2 = Config()
         val config3 = Config()
-        val navigator = TestStackNavigator()
-        val router = router(initialStack = listOf(config1), navigator = navigator)
+        val controller = TestStackController()
+        val router = router(initialStack = listOf(config1), controller = controller)
 
-        navigator.onNavigate =
+        controller.onNavigate =
             { newConfigs ->
                 if (newConfigs == listOf(config2)) {
                     router.navigate { listOf(config3) }
@@ -71,11 +71,11 @@ class RouterTest {
         val config1 = Config()
         val config2 = Config()
         val config3 = Config()
-        val navigator = TestStackNavigator()
-        val router = router(initialStack = listOf(config1), navigator = navigator)
+        val controller = TestStackController()
+        val router = router(initialStack = listOf(config1), controller = controller)
 
         var isCalledSynchronously = false
-        navigator.onNavigate =
+        controller.onNavigate =
             { newConfigs ->
                 if (newConfigs == listOf(config2)) {
                     var isCalled = false
@@ -97,12 +97,12 @@ class RouterTest {
         val config1 = Config()
         val config2 = Config()
         val config3 = Config()
-        val navigator = TestStackNavigator()
-        val router = router(initialStack = listOf(config1), navigator = navigator)
+        val controller = TestStackController()
+        val router = router(initialStack = listOf(config1), controller = controller)
 
         var resultNewStack: List<Config>? = null
         var resultOldStack: List<Config>? = null
-        navigator.onNavigate =
+        controller.onNavigate =
             { newConfigs ->
                 if (newConfigs == listOf(config2)) {
                     router.navigate(transformer = { listOf(config3) }) { newStack, oldStack ->
@@ -120,14 +120,14 @@ class RouterTest {
 
     private fun router(
         initialStack: List<Config>,
-        navigator: TestStackNavigator = TestStackNavigator(),
+        controller: TestStackController = TestStackController(),
     ): StackRouter<Config, Config> =
         StackRouterImpl(
             lifecycle = LifecycleRegistry(),
             backPressedHandler = BackPressedDispatcher(),
             popOnBackPressed = false,
             stackHolder = TestStackHolder(routerStack(initialStack)),
-            navigator = navigator,
+            controller = controller,
         )
 
     private companion object {
@@ -160,13 +160,10 @@ class RouterTest {
         override var stack: RouterStack<Config, Config>
     ) : StackHolder<Config, Config>
 
-    private class TestStackNavigator : StackNavigator<Config, Config> {
+    private class TestStackController : StackController<Config, Config> {
         var onNavigate: (newConfigs: List<Config>) -> Unit = {}
 
-        override fun navigate(
-            oldStack: RouterStack<Config, Config>,
-            transformer: (stack: List<Config>) -> List<Config>
-        ): RouterStack<Config, Config> {
+        override fun navigate(oldStack: RouterStack<Config, Config>, transformer: (stack: List<Config>) -> List<Config>): RouterStack<Config, Config> {
             val oldConfigs = oldStack.configurationStack
             val newConfigs = transformer(oldConfigs)
             onNavigate(newConfigs)

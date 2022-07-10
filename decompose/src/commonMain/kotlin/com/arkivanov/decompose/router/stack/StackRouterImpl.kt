@@ -13,7 +13,7 @@ internal class StackRouterImpl<C : Any, T : Any>(
     private val backPressedHandler: BackPressedHandler,
     private val popOnBackPressed: Boolean,
     private val stackHolder: StackHolder<C, T>,
-    private val navigator: StackNavigator<C, T>,
+    private val controller: StackController<C, T>,
 ) : StackRouter<C, T> {
 
     init {
@@ -39,7 +39,7 @@ internal class StackRouterImpl<C : Any, T : Any>(
 
     private fun navigateActual(item: NavigationItem<C>) {
         val oldStack = stackHolder.stack
-        val newStack = navigator.navigate(oldStack = oldStack, transformer = item.transformer)
+        val newStack = controller.navigate(oldStack = oldStack, transformer = item.transformer)
         stackHolder.stack = newStack
         stack.value = newStack.toState()
         item.onComplete(newStack.configurationStack, oldStack.configurationStack)

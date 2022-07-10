@@ -6,9 +6,9 @@ import com.arkivanov.essenty.lifecycle.pause
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.stop
 
-internal class StackNavigatorImpl<C : Any, T : Any>(
+internal class StackControllerImpl<C : Any, T : Any>(
     private val routerEntryFactory: RouterEntryFactory<C, T>
-) : StackNavigator<C, T> {
+) : StackController<C, T> {
 
     override fun navigate(oldStack: RouterStack<C, T>, transformer: (stack: List<C>) -> List<C>): RouterStack<C, T> {
         val oldConfigurationStack = oldStack.configurationStack

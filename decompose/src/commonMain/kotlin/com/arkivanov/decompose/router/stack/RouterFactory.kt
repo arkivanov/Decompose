@@ -41,7 +41,7 @@ fun <C : Parcelable, T : Any> ComponentContext.stackRouter(
             instanceKeeper = instanceKeeper,
             routerEntryFactory = routerEntryFactory
         ),
-        navigator = StackNavigatorImpl(routerEntryFactory = routerEntryFactory),
+        controller = StackControllerImpl(routerEntryFactory = routerEntryFactory),
     )
 }
 
