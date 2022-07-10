@@ -10,39 +10,38 @@ class RouterPopTest {
 
     @Test
     fun GIVEN_stack_size_2_WHEN_pop_THEN_popped() {
-        val router = TestRouter(listOf(Config.A, Config.B))
+        val navigator = TestStackNavigator(listOf(Config.A, Config.B))
 
-        router.pop()
+        navigator.pop()
 
-        assertEquals(listOf(Config.A), router.configs)
+        assertEquals(listOf(Config.A), navigator.configurations)
     }
 
     @Test
     fun GIVEN_stack_size_2_WHEN_pop_THEN_onComplete_success() {
-        val router = TestRouter(listOf(Config.A, Config.B))
+        val navigator = TestStackNavigator(listOf(Config.A, Config.B))
         var isSuccess = false
 
-        router.pop { isSuccess = it }
+        navigator.pop { isSuccess = it }
 
         assertTrue(isSuccess)
     }
 
     @Test
     fun GIVEN_stack_size_1_WHEN_pop_THEN_not_popped() {
-        val router = TestRouter(listOf(Config.A))
+        val navigator = TestStackNavigator(listOf(Config.A))
 
-        router.pop()
+        navigator.pop()
 
-        assertEquals(listOf(Config.A), router.configs)
+        assertEquals(listOf(Config.A), navigator.configurations)
     }
-
 
     @Test
     fun GIVEN_stack_size_1_WHEN_pop_THEN_onComplete_not_success() {
-        val router = TestRouter(listOf(Config.A))
+        val navigator = TestStackNavigator(listOf(Config.A))
         var isSuccess = true
 
-        router.pop { isSuccess = it }
+        navigator.pop { isSuccess = it }
 
         assertFalse(isSuccess)
     }
