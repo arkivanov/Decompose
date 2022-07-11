@@ -417,7 +417,8 @@ class DefaultWebHistoryControllerTest {
 
     private fun attach(router: TestStackRouter<Config>) {
         controller.attach(
-            router = router,
+            navigator = router,
+            stack = router.stack,
             getPath = { "/${it.value}" },
             getConfiguration = { Config(it.removePrefix("/").toInt()) },
         )

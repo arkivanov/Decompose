@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.router.stack
 
 /**
- * A convenience method for [StackRouter.navigate].
+ * A convenience method for [StackNavigator.navigate].
  */
 fun <C : Any> StackNavigator<C>.navigate(transformer: (stack: List<C>) -> List<C>) {
     navigate(transformer = transformer, onComplete = { _, _ -> })

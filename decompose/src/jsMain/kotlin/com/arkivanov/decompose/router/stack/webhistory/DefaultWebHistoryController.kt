@@ -3,10 +3,11 @@ package com.arkivanov.decompose.router.stack.webhistory
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.findFirstDifferentIndex
 import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.decompose.router.stack.StackRouter
+import com.arkivanov.decompose.router.stack.StackNavigator
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.startsWith
 import com.arkivanov.decompose.router.subscribe
+import com.arkivanov.decompose.value.Value
 import org.w3c.dom.PopStateEvent
 
 @ExperimentalDecomposeApi
@@ -18,17 +19,18 @@ class DefaultWebHistoryController internal constructor(
     constructor() : this(WindowImpl())
 
     override fun <C : Any> attach(
-        router: StackRouter<C, *>,
+        navigator: StackNavigator<C>,
+        stack: Value<ChildStack<C, *>>,
         getPath: (configuration: C) -> String,
-        getConfiguration: (path: String) -> C,
+        getConfiguration: (path: String) -> C
     ) {
-        val impl = Impl(router, window, getPath, getConfiguration)
-        router.stack.subscribe(impl::onStackChanged)
+        val impl = Impl(navigator, window, getPath, getConfiguration)
+        stack.subscribe(impl::onStackChanged)
         window.onPopState = impl::onPopState
     }
 
     private class Impl<in C : Any>(
-        private val router: StackRouter<C, *>,
+        private val navigator: StackNavigator<C>,
         private val window: Window,
         private val getPath: (C) -> String,
         private val getConfiguration: (String) -> C,
@@ -122,7 +124,7 @@ class DefaultWebHistoryController internal constructor(
 
             isStateObserverEnabled = false
 
-            router.navigate { stack ->
+            navigator.navigate { stack ->
                 val indexInStack = stack.indexOfLast { it.hashCode() == newConfigurationKey }
                 if (indexInStack >= 0) {
                     // History popped, pop from the Router

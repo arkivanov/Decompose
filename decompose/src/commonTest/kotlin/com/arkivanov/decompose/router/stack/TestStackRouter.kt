@@ -4,10 +4,10 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 
-class TestStackRouter<C : Any>(stack: List<C>) : TestStackNavigator<C>(stack), StackRouter<C, Any> {
+class TestStackRouter<C : Any>(stack: List<C>) : TestStackNavigator<C>(stack) {
 
     private val _stack = MutableValue(stack.toRouterState())
-    override val stack: Value<ChildStack<C, Any>> = _stack
+    val stack: Value<ChildStack<C, Any>> = _stack
 
     override fun onConfigurationsChanged(configurations: List<C>) {
         super.onConfigurationsChanged(configurations)
