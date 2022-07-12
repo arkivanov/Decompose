@@ -20,12 +20,12 @@ abstract class Value<out T : Any> {
      *
      * Should be accessed on the Main thread.
      */
-    abstract fun subscribe(observer: ValueObserver<T>)
+    abstract fun subscribe(observer: (T) -> Unit)
 
     /**
      * Unsubscribes the provided [observer] from value updates.
      *
      * Should be accessed on the Main thread.
      */
-    abstract fun unsubscribe(observer: ValueObserver<T>)
+    abstract fun unsubscribe(observer: (T) -> Unit)
 }
