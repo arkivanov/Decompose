@@ -7,8 +7,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -22,11 +25,19 @@ import com.arkivanov.sample.shared.utils.orientation
 @Composable
 internal fun CountersContent(component: Counters, modifier: Modifier = Modifier) {
     ColumnOrRow(modifier = modifier) {
-        Children(stack = component.firstChildStack) {
+        Children(
+            stack = component.firstChildStack,
+            modifier = Modifier.clipToBounds(),
+            animation = stackAnimation(slide()),
+        ) {
             CounterContent(component = it.instance)
         }
 
-        Children(stack = component.secondChildStack) {
+        Children(
+            stack = component.secondChildStack,
+            modifier = Modifier.clipToBounds(),
+            animation = stackAnimation(slide()),
+        ) {
             CounterContent(component = it.instance)
         }
     }
