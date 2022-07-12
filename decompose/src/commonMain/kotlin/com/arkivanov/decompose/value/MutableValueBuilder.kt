@@ -15,18 +15,18 @@ private class MutableValueImpl<T : Any>(initialValue: T) : MutableValue<T>() {
         ensureNeverFrozen()
     }
 
-    private var observers = emptySet<ValueObserver<T>>()
+    private var observers = emptySet<(T) -> Unit>()
 
     override var value: T by Delegates.observable(initialValue) { _, _, value ->
         observers.forEach { it(value) }
     }
 
-    override fun subscribe(observer: ValueObserver<T>) {
+    override fun subscribe(observer: (T) -> Unit) {
         observers = observers + observer
         observer(value)
     }
 
-    override fun unsubscribe(observer: ValueObserver<T>) {
+    override fun unsubscribe(observer: (T) -> Unit) {
         observers = observers - observer
     }
 }
