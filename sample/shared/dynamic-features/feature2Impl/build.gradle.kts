@@ -2,6 +2,10 @@ import com.arkivanov.gradle.bundle
 import com.arkivanov.gradle.iosCompat
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupSourceSets
+import org.jetbrains.compose.ComposeCompilerKotlinSupportPlugin
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
 plugins {
     id("kotlin-multiplatform")
@@ -54,7 +58,15 @@ kotlin {
 
 compose.web.targets()
 
-configurations.all {
-    // Exclude native Compose compiler
-    exclude("org.jetbrains.compose.compiler", "compiler-hosted")
+plugins.removeAll { it is ComposeCompilerKotlinSupportPlugin }
+
+class ComposeNoNativePlugin : KotlinCompilerPluginSupportPlugin by ComposeCompilerKotlinSupportPlugin() {
+    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
+        return when (kotlinCompilation.target.platformType) {
+            KotlinPlatformType.native -> false
+            else -> ComposeCompilerKotlinSupportPlugin().isApplicable(kotlinCompilation)
+        }
+    }
 }
+
+apply<ComposeNoNativePlugin>()

@@ -39,6 +39,8 @@ class TestStateKeeperDispatcher(
         suppliers -= key
     }
 
+    override fun isRegistered(key: String): Boolean = key in suppliers
+
     fun assertSupplierRegistered(key: String) {
         assertTrue(key in suppliers)
     }
