@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.value
 
+import com.arkivanov.decompose.Relay
 import com.arkivanov.decompose.ensureNeverFrozen
 import kotlin.properties.Delegates
 
@@ -15,18 +16,15 @@ private class MutableValueImpl<T : Any>(initialValue: T) : MutableValue<T>() {
         ensureNeverFrozen()
     }
 
-    private var observers = emptySet<(T) -> Unit>()
-
-    override var value: T by Delegates.observable(initialValue) { _, _, value ->
-        observers.forEach { it(value) }
-    }
+    private val relay = Relay<T>()
+    override var value: T by Delegates.observable(initialValue) { _, _, value -> relay.accept(value) }
 
     override fun subscribe(observer: (T) -> Unit) {
-        observers = observers + observer
+        relay.subscribe(observer)
         observer(value)
     }
 
     override fun unsubscribe(observer: (T) -> Unit) {
-        observers = observers - observer
+        relay.unsubscribe(observer)
     }
 }

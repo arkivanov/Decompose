@@ -1,25 +1,28 @@
 package com.arkivanov.decompose.router.stack.webhistory
 
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.router.stack.StackRouter
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigator
+import com.arkivanov.decompose.value.Value
 
 /**
- * Connects the [StackRouter] and the Web [History](https://developer.mozilla.org/en-US/docs/Web/API/History) API together.
+ * Connects the child stack and the Web [History](https://developer.mozilla.org/en-US/docs/Web/API/History) API together.
  */
 @ExperimentalDecomposeApi
 interface WebHistoryController {
 
-
     /**
-     * Listens for the [StackRouter] state changes and updates the Web [History](https://developer.mozilla.org/en-US/docs/Web/API/History)
-     * accordingly. Also listens for the `History` changes and navigates the [StackRouter].
+     * Listens for the [ChildStack] changes and updates the Web [History](https://developer.mozilla.org/en-US/docs/Web/API/History)
+     * accordingly. Also listens for the `History` changes and manipulates the [StackNavigator].
      *
-     * @param router a [StackRouter] that should be observed and manipulated
-     * @param getPath a mapper from the [StackRouter] configuration to a corresponding Web page path (starting from '/')
-     * @param getConfiguration a mapper from the Web page path (starting from '/') to a corresponding [StackRouter] configuration
+     * @param navigator a [StackNavigator] that should be manipulated
+     * @param stack an observable [ChildStack]
+     * @param getPath a mapper from the configuration to a corresponding Web page path (starting from '/')
+     * @param getConfiguration a mapper from the Web page path (starting from '/') to a corresponding configuration
      */
     fun <C : Any> attach(
-        router: StackRouter<C, *>,
+        navigator: StackNavigator<C>,
+        stack: Value<ChildStack<C, *>>,
         getPath: (configuration: C) -> String,
         getConfiguration: (path: String) -> C
     )

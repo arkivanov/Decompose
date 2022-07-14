@@ -3,49 +3,49 @@ package com.arkivanov.decompose.router.stack
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.SerializedQueue
 import com.arkivanov.decompose.ensureNeverFrozen
+import com.arkivanov.decompose.router.stack.StackNavigationSource.Event
 import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backpressed.BackPressedHandler
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 
-internal class StackRouterImpl<C : Any, T : Any>(
+internal class ChildStackController<out C : Any, out T : Any>(
+    private val source: StackNavigationSource<C>,
     lifecycle: Lifecycle,
     private val backPressedHandler: BackPressedHandler,
     private val popOnBackPressed: Boolean,
     private val stackHolder: StackHolder<C, T>,
     private val controller: StackController<C, T>,
-) : StackRouter<C, T> {
+) {
 
     init {
         ensureNeverFrozen()
     }
 
-    private val onBackPressedHandler = ::onBackPressed
-    override val stack: MutableValue<ChildStack<C, T>> = MutableValue(stackHolder.stack.toState())
     private val queue = SerializedQueue(::navigateActual)
+    private val _stack = MutableValue(stackHolder.stack.toState())
+    val stack: Value<ChildStack<C, T>> get() = _stack
 
     init {
+        val eventObserver = queue::offer
+        source.subscribe(eventObserver)
+
+        val onBackPressedHandler = ::onBackPressed
         backPressedHandler.register(onBackPressedHandler)
-        lifecycle.doOnDestroy(::destroy)
+
+        lifecycle.doOnDestroy {
+            backPressedHandler.unregister(onBackPressedHandler)
+            source.unsubscribe(eventObserver)
+        }
     }
 
-    private fun destroy() {
-        backPressedHandler.unregister(onBackPressedHandler)
-    }
-
-    override fun navigate(
-        transformer: (stack: List<C>) -> List<C>,
-        onComplete: (newStack: List<C>, oldStack: List<C>) -> Unit
-    ) {
-        queue.offer(NavigationItem(transformer = transformer, onComplete = onComplete))
-    }
-
-    private fun navigateActual(item: NavigationItem<C>) {
+    private fun navigateActual(event: Event<C>) {
         val oldStack = stackHolder.stack
-        val newStack = controller.navigate(oldStack = oldStack, transformer = item.transformer)
+        val newStack = controller.navigate(oldStack = oldStack, transformer = event.transformer)
         stackHolder.stack = newStack
-        stack.value = newStack.toState()
-        item.onComplete(newStack.configurationStack, oldStack.configurationStack)
+        _stack.value = newStack.toState()
+        event.onComplete(newStack.configurationStack, oldStack.configurationStack)
     }
 
     private fun onBackPressed(): Boolean =
@@ -53,7 +53,7 @@ internal class StackRouterImpl<C : Any, T : Any>(
             stackHolder.stack.active.backPressedDispatcher.onBackPressed() -> true
 
             popOnBackPressed && stackHolder.stack.backStack.isNotEmpty() -> {
-                pop()
+                queue.offer(Event(transformer = { it.dropLast(1) }))
                 true
             }
 
@@ -71,9 +71,4 @@ internal class StackRouterImpl<C : Any, T : Any>(
             is RouterEntry.Created -> Child.Created(configuration = configuration, instance = instance)
             is RouterEntry.Destroyed -> Child.Destroyed(configuration = configuration)
         }
-
-    private class NavigationItem<C : Any>(
-        val transformer: (stack: List<C>) -> List<C>,
-        val onComplete: (newStack: List<C>, oldStack: List<C>) -> Unit,
-    )
 }
