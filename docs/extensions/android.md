@@ -38,12 +38,12 @@ The following `ViewContext` [extensions](https://github.com/arkivanov/Decompose/
 
 [DefaultViewContext](https://github.com/arkivanov/Decompose/blob/master/extensions-android/src/main/java/com/arkivanov/decompose/extensions/android/DefaultViewContext.kt) - is a default implementation of `ViewContext`, which can be used to manually create new instances when needed.
 
-### RouterView
+### StackRouterView
 
-[RouterView](https://github.com/arkivanov/Decompose/blob/master/extensions-android/src/main/java/com/arkivanov/decompose/extensions/android/RouterView.kt) is an Android `ViewGroup` which observes the `Router` and manages child views. Once `RouterView` is added to the view hierarchy, just call its `children(...)` method with the following arguments:
+[StackRouterView](https://github.com/arkivanov/Decompose/blob/master/extensions-android/src/main/java/com/arkivanov/decompose/extensions/android/stack/StackRouterView.kt) is an Android `ViewGroup` which observes the `Child Stack` and manages child views. Once `StackRouterView` is added to the view hierarchy, just call its `children(...)` method with the following arguments:
 
-- `routerState` - the observable `Value` of `RouterState`, typically the `Router.state` property
-- `lifecycle` - the lifecycle of the `RouterView` or its closest parent
+- `stack` - the observable `Value` of `ChildStack`
+- `lifecycle` - the lifecycle of the `StackRouterView` or its closest parent
 - `replaceChildView` - a function which replaces a currently active child view with a new one, this is also the place where transitions can be applied
 
 ## Examples
@@ -93,13 +93,13 @@ fun ViewContext.CounterView(counter: Counter): View {
 }
 ```
 
-`RouterView` example:
+`StackRouterView` example:
 
 ```kotlin
 fun ViewContext.CounterRootView(counterRoot: CounterRoot): View {
     val layout = layoutInflater.inflate(R.layout.counter_root, parent, false)
     val nextButton: View = layout.findViewById(R.id.button_next)
-    val router: RouterView = layout.findViewById(R.id.router)
+    val routerView: StackRouterView = layout.findViewById(R.id.router)
 
     nextButton.setOnClickListener { counterRoot.onNextChild() }
 
@@ -109,8 +109,8 @@ fun ViewContext.CounterRootView(counterRoot: CounterRoot): View {
         CounterView(counterRoot.counter)
     }
 
-    // Subscribe the `RouterView` to the `Router`
-    router.children(counterRoot.routerState, lifecycle) { parent, child, _ ->
+    // Subscribe the `StackRouterView` to the `ChildStack` changes
+    routerView.children(counterRoot.childStack, lifecycle) { parent, child, _ ->
         // Remove all existing views
         parent.removeAllViews()
 

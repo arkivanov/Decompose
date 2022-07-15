@@ -22,21 +22,21 @@ class DefaultAppComponentContext(
 }
 ```
 
-## How to create router with custom ComponentContext
+## How to initialize Child Stack with custom ComponentContext
 
-In order to pass this `AppComponentContext` to other components in an application from the `Router`,
-make an extension function on the `AppComponentContext` interface. This custom extension function will
-create the `Router` and provide child `AppComponentContext`.
+In order to pass this `AppComponentContext` to child components, make an extension function on the `AppComponentContext` interface. This custom extension function will initialize the `Child Stack` and provide child `AppComponentContext`.
 
 ```kotlin
-fun <C : Parcelable, T : Any> AppComponentContext.appRouter(
+fun <C : Parcelable, T : Any> AppComponentContext.appChildStack(
+    source: StackNavigationSource<C>,
     initialStack: () -> List<C>,
     configurationClass: KClass<out C>,
-    key: String = "DefaultRouter",
+    key: String = "DefaultStack",
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, AppComponentContext) -> T
-): Router<C, T> =
-    router(
+): Value<ChildStack<C, T>> =
+    childStack(
+        source = source,
         initialStack = initialStack,
         configurationClass = configurationClass,
         key = key,
@@ -49,14 +49,33 @@ fun <C : Parcelable, T : Any> AppComponentContext.appRouter(
             )
         )
     }
+
+inline fun <reified C : Parcelable, T : Any> AppComponentContext.appChildStack(
+    source: StackNavigationSource<C>,
+    noinline initialStack: () -> List<C>,
+    key: String = "DefaultStack",
+    handleBackButton: Boolean = false,
+    noinline childFactory: (configuration: C, AppComponentContext) -> T
+): Value<ChildStack<C, T>> =
+    appChildStack(
+        source = source,
+        initialStack = initialStack,
+        configurationClass = C::class,
+        key = key,
+        handleBackButton = handleBackButton,
+        childFactory = childFactory,
+    )
 ```
 
-Finally, in your components you can create a new router that will utilize the new custom component context. 
+Finally, in your components you can create the new extension function that will utilize the new custom `AppComponentContext`.
 
 ```kotlin
-class MyComponent(componentContext: AppComponentContext): AppComponentContext by componentContext {
+class MyComponent(componentContext: AppComponentContext) : AppComponentContext by componentContext {
 
-    private val router = appRouter(
+    private val navigation = StackNavigation<Configuration>()
+
+    private val childStack = appChildStack(
+        source = navigation,
         initialStack = { listOf(Configuration.Home) },
         childFactory = { configuration, appComponentContext ->
             // return child components using the custom component context

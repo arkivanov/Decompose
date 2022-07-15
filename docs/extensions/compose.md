@@ -91,12 +91,11 @@ fun main() {
 
 ### Navigating between Composable components
 
-The [Router](https://arkivanov.github.io/Decompose/router/overview/) provides
-the [RouterState](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/RouterState.kt) as `Value<RouterState>` which can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `Router`.
+The [Child Stack](https://arkivanov.github.io/Decompose/child-stack/overview/) feature provides [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) as `Value<ChildStack>` that can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `ChildStack` changes.
 
-Both Compose extension modules provide the [Children(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-jetpack/src/main/java/com/arkivanov/decompose/extensions/compose/jetpack/Children.kt) function which has the following features:
+Both Compose extension modules provide the [Children(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-jetbrains/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/jetbrains/stack/Children.kt) function which has the following features:
 
-- It listens for the `RouterState` changes and displays the corresponding child `Composable` component using the provided slot lambda.
+- It listens for the `ChildStack` changes and displays the corresponding child `Composable` component using the provided slot lambda.
 - It preserves components' UI state (e.g. scrolling position) in the back stack and over configuration changes and process death.
 - It animates between children if there is an `animation` spec provided.
 
@@ -106,7 +105,7 @@ Here is an example of switching child components on navigation:
 // Root
 
 interface RootComponent {
-    val routerState: Value<RouterState<*, Child>>
+    val childStack: Value<ChildStack<*, Child>>
 
     sealed class Child {
         data class Main(val component: MainComponent) : Child()
@@ -116,7 +115,7 @@ interface RootComponent {
 
 @Composable
 fun RootContent(rootComponent: RootComponent) {
-    Children(rootComponent.routerState) {
+    Children(rootComponent.childStack) {
         when (val child = it.instance) {
             is RootComponent.Child.Main -> MainContent(child.component)
             is RootComponent.Child.Details -> DetailsContent(child.component)
@@ -151,8 +150,8 @@ Decompose provides the [Child Animation API](https://github.com/arkivanov/Decomp
 @Composable
 fun RootContent(rootComponent: RootComponent) {
     Children(
-        routerState = rootComponent.routerState,
-        animation = childAnimation(fade())
+        stack = rootComponent.childStack,
+        animation = childAnimation(fade()),
     ) {
         // Omitted code
     }
@@ -167,8 +166,8 @@ fun RootContent(rootComponent: RootComponent) {
 @Composable
 fun RootContent(rootComponent: RootComponent) {
     Children(
-        routerState = rootComponent.routerState,
-        animation = childAnimation(slide())
+        stack = rootComponent.childStack,
+        animation = childAnimation(slide()),
     ) {
         // Omitted code
     }
@@ -185,7 +184,7 @@ It is also possible to combine animators using the `plus` operator. Please note 
 @Composable
 fun RootContent(rootComponent: RootComponent) {
     Children(
-        routerState = rootComponent.routerState,
+        stack = rootComponent.childStack,
         animation = childAnimation(fade() + scale())
     ) {
         // Omitted code
@@ -203,7 +202,7 @@ Previous examples demonstrate simple cases, when all children have the same anim
 @Composable
 fun RootContent(rootComponent: RootComponent) {
     Children(
-        routerState = rootComponent.routerState,
+        stack = rootComponent.childStack,
         animation = childAnimation { child, direction ->
             when (child.instance) {
                 is RootComponent.Child.Main -> fade() + scale()
@@ -222,35 +221,35 @@ fun RootContent(rootComponent: RootComponent) {
 
 It is also possible to define custom animations.
 
-Implementing `ChildAnimation` manually. This is the most flexible low-level API. The animation block receives the current `RouterState` and animates children using the provided `content` slot.
+Implementing `ChildAnimation` manually. This is the most flexible low-level API. The animation block receives the current `ChildStack` and animates children using the provided `content` slot.
 
 ```kotlin
 @Composable
 fun RootContent(rootComponent: RootComponent) {
     Children(
-        routerState = rootComponent.routerState,
-        animation = someAnimation()
+        stack = rootComponent.childStack,
+        animation = someAnimation(),
     ) {
         // Omitted code
     }
 }
 
 fun <C : Any, T : Any> someAnimation(): ChildAnimation<C, T> =
-    ChildAnimation { routerState: RouterState<C, T>,
+    ChildAnimation { stack: ChildStack<C, T>,
                      modifier: Modifier,
                      content: @Composable (Child.Created<C, T>) -> Unit ->
         // Render each frame here
     }
 ```
 
-Using the `childAnimation` helper function and implementing `ChildAnimator`. The `childAnimation` function takes care of tracking the `RouterState` changes. `ChildAnimator` is only responsible for manipulating the `Modifier` in the given `direction`, and calling `onFinished` at the end.
+Using the `childAnimation` helper function and implementing `ChildAnimator`. The `childAnimation` function takes care of tracking the `ChildStack` changes. `ChildAnimator` is only responsible for manipulating the `Modifier` in the given `direction`, and calling `onFinished` at the end.
 
 ```kotlin
 @Composable
 fun RootContent(rootComponent: RootComponent) {
     Children(
-        routerState = rootComponent.routerState,
-        animation = childAnimation(someAnimator())
+        stack = rootComponent.childStack,
+        animation = childAnimation(someAnimator()),
     ) {
         // Omitted code
     }
@@ -270,8 +269,8 @@ Using `childAnimation` and `childAnimator` helper functions. This is the simples
 @Composable
 fun RootContent(rootComponent: RootComponent) {
     Children(
-        routerState = rootComponent.routerState,
-        animation = childAnimation(someAnimator())
+        stack = rootComponent.childStack,
+        animation = childAnimation(someAnimator()),
     ) {
         // Omitted code
     }

@@ -28,11 +28,11 @@ nav:
     - Back button: component/back-button.md
     - Custom ComponentContext: component/custom-component-context.md
 
-  - Router:
-    - Overview: router/overview.md
-    - Navigation: router/navigation.md
-    - Deep linking: router/deeplinking.md
-    - Web browser history: router/browser-history.md
+  - Child Stack:
+    - Overview: child-stack/overview.md
+    - Navigation: child-stack/navigation.md
+    - Deep linking: child-stack/deeplinking.md
+    - Web browser history: child-stack/browser-history.md
 
   - Extensions:
     - Overview: extensions/overview.md
