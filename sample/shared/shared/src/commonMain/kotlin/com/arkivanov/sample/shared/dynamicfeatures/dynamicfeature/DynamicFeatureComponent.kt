@@ -1,10 +1,10 @@
 package com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.Router
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.replaceCurrent
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.essenty.parcelable.Parcelable
@@ -20,13 +20,16 @@ internal class DynamicFeatureComponent<out T : Any>(
     private val factory: (ComponentContext) -> T
 ) : DynamicFeature<T>, ComponentContext by componentContext {
 
-    private val router: Router<Config, Child<T>> =
-        router(
+    private val navigation = StackNavigation<Config>()
+
+    private val stack =
+        childStack(
+            source = navigation,
             initialConfiguration = Config.Loading,
-            childFactory = ::child
+            childFactory = ::child,
         )
 
-    override val routerState: Value<RouterState<*, Child<T>>> = router.state
+    override val childStack: Value<ChildStack<*, Child<T>>> get() = stack
 
     private fun child(config: Config, componentContext: ComponentContext): Child<T> =
         when (config) {
@@ -49,9 +52,9 @@ internal class DynamicFeatureComponent<out T : Any>(
     private fun DisposableScope.loadFeature() {
         featureInstaller.install(name = name).subscribeScoped {
             when (it) {
-                is FeatureInstaller.Result.Installed -> router.replaceCurrent(Config.Feature)
+                is FeatureInstaller.Result.Installed -> navigation.replaceCurrent(Config.Feature)
                 is FeatureInstaller.Result.Cancelled,
-                is FeatureInstaller.Result.Error -> router.replaceCurrent(Config.Error)
+                is FeatureInstaller.Result.Error -> navigation.replaceCurrent(Config.Error)
             }.let {}
         }
     }

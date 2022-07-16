@@ -2,6 +2,10 @@ package com.arkivanov.decompose.router
 
 import com.arkivanov.decompose.value.Value
 
+/**
+ * Deprecated. Please use Child Stack instead. See the [documentation](https://arkivanov.github.io/Decompose/child-stack/overview/).
+ */
+@Deprecated(message = "Use Child Stack instead")
 interface Router<C : Any, out T : Any> {
 
     /**

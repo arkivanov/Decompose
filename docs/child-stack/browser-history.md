@@ -1,16 +1,16 @@
 # Web Browser History
 
-By default `Router` navigation does not affect URLs in the browser address bar. But sometimes it is necessary to have different URLs for
-different `Router` destinations. For this purpose Decompose provides an **experimental** API - [WebHistoryController](https://github.com/arkivanov/Decompose/blob/master/decompose/src/jsMain/kotlin/com/arkivanov/decompose/router/webhistory/DefaultWebHistoryController.kt).
+By default `Child Stack` navigation does not affect URLs in the browser address bar. But sometimes it is necessary to have different URLs for
+different `Child Stack` destinations. For this purpose Decompose provides an **experimental** API - [WebHistoryController](https://github.com/arkivanov/Decompose/blob/master/decompose/src/jsMain/kotlin/com/arkivanov/decompose/router/stack/webhistory/DefaultWebHistoryController.kt).
 
-The controller listens for the `Router` state changes and updates the browser URL and the history accordingly:
+The controller listens for the `Child Stack` state changes and updates the browser URL and the history accordingly:
 
-- When one or more components are pushed to the `Router` stack, the controller pushes corresponding pages to the history
+- When one or more components are pushed to the `Child Stack` stack, the controller pushes corresponding pages to the history
 - When one or more components are popped from the stack, the controller pops corresponding pages from the history
 - When some components are replaced in the stack, the controller tries its best to keep the page history aligned (there are corner cases)
 - When the user presses the browser's Back button (or selects one of the previous pages in the history dropdown menu), the controller
-pops the corresponding configurations from the `Router`
-- When the user navigates forward in the browser history, the controller pushes the corresponding configurations to the `Router`
+pops the corresponding configurations from the `Child Stack`
+- When the user navigates forward in the browser history, the controller pushes the corresponding configurations to the `Child Stack`
 
 ## Corner cases
 
@@ -21,7 +21,7 @@ removed configurations will be pushed back to the stack (the stack will become `
 
 ## Limitations
 
-Only one `Router` can be attached to an instance of the `WebHistoryController`. Having multiple instances of the controller is not allowed.
+Only one `Child Stack` can be attached to an instance of the `WebHistoryController`. Having multiple instances of the controller is not allowed.
 
 ## Configuring the application
 
@@ -51,7 +51,7 @@ config.devServer = {
 
 Using `WebHistoryController` is easy:
 
-1. Create a new instance of `WebHistoryController` in the JS app and pass it via constructor to a component responsible for
+1. Create an instance of `DefaultWebHistoryController` in the JS app and pass it via constructor to a component responsible for
 navigation (typically it is the root component)
 2. In the component, call the `WebHistoryController.attach` method and supply all arguments
 3. In the JS app, pass an initial deeplink to the component

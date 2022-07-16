@@ -10,9 +10,9 @@ import react.FC
 fun <T : Any> DynamicFeatureContent(
     content: ChildrenBuilder.(T) -> Unit,
 ): FC<RProps<DynamicFeature<T>>> = FC { props ->
-    val routerState by props.component.routerState.useAsState()
+    val childStack by props.component.childStack.useAsState()
 
-    when (val child = routerState.activeChild.instance) {
+    when (val child = childStack.active.instance) {
         is DynamicFeature.Child.Loading -> Typography { +"Loading ${child.name}" }
         is DynamicFeature.Child.Feature -> content(child.feature)
         is DynamicFeature.Child.Error -> Typography { +"Error loading ${child.name}" }

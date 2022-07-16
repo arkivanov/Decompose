@@ -1,20 +1,8 @@
 Decompose provides a number of modules, they are all published to Maven Central Repository.
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.arkivanov.decompose/decompose?color=blue)](https://search.maven.org/artifact/com.arkivanov.decompose/decompose)
-
 ## The main Decompose module
 
-The main functionality is provided by the `decompose` module. It contains the core functionality, like [Router](https://arkivanov.github.io/Decompose/router/overview/), [ComponentContext](https://arkivanov.github.io/Decompose/component/overview/#componentcontext), etc.
-
-This module supports the following Kotlin Multiplatform targets:
-
-- `android`,
-- `jvm`
-- `js` (both `IR` and `Legacy` modes)
-- `iosX64`, `iosArm64`
-- `tvosArm64`, `tvosX64`
-- `watchosArm32`, `watchosArm64`, `watchosX64`
-- `macosX64`
+The main functionality is provided by the `decompose` module. It contains the core functionality, like [Child Stack](https://arkivanov.github.io/Decompose/child-stack/overview/), [ComponentContext](https://arkivanov.github.io/Decompose/component/overview/#componentcontext), etc.
 
 ### Gradle setup
 

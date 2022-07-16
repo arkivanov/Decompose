@@ -4,7 +4,7 @@ Some devices (e.g. Android) have hardware back buttons. A very common use case i
 
 ## Navigation with back button
 
-The `Router` can automatically navigate back when the back button is pressed. All you need to do is to supply the `handleBackButton=true` argument when you create the `Router`. Please see the related [documentation page](https://arkivanov.github.io/Decompose/router/overview/) for more information.
+`Child Stack` can automatically navigate back when the back button is pressed. All you need to do is to supply the `handleBackButton=true` argument when you initialize the `ChildStack`. Please see the related [documentation page](https://arkivanov.github.io/Decompose/child-stack/overview/) for more information.
 
 ## Manual back button handling
 

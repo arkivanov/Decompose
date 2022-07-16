@@ -11,14 +11,6 @@ public final class com/arkivanov/decompose/extensions/android/DefaultViewContext
 	public fun getParent ()Landroid/view/ViewGroup;
 }
 
-public final class com/arkivanov/decompose/extensions/android/RouterView : android/widget/FrameLayout {
-	public fun <init> (Landroid/content/Context;)V
-	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;)V
-	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;I)V
-	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun children (Lcom/arkivanov/decompose/value/Value;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function4;)V
-}
-
 public abstract interface class com/arkivanov/decompose/extensions/android/ViewContext {
 	public abstract fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/Lifecycle;
 	public abstract fun getParent ()Landroid/view/ViewGroup;
@@ -29,5 +21,13 @@ public final class com/arkivanov/decompose/extensions/android/ViewContextExtKt {
 	public static final fun getContext (Lcom/arkivanov/decompose/extensions/android/ViewContext;)Landroid/content/Context;
 	public static final fun getLayoutInflater (Lcom/arkivanov/decompose/extensions/android/ViewContext;)Landroid/view/LayoutInflater;
 	public static final fun getResources (Lcom/arkivanov/decompose/extensions/android/ViewContext;)Landroid/content/res/Resources;
+}
+
+public final class com/arkivanov/decompose/extensions/android/stack/StackRouterView : android/widget/FrameLayout {
+	public fun <init> (Landroid/content/Context;)V
+	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;)V
+	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;I)V
+	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun children (Lcom/arkivanov/decompose/value/Value;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function4;)V
 }
 

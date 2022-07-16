@@ -1,11 +1,11 @@
 package com.arkivanov.sample.shared.multipane
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.activeChild
-import com.arkivanov.decompose.router.navigate
-import com.arkivanov.decompose.router.popWhile
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.navigate
+import com.arkivanov.decompose.router.stack.popWhile
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -22,14 +22,15 @@ internal class DetailsRouter(
     private val onFinished: () -> Unit
 ) {
 
-    private val router =
-        componentContext.router<Config, DetailsChild>(
+    private val navigation = StackNavigation<Config>()
+
+    val stack: Value<ChildStack<Config, DetailsChild>> =
+        componentContext.childStack(
+            source = navigation,
             initialConfiguration = Config.None,
             key = "DetailsRouter",
-            childFactory = ::createChild
+            childFactory = ::createChild,
         )
-
-    val state: Value<RouterState<Config, DetailsChild>> = router.state
 
     private fun createChild(config: Config, componentContext: ComponentContext): DetailsChild =
         when (config) {
@@ -47,7 +48,7 @@ internal class DetailsRouter(
         )
 
     fun showArticle(id: Long) {
-        router.navigate { stack ->
+        navigation.navigate { stack ->
             stack
                 .dropLastWhile { it is Config.Details }
                 .plus(Config.Details(articleId = id))
@@ -55,11 +56,11 @@ internal class DetailsRouter(
     }
 
     fun closeArticle() {
-        router.popWhile { it !is Config.None }
+        navigation.popWhile { it !is Config.None }
     }
 
     fun isShown(): Boolean =
-        when (router.activeChild.configuration) {
+        when (stack.value.active.configuration) {
             is Config.None -> false
             is Config.Details -> true
         }

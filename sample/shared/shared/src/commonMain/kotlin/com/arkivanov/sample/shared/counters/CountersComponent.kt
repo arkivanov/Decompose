@@ -1,11 +1,11 @@
 package com.arkivanov.sample.shared.counters
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.Router
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.pop
-import com.arkivanov.decompose.router.push
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -16,23 +16,29 @@ internal class CountersComponent(
     componentContext: ComponentContext,
 ) : Counters, ComponentContext by componentContext {
 
-    private val firstRouter: Router<Config, Counter> =
-        router(
+    private val firstNavigation = StackNavigation<Config>()
+
+    private val firstStack =
+        childStack(
+            source = firstNavigation,
             initialConfiguration = Config(index = 0, isBackEnabled = false),
-            key = "LeftRouter",
+            key = "FirstStack",
             childFactory = ::firstChild,
         )
 
-    override val firstRouterState: Value<RouterState<*, Counter>> get() = firstRouter.state
+    override val firstChildStack: Value<ChildStack<*, Counter>> get() = firstStack
 
-    private val secondRouter: Router<Config, Counter> =
-        router(
+    private val secondNavigation = StackNavigation<Config>()
+
+    private val secondStack =
+        childStack(
+            source = secondNavigation,
             initialConfiguration = Config(index = 0, isBackEnabled = false),
-            key = "RightRouter",
+            key = "SecondStack",
             childFactory = ::secondChild,
         )
 
-    override val secondRouterState: Value<RouterState<*, Counter>> get() = secondRouter.state
+    override val secondChildStack: Value<ChildStack<*, Counter>> get() = secondStack
 
     private fun firstChild(
         config: Config,
@@ -42,8 +48,8 @@ internal class CountersComponent(
             componentContext = componentContext,
             title = "Counter ${config.index}",
             isBackEnabled = config.isBackEnabled,
-            onNext = { firstRouter.push(Config(index = config.index + 1, isBackEnabled = true)) },
-            onPrev = { firstRouter.pop() },
+            onNext = { firstNavigation.push(Config(index = config.index + 1, isBackEnabled = true)) },
+            onPrev = firstNavigation::pop,
         )
 
     private fun secondChild(
@@ -54,8 +60,8 @@ internal class CountersComponent(
             componentContext = componentContext,
             title = "Counter ${config.index}",
             isBackEnabled = config.isBackEnabled,
-            onNext = { secondRouter.push(Config(index = config.index + 1, isBackEnabled = true)) },
-            onPrev = { secondRouter.pop() },
+            onNext = { secondNavigation.push(Config(index = config.index + 1, isBackEnabled = true)) },
+            onPrev = secondNavigation::pop,
         )
 
     @Parcelize

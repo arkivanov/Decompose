@@ -8,6 +8,8 @@ import kotlin.reflect.KClass
 /**
  * Creates a new [Router].
  *
+ * Deprecated. Please use `Child Stack` instead. See the [documentation](https://arkivanov.github.io/Decompose/child-stack/overview/).
+ *
  * @param initialStack a stack of component configurations (from tail to head) that should be set if there is
  * no saved state, must be not empty and unique
  * @param configurationClass a [KClass] of the component configurations
@@ -16,6 +18,7 @@ import kotlin.reflect.KClass
  * @param childFactory a factory function that creates new child instances
  * @return a new instance of [Router]
  */
+@Deprecated(message = "Use Child Stack instead")
 fun <C : Parcelable, T : Any> ComponentContext.router(
     initialStack: () -> List<C>,
     configurationClass: KClass<out C>,
@@ -47,7 +50,11 @@ fun <C : Parcelable, T : Any> ComponentContext.router(
 
 /**
  * A convenience extension function for [ComponentContext.router].
+ *
+ * Deprecated. Please use `Child Stack` instead. See the [documentation](https://arkivanov.github.io/Decompose/child-stack/overview/).
  */
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated(message = "Use Child Stack instead")
 inline fun <reified C : Parcelable, T : Any> ComponentContext.router(
     noinline initialStack: () -> List<C>,
     key: String = "DefaultRouter",
@@ -64,7 +71,11 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.router(
 
 /**
  * A convenience extension function for [ComponentContext.router].
+ *
+ * Deprecated. Please use `Child Stack` instead. See the [documentation](https://arkivanov.github.io/Decompose/child-stack/overview/).
  */
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated(message = "Use Child Stack instead")
 inline fun <reified C : Parcelable, T : Any> ComponentContext.router(
     initialConfiguration: C,
     key: String = "DefaultRouter",

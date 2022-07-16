@@ -7,9 +7,9 @@
 
 import Shared
 
-func simpleRouterState<T : AnyObject>(_ child: T) -> Value<RouterState<AnyObject, T>> {
+func simpleChildStack<T : AnyObject>(_ child: T) -> Value<ChildStack<AnyObject, T>> {
     return mutableValue(
-        RouterState(
+        ChildStack(
             configuration: "config" as AnyObject,
             instance: child
         )

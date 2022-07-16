@@ -12,24 +12,24 @@ struct CountersView: View {
     private let counters: Counters
 
     @ObservedObject
-    private var firstRouterState: ObservableValue<RouterState<AnyObject, Counter>>
+    private var firstChildStack: ObservableValue<ChildStack<AnyObject, Counter>>
 
     @ObservedObject
-    private var secondRouterState: ObservableValue<RouterState<AnyObject, Counter>>
+    private var secondChildStack: ObservableValue<ChildStack<AnyObject, Counter>>
 
-    private var firstActiveChild: Counter { firstRouterState.value.activeChild.instance }
-    private var secondActiveChild: Counter { secondRouterState.value.activeChild.instance }
+    private var firstActiveChild: Counter { firstChildStack.value.active.instance }
+    private var secondActiveChild: Counter { secondChildStack.value.active.instance }
 
     init(_ counters: Counters) {
         self.counters = counters
-        firstRouterState = ObservableValue(counters.firstRouterState)
-        secondRouterState = ObservableValue(counters.secondRouterState)
+        firstChildStack = ObservableValue(counters.firstChildStack)
+        secondChildStack = ObservableValue(counters.secondChildStack)
     }
 
     var body: some View {
         VStack(spacing: 8) {
-            CounterView(firstRouterState.value.activeChild.instance)
-            CounterView(secondRouterState.value.activeChild.instance)
+            CounterView(firstChildStack.value.active.instance)
+            CounterView(secondChildStack.value.active.instance)
         }
     }
 }
@@ -41,6 +41,6 @@ struct CountersView_Previews: PreviewProvider {
 }
 
 class CountersPreview : Counters {
-    let firstRouterState: Value<RouterState<AnyObject, Counter>> = simpleRouterState(CounterPreview())
-    let secondRouterState: Value<RouterState<AnyObject, Counter>> = simpleRouterState(CounterPreview())
+    let firstChildStack: Value<ChildStack<AnyObject, Counter>> = simpleChildStack(CounterPreview())
+    let secondChildStack: Value<ChildStack<AnyObject, Counter>> = simpleChildStack(CounterPreview())
 }

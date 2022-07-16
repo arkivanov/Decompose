@@ -1,10 +1,11 @@
 package com.arkivanov.sample.shared.dynamicfeatures
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.pop
-import com.arkivanov.decompose.router.push
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -21,14 +22,17 @@ internal class DynamicFeaturesComponent(
     private val featureInstaller: FeatureInstaller,
 ) : DynamicFeatures, ComponentContext by componentContext {
 
-    private val router =
-        router<Config, Child>(
+    private val navigation = StackNavigation<Config>()
+
+    private val stack =
+        childStack(
+            source = navigation,
             initialConfiguration = Config.Feature1,
             handleBackButton = true,
-            childFactory = ::child
+            childFactory = ::child,
         )
 
-    override val routerState: Value<RouterState<*, Child>> = router.state
+    override val childStack: Value<ChildStack<*, Child>> get() = stack
 
     private fun child(config: Config, componentContext: ComponentContext): Child =
         when (config) {
@@ -44,7 +48,7 @@ internal class DynamicFeaturesComponent(
             factory = { featureComponentContext ->
                 Feature1(
                     componentContext = featureComponentContext,
-                    onFeature2 = { router.push(Config.Feature2(magicNumber = Random.nextInt())) },
+                    onFeature2 = { navigation.push(Config.Feature2(magicNumber = Random.nextInt())) },
                 )
             }
         )
@@ -58,7 +62,7 @@ internal class DynamicFeaturesComponent(
                 Feature2(
                     componentContext = featureComponentContext,
                     magicNumber = config.magicNumber,
-                    onFinished = { router.pop() },
+                    onFinished = navigation::pop,
                 )
             }
         )

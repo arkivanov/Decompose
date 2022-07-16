@@ -9,7 +9,7 @@ operator fun <T : Any> Value<T>.getValue(thisRef: Any?, property: KProperty<*>):
 fun <T : Any> Value<T>.observe(
     lifecycle: Lifecycle,
     mode: ObserveLifecycleMode = ObserveLifecycleMode.START_STOP,
-    observer: ValueObserver<T>
+    observer: (T) -> Unit,
 ) {
     when (mode) {
         ObserveLifecycleMode.CREATE_DESTROY ->

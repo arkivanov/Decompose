@@ -1,11 +1,11 @@
 package com.arkivanov.sample.shared.multipane
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.activeChild
-import com.arkivanov.decompose.router.pop
-import com.arkivanov.decompose.router.push
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -22,14 +22,15 @@ internal class ListRouter(
     private val onArticleSelected: (id: Long) -> Unit
 ) {
 
-    private val router =
-        componentContext.router<Config, ListChild>(
+    private val navigation = StackNavigation<Config>()
+
+    val stack: Value<ChildStack<Config, ListChild>> =
+        componentContext.childStack(
+            source = navigation,
             initialConfiguration = Config.List,
             key = "MainRouter",
-            childFactory = ::createChild
+            childFactory = ::createChild,
         )
-
-    val state: Value<RouterState<Config, ListChild>> = router.state
 
     private fun createChild(config: Config, componentContext: ComponentContext): ListChild =
         when (config) {
@@ -46,14 +47,14 @@ internal class ListRouter(
         )
 
     fun moveToBackStack() {
-        if (router.activeChild.configuration !is Config.None) {
-            router.push(Config.None)
+        if (stack.value.active.configuration !is Config.None) {
+            navigation.push(Config.None)
         }
     }
 
     fun show() {
-        if (router.activeChild.configuration !is Config.List) {
-            router.pop()
+        if (stack.value.active.configuration !is Config.List) {
+            navigation.pop()
         }
     }
 

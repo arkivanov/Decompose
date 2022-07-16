@@ -10,6 +10,7 @@ import com.arkivanov.decompose.router.startsWith
 import com.arkivanov.decompose.router.subscribe
 import org.w3c.dom.PopStateEvent
 
+@Deprecated("Use com.arkivanov.decompose.router.stack.webhistory.DefaultWebHistoryController instead")
 @ExperimentalDecomposeApi
 class DefaultWebHistoryController internal constructor(
     private val window: Window,
