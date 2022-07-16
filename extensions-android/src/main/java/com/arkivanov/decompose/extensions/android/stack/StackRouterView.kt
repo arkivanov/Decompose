@@ -1,4 +1,4 @@
-package com.arkivanov.decompose.extensions.android
+package com.arkivanov.decompose.extensions.android.stack
 
 import android.content.Context
 import android.os.Bundle
@@ -12,8 +12,11 @@ import android.widget.FrameLayout
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.decompose.R
+import com.arkivanov.decompose.extensions.android.DefaultViewContext
+import com.arkivanov.decompose.extensions.android.ViewContext
+import com.arkivanov.decompose.extensions.android.forEachChild
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
-import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.observe
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -22,7 +25,7 @@ import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.resume
 
 @ExperimentalDecomposeApi
-class RouterView @JvmOverloads constructor(
+class StackRouterView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -33,12 +36,12 @@ class RouterView @JvmOverloads constructor(
     private var savedState: Bundle? = null
 
     fun <C : Any, T : Any> children(
-        routerState: Value<RouterState<C, T>>,
+        stack: Value<ChildStack<C, T>>,
         lifecycle: Lifecycle,
         replaceChildView: ViewContext.(parent: ViewGroup, child: T, configuration: C) -> Unit
     ) {
-        routerState.observe(lifecycle) {
-            onStateChanged(it, lifecycle, replaceChildView)
+        stack.observe(lifecycle) {
+            onStackChanged(it, lifecycle, replaceChildView)
         }
     }
 
@@ -90,12 +93,12 @@ class RouterView @JvmOverloads constructor(
         }
 
     @OptIn(InternalDecomposeApi::class)
-    private fun <C : Any, T : Any> onStateChanged(
-        state: RouterState<C, T>,
+    private fun <C : Any, T : Any> onStackChanged(
+        stack: ChildStack<C, T>,
         lifecycle: Lifecycle,
         replaceChildView: ViewContext.(ViewGroup, T, C) -> Unit
     ) {
-        val activeChild = state.activeChild
+        val activeChild = stack.active
         val currentChild: ActiveChild? = currentChild
 
         if (currentChild?.configuration === activeChild.configuration) {
@@ -104,7 +107,7 @@ class RouterView @JvmOverloads constructor(
 
         val currentChildView = currentChild?.let { findChildView(it.key) }
 
-        if ((currentChildView != null) && state.backStack.any { it.configuration === currentChild.configuration }) {
+        if ((currentChildView != null) && stack.backStack.any { it.configuration === currentChild.configuration }) {
             inactiveChildren[currentChild.key] = InactiveChild(currentChild.configuration, currentChildView.saveHierarchyState())
         }
         currentChild?.lifecycle?.destroy()
@@ -135,7 +138,7 @@ class RouterView @JvmOverloads constructor(
         this.currentChild = ActiveChild(activeChildKey, activeChild.configuration, childViewLifecycle)
 
         inactiveChildren.values.removeAll { child ->
-            state.backStack.none { it.configuration === child.configuration }
+            stack.backStack.none { it.configuration === child.configuration }
         }
     }
 

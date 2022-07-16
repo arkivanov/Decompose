@@ -2,11 +2,11 @@ package com.arkivanov.sample.shared.root
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.router.Router
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.bringToFront
-import com.arkivanov.decompose.router.router
-import com.arkivanov.decompose.router.webhistory.WebHistoryController
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.webhistory.WebHistoryController
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -27,17 +27,21 @@ class RootComponent constructor(
     webHistoryController: WebHistoryController? = null,
 ) : Root, ComponentContext by componentContext {
 
-    private val router: Router<Config, Child> =
-        router(
+    private val navigation = StackNavigation<Config>()
+
+    private val stack =
+        childStack(
+            source = navigation,
             initialStack = { getInitialStack(deepLink) },
             childFactory = ::child,
         )
 
-    override val routerState: Value<RouterState<*, Child>> = router.state
+    override val childStack: Value<ChildStack<*, Child>> = stack
 
     init {
         webHistoryController?.attach(
-            router = router,
+            navigator = navigation,
+            stack = stack,
             getPath = ::getPathForConfig,
             getConfiguration = ::getConfigForPath,
         )
@@ -51,15 +55,15 @@ class RootComponent constructor(
         }
 
     override fun onCountersTabClicked() {
-        router.bringToFront(Config.Counters)
+        navigation.bringToFront(Config.Counters)
     }
 
     override fun onMultiPaneTabClicked() {
-        router.bringToFront(Config.MultiPane)
+        navigation.bringToFront(Config.MultiPane)
     }
 
     override fun onDynamicFeaturesTabClicked() {
-        router.bringToFront(Config.DynamicFeatures)
+        navigation.bringToFront(Config.DynamicFeatures)
     }
 
     private companion object {

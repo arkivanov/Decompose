@@ -1,29 +1,34 @@
-# Router Overview
+# Child Stack Overview
 
-## The Router
+## The Child Stack
 
-A key unit is [Router](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/Router.kt). It is responsible for managing components, just like `FragmentManager`.
+A key unit is `Child Stack`. It is a feature responsible for managing a stack of components, just like `FragmentManager`.
 
-The `Router` supports back stack and so each component has its own `Lifecycle`. Each time a new component is pushed, the currently active component is stopped. When a component is popped from the back stack, the previous component is resumed. This allows business logic to run while the component is in the back stack.
+Each component has its own `Lifecycle`. Each time a new component is pushed to the stack, the currently active component is stopped. When a component is popped from the stack, the previous component is resumed. This allows business logic to run while the component is in the back stack.
 
-The `Router` has a state consisting of a currently active component and a back stack, so it can be rendered as any other state.
+The `Child Stack` feature consists of the two main interfaces:
 
-Child components can also have `Routers` (nested navigation), and each component can have more than one `Router`.
+- [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) - a simple data class that stores a stack of components and their configurations.
+    - ChildStack#active - contains the currently active component.
+    - ChildStack#backStack - contains the back stack of inactive components.
+- [StackNavigation](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/StackNavigation.kt) - an interface that accepts navigation commands and forwards them to all subscribed observers.
+
+Child components can also have their own `Child Stacks` (nested navigation), and each component can have more than one `Child Stack`.
 
 ### Component Configurations
 
-Each component created and managed by the `Router` has its `Configuration`. It is just a class with all the data required for the component instantiation.
+Each component created and managed by the `Child Stack` has its `Configuration`. It is just a class with all the data required for the component instantiation.
 
 `Configurations` must meet the following requirements:
 
 1. Be immutable
 2. [Correctly](https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#hashCode--) implement `equals()` and `hashCode()` methods
-3. Be unique (by equality) in the `Router` stack
+3. Be unique (by equality) in the `Child Stack`
 4. Implement `Parcelable` interface
 
 #### Configurations are the keys
 
-Each `Configuration` is a unique key of a component. The `Router` uses `Configurations` to check what components should be alive and what should be destroyed. On the client side, `Configurations` allow you to instantiate components with proper input parameters. For convenience and safety, you may define your `Configurations` as `data class`, and use only `val` properties and immutable data structures.
+Each `Configuration` is a unique key of a component. The `Child Stack` uses `Configurations` to check what components should be alive and what should be destroyed. On the client side, `Configurations` allow you to instantiate components with proper input parameters. For convenience and safety, you may define your `Configurations` as `data class`, and use only `val` properties and immutable data structures.
 
 #### Configurations are Parcelable
 
@@ -33,6 +38,14 @@ Decompose uses [Essenty](https://github.com/arkivanov/Essenty) library, which pr
 
 !!!warning
     On Android the amount of data that can be preserved is [limited](https://developer.android.com/guide/components/activities/parcelables-and-bundles). Please take care of the `Configuration` sizes.
+
+### Initializing the Child Stack
+
+There are three steps to initialize the `Child Stack`:
+
+- Create a new instance of `StackNavigation` and assign it to a variable or a property.
+- Initialize the `Child Stack` using the `ComponentContext#childStack` extension function and pass `StackNavigation` into it along with other arguments. 
+- The `childStack` function returns `Value<ChildStack>` that can be observed in the UI. Assign the returned `Value` to another property or a variable.
 
 ## Routing example
 
@@ -86,11 +99,9 @@ class ItemDetailsComponent(
 ```
 
 ```kotlin
-// Root component
-
 interface Root {
 
-    val routerState: Value<RouterState<*, Child>>
+    val childStack: Value<ChildStack<*, Child>>
 
     sealed class Child {
         class List(val component: ItemList) : Child()
@@ -102,14 +113,17 @@ class RootComponent(
     componentContext: ComponentContext
 ) : Root, ComponentContext by componentContext {
 
-    private val router =
-        router<Config, Root.Child>(
+    private val navigation = StackNavigation<Config>()
+
+    private val stack =
+        childStack(
+            source = navigation,
             initialConfiguration = Config.List,
             handleBackButton = true, // Pop the back stack on back button press
-            childFactory = ::createChild
+            childFactory = ::createChild,
         )
 
-    override val routerState: Value<RouterState<*, Root.Child>> = router.state
+    override val childStack: Value<ChildStack<*, Root.Child>> get() = stack
 
     private fun createChild(config: Config, componentContext: ComponentContext): Root.Child =
         when (config) {
@@ -120,14 +134,14 @@ class RootComponent(
     private fun itemList(componentContext: ComponentContext): ItemList =
         ItemListComponent(
             componentContext = componentContext,
-            onItemSelected = { router.push(Config.Details(itemId = it)) }
+            onItemSelected = { navigation.push(Config.Details(itemId = it)) }
         )
 
     private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetails =
         ItemDetailsComponent(
             componentContext = componentContext,
             itemId = config.itemId,
-            onFinished = { router.pop() }
+            onFinished = { navigation.pop() }
         )
 
     private sealed class Config : Parcelable {
@@ -147,7 +161,7 @@ To deliver a result from one component to another:
 - Pass a callback to the `second` component.
 - Call the callback with a `result` from the `second` component.
 - In the `parent` component, supply the callback when instantiating the `second` component.
-- When the callback is invoked, navigate the `Router`, e.g. by using `router.pop { ... }`.
+- When the callback is invoked, perform the navigation, e.g. by using `navigation.pop { ... }`.
 - After the navigation is performed, call a method on the `first` component with the `result`.
 
 ```kotlin
@@ -198,7 +212,7 @@ class RootComponent(
     private fun itemList(componentContext: ComponentContext): ItemList =
         ItemListComponent(
             componentContext = componentContext,
-            onItemSelected = { router.push(Config.Details(itemId = it)) }
+            onItemSelected = { navigation.push(Config.Details(itemId = it)) }
         )
 
     private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetails =
@@ -206,15 +220,16 @@ class RootComponent(
             componentContext = componentContext,
             itemId = config.itemId,
             onDeleted = { itemId ->
-                router.pop { // Pop ItemDetails component
+                navigation.pop { // Pop ItemDetails component
                     // Deliver the result to ItemList component
-                    (router.activeChild.instance as? ItemList)?.onItemDeleted(id = itemId)
+                    (childStack.active.instance as? ItemList)?.onItemDeleted(id = itemId)
                 }
             }
         )
 
     // Omitted code
 }
+```
 
 ### Alternative way
 
@@ -255,7 +270,7 @@ class ItemListComponent(
         // Subscribe to input
         input.subscribeScoped {
             when (it) {
-                is ItemList.Input.ItemDeleted -> // TODO: Handle item deleted
+                is ItemList.Input.ItemDeleted -> TODO("Handle item deleted")
             }
         }
     }
@@ -278,7 +293,7 @@ class RootComponent(
         ItemListComponent(
             componentContext = componentContext,
             input = listInput, // Pass listInput to ItemListComponent
-            onItemSelected = { router.push(Config.Details(itemId = it)) },
+            onItemSelected = { navigation.push(Config.Details(itemId = it)) },
         )
 
     private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetails =
@@ -286,7 +301,7 @@ class RootComponent(
             componentContext = componentContext,
             itemId = config.itemId,
             onItemDeleted = { id ->
-                router.pop { // Pop ItemDetails component
+                navigation.pop { // Pop ItemDetails component
                     // Deliver the result to ItemList component
                     listInput.onNext(ItemList.Input.ItemDeleted(id = id))
                 }
@@ -297,26 +312,30 @@ class RootComponent(
 }
 ```
 
-## Multiple routers in a component
+## Multiple Child Stacks in a component
 
-When multiple `Routers` are required in one component, each such a `Router` must have a unique key associated. The keys are required to be
-unique only within the component, so it is ok for different components to have `Routers` with same keys. An exception will be thrown if
-multiple `Routers` with same key are detected in a component.
+When multiple `Child Stacks` are required in one component, each such `Child Stack` must have a unique key associated. The keys are required to be unique only within the component, so it is ok for different components to have `Child Stacks` with same keys. An exception will be thrown if multiple `Child Stacks` with the same key are detected in a component.
 
 ```kotlin
 class Root(
     componentContext: ComponentContext
 ) : ComponentContext by componentContext {
 
-    private val topRouter =
-        router<TopConfig, TopChild>(
-            key = "TopRouter",
+    private val topNavigation = StackNavigation<TopConfig>()
+    
+    private val topStack =
+        childStack<TopConfig, TopChild>(
+            source = topNavigation,
+            key = "TopStack",
             // Omitted code
         )
 
-    private val bottomRouter =
-        router<BottomConfig, BottomChild>(
-            key = "BottomRouter",
+    private val bottomNavigation = StackNavigation<BottomConfig>()
+    
+    private val bottomStack =
+        childStack<BottomConfig, BottomChild>(
+            source = bottomNavigation,
+            key = "BottomStack",
             // Omitted code
         )
 }

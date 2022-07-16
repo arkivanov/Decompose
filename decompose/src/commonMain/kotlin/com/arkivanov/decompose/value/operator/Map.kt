@@ -1,7 +1,6 @@
 package com.arkivanov.decompose.value.operator
 
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.ValueObserver
 
 fun <T : Any, R : Any> Value<T>.map(mapper: (T) -> R): Value<R> = MappedValue(this, mapper)
 
@@ -23,7 +22,7 @@ private class MappedValue<T : Any, out R : Any>(
             return lastDownstreamValue
         }
 
-    private var observers = emptySet<ValueObserver<R>>()
+    private var observers = emptySet<(R) -> Unit>()
     private val upstreamObserver: (T) -> Unit = ::onUpstreamValue
 
     private fun onUpstreamValue(value: T) {
@@ -33,7 +32,7 @@ private class MappedValue<T : Any, out R : Any>(
         observers.forEach { it(mappedValue) }
     }
 
-    override fun subscribe(observer: ValueObserver<R>) {
+    override fun subscribe(observer: (R) -> Unit) {
         if (observers.isEmpty()) {
             upstream.subscribe(upstreamObserver)
         }
@@ -42,7 +41,7 @@ private class MappedValue<T : Any, out R : Any>(
         observer(value)
     }
 
-    override fun unsubscribe(observer: ValueObserver<R>) {
+    override fun unsubscribe(observer: (R) -> Unit) {
         this.observers -= observer
 
         if (observers.isEmpty()) {

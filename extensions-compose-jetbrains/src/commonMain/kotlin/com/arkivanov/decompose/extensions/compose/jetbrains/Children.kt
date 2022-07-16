@@ -15,6 +15,7 @@ import com.arkivanov.decompose.value.Value
 
 typealias ChildContent<C, T> = @Composable (child: Child.Created<C, T>) -> Unit
 
+@Deprecated("Use com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children instead")
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun <C : Any, T : Any> Children(
@@ -34,6 +35,7 @@ fun <C : Any, T : Any> Children(
     }
 }
 
+@Deprecated("Use com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children")
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun <C : Any, T : Any> Children(

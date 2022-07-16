@@ -10,6 +10,13 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 /**
  * Animates a child widget in the given [Direction].
  */
+@Deprecated(
+    message = "Use StackAnimator instead",
+    replaceWith = ReplaceWith(
+        "StackAnimator",
+        "com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimator",
+    ),
+)
 @ExperimentalDecomposeApi
 interface ChildAnimator {
 
@@ -24,6 +31,13 @@ interface ChildAnimator {
  * Factory function for [ChildAnimator] while `fun interface` with a `@Composable` function
  * is not supported - [b/221488059](https://issuetracker.google.com/issues/221488059).
  */
+@Deprecated(
+    message = "Use StackAnimator instead",
+    replaceWith = ReplaceWith(
+        "StackAnimator(content = content)",
+        "com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimator",
+    ),
+)
 @ExperimentalDecomposeApi
 inline fun ChildAnimator(
     crossinline content: @Composable (Direction, onFinished: () -> Unit, content: @Composable (Modifier) -> Unit) -> Unit
@@ -47,6 +61,13 @@ inline fun ChildAnimator(
  * - From -1F to 0F for [Direction.ENTER_BACK]
  * - From 0F to -1F for [Direction.EXIT_BACK]
  */
+@Deprecated(
+    message = "Use stackAnimator instead",
+    replaceWith = ReplaceWith(
+        "stackAnimator(animationSpec = animationSpec, frame = frame)",
+        "com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimator",
+    ),
+)
 @ExperimentalDecomposeApi
 fun childAnimator(
     animationSpec: FiniteAnimationSpec<Float> = tween(),
@@ -60,6 +81,7 @@ fun childAnimator(
 /**
  * Combines (merges) the receiver [ChildAnimator] with the [other] [ChildAnimator].
  */
+@Deprecated(message = "Use StackAnimator instead")
 @ExperimentalDecomposeApi
 operator fun ChildAnimator.plus(other: ChildAnimator): ChildAnimator =
     ChildAnimator { direction, onFinished, content ->

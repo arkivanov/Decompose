@@ -20,7 +20,7 @@ import mui.system.sx
 import react.FC
 
 val DynamicFeaturesContent: FC<RProps<DynamicFeatures>> = FC { props ->
-    val routerState by props.component.routerState.useAsState()
+    val childStack by props.component.childStack.useAsState()
 
     Box {
         sx {
@@ -39,7 +39,7 @@ val DynamicFeaturesContent: FC<RProps<DynamicFeatures>> = FC { props ->
                 padding = 16.px
             }
 
-            when (val child = routerState.activeChild.instance) {
+            when (val child = childStack.active.instance) {
                 is Feature1Child ->
                     componentContent(
                         component = child.feature1,

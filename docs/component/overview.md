@@ -139,7 +139,7 @@ Decompose provides ability to organize components into trees, so each parent com
 
 There are two common ways to add a child component:
 
-- Using the `Router` - prefer this option when a navigation between components is required. Please head to the [Router documentation page](https://arkivanov.github.io/Decompose/router/overview/) for more information.
+- Using `Child Stack` - prefer this option when a navigation between components is required. Please head to the [Child Stack documentation page](https://arkivanov.github.io/Decompose/child-stack/overview/) for more information.
 - Manually - prefer this option if you need to add a permanent child component, or to manually control its `Lifecycle`.
 
 ### Adding a child component manually
@@ -192,7 +192,7 @@ class SomeParent(
 ```
 
 !!!warning 
-    Never pass parent's `ComponentContext` to children, always use either the `Router` or the `childContext(...)` function.
+    Never pass parent's `ComponentContext` to children, always use either the `Child Stack` or the `childContext(...)` function.
 
 ## Examples
 

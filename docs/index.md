@@ -9,10 +9,10 @@ Decompose is a Kotlin Multiplatform library for breaking down your code into lif
 - `android`,
 - `jvm`
 - `js` (both `IR` and `Legacy` modes)
-- `iosX64`, `iosArm64`
-- `tvosArm64`, `tvosX64`
-- `watchosArm32`, `watchosArm64`, `watchosX64`
-- `macosX64`
+- `iosX64`, `iosArm64`, `iosSimulatorArm64`
+- `tvosArm64`, `tvosX64`, `tvosSimulatorArm64`
+- `watchosArm32`, `watchosArm64`, `watchosX64`, `watchosSimulatorArm64`
+- `macosX64`, `macosArm64`
 
 ## Why Decompose?
 

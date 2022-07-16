@@ -18,20 +18,20 @@ struct MultiPaneView: View {
     private var observableModel: ObservableValue<MultiPaneModel>
     
     @ObservedObject
-    private var listRouterState: ObservableValue<RouterState<AnyObject, MultiPaneListChild>>
+    private var listChildStack: ObservableValue<ChildStack<AnyObject, MultiPaneListChild>>
     
     @ObservedObject
-    private var detailsRouterState: ObservableValue<RouterState<AnyObject, MultiPaneDetailsChild>>
+    private var detailsChildStack: ObservableValue<ChildStack<AnyObject, MultiPaneDetailsChild>>
     
     private var model: MultiPaneModel { observableModel.value }
-    private var activeListChild: MultiPaneListChild { listRouterState.value.activeChild.instance }
-    private var activeDetailsChild: MultiPaneDetailsChild { detailsRouterState.value.activeChild.instance }
+    private var activeListChild: MultiPaneListChild { listChildStack.value.active.instance }
+    private var activeDetailsChild: MultiPaneDetailsChild { detailsChildStack.value.active.instance }
     
     init(_ component: MultiPane) {
         self.component = component
         observableModel = ObservableValue(component.models)
-        listRouterState = ObservableValue(component.listRouterState)
-        detailsRouterState = ObservableValue(component.detailsRouterState)
+        listChildStack = ObservableValue(component.listChildStack)
+        detailsChildStack = ObservableValue(component.detailsChildStack)
     }
     
     var body: some View {
@@ -99,11 +99,11 @@ struct MultiPaneView_Previews: PreviewProvider {
 }
 
 class MultiPanePreview: MultiPane {
-    var listRouterState: Value<RouterState<AnyObject, MultiPaneListChild>> =
-        simpleRouterState(.List(component: ArticleListPreview()))
+    var listChildStack: Value<ChildStack<AnyObject, MultiPaneListChild>> =
+        simpleChildStack(.List(component: ArticleListPreview()))
 
-    var detailsRouterState: Value<RouterState<AnyObject, MultiPaneDetailsChild>> =
-        simpleRouterState(.Details(component: ArticleDetailsPreview()))
+    var detailsChildStack: Value<ChildStack<AnyObject, MultiPaneDetailsChild>> =
+        simpleChildStack(.Details(component: ArticleDetailsPreview()))
 
     var models: Value<MultiPaneModel> = mutableValue(MultiPaneModel(isMultiPane: true))
 

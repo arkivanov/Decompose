@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetbrains.Children
-import com.arkivanov.decompose.router.RouterState
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.counters.counter.Counter
@@ -22,11 +25,19 @@ import com.arkivanov.sample.shared.utils.orientation
 @Composable
 internal fun CountersContent(component: Counters, modifier: Modifier = Modifier) {
     ColumnOrRow(modifier = modifier) {
-        Children(routerState = component.firstRouterState) {
+        Children(
+            stack = component.firstChildStack,
+            modifier = Modifier.clipToBounds(),
+            animation = stackAnimation(slide()),
+        ) {
             CounterContent(component = it.instance)
         }
 
-        Children(routerState = component.secondRouterState) {
+        Children(
+            stack = component.secondChildStack,
+            modifier = Modifier.clipToBounds(),
+            animation = stackAnimation(slide()),
+        ) {
             CounterContent(component = it.instance)
         }
     }
@@ -58,17 +69,17 @@ internal fun TabContentPreview() {
 }
 
 internal class CountersPreview : Counters {
-    override val firstRouterState: Value<RouterState<*, Counter>> =
+    override val firstChildStack: Value<ChildStack<*, Counter>> =
         MutableValue(
-            RouterState(
+            ChildStack(
                 configuration = Unit,
                 instance = CounterPreview(),
             )
         )
 
-    override val secondRouterState: Value<RouterState<*, Counter>> =
+    override val secondChildStack: Value<ChildStack<*, Counter>> =
         MutableValue(
-            RouterState(
+            ChildStack(
                 configuration = Unit,
                 instance = CounterPreview(),
             )

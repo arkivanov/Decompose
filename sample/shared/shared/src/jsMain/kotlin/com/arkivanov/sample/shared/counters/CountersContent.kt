@@ -20,8 +20,8 @@ import mui.system.sx
 import react.FC
 
 val CountersContent: FC<RProps<Counters>> = FC { props ->
-    val firstRouterState by props.component.firstRouterState.useAsState()
-    val secondRouterState by props.component.secondRouterState.useAsState()
+    val firstChildStack by props.component.firstChildStack.useAsState()
+    val secondChildStack by props.component.secondChildStack.useAsState()
 
     Box {
         sx {
@@ -48,8 +48,8 @@ val CountersContent: FC<RProps<Counters>> = FC { props ->
                     padding = 16.px
                 }
 
-                componentContent(component = firstRouterState.activeChild.instance, content = CounterContent)
-                componentContent(component = secondRouterState.activeChild.instance, content = CounterContent)
+                componentContent(component = firstChildStack.active.instance, content = CounterContent)
+                componentContent(component = secondChildStack.active.instance, content = CounterContent)
             }
         }
     }
