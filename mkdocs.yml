@@ -26,6 +26,7 @@ nav:
     - State preservation: component/state-preservation.md
     - Instance retaining: component/instance-retaining.md
     - Back button: component/back-button.md
+    - Scoping jobs and subscriptions: component/scopes.md
     - Custom ComponentContext: component/custom-component-context.md
 
   - Child Stack:
