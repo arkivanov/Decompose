@@ -38,8 +38,8 @@ setupDefaults(
     },
     androidConfig = AndroidConfig(
         minSdkVersion = 21,
-        compileSdkVersion = 32,
-        targetSdkVersion = 32,
+        compileSdkVersion = 33,
+        targetSdkVersion = 33,
     ),
     publicationConfig = PublicationConfig(
         group = "com.arkivanov.decompose",

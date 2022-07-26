@@ -2,7 +2,7 @@
 
 decompose = "0.8.0"
 kotlin = "1.7.0"
-essenty = "0.4.2"
+essenty = "0.5.1"
 reaktive = "1.2.1"
 junit = "4.13.2"
 jetbrainsCompose = "1.2.0-alpha01-dev753"
@@ -27,7 +27,7 @@ kotlin-kotlinGradlePlug = { group = "org.jetbrains.kotlin", name = "kotlin-gradl
 essenty-lifecycle = { group = "com.arkivanov.essenty", name = "lifecycle", version.ref = "essenty" }
 essenty-stateKeeper = { group = "com.arkivanov.essenty", name = "state-keeper", version.ref = "essenty" }
 essenty-instanceKeeper = { group = "com.arkivanov.essenty", name = "instance-keeper", version.ref = "essenty" }
-essenty-backPressed = { group = "com.arkivanov.essenty", name = "back-pressed", version.ref = "essenty" }
+essenty-backHandler = { group = "com.arkivanov.essenty", name = "back-handler", version.ref = "essenty" }
 
 reaktive-reaktive = { group = "com.badoo.reaktive", name = "reaktive", version.ref = "reaktive" }
 

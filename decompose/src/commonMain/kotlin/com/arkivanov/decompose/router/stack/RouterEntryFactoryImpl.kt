@@ -2,8 +2,9 @@ package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.backhandler.child
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
-import com.arkivanov.essenty.backpressed.BackPressedDispatcher
+import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
@@ -12,6 +13,7 @@ import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
 internal class RouterEntryFactoryImpl<C : Any, out T : Any>(
     private val lifecycle: Lifecycle,
+    private val backHandler: BackHandler,
     private val childFactory: (configuration: C, ComponentContext) -> T
 ) : RouterEntryFactory<C, T> {
 
@@ -24,16 +26,16 @@ internal class RouterEntryFactoryImpl<C : Any, out T : Any>(
         val mergedLifecycle = MergedLifecycle(lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
         val instanceKeeperRegistry = instanceKeeperDispatcher ?: InstanceKeeperDispatcher()
-        val backPressedDispatcher = BackPressedDispatcher()
+        val backHandler = backHandler.child()
 
         val component =
             childFactory(
                 configuration,
                 DefaultComponentContext(
-                    mergedLifecycle,
-                    stateKeeperDispatcher,
-                    instanceKeeperRegistry,
-                    backPressedDispatcher
+                    lifecycle = mergedLifecycle,
+                    stateKeeper = stateKeeperDispatcher,
+                    instanceKeeper = instanceKeeperRegistry,
+                    backHandler = backHandler,
                 )
             )
 
@@ -43,7 +45,7 @@ internal class RouterEntryFactoryImpl<C : Any, out T : Any>(
             lifecycleRegistry = componentLifecycleRegistry,
             stateKeeperDispatcher = stateKeeperDispatcher,
             instanceKeeperDispatcher = instanceKeeperRegistry,
-            backPressedDispatcher = backPressedDispatcher
+            backHandler = backHandler,
         )
     }
 }
