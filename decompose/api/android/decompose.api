@@ -115,6 +115,22 @@ public final class com/arkivanov/decompose/router/RouterState {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/arkivanov/decompose/router/StackSaverImpl$SavedEntry$Creator : android/os/Parcelable$Creator {
+	public fun <init> ()V
+	public final fun createFromParcel (Landroid/os/Parcel;)Lcom/arkivanov/decompose/router/StackSaverImpl$SavedEntry;
+	public synthetic fun createFromParcel (Landroid/os/Parcel;)Ljava/lang/Object;
+	public final fun newArray (I)[Lcom/arkivanov/decompose/router/StackSaverImpl$SavedEntry;
+	public synthetic fun newArray (I)[Ljava/lang/Object;
+}
+
+public final class com/arkivanov/decompose/router/StackSaverImpl$SavedState$Creator : android/os/Parcelable$Creator {
+	public fun <init> ()V
+	public final fun createFromParcel (Landroid/os/Parcel;)Lcom/arkivanov/decompose/router/StackSaverImpl$SavedState;
+	public synthetic fun createFromParcel (Landroid/os/Parcel;)Ljava/lang/Object;
+	public final fun newArray (I)[Lcom/arkivanov/decompose/router/StackSaverImpl$SavedState;
+	public synthetic fun newArray (I)[Ljava/lang/Object;
+}
+
 public final class com/arkivanov/decompose/router/stack/ChildStack {
 	public fun <init> (Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;)V
 	public synthetic fun <init> (Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -171,6 +187,22 @@ public final class com/arkivanov/decompose/router/stack/StackNavigatorExtKt {
 	public static synthetic fun push$default (Lcom/arkivanov/decompose/router/stack/StackNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
 	public static final fun replaceCurrent (Lcom/arkivanov/decompose/router/stack/StackNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V
 	public static synthetic fun replaceCurrent$default (Lcom/arkivanov/decompose/router/stack/StackNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+}
+
+public final class com/arkivanov/decompose/router/stack/StackSaverImpl$SavedEntry$Creator : android/os/Parcelable$Creator {
+	public fun <init> ()V
+	public final fun createFromParcel (Landroid/os/Parcel;)Lcom/arkivanov/decompose/router/stack/StackSaverImpl$SavedEntry;
+	public synthetic fun createFromParcel (Landroid/os/Parcel;)Ljava/lang/Object;
+	public final fun newArray (I)[Lcom/arkivanov/decompose/router/stack/StackSaverImpl$SavedEntry;
+	public synthetic fun newArray (I)[Ljava/lang/Object;
+}
+
+public final class com/arkivanov/decompose/router/stack/StackSaverImpl$SavedState$Creator : android/os/Parcelable$Creator {
+	public fun <init> ()V
+	public final fun createFromParcel (Landroid/os/Parcel;)Lcom/arkivanov/decompose/router/stack/StackSaverImpl$SavedState;
+	public synthetic fun createFromParcel (Landroid/os/Parcel;)Ljava/lang/Object;
+	public final fun newArray (I)[Lcom/arkivanov/decompose/router/stack/StackSaverImpl$SavedState;
+	public synthetic fun newArray (I)[Ljava/lang/Object;
 }
 
 public abstract interface class com/arkivanov/decompose/router/stack/webhistory/WebHistoryController {
