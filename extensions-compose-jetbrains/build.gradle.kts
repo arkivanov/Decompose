@@ -31,6 +31,9 @@ kotlin {
 
         android.main.dependencies {
             implementation(deps.androidx.activity.activityKtx)
+
+            // Temporary dependency until JB Compose has movableContentOf for Android
+            implementation(deps.androidx.compose.runtime.runtime)
         }
 
         jvm.test.dependencies {

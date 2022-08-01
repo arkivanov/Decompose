@@ -9,11 +9,6 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 enum class Direction {
 
     /**
-     * The child is not being animated.
-     */
-    IDLE,
-
-    /**
      * The child is entering from the front (push).
      */
     ENTER_FRONT,

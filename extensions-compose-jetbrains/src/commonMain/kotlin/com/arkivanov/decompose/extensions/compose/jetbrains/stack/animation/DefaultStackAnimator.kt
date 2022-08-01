@@ -1,10 +1,6 @@
 package com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation
 
-import androidx.compose.animation.core.AnimationState
-import androidx.compose.animation.core.FiniteAnimationSpec
-import androidx.compose.animation.core.animateTo
-import androidx.compose.animation.core.isFinished
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -19,7 +15,7 @@ internal class DefaultStackAnimator(
 
     @Composable
     override operator fun invoke(direction: Direction, onFinished: () -> Unit, content: @Composable (Modifier) -> Unit) {
-        val animationState = remember(direction) { AnimationState(initialValue = if (direction == Direction.IDLE) 0F else 1F) }
+        val animationState = remember(direction) { AnimationState(initialValue = 1F) }
 
         LaunchedEffect(animationState) {
             animationState.animateTo(
@@ -33,7 +29,6 @@ internal class DefaultStackAnimator(
 
         val factor =
             when (direction) {
-                Direction.IDLE,
                 Direction.ENTER_FRONT -> animationState.value
                 Direction.EXIT_FRONT -> 1F - animationState.value
                 Direction.ENTER_BACK -> -animationState.value
