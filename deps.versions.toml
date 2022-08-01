@@ -1,16 +1,17 @@
 [versions]
 
 decompose = "0.8.0"
-kotlin = "1.6.10"
-essenty = "0.2.2"
+kotlin = "1.7.0"
+essenty = "0.4.2"
 reaktive = "1.2.1"
 junit = "4.13.2"
-jetbrainsCompose = "1.1.0"
+jetbrainsCompose = "1.2.0-alpha01-dev753"
 jetbrainsKotlinWrappers = "0.0.1-pre.325-kotlin-1.6.10"
+jetbrainsKotlinxCoroutines = "1.6.1"
 jetbrainsBinaryCompatibilityValidator = "0.10.0"
-jetpackCompose = "1.1.1"
-jetpackComposeCompiler = "1.1.1"
-androidGradle = "7.1.0"
+jetpackCompose = "1.2.0"
+jetpackComposeCompiler = "1.2.0"
+androidGradle = "7.2.0"
 androidMaterial = "1.3.0"
 androidPlay = "1.10.0"
 androidxCore = "1.3.2"
@@ -36,6 +37,7 @@ jetbrains-compose-composeGradlePlug = { group = "org.jetbrains.compose", name = 
 jetbrains-compose-ui-uiTestJunit4 = { group = "org.jetbrains.compose.ui", name = "ui-test-junit4", version.ref = "jetbrainsCompose" }
 jetbrains-kotlinWrappers-kotlinWrappersBom = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-wrappers-bom", version.ref = "jetbrainsKotlinWrappers" }
 jetbrains-kotlinx-binaryCompatibilityValidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version.ref = "jetbrainsBinaryCompatibilityValidator" }
+jetbrains-kotlinx-kotlinxCoroutinesSwing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "jetbrainsKotlinxCoroutines" }
 
 androidx-compose-compiler-compiler = { group = "androidx.compose.compiler", name = "compiler", version.ref = "jetpackCompose" }
 androidx-compose-foundation-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "jetpackCompose" }

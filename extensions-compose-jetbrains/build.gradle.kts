@@ -35,6 +35,7 @@ kotlin {
 
         jvm.test.dependencies {
             implementation(deps.jetbrains.compose.ui.uiTestJunit4)
+            implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesSwing)
             implementation(deps.junit.junit)
             implementation(compose.desktop.currentOs)
         }
