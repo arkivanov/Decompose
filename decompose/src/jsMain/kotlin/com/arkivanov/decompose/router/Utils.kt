@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.value.Value
 import kotlin.math.min
 
@@ -32,9 +31,6 @@ internal fun <T> List<T>.findFirstDifferentIndex(other: List<T>): Int {
 
     return i
 }
-
-internal fun <C : Any> RouterState<C, *>.configurations(): List<C> =
-    backStack.map(Child<C, *>::configuration) + activeChild.configuration
 
 internal fun <T : Any> Value<T>.subscribe(observer: (new: T, old: T) -> Unit) {
     var old = value

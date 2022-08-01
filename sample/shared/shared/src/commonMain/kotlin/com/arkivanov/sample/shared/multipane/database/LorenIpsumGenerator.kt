@@ -17,7 +17,7 @@ internal object LorenIpsumGenerator {
         generate(count = Random.nextInt(1, 15))
             .joinToString(
                 separator = " ",
-                prefix = words.random().capitalize(),
+                prefix = words.random().replaceFirstChar(Char::uppercase),
                 postfix = "."
             )
 

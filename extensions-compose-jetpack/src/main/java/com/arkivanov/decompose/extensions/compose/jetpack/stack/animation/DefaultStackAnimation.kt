@@ -73,7 +73,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                 awaitPointerEventScope {
                     while (true) {
                         val event = awaitPointerEvent()
-                        event.changes.forEach { it.consumeAllChanges() }
+                        event.changes.forEach { it.consume() }
                     }
                 }
             }
