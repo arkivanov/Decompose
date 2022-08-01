@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.window.WindowState
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +15,7 @@ import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Suppress("TestFunctionName")
 class LifecycleControllerTest {
 
