@@ -40,6 +40,7 @@ jetbrains-kotlinx-binaryCompatibilityValidator = { group = "org.jetbrains.kotlin
 jetbrains-kotlinx-kotlinxCoroutinesSwing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "jetbrainsKotlinxCoroutines" }
 
 androidx-compose-compiler-compiler = { group = "androidx.compose.compiler", name = "compiler", version.ref = "jetpackCompose" }
+androidx-compose-runtime-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "jetpackCompose" }
 androidx-compose-foundation-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "jetpackCompose" }
 androidx-compose-material-material = { group = "androidx.compose.material", name = "material", version.ref = "jetpackCompose" }
 androidx-compose-ui-uiTestJunit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "jetpackCompose" }

@@ -30,7 +30,6 @@ public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/an
 	public static final field ENTER_FRONT Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/Direction;
 	public static final field EXIT_BACK Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/Direction;
 	public static final field EXIT_FRONT Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/Direction;
-	public static final field IDLE Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/Direction;
 	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/Direction;
 	public static fun values ()[Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/Direction;
 }

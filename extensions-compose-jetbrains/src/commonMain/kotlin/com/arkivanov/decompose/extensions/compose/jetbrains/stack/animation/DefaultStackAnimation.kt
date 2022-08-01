@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,23 +38,26 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                 val (child, direction) = item
 
                 key(configuration) {
-                    val animator = remember(direction) { selector(child, direction) }
+                    val childContent = rememberChildContent(child, content)
 
-                    animator(
-                        direction = direction,
-                        onFinished = {
-                            when (direction) {
-                                Direction.EXIT_FRONT,
-                                Direction.EXIT_BACK -> items = items - configuration
-                                Direction.ENTER_FRONT,
-                                Direction.ENTER_BACK -> items = items + (configuration to item.copy(direction = Direction.IDLE))
-                                Direction.IDLE -> Unit
-                            }
-                        }
-                    ) { modifier ->
-                        Box(modifier = modifier) {
-                            content(child)
-                        }
+                    if (direction == null) {
+                        childContent(Modifier)
+                    } else {
+                        val animator = remember(direction) { selector(child, direction) }
+
+                        animator(
+                            direction = direction,
+                            onFinished = {
+                                items =
+                                    when (direction) {
+                                        Direction.EXIT_FRONT,
+                                        Direction.EXIT_BACK -> items - configuration
+                                        Direction.ENTER_FRONT,
+                                        Direction.ENTER_BACK -> items + (configuration to item.copy(direction = null))
+                                    }
+                            },
+                            content = childContent,
+                        )
                     }
                 }
             }
@@ -65,6 +69,19 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             }
         }
     }
+
+    @Composable
+    private fun rememberChildContent(
+        child: Child.Created<C, T>,
+        content: @Composable (child: Child.Created<C, T>) -> Unit,
+    ): @Composable (Modifier) -> Unit =
+        remember {
+            movableContentOf { modifier ->
+                Box(modifier = modifier) {
+                    content(child)
+                }
+            }
+        }
 
     @Composable
     private fun Overlay(modifier: Modifier) {
@@ -86,7 +103,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     private fun getAnimationItems(newPage: Page<C, T>, oldPage: Page<C, T>?): Map<C, AnimationItem<C, T>> =
         when {
             oldPage == null ->
-                listOf(AnimationItem(newPage.child, Direction.IDLE))
+                listOf(AnimationItem(newPage.child, null))
 
             newPage.index >= oldPage.index ->
                 listOf(
@@ -103,7 +120,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
     private data class AnimationItem<out C : Any, out T : Any>(
         val child: Child.Created<C, T>,
-        val direction: Direction,
+        val direction: Direction?,
     )
 
     private class Page<out C : Any, out T : Any>(
