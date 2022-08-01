@@ -28,3 +28,31 @@ enum class Direction {
      */
     EXIT_BACK,
 }
+
+@ExperimentalDecomposeApi
+val Direction.isEnter: Boolean
+    get() =
+        when (this) {
+            Direction.ENTER_FRONT,
+            Direction.ENTER_BACK -> true
+            Direction.EXIT_FRONT,
+            Direction.EXIT_BACK -> false
+        }
+
+@ExperimentalDecomposeApi
+val Direction.isExit: Boolean
+    get() = !isEnter
+
+@ExperimentalDecomposeApi
+val Direction.isFront: Boolean
+    get() =
+        when (this) {
+            Direction.ENTER_FRONT,
+            Direction.EXIT_FRONT -> true
+            Direction.ENTER_BACK,
+            Direction.EXIT_BACK -> false
+        }
+
+@ExperimentalDecomposeApi
+val Direction.isBack: Boolean
+    get() = !isFront

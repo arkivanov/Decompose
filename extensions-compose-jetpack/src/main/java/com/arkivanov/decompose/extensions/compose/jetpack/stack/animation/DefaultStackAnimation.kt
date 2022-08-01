@@ -19,7 +19,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 
 @ExperimentalDecomposeApi
 internal class DefaultStackAnimation<C : Any, T : Any>(
-    private val selector: (child: Child.Created<C, T>, direction: Direction) -> StackAnimator
+    private val selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator
 ) : StackAnimation<C, T> {
 
     @Composable
@@ -35,30 +35,19 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
         Box(modifier = modifier) {
             items.forEach { (configuration, item) ->
-                val (child, direction) = item
-
                 key(configuration) {
-                    val childContent = rememberChildContent(child, content)
-
-                    if (direction == null) {
-                        childContent(Modifier)
-                    } else {
-                        val animator = remember(direction) { selector(child, direction) }
-
-                        animator(
-                            direction = direction,
-                            onFinished = {
-                                items =
-                                    when (direction) {
-                                        Direction.EXIT_FRONT,
-                                        Direction.EXIT_BACK -> items - configuration
-                                        Direction.ENTER_FRONT,
-                                        Direction.ENTER_BACK -> items + (configuration to item.copy(direction = null))
-                                    }
-                            },
-                            content = childContent,
-                        )
-                    }
+                    Item(
+                        item = item,
+                        onFinished = { direction ->
+                            when (direction) {
+                                Direction.EXIT_FRONT,
+                                Direction.EXIT_BACK -> items - configuration
+                                Direction.ENTER_FRONT,
+                                Direction.ENTER_BACK -> items + (configuration to AnimationItem.Single(item.child))
+                            }
+                        },
+                        content = content,
+                    )
                 }
             }
 
@@ -71,17 +60,38 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     }
 
     @Composable
-    private fun rememberChildContent(
-        child: Child.Created<C, T>,
+    private fun Item(
+        item: AnimationItem<C, T>,
+        onFinished: (Direction) -> Unit,
         content: @Composable (child: Child.Created<C, T>) -> Unit,
-    ): @Composable (Modifier) -> Unit =
-        remember {
-            movableContentOf { modifier ->
-                Box(modifier = modifier) {
-                    content(child)
+    ) {
+        val child = item.child
+
+        val childContent =
+            remember {
+                movableContentOf<Modifier> { modifier ->
+                    Box(modifier = modifier) {
+                        content(child)
+                    }
                 }
             }
+
+        when (item) {
+            is AnimationItem.Single -> childContent(Modifier)
+
+            is AnimationItem.Pair -> {
+                val otherChild = item.otherChild
+                val direction = item.direction
+                val animator = remember(direction) { selector(child, otherChild, direction) }
+
+                animator(
+                    direction = direction,
+                    onFinished = { onFinished(direction) },
+                    content = childContent,
+                )
+            }
         }
+    }
 
     @Composable
     private fun Overlay(modifier: Modifier) {
@@ -103,25 +113,34 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     private fun getAnimationItems(newPage: Page<C, T>, oldPage: Page<C, T>?): Map<C, AnimationItem<C, T>> =
         when {
             oldPage == null ->
-                listOf(AnimationItem(newPage.child, null))
+                listOf(AnimationItem.Single(newPage.child))
 
             newPage.index >= oldPage.index ->
                 listOf(
-                    AnimationItem(oldPage.child, Direction.EXIT_BACK),
-                    AnimationItem(newPage.child, Direction.ENTER_FRONT),
+                    AnimationItem.Pair(oldPage.child, newPage.child, Direction.EXIT_BACK),
+                    AnimationItem.Pair(newPage.child, oldPage.child, Direction.ENTER_FRONT),
                 )
 
             else ->
                 listOf(
-                    AnimationItem(newPage.child, Direction.ENTER_BACK),
-                    AnimationItem(oldPage.child, Direction.EXIT_FRONT),
+                    AnimationItem.Pair(newPage.child, oldPage.child, Direction.ENTER_BACK),
+                    AnimationItem.Pair(oldPage.child, newPage.child, Direction.EXIT_FRONT),
                 )
         }.associateBy { it.child.configuration }
 
-    private data class AnimationItem<out C : Any, out T : Any>(
-        val child: Child.Created<C, T>,
-        val direction: Direction?,
-    )
+    private sealed interface AnimationItem<C : Any, T : Any> {
+        val child: Child.Created<C, T>
+
+        data class Single<C : Any, T : Any>(
+            override val child: Child.Created<C, T>,
+        ) : AnimationItem<C, T>
+
+        data class Pair<C : Any, T : Any>(
+            override val child: Child.Created<C, T>,
+            val otherChild: Child.Created<C, T>,
+            val direction: Direction,
+        ) : AnimationItem<C, T>
+    }
 
     private class Page<out C : Any, out T : Any>(
         val child: Child.Created<C, T>,
