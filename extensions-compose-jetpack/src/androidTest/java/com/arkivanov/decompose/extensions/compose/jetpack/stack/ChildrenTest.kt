@@ -16,7 +16,6 @@ import androidx.compose.ui.test.performClick
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.StackAnimation
-import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.scale
@@ -94,6 +93,27 @@ class ChildrenTest(
         composeRule.onNodeWithText(text = "ChildB=0").assertExists()
     }
 
+    @Test
+    fun GIVEN_child_A_displayed_WHEN_push_child_B_THEN_child_A_disposed() {
+        val state = mutableStateOf(routerState(activeConfig = Config.A))
+        setContent(state)
+
+        state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
+
+        composeRule.onNodeWithText(text = "ChildA", substring = true).assertDoesNotExist()
+    }
+
+    @Test
+    fun GIVEN_child_B_displayed_and_child_A_in_back_stack_WHEN_pop_child_B_THEN_child_B_disposed() {
+        val state = mutableStateOf(routerState(activeConfig = Config.A))
+        setContent(state)
+        state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
+
+        state.setValueOnIdle(routerState(activeConfig = Config.A))
+
+        composeRule.onNodeWithText(text = "ChildB", substring = true).assertDoesNotExist()
+    }
+
     private fun setContent(stack: State<ChildStack<Config, Config>>) {
         composeRule.setContent {
             Children(stack = stack.value, animation = animation) { child ->
@@ -140,7 +160,8 @@ class ChildrenTest(
 
         private fun getParameters(): List<StackAnimation<Config, Config>> =
             listOf(
-                emptyStackAnimation(),
+                stackAnimation(null),
+                stackAnimation { _, _, _ -> null },
                 stackAnimation(scale()),
                 stackAnimation(fade()),
                 stackAnimation(slide()),

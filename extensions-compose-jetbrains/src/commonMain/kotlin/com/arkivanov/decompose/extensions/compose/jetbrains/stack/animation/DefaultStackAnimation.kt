@@ -4,6 +4,7 @@ package com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.movableContentOf
@@ -19,7 +20,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 
 @ExperimentalDecomposeApi
 internal class DefaultStackAnimation<C : Any, T : Any>(
-    private val selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator,
+    private val selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator?,
 ) : StackAnimation<C, T> {
 
     @Composable
@@ -66,31 +67,45 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         onFinished: (Direction) -> Unit,
         content: @Composable (child: Child.Created<C, T>) -> Unit,
     ) {
-        val child = item.child
-
         val childContent =
             remember {
                 movableContentOf<Modifier> { modifier ->
                     Box(modifier = modifier) {
-                        content(child)
+                        content(item.child)
                     }
                 }
             }
 
         when (item) {
             is AnimationItem.Single -> childContent(Modifier)
+            is AnimationItem.Pair -> ItemPair(item = item, onFinished = onFinished, content = childContent)
+        }
+    }
 
-            is AnimationItem.Pair -> {
-                val otherChild = item.otherChild
-                val direction = item.direction
-                val animator = remember(direction) { selector(child, otherChild, direction) }
+    @Composable
+    private fun ItemPair(
+        item: AnimationItem.Pair<C, T>,
+        onFinished: (Direction) -> Unit,
+        content: @Composable (Modifier) -> Unit,
+    ) {
+        val direction = item.direction
+        val animator: StackAnimator? = remember(direction) { selector(item.child, item.otherChild, direction) }
 
-                animator(
-                    direction = direction,
-                    onFinished = { onFinished(direction) },
-                    content = childContent,
-                )
+        if (animator == null) {
+            if (direction.isEnter) {
+                content(Modifier)
             }
+
+            DisposableEffect(Unit) {
+                onFinished(direction)
+                onDispose {}
+            }
+        } else {
+            animator(
+                direction = direction,
+                onFinished = { onFinished(direction) },
+                content = content,
+            )
         }
     }
 
@@ -129,14 +144,14 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                 )
         }.associateBy { it.child.configuration }
 
-    private sealed interface AnimationItem<C : Any, T : Any> {
+    private sealed interface AnimationItem<out C : Any, out T : Any> {
         val child: Child.Created<C, T>
 
-        data class Single<C : Any, T : Any>(
+        data class Single<out C : Any, out T : Any>(
             override val child: Child.Created<C, T>,
         ) : AnimationItem<C, T>
 
-        data class Pair<C : Any, T : Any>(
+        data class Pair<out C : Any, out T : Any>(
             override val child: Child.Created<C, T>,
             val otherChild: Child.Created<C, T>,
             val direction: Direction,
