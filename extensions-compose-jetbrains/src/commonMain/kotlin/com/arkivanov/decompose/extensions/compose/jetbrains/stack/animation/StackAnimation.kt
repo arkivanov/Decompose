@@ -64,17 +64,7 @@ fun <C : Any, T : Any> stackAnimation(
  * @param animator a [StackAnimator] to be used for animation, default is [fade].
  */
 @ExperimentalDecomposeApi
-fun <C : Any, T : Any> stackAnimation(animator: StackAnimator? = fade()): StackAnimation<C, T> =
-    if (animator == null) {
-        emptyStackAnimation()
-    } else {
-        stackAnimation { _, _, _ -> animator }
-    }
+fun <C : Any, T : Any> stackAnimation(animator: StackAnimator = fade()): StackAnimation<C, T> =
+    stackAnimation { _, _, _ -> animator }
 
-@ExperimentalDecomposeApi
-private fun <C : Any, T : Any> emptyStackAnimation(): StackAnimation<C, T> =
-    StackAnimation { stack, modifier, childContent ->
-        Box(modifier = modifier) {
-            childContent(stack.active)
-        }
-    }
+
