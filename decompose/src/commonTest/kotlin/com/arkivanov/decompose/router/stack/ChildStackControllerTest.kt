@@ -1,17 +1,9 @@
-package com.arkivanov.decompose.controller.stack
+package com.arkivanov.decompose.router.stack
 
-import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.decompose.router.stack.ChildStackController
-import com.arkivanov.decompose.router.stack.RouterEntry
-import com.arkivanov.decompose.router.stack.RouterStack
-import com.arkivanov.decompose.router.stack.StackController
-import com.arkivanov.decompose.router.stack.StackHolder
-import com.arkivanov.decompose.router.stack.StackNavigation
-import com.arkivanov.decompose.router.stack.StackNavigationSource
-import com.arkivanov.decompose.router.stack.configurationStack
-import com.arkivanov.decompose.router.stack.navigate
+import com.arkivanov.decompose.backhandler.TestChildBackHandler
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
-import com.arkivanov.essenty.backpressed.BackPressedDispatcher
+import com.arkivanov.essenty.backhandler.BackDispatcher
+import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.parcelable.Parcelable
@@ -19,9 +11,28 @@ import com.arkivanov.essenty.parcelable.Parcelize
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @Suppress("TestFunctionName")
 class ChildStackControllerTest {
+
+    @Test
+    fun GIVEN_initial_back_stack_empty_WHEN_created_THEN_back_handler_disabled() {
+        val backDispatcher = BackDispatcher()
+
+        controller(initialStack = listOf(Config()), backHandler = backDispatcher)
+
+        assertFalse(backDispatcher.isEnabled)
+    }
+
+    @Test
+    fun GIVEN_initial_back_stack_not_empty_WHEN_created_THEN_back_handler_enabled() {
+        val backDispatcher = BackDispatcher()
+
+        controller(initialStack = listOf(Config(), Config()), backHandler = backDispatcher)
+
+        assertTrue(backDispatcher.isEnabled)
+    }
 
     @Test
     fun WHEN_navigate_THEN_new_stack_applied() {
@@ -105,7 +116,6 @@ class ChildStackControllerTest {
         assertFalse(isCalledSynchronously)
     }
 
-
     @Test
     fun WHEN_navigate_recursively_THEN_onComplete_called() {
         val config1 = Config()
@@ -134,15 +144,15 @@ class ChildStackControllerTest {
     }
 
     private fun controller(
-        source: StackNavigationSource<Config>,
+        source: StackNavigationSource<Config> = StackNavigation(),
         initialStack: List<Config>,
+        backHandler: BackHandler = BackDispatcher(),
         controller: TestStackController = TestStackController(),
     ): ChildStackController<Config, Config> =
         ChildStackController(
             source = source,
             lifecycle = LifecycleRegistry(),
-            backPressedHandler = BackPressedDispatcher(),
-            popOnBackPressed = false,
+            backHandler = backHandler,
             stackHolder = TestStackHolder(routerStack(initialStack)),
             controller = controller,
         )
@@ -156,7 +166,7 @@ class ChildStackControllerTest {
                     lifecycleRegistry = LifecycleRegistry(),
                     stateKeeperDispatcher = TestStateKeeperDispatcher(),
                     instanceKeeperDispatcher = InstanceKeeperDispatcher(),
-                    backPressedDispatcher = BackPressedDispatcher()
+                    backHandler = TestChildBackHandler(),
                 ),
                 backStack = stack.dropLast(1).map {
                     RouterEntry.Destroyed(configuration = it)

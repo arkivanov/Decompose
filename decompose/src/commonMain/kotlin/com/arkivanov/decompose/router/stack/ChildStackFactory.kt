@@ -1,6 +1,7 @@
 package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.backhandler.child
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.ParcelableContainer
@@ -26,13 +27,17 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, ComponentContext) -> T,
 ): Value<ChildStack<C, T>> {
-    val routerEntryFactory = RouterEntryFactoryImpl(lifecycle = lifecycle, childFactory = childFactory)
+    val routerEntryFactory =
+        RouterEntryFactoryImpl(
+            lifecycle = lifecycle,
+            backHandler = backHandler.child(lifecycle = null),
+            childFactory = childFactory,
+        )
 
     val controller =
         ChildStackController(
             lifecycle = lifecycle,
-            backPressedHandler = backPressedHandler,
-            popOnBackPressed = handleBackButton,
+            backHandler = backHandler.takeIf { handleBackButton }?.child(lifecycle = null),
             stackHolder = StackHolderImpl(
                 initialStack = initialStack,
                 lifecycle = lifecycle,
