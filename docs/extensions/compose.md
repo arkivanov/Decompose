@@ -151,7 +151,7 @@ Decompose provides the [Child Animation API](https://github.com/arkivanov/Decomp
 fun RootContent(rootComponent: RootComponent) {
     Children(
         stack = rootComponent.childStack,
-        animation = childAnimation(fade()),
+        animation = stackAnimation(fade()),
     ) {
         // Omitted code
     }
@@ -167,7 +167,7 @@ fun RootContent(rootComponent: RootComponent) {
 fun RootContent(rootComponent: RootComponent) {
     Children(
         stack = rootComponent.childStack,
-        animation = childAnimation(slide()),
+        animation = stackAnimation(slide()),
     ) {
         // Omitted code
     }
@@ -185,7 +185,7 @@ It is also possible to combine animators using the `plus` operator. Please note 
 fun RootContent(rootComponent: RootComponent) {
     Children(
         stack = rootComponent.childStack,
-        animation = childAnimation(fade() + scale())
+        animation = stackAnimation(fade() + scale())
     ) {
         // Omitted code
     }
@@ -203,7 +203,7 @@ Previous examples demonstrate simple cases, when all children have the same anim
 fun RootContent(rootComponent: RootComponent) {
     Children(
         stack = rootComponent.childStack,
-        animation = childAnimation { child, direction ->
+        animation = stackAnimation { child, otherChild, direction ->
             when (child.instance) {
                 is RootComponent.Child.Main -> fade() + scale()
                 is RootComponent.Child.Details -> fade() + slide()
@@ -221,7 +221,7 @@ fun RootContent(rootComponent: RootComponent) {
 
 It is also possible to define custom animations.
 
-Implementing `ChildAnimation` manually. This is the most flexible low-level API. The animation block receives the current `ChildStack` and animates children using the provided `content` slot.
+Implementing `StackAnimation` manually. This is the most flexible low-level API. The animation block receives the current `ChildStack` and animates children using the provided `content` slot.
 
 ```kotlin
 @Composable
@@ -234,50 +234,50 @@ fun RootContent(rootComponent: RootComponent) {
     }
 }
 
-fun <C : Any, T : Any> someAnimation(): ChildAnimation<C, T> =
-    ChildAnimation { stack: ChildStack<C, T>,
+fun <C : Any, T : Any> someAnimation(): StackAnimation<C, T> =
+    StackAnimation { stack: ChildStack<C, T>,
                      modifier: Modifier,
                      content: @Composable (Child.Created<C, T>) -> Unit ->
         // Render each frame here
     }
 ```
 
-Using the `childAnimation` helper function and implementing `ChildAnimator`. The `childAnimation` function takes care of tracking the `ChildStack` changes. `ChildAnimator` is only responsible for manipulating the `Modifier` in the given `direction`, and calling `onFinished` at the end.
+Using the `stackAnimation` helper function and implementing `StackAnimator`. The `stackAnimation` function takes care of tracking the `ChildStack` changes. `StackAnimator` is only responsible for manipulating the `Modifier` in the given `direction`, and calling `onFinished` at the end.
 
 ```kotlin
 @Composable
 fun RootContent(rootComponent: RootComponent) {
     Children(
         stack = rootComponent.childStack,
-        animation = childAnimation(someAnimator()),
+        animation = stackAnimation(someAnimator()),
     ) {
         // Omitted code
     }
 }
 
-fun someAnimator(): ChildAnimator =
-    ChildAnimator { direction: Direction,
+fun someAnimator(): StackAnimator =
+    StackAnimator { direction: Direction,
                     onFinished: () -> Unit,
                     content: @Composable (Modifier) -> Unit ->
         // Manipulate the Modifier in the given direction and call onFinished at the end
     }
 ```
 
-Using `childAnimation` and `childAnimator` helper functions. This is the simplest, but less powerful way. The `childAnimator` function takes care of running the animation. Its block has a very limited responsibility - to render the current frame using the provided `factor` and `direction`.
+Using `stackAnimation` and `stackAnimator` helper functions. This is the simplest, but less powerful way. The `stackAnimator` function takes care of running the animation. Its block has a very limited responsibility - to render the current frame using the provided `factor` and `direction`.
 
 ```kotlin
 @Composable
 fun RootContent(rootComponent: RootComponent) {
     Children(
         stack = rootComponent.childStack,
-        animation = childAnimation(someAnimator()),
+        animation = stackAnimation(someAnimator()),
     ) {
         // Omitted code
     }
 }
 
-fun someAnimator(): ChildAnimator =
-    childAnimator { factor: Float,
+fun someAnimator(): StackAnimator =
+    stackAnimator { factor: Float,
                     direction: Direction,
                     content: (Modifier) -> Unit ->
         // Render the current frame
