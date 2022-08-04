@@ -92,7 +92,7 @@ class MyFragment : DialogFragment() {
 
 ### Root ComponentContext in Jetpack/JetBrains Compose
 
-It is advised to not create the root `ComponentContext` (and a root component) directly in a `Composable` function. Compositions may be performed in a background thread, which may brake things. The preferred way is to create the root component outside of Compose.
+It is advised to not create the root `ComponentContext` (and a root component) directly in a `Composable` function. Compositions may be performed in a background thread, which may break things. The preferred way is to create the root component outside of Compose.
 
 !!!warning
     If you can't avoid creating the root component in a `Composable` function, please make sure you use `remember`. This will prevent the root component and its `ComponentContext` from being recreated on each composition.

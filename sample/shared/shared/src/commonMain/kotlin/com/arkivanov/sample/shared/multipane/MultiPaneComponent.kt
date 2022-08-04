@@ -5,6 +5,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.reduce
+import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.sample.shared.multipane.MultiPane.DetailsChild
 import com.arkivanov.sample.shared.multipane.MultiPane.ListChild
 import com.arkivanov.sample.shared.multipane.MultiPane.Model
@@ -43,19 +44,21 @@ internal class MultiPaneComponent(
 
     override val detailsChildStack: Value<ChildStack<*, DetailsChild>> = detailsRouter.stack
 
+    private val backCallback = BackCallback(isEnabled = false, onBack = ::closeDetailsAndShowList)
+
     init {
-        backPressedHandler.register {
-            if (isMultiPaneMode() || !detailsRouter.isShown()) {
-                false
-            } else {
-                closeDetailsAndShowList()
-                true
-            }
-        }
+        backHandler.register(backCallback)
+
+        _models.subscribe { updateBackCallback() }
 
         detailsRouter.stack.subscribe {
+            updateBackCallback()
             selectedArticleIdSubject.onNext(it.active.configuration.getArticleId())
         }
+    }
+
+    private fun updateBackCallback() {
+        backCallback.isEnabled = !isMultiPaneMode() && detailsRouter.isShown()
     }
 
     private fun closeDetailsAndShowList() {

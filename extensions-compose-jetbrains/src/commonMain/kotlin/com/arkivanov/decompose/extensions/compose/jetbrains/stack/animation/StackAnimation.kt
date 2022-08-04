@@ -2,6 +2,7 @@
 
 package com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
@@ -49,11 +50,11 @@ inline fun <C : Any, T : Any> StackAnimation(
 /**
  * Creates an implementation of [StackAnimation] that allows different [StackAnimator]s.
  *
- * @param selector provides a [StackAnimator] for [Child] and [Direction].
+ * @param selector provides a [StackAnimator] for current [Child], other [Child] and [Direction].
  */
 @ExperimentalDecomposeApi
 fun <C : Any, T : Any> stackAnimation(
-    selector: (child: Child.Created<C, T>, direction: Direction) -> StackAnimator,
+    selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator?,
 ): StackAnimation<C, T> =
     DefaultStackAnimation(selector)
 
@@ -64,4 +65,6 @@ fun <C : Any, T : Any> stackAnimation(
  */
 @ExperimentalDecomposeApi
 fun <C : Any, T : Any> stackAnimation(animator: StackAnimator = fade()): StackAnimation<C, T> =
-    stackAnimation { _, _ -> animator }
+    stackAnimation { _, _, _ -> animator }
+
+

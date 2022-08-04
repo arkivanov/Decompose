@@ -3,7 +3,8 @@ package com.arkivanov.decompose
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.statekeeper.ParcelableStub
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
-import com.arkivanov.essenty.backpressed.BackPressedDispatcher
+import com.arkivanov.essenty.backhandler.BackCallback
+import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -210,38 +211,48 @@ class ChildContextTest {
     }
 
     @Test
-    fun GIVEN_child_BackPressedHandler_returns_true_WHEN_backPressedHandler_onBackPressed_THEN_returns_true() {
+    fun GIVEN_enabled_child_BackHandler_registered_WHEN_backHandler_back_THEN_returns_true() {
         val context = TestContext()
         val childContext = context.childContext(key = "key")
-        childContext.backPressedHandler.register { true }
+        childContext.backHandler.register(BackCallback(isEnabled = true, onBack = {}))
 
-        val result = context.backPressedHandler.onBackPressed()
+        val result = context.backHandler.back()
 
         assertTrue(result)
     }
 
     @Test
-    fun GIVEN_child_BackPressedHandler_returns_false_WHEN_backPressedHandler_onBackPressed_THEN_returns_false() {
+    fun GIVEN_disabled_child_BackHandler_registered_WHEN_backHandler_back_THEN_returns_false() {
         val context = TestContext()
         val childContext = context.childContext(key = "key")
-        childContext.backPressedHandler.register { false }
+        childContext.backHandler.register(BackCallback(isEnabled = false, onBack = {}))
 
-        val result = context.backPressedHandler.onBackPressed()
+        val result = context.backHandler.back()
 
         assertFalse(result)
     }
 
     @Test
-    fun WHEN_child_lifecycle_destroyed_THEN_child_unregistered_from_BackPressedHandler() {
+    fun GIVEN_child_BackHandler_not_registered_WHEN_backHandler_back_THEN_returns_false() {
+        val context = TestContext()
+        context.childContext(key = "key")
+
+        val result = context.backHandler.back()
+
+        assertFalse(result)
+    }
+
+    @Test
+    fun GIVEN_enabled_child_BackHandler_registered_and_lifecycle_destroyed_WHEN_backHandler_back_THEN_returns_false() {
         val context = TestContext()
         val childLifecycle = LifecycleRegistry()
         val childContext = context.childContext(key = "key", lifecycle = childLifecycle)
-        childContext.backPressedHandler.register { true }
+        childContext.backHandler.register(BackCallback(isEnabled = true, onBack = {}))
         childLifecycle.resume()
 
         childLifecycle.destroy()
 
-        assertFalse(context.backPressedHandler.onBackPressed())
+        assertFalse(context.backHandler.back())
     }
 
     private class TestContext(
@@ -250,6 +261,6 @@ class ChildContextTest {
     ) : ComponentContext {
         override val lifecycle: LifecycleRegistry = LifecycleRegistry()
         override val stateKeeper: TestStateKeeperDispatcher = TestStateKeeperDispatcher(savedState)
-        override val backPressedHandler: BackPressedDispatcher = BackPressedDispatcher()
+        override val backHandler: BackDispatcher = BackDispatcher()
     }
 }

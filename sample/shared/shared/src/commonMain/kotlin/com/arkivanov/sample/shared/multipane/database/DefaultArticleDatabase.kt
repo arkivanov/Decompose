@@ -11,7 +11,7 @@ internal class DefaultArticleDatabase : ArticleDatabase {
             ArticleEntity(
                 id = index.toLong() + 1L,
                 title = generate(count = Random.nextInt(3, 7), minWordLength = 3)
-                    .joinToString(separator = " ", transform = String::capitalize),
+                    .joinToString(separator = " ") { it.replaceFirstChar(Char::uppercase) },
                 text = List(50) { generateSentence() }
                     .joinToString(separator = " ")
             )

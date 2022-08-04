@@ -1,6 +1,6 @@
 package com.arkivanov.decompose.router.stack
 
-import com.arkivanov.essenty.backpressed.BackPressedDispatcher
+import com.arkivanov.decompose.backhandler.ChildBackHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.parcelable.ParcelableContainer
@@ -17,7 +17,7 @@ internal sealed class RouterEntry<out C : Any, out T : Any> {
         val lifecycleRegistry: LifecycleRegistry,
         val stateKeeperDispatcher: StateKeeperDispatcher,
         val instanceKeeperDispatcher: InstanceKeeperDispatcher,
-        val backPressedDispatcher: BackPressedDispatcher
+        val backHandler: ChildBackHandler,
     ) : RouterEntry<C, T>()
 
     data class Destroyed<out C : Any>(

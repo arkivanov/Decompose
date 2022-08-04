@@ -39,7 +39,7 @@ kotlin {
             api(deps.essenty.lifecycle)
             api(deps.essenty.stateKeeper)
             api(deps.essenty.instanceKeeper)
-            api(deps.essenty.backPressed)
+            api(deps.essenty.backHandler)
         }
 
         android.main.dependencies {

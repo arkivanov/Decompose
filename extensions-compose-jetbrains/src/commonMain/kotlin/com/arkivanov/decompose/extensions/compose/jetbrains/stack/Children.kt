@@ -19,14 +19,16 @@ import com.arkivanov.decompose.value.Value
 fun <C : Any, T : Any> Children(
     stack: ChildStack<C, T>,
     modifier: Modifier = Modifier,
-    animation: StackAnimation<C, T> = emptyStackAnimation(),
+    animation: StackAnimation<C, T>? = null,
     content: @Composable (child: Child.Created<C, T>) -> Unit,
 ) {
     val holder = rememberSaveableStateHolder()
 
     holder.retainStates(stack.getConfigurations())
 
-    animation(stack = stack, modifier = modifier) { child ->
+    val anim = animation ?: emptyStackAnimation()
+
+    anim(stack = stack, modifier = modifier) { child ->
         holder.SaveableStateProvider(child.configuration.key()) {
             content(child)
         }
@@ -38,7 +40,7 @@ fun <C : Any, T : Any> Children(
 fun <C : Any, T : Any> Children(
     stack: Value<ChildStack<C, T>>,
     modifier: Modifier = Modifier,
-    animation: StackAnimation<C, T> = emptyStackAnimation(),
+    animation: StackAnimation<C, T>? = null,
     content: @Composable (child: Child.Created<C, T>) -> Unit,
 ) {
     val state = stack.subscribeAsState()

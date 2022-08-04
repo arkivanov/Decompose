@@ -1,6 +1,6 @@
 package com.arkivanov.decompose
 
-import com.arkivanov.decompose.backpressed.child
+import com.arkivanov.decompose.backhandler.child
 import com.arkivanov.decompose.instancekeeper.child
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
 import com.arkivanov.decompose.statekeeper.child
@@ -20,5 +20,5 @@ fun ComponentContext.childContext(key: String, lifecycle: Lifecycle? = null): Co
         lifecycle = if (lifecycle == null) this.lifecycle else MergedLifecycle(this.lifecycle, lifecycle),
         stateKeeper = stateKeeper.child(key, lifecycle),
         instanceKeeper = instanceKeeper.child(key, lifecycle),
-        backPressedHandler = backPressedHandler.child(lifecycle),
+        backHandler = backHandler.child(lifecycle),
     )

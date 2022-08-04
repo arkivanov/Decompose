@@ -29,6 +29,7 @@ internal class StackHolderImpl<C : Any, T : Any>(
     init {
         stackSaver.register(key) { stack }
         retainedInstance.activeEntry = stack.active
+        stack.active.backHandler.start()
         stack.active.lifecycleRegistry.resume()
 
         lifecycle.doOnDestroy(::destroy)

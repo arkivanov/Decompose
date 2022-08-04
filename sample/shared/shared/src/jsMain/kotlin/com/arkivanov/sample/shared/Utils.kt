@@ -1,7 +1,6 @@
 package com.arkivanov.sample.shared
 
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.ValueObserver
 import react.ChildrenBuilder
 import react.FC
 import react.StateInstance
@@ -14,7 +13,7 @@ internal fun <T : Any> Value<T>.useAsState(): StateInstance<T> {
     val (_, set) = state
 
     useEffectOnce {
-        val observer: ValueObserver<T> = { set(it) }
+        val observer: (T) -> Unit = { set(it) }
         subscribe(observer)
         cleanup { unsubscribe(observer) }
     }

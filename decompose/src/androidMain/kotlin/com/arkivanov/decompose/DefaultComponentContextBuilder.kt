@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
-import com.arkivanov.essenty.backpressed.BackPressedHandler
+import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.lifecycle.asEssentyLifecycle
 import com.arkivanov.essenty.statekeeper.StateKeeper
@@ -23,7 +23,7 @@ fun DefaultComponentContext(
         lifecycle = lifecycle.asEssentyLifecycle(),
         stateKeeper = savedStateRegistry?.let(::StateKeeper),
         instanceKeeper = viewModelStore?.let(::InstanceKeeper),
-        backPressedHandler = onBackPressedDispatcher?.let(::BackPressedHandler)
+        backHandler = onBackPressedDispatcher?.let(::BackHandler),
     )
 
 fun <T> T.defaultComponentContext(): DefaultComponentContext where

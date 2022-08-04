@@ -1,8 +1,8 @@
 package com.arkivanov.decompose
 
 import com.arkivanov.decompose.instancekeeper.attachTo
-import com.arkivanov.essenty.backpressed.BackPressedDispatcher
-import com.arkivanov.essenty.backpressed.BackPressedHandler
+import com.arkivanov.essenty.backhandler.BackDispatcher
+import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -13,17 +13,17 @@ class DefaultComponentContext(
     override val lifecycle: Lifecycle,
     stateKeeper: StateKeeper? = null,
     instanceKeeper: InstanceKeeper? = null,
-    backPressedHandler: BackPressedHandler? = null,
+    backHandler: BackHandler? = null,
 ) : ComponentContext {
 
     override val stateKeeper: StateKeeper = stateKeeper ?: StateKeeperDispatcher()
     override val instanceKeeper: InstanceKeeper = instanceKeeper ?: InstanceKeeperDispatcher().attachTo(lifecycle)
-    override val backPressedHandler: BackPressedHandler = backPressedHandler ?: BackPressedDispatcher()
+    override val backHandler: BackHandler = backHandler ?: BackDispatcher()
 
     constructor(lifecycle: Lifecycle) : this(
         lifecycle = lifecycle,
         stateKeeper = null,
         instanceKeeper = null,
-        backPressedHandler = null
+        backHandler = null,
     )
 }

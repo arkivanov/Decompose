@@ -16,7 +16,6 @@ import androidx.compose.ui.test.performClick
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
@@ -34,7 +33,7 @@ import org.junit.runners.Parameterized
 @Suppress("TestFunctionName")
 @RunWith(Parameterized::class)
 class ChildrenTest(
-    private val animation: StackAnimation<Config, Config>
+    private val animation: StackAnimation<Config, Config>?,
 ) {
 
     @get:Rule
@@ -106,6 +105,31 @@ class ChildrenTest(
         }
     }
 
+    @Test
+    fun GIVEN_child_A_displayed_WHEN_push_child_B_THEN_child_A_disposed() {
+        runBlocking(Dispatchers.Main) {
+            val state = mutableStateOf(routerState(activeConfig = Config.A))
+            setContent(state)
+
+            state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
+
+            composeRule.onNodeWithText(text = "ChildA", substring = true).assertDoesNotExist()
+        }
+    }
+
+    @Test
+    fun GIVEN_child_B_displayed_and_child_A_in_back_stack_WHEN_pop_child_B_THEN_child_B_disposed() {
+        runBlocking(Dispatchers.Main) {
+            val state = mutableStateOf(routerState(activeConfig = Config.A))
+            setContent(state)
+            state.setValueOnIdle(routerState(activeConfig = Config.B, backstack = listOf(Config.A)))
+
+            state.setValueOnIdle(routerState(activeConfig = Config.A))
+
+            composeRule.onNodeWithText(text = "ChildB", substring = true).assertDoesNotExist()
+        }
+    }
+
     private suspend fun setContent(state: State<ChildStack<Config, Config>>) {
         composeRule.setContent {
             Children(stack = state.value, animation = animation) { child ->
@@ -148,12 +172,13 @@ class ChildrenTest(
     companion object {
         @Parameterized.Parameters
         @JvmStatic
-        fun parameters(): List<Array<out Any>> =
+        fun parameters(): List<Array<out Any?>> =
             getParameters().map { arrayOf(it) }
 
-        private fun getParameters(): List<StackAnimation<Config, Config>> =
+        private fun getParameters(): List<StackAnimation<Config, Config>?> =
             listOf(
-                emptyStackAnimation(),
+                null,
+                stackAnimation { _, _, _ -> null },
                 stackAnimation(scale()),
                 stackAnimation(fade()),
                 stackAnimation(slide()),

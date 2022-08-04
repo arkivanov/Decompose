@@ -26,7 +26,7 @@ public final class com/arkivanov/decompose/Child$Destroyed : com/arkivanov/decom
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class com/arkivanov/decompose/ComponentContext : com/arkivanov/essenty/backpressed/BackPressedHandlerOwner, com/arkivanov/essenty/instancekeeper/InstanceKeeperOwner, com/arkivanov/essenty/lifecycle/LifecycleOwner, com/arkivanov/essenty/statekeeper/StateKeeperOwner {
+public abstract interface class com/arkivanov/decompose/ComponentContext : com/arkivanov/essenty/backhandler/BackHandlerOwner, com/arkivanov/essenty/instancekeeper/InstanceKeeperOwner, com/arkivanov/essenty/lifecycle/LifecycleOwner, com/arkivanov/essenty/statekeeper/StateKeeperOwner {
 }
 
 public final class com/arkivanov/decompose/ComponentContextExtKt {
@@ -36,9 +36,9 @@ public final class com/arkivanov/decompose/ComponentContextExtKt {
 
 public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivanov/decompose/ComponentContext {
 	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;)V
-	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Lcom/arkivanov/essenty/backpressed/BackPressedHandler;)V
-	public synthetic fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Lcom/arkivanov/essenty/backpressed/BackPressedHandler;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getBackPressedHandler ()Lcom/arkivanov/essenty/backpressed/BackPressedHandler;
+	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Lcom/arkivanov/essenty/backhandler/BackHandler;)V
+	public synthetic fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Lcom/arkivanov/essenty/backhandler/BackHandler;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getBackHandler ()Lcom/arkivanov/essenty/backhandler/BackHandler;
 	public fun getInstanceKeeper ()Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;
 	public fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/Lifecycle;
 	public fun getStateKeeper ()Lcom/arkivanov/essenty/statekeeper/StateKeeper;
@@ -55,51 +55,6 @@ public final class com/arkivanov/decompose/lifecycle/MergedLifecycle : com/arkiv
 	public fun getState ()Lcom/arkivanov/essenty/lifecycle/Lifecycle$State;
 	public fun subscribe (Lcom/arkivanov/essenty/lifecycle/Lifecycle$Callbacks;)V
 	public fun unsubscribe (Lcom/arkivanov/essenty/lifecycle/Lifecycle$Callbacks;)V
-}
-
-public abstract interface class com/arkivanov/decompose/router/Router {
-	public abstract fun getState ()Lcom/arkivanov/decompose/value/Value;
-	public abstract fun navigate (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
-}
-
-public final class com/arkivanov/decompose/router/RouterExtKt {
-	public static final synthetic fun bringToFront (Lcom/arkivanov/decompose/router/Router;Ljava/lang/Object;)V
-	public static final fun bringToFront (Lcom/arkivanov/decompose/router/Router;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V
-	public static synthetic fun bringToFront$default (Lcom/arkivanov/decompose/router/Router;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
-	public static final fun getActiveChild (Lcom/arkivanov/decompose/router/Router;)Lcom/arkivanov/decompose/Child$Created;
-	public static final fun navigate (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;)V
-	public static final fun pop (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun pop$default (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static final fun popWhile (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;)V
-	public static final fun popWhile (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
-	public static final synthetic fun push (Lcom/arkivanov/decompose/router/Router;Ljava/lang/Object;)V
-	public static final fun push (Lcom/arkivanov/decompose/router/Router;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V
-	public static synthetic fun push$default (Lcom/arkivanov/decompose/router/Router;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
-	public static final synthetic fun replaceCurrent (Lcom/arkivanov/decompose/router/Router;Ljava/lang/Object;)V
-	public static final fun replaceCurrent (Lcom/arkivanov/decompose/router/Router;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V
-	public static synthetic fun replaceCurrent$default (Lcom/arkivanov/decompose/router/Router;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
-}
-
-public final class com/arkivanov/decompose/router/RouterFactoryExtKt {
-	public static final fun router (Lcom/arkivanov/decompose/ComponentContext;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/router/Router;
-	public static final fun router (Lcom/arkivanov/decompose/ComponentContext;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/router/Router;
-	public static synthetic fun router$default (Lcom/arkivanov/decompose/ComponentContext;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/Router;
-	public static synthetic fun router$default (Lcom/arkivanov/decompose/ComponentContext;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/Router;
-}
-
-public final class com/arkivanov/decompose/router/RouterState {
-	public fun <init> (Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;)V
-	public synthetic fun <init> (Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;)V
-	public final fun component1 ()Lcom/arkivanov/decompose/Child$Created;
-	public final fun component2 ()Ljava/util/List;
-	public final fun copy (Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;)Lcom/arkivanov/decompose/router/RouterState;
-	public static synthetic fun copy$default (Lcom/arkivanov/decompose/router/RouterState;Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/RouterState;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getActiveChild ()Lcom/arkivanov/decompose/Child$Created;
-	public final fun getBackStack ()Ljava/util/List;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/arkivanov/decompose/router/stack/ChildStack {
@@ -162,10 +117,6 @@ public final class com/arkivanov/decompose/router/stack/StackNavigatorExtKt {
 
 public abstract interface class com/arkivanov/decompose/router/stack/webhistory/WebHistoryController {
 	public abstract fun attach (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
-}
-
-public abstract interface class com/arkivanov/decompose/router/webhistory/WebHistoryController {
-	public abstract fun attach (Lcom/arkivanov/decompose/router/Router;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract class com/arkivanov/decompose/value/MutableValue : com/arkivanov/decompose/value/Value {

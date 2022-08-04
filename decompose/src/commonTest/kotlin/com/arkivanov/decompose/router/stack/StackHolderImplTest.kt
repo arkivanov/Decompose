@@ -1,10 +1,12 @@
 package com.arkivanov.decompose.router.stack
 
+import com.arkivanov.decompose.backhandler.ChildBackHandler
+import com.arkivanov.decompose.backhandler.TestChildBackHandler
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.statekeeper.ParcelableStub
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
-import com.arkivanov.essenty.backpressed.BackPressedDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
+import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.statekeeper.consume
@@ -15,6 +17,20 @@ import kotlin.test.assertTrue
 
 @Suppress("TestFunctionName")
 class StackHolderImplTest {
+
+    @Test
+    fun WHEN_created_THEN_active_component_resumed() {
+        val holder = stackHolder()
+
+        assertEquals(Lifecycle.State.RESUMED, holder.stack.active.lifecycleRegistry.state)
+    }
+
+    @Test
+    fun WHEN_created_THEN_active_component_back_handler_started() {
+        val holder = stackHolder()
+
+        assertTrue(holder.stack.active.backHandler.asTest().isStarted)
+    }
 
     @Test
     fun WHEN_recreated_THEN_instances_retained_in_active_component() {
@@ -138,6 +154,8 @@ class StackHolderImplTest {
             savedState = savedState
         )
 
+    private fun ChildBackHandler.asTest(): TestChildBackHandler = this as TestChildBackHandler
+
     private data class Config(val key: String)
 
     private class Component
@@ -158,7 +176,7 @@ class StackHolderImplTest {
                 lifecycleRegistry = LifecycleRegistry(),
                 stateKeeperDispatcher = stateKeeper,
                 instanceKeeperDispatcher = instanceKeeper,
-                backPressedDispatcher = BackPressedDispatcher()
+                backHandler = TestChildBackHandler(),
             )
         }
     }

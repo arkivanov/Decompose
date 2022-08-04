@@ -1,9 +1,10 @@
 package com.arkivanov.decompose.router.stack
 
+import com.arkivanov.decompose.backhandler.ChildBackHandler
+import com.arkivanov.decompose.backhandler.TestChildBackHandler
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.statekeeper.TestParcelableContainer
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
-import com.arkivanov.essenty.backpressed.BackPressedDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
@@ -13,6 +14,7 @@ import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertSame
@@ -133,6 +135,20 @@ class StackControllerTest {
     }
 
     @Test
+    fun WHEN_push_THEN_new_active_component_back_handler_started() {
+        val newStack =
+            controller.navigate(
+                oldStack = RouterStack(
+                    active = activeEntry(configuration = Config()),
+                    backStack = emptyList()
+                ),
+                transformer = { it + Config() }
+            )
+
+        assertTrue(newStack.active.backHandler.asTest().isStarted)
+    }
+
+    @Test
     fun WHEN_push_THEN_old_active_component_stopped() {
         val newStack =
             controller.navigate(
@@ -143,7 +159,21 @@ class StackControllerTest {
                 transformer = { it + Config() }
             )
 
-        assertSame(Lifecycle.State.CREATED, (newStack.backStack[0] as RouterEntry.Created).lifecycleRegistry.state)
+        assertSame(Lifecycle.State.CREATED, newStack.backStack.first().asCreated().lifecycleRegistry.state)
+    }
+
+    @Test
+    fun WHEN_push_THEN_old_active_component_back_handler_stopped() {
+        val newStack =
+            controller.navigate(
+                oldStack = RouterStack(
+                    active = activeEntry(configuration = Config()),
+                    backStack = emptyList()
+                ),
+                transformer = { it + Config() }
+            )
+
+        assertFalse(newStack.backStack.first().asCreated().backHandler.asTest().isStarted)
     }
 
     @Test
@@ -506,13 +536,16 @@ class StackControllerTest {
     private fun <C : Any, T : Any> RouterEntry<C, T>.asCreated(): RouterEntry.Created<C, T> =
         this as RouterEntry.Created<C, T>
 
+    private fun ChildBackHandler.asTest(): TestChildBackHandler = this as TestChildBackHandler
+
     private companion object {
         private fun activeEntry(
             configuration: Config,
             component: Component = Component(),
             lifecycleRegistry: LifecycleRegistry = LifecycleRegistry().apply { resume() },
             stateKeeperDispatcher: StateKeeperDispatcher = TestStateKeeperDispatcher(),
-            instanceKeeperDispatcher: InstanceKeeperDispatcher = InstanceKeeperDispatcher()
+            instanceKeeperDispatcher: InstanceKeeperDispatcher = InstanceKeeperDispatcher(),
+            backHandler: ChildBackHandler = TestChildBackHandler(isStarted = true),
         ): RouterEntry.Created<Config, Component> =
             RouterEntry.Created(
                 configuration = configuration,
@@ -520,7 +553,7 @@ class StackControllerTest {
                 lifecycleRegistry = lifecycleRegistry,
                 stateKeeperDispatcher = stateKeeperDispatcher,
                 instanceKeeperDispatcher = instanceKeeperDispatcher,
-                backPressedDispatcher = BackPressedDispatcher()
+                backHandler = backHandler,
             )
 
         private fun createdEntry(
@@ -528,7 +561,8 @@ class StackControllerTest {
             component: Component = Component(),
             savedState: ParcelableContainer? = null,
             lifecycleRegistry: LifecycleRegistry = LifecycleRegistry().apply { create() },
-            stateKeeperDispatcher: StateKeeperDispatcher = TestStateKeeperDispatcher(savedState)
+            stateKeeperDispatcher: StateKeeperDispatcher = TestStateKeeperDispatcher(savedState),
+            backHandler: ChildBackHandler = TestChildBackHandler(),
         ): RouterEntry.Created<Config, Component> =
             RouterEntry.Created(
                 configuration = configuration,
@@ -537,7 +571,7 @@ class StackControllerTest {
                 lifecycleRegistry = lifecycleRegistry,
                 stateKeeperDispatcher = stateKeeperDispatcher,
                 instanceKeeperDispatcher = InstanceKeeperDispatcher(),
-                backPressedDispatcher = BackPressedDispatcher()
+                backHandler = backHandler,
             )
 
         private fun destroyedEntry(
