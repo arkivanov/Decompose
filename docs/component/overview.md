@@ -23,7 +23,7 @@ Each component has an associated [`ComponentContext`](https://github.com/arkivan
 * `LifecycleOwner`, provided by Essenty library, so each component has its own lifecycle
 * `StateKeeperOwner`, provided by Essenty library, so you can preserve any state during configuration changes and/or process death
 * `InstanceKeeperOwner`, provided by Essenty library, so you can retain arbitrary object instances in your components (like with AndroidX ViewModels)
-* `BackPressedDispatcherOwner`, provided by Essenty library, so each component can handle back button events
+* `BackHandlerOwner`, provided by Essenty library, so each component can handle back button events
 
 So if a component requires any of the above features, just pass the `ComponentContext` via the component's constructor. You can use the delegation pattern to add the `ComponentContext` to `this` scope:
 
