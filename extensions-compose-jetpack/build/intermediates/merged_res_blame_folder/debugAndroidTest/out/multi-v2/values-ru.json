@@ -1,0 +1,43 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.arkivanov.decompose.extensions.compose.jetpack.test.extensions-compose-jetpack-mergeDebugAndroidTestResources-31:/values-ru/values-ru.xml",
+            "map": [
+                {
+                    "source": "/home/arkivanov/.gradle/caches/transforms-3/716d1183be9511db943467933487bc18/transformed/core-1.7.0/res/values-ru/values-ru.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "16",
+                        "startColumns": "4",
+                        "startOffsets": "1312",
+                        "endColumns": "100",
+                        "endOffsets": "1408"
+                    }
+                },
+                {
+                    "source": "/home/arkivanov/.gradle/caches/transforms-3/578c2c35d5d2c5025d9478598d293db6/transformed/ui-1.2.0/res/values-ru/values-ru.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,198,281,379,481,573,655,758,846,928,999,1069,1153,1240,1312,1382",
+                        "endColumns": "92,82,97,101,91,81,102,87,81,70,69,83,86,71,69,122",
+                        "endOffsets": "193,276,374,476,568,650,753,841,923,994,1064,1148,1235,1307,1377,1500"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,198,281,379,481,573,655,758,846,928,999,1069,1153,1240,1413,1483",
+                        "endColumns": "92,82,97,101,91,81,102,87,81,70,69,83,86,71,69,122",
+                        "endOffsets": "193,276,374,476,568,650,753,841,923,994,1064,1148,1235,1307,1478,1601"
+                    }
+                }
+            ]
+        }
+    ]
+}

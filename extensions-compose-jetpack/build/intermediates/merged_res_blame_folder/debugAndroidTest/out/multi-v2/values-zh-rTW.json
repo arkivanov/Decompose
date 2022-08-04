@@ -1,0 +1,43 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.arkivanov.decompose.extensions.compose.jetpack.test.extensions-compose-jetpack-mergeDebugAndroidTestResources-31:/values-zh-rTW/values-zh-rTW.xml",
+            "map": [
+                {
+                    "source": "/home/arkivanov/.gradle/caches/transforms-3/716d1183be9511db943467933487bc18/transformed/core-1.7.0/res/values-zh-rTW/values-zh-rTW.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "16",
+                        "startColumns": "4",
+                        "startOffsets": "1171",
+                        "endColumns": "100",
+                        "endOffsets": "1267"
+                    }
+                },
+                {
+                    "source": "/home/arkivanov/.gradle/caches/transforms-3/578c2c35d5d2c5025d9478598d293db6/transformed/ui-1.2.0/res/values-zh-rTW/values-zh-rTW.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,182,258,345,436,514,588,672,750,825,890,955,1028,1103,1171,1239",
+                        "endColumns": "76,75,86,90,77,73,83,77,74,64,64,72,74,67,67,115",
+                        "endOffsets": "177,253,340,431,509,583,667,745,820,885,950,1023,1098,1166,1234,1350"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,182,258,345,436,514,588,672,750,825,890,955,1028,1103,1272,1340",
+                        "endColumns": "76,75,86,90,77,73,83,77,74,64,64,72,74,67,67,115",
+                        "endOffsets": "177,253,340,431,509,583,667,745,820,885,950,1023,1098,1166,1335,1451"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,43 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.arkivanov.decompose.extensions.compose.jetpack.test.extensions-compose-jetpack-mergeDebugAndroidTestResources-31:/values-is/values-is.xml",
+            "map": [
+                {
+                    "source": "/home/arkivanov/.gradle/caches/transforms-3/716d1183be9511db943467933487bc18/transformed/core-1.7.0/res/values-is/values-is.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "16",
+                        "startColumns": "4",
+                        "startOffsets": "1274",
+                        "endColumns": "100",
+                        "endOffsets": "1370"
+                    }
+                },
+                {
+                    "source": "/home/arkivanov/.gradle/caches/transforms-3/578c2c35d5d2c5025d9478598d293db6/transformed/ui-1.2.0/res/values-is/values-is.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,196,277,376,475,560,640,736,825,907,975,1043,1121,1204,1274,1342",
+                        "endColumns": "90,80,98,98,84,79,95,88,81,67,67,77,82,69,67,119",
+                        "endOffsets": "191,272,371,470,555,635,731,820,902,970,1038,1116,1199,1269,1337,1457"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,196,277,376,475,560,640,736,825,907,975,1043,1121,1204,1375,1443",
+                        "endColumns": "90,80,98,98,84,79,95,88,81,67,67,77,82,69,67,119",
+                        "endOffsets": "191,272,371,470,555,635,731,820,902,970,1038,1116,1199,1269,1438,1558"
+                    }
+                }
+            ]
+        }
+    ]
+}

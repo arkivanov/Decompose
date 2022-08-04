@@ -1,0 +1,43 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.arkivanov.decompose.extensions.compose.jetpack.test.extensions-compose-jetpack-mergeDebugAndroidTestResources-31:/values-en-rXC/values-en-rXC.xml",
+            "map": [
+                {
+                    "source": "/home/arkivanov/.gradle/caches/transforms-3/578c2c35d5d2c5025d9478598d293db6/transformed/ui-1.2.0/res/values-en-rXC/values-en-rXC.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,296,481,678,880,1067,1252,1456,1644,1831,1996,2163,2344,2529,2695,2862",
+                        "endColumns": "190,184,196,201,186,184,203,187,186,164,166,180,184,165,166,237",
+                        "endOffsets": "291,476,673,875,1062,1247,1451,1639,1826,1991,2158,2339,2524,2690,2857,3095"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,296,481,678,880,1067,1252,1456,1644,1831,1996,2163,2344,2529,2899,3066",
+                        "endColumns": "190,184,196,201,186,184,203,187,186,164,166,180,184,165,166,237",
+                        "endOffsets": "291,476,673,875,1062,1247,1451,1639,1826,1991,2158,2339,2524,2690,3061,3299"
+                    }
+                },
+                {
+                    "source": "/home/arkivanov/.gradle/caches/transforms-3/716d1183be9511db943467933487bc18/transformed/core-1.7.0/res/values-en-rXC/values-en-rXC.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "203",
+                        "endOffsets": "254"
+                    },
+                    "to": {
+                        "startLines": "16",
+                        "startColumns": "4",
+                        "startOffsets": "2695",
+                        "endColumns": "203",
+                        "endOffsets": "2894"
+                    }
+                }
+            ]
+        }
+    ]
+}
