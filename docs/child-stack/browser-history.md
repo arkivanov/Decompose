@@ -59,9 +59,7 @@ navigation (typically it is the root component)
 
 ### Example
 
-The Counter sample demonstrates the use of `WebHistoryController`:
+The sample project demonstrates the use of `WebHistoryController`:
 
-- [App.kt](https://github.com/arkivanov/Decompose/blob/master/sample/counter/app-js/src/main/kotlin/com/arkivanov/sample/counter/app/App.kt) -
-demonstrates passing `WebHistoryController` and a deeplink via constructor to `CounterRootComponent`
-- [CounterRootComponent](https://github.com/arkivanov/Decompose/blob/master/sample/counter/shared/src/commonMain/kotlin/com/arkivanov/sample/counter/shared/root/CounterRootComponent.kt) -
-demonstrates generating the initial back from the deeplink, as well as calling `WebHistoryController.attach` and supplying the arguments
+- [Main.kt](https://github.com/arkivanov/Decompose/blob/master/sample/app-js/src/main/kotlin/com/arkivanov/sample/app/Main.kt) - demonstrates passing `WebHistoryController` and a deeplink via constructor to `RootComponent`
+- [RootComponent](https://github.com/arkivanov/Decompose/blob/master/sample/shared/shared/src/commonMain/kotlin/com/arkivanov/sample/shared/root/RootComponent.kt) - demonstrates generating the initial stack from the deeplink, as well as calling `WebHistoryController.attach` and supplying the arguments

@@ -1,6 +1,7 @@
 package com.arkivanov.sample.app
 
 import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.webhistory.DefaultWebHistoryController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
@@ -14,6 +15,7 @@ import org.w3c.dom.Document
 import react.create
 import react.dom.client.createRoot
 
+@OptIn(ExperimentalDecomposeApi::class)
 fun main() {
     val lifecycle = LifecycleRegistry()
 

@@ -4,8 +4,10 @@ package com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -18,7 +20,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 
 @ExperimentalDecomposeApi
 internal class DefaultStackAnimation<C : Any, T : Any>(
-    private val selector: (child: Child.Created<C, T>, direction: Direction) -> StackAnimator
+    private val selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator?,
 ) : StackAnimation<C, T> {
 
     @Composable
@@ -34,27 +36,20 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
         Box(modifier = modifier) {
             items.forEach { (configuration, item) ->
-                val (child, direction) = item
-
                 key(configuration) {
-                    val animator = remember(direction) { selector(child, direction) }
-
-                    animator(
-                        direction = direction,
-                        onFinished = {
-                            when (direction) {
-                                Direction.EXIT_FRONT,
-                                Direction.EXIT_BACK -> items = items - configuration
-                                Direction.ENTER_FRONT,
-                                Direction.ENTER_BACK -> items = items + (configuration to item.copy(direction = Direction.IDLE))
-                                Direction.IDLE -> Unit
-                            }
-                        }
-                    ) { modifier ->
-                        Box(modifier = modifier) {
-                            content(child)
-                        }
-                    }
+                    Item(
+                        item = item,
+                        onFinished = { direction ->
+                            items =
+                                when (direction) {
+                                    Direction.EXIT_FRONT,
+                                    Direction.EXIT_BACK -> items - configuration
+                                    Direction.ENTER_FRONT,
+                                    Direction.ENTER_BACK -> items + (configuration to AnimationItem.Single(item.child))
+                                }
+                        },
+                        content = content,
+                    )
                 }
             }
 
@@ -63,6 +58,54 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             if (items.size > 1) {
                 Overlay(modifier = Modifier.matchParentSize())
             }
+        }
+    }
+
+    @Composable
+    private fun Item(
+        item: AnimationItem<C, T>,
+        onFinished: (Direction) -> Unit,
+        content: @Composable (child: Child.Created<C, T>) -> Unit,
+    ) {
+        val childContent =
+            remember {
+                movableContentOf<Modifier> { modifier ->
+                    Box(modifier = modifier) {
+                        content(item.child)
+                    }
+                }
+            }
+
+        when (item) {
+            is AnimationItem.Single -> childContent(Modifier)
+            is AnimationItem.Pair -> ItemPair(item = item, onFinished = onFinished, content = childContent)
+        }
+    }
+
+    @Composable
+    private fun ItemPair(
+        item: AnimationItem.Pair<C, T>,
+        onFinished: (Direction) -> Unit,
+        content: @Composable (Modifier) -> Unit,
+    ) {
+        val direction = item.direction
+        val animator: StackAnimator? = remember(direction) { selector(item.child, item.otherChild, direction) }
+
+        if (animator == null) {
+            if (direction.isEnter) {
+                content(Modifier)
+            }
+
+            DisposableEffect(Unit) {
+                onFinished(direction)
+                onDispose {}
+            }
+        } else {
+            animator(
+                direction = direction,
+                onFinished = { onFinished(direction) },
+                content = content,
+            )
         }
     }
 
@@ -86,25 +129,34 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     private fun getAnimationItems(newPage: Page<C, T>, oldPage: Page<C, T>?): Map<C, AnimationItem<C, T>> =
         when {
             oldPage == null ->
-                listOf(AnimationItem(newPage.child, Direction.IDLE))
+                listOf(AnimationItem.Single(newPage.child))
 
             newPage.index >= oldPage.index ->
                 listOf(
-                    AnimationItem(oldPage.child, Direction.EXIT_BACK),
-                    AnimationItem(newPage.child, Direction.ENTER_FRONT),
+                    AnimationItem.Pair(oldPage.child, newPage.child, Direction.EXIT_BACK),
+                    AnimationItem.Pair(newPage.child, oldPage.child, Direction.ENTER_FRONT),
                 )
 
             else ->
                 listOf(
-                    AnimationItem(newPage.child, Direction.ENTER_BACK),
-                    AnimationItem(oldPage.child, Direction.EXIT_FRONT),
+                    AnimationItem.Pair(newPage.child, oldPage.child, Direction.ENTER_BACK),
+                    AnimationItem.Pair(oldPage.child, newPage.child, Direction.EXIT_FRONT),
                 )
         }.associateBy { it.child.configuration }
 
-    private data class AnimationItem<out C : Any, out T : Any>(
-        val child: Child.Created<C, T>,
-        val direction: Direction,
-    )
+    private sealed interface AnimationItem<out C : Any, out T : Any> {
+        val child: Child.Created<C, T>
+
+        data class Single<out C : Any, out T : Any>(
+            override val child: Child.Created<C, T>,
+        ) : AnimationItem<C, T>
+
+        data class Pair<out C : Any, out T : Any>(
+            override val child: Child.Created<C, T>,
+            val otherChild: Child.Created<C, T>,
+            val direction: Direction,
+        ) : AnimationItem<C, T>
+    }
 
     private class Page<out C : Any, out T : Any>(
         val child: Child.Created<C, T>,

@@ -36,6 +36,8 @@ internal class StackControllerImpl<C : Any, T : Any>(
                     null -> routerEntryFactory(newActiveConfiguration)
                 }
 
+            oldStack.active.backHandler.stop()
+            newActiveEntry.backHandler.start()
             oldStack.active.lifecycleRegistry.pause()
             newActiveEntry.lifecycleRegistry.resume()
             oldStack.active.lifecycleRegistry.stop()

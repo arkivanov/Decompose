@@ -16,6 +16,12 @@ internal class StackSaverImpl<C : Parcelable>(
 ) : StackSaver<C> {
 
     override fun register(key: String, supplier: () -> RouterStack<C, *>) {
+        check(!stateKeeper.isRegistered(key)) {
+            "The key \"$key\" is already in use. If there are multiple Child Stacks in one component, " +
+                "make sure you supplied different key for each Child Stack. Also make sure there is only instance " +
+                "of the root component at a time."
+        }
+
         stateKeeper.register(key) { supplier().save() }
     }
 

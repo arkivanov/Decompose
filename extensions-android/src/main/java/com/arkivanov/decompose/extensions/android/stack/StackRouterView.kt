@@ -126,6 +126,7 @@ class StackRouterView @JvmOverloads constructor(
         if (inactiveChild != null) {
             newChildView.restoreHierarchyState(inactiveChild.savedState)
         } else {
+            @Suppress("DEPRECATION")
             val childSavedState: SparseArray<Parcelable>? = savedState?.getSparseParcelableArray(activeChildKey)
             if (childSavedState != null) {
                 savedState?.remove(activeChildKey)
@@ -171,10 +172,11 @@ class StackRouterView @JvmOverloads constructor(
         override fun describeContents(): Int = 0
 
         companion object CREATOR : Parcelable.ClassLoaderCreator<SavedState> {
+            @Suppress("DEPRECATION")
             override fun createFromParcel(source: Parcel, loader: ClassLoader?): SavedState =
                 SavedState(
                     superState = source.readParcelable(loader),
-                    state = requireNotNull(source.readBundle(loader))
+                    state = requireNotNull(source.readBundle(loader)),
                 )
 
             override fun createFromParcel(parcel: Parcel): SavedState = createFromParcel(parcel, null)
