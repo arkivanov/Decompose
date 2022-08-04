@@ -32,7 +32,7 @@ import java.io.Serializable
 @Suppress("TestFunctionName")
 @RunWith(Parameterized::class)
 class ChildrenTest(
-    private val animation: StackAnimation<Config, Config>?,
+    private val animation: StackAnimation<Config, Config>,
 ) {
 
     @get:Rule
@@ -155,12 +155,11 @@ class ChildrenTest(
     companion object {
         @Parameterized.Parameters
         @JvmStatic
-        fun parameters(): List<Array<out Any?>> =
+        fun parameters(): List<Array<out Any>> =
             getParameters().map { arrayOf(it) }
 
-        private fun getParameters(): List<StackAnimation<Config, Config>?> =
+        private fun getParameters(): List<StackAnimation<Config, Config>> =
             listOf(
-                null,
                 stackAnimation { _, _, _ -> null },
                 stackAnimation(scale()),
                 stackAnimation(fade()),
