@@ -19,7 +19,7 @@ internal class DefaultStackAnimator(
 
     @Composable
     override operator fun invoke(direction: Direction, onFinished: () -> Unit, content: @Composable (Modifier) -> Unit) {
-        val animationState = remember(direction) { AnimationState(initialValue = 0F) }
+        val animationState = remember(direction) { AnimationState(initialValue = 1F) }
 
         LaunchedEffect(animationState) {
             animationState.animateTo(
