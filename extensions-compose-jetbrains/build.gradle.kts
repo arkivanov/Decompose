@@ -14,6 +14,7 @@ plugins {
 setupMultiplatform {
     android()
     jvm()
+    ios()
 }
 
 setupPublication()
