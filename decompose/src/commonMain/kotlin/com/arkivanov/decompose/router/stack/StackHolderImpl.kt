@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.router.stack
 
-import com.arkivanov.decompose.isUnique
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.instancekeeper.getOrCreate
@@ -47,7 +46,7 @@ internal class StackHolderImpl<C : Any, T : Any>(
         val initialStack = initialStack()
 
         check(initialStack.isNotEmpty()) { "Initial stack can not be empty" }
-        check(initialStack.isUnique()) { "Configurations in the initial stack must be unique" }
+        check(initialStack.toSet().size == initialStack.size) { "Configurations in the initial stack must be unique" }
 
         return RouterStack(
             active = routerEntryFactory(initialStack.last()),
