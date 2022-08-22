@@ -285,3 +285,24 @@ fun someAnimator(): StackAnimator =
 ```
 
 Please refer to the predefined animators (`fade`, `slide`, etc.) for implementation examples.
+
+## Compose for iOS and macOS
+
+Compose for iOS and macOS is still work in progress and was not oficially announced. However, Decompose already supports it. The support is also experimental and is not part of the main branch - see [#74](https://github.com/arkivanov/Decompose/issues/74) for more information.
+
+If you want to use Decompose with Compose for iOS/macOS, you have to use special versions of `extensions-compose-jetbrains` module.
+
+=== "Groovy"
+
+    ``` groovy
+    implementation "com.arkivanov.decompose:extensions-compose-jetbrains:<version>-native-compose"
+    ```
+
+=== "Kotlin"
+
+    ``` kotlin
+    implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>-native-compose")
+
+### Samples
+
+You can find samples in a separate branch - [compose-darwin/sample/app-darwin-compose](https://github.com/arkivanov/Decompose/tree/compose-darwin/sample/app-darwin-compose).

@@ -27,23 +27,23 @@ class StackControllerTest {
 
     @Test
     fun GIVEN_empty_back_stack_WHEN_push_THEN_active_entry_is_new() {
-        val newConfig = Config()
+        val newConfig = Config(id = 2)
 
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
+                    active = activeEntry(configuration = Config(id = 1)),
                     backStack = emptyList()
                 ),
                 transformer = { it + newConfig }
             )
 
-        assertSame(newConfig, newStack.active.configuration)
+        assertEquals(newConfig, newStack.active.configuration)
     }
 
     @Test
     fun GIVEN_empty_back_stack_WHEN_push_THEN_back_stack_equals_old() {
-        val oldConfig = Config()
+        val oldConfig = Config(id = 1)
 
         val newStack =
             controller.navigate(
@@ -51,7 +51,7 @@ class StackControllerTest {
                     active = activeEntry(configuration = oldConfig),
                     backStack = emptyList()
                 ),
-                transformer = { it + Config() }
+                transformer = { it + Config(id = 2) }
             )
 
         assertEquals(listOf(oldConfig), newStack.configurationBackStack)
@@ -59,9 +59,9 @@ class StackControllerTest {
 
     @Test
     fun GIVEN_not_empty_back_stack_WHEN_push_THEN_back_stack_equals_old_back_stack_plus_old_active() {
-        val oldConfig1 = Config()
-        val oldConfig2 = Config()
-        val oldConfig3 = Config()
+        val oldConfig1 = Config(id = 1)
+        val oldConfig2 = Config(id = 2)
+        val oldConfig3 = Config(id = 3)
 
         val newStack =
             controller.navigate(
@@ -69,7 +69,7 @@ class StackControllerTest {
                     active = activeEntry(configuration = oldConfig3),
                     backStack = listOf(createdEntry(configuration = oldConfig1), createdEntry(configuration = oldConfig2))
                 ),
-                transformer = { it + Config() }
+                transformer = { it + Config(id = 4) }
             )
 
         assertEquals(listOf(oldConfig1, oldConfig2, oldConfig3), newStack.configurationBackStack)
@@ -79,11 +79,11 @@ class StackControllerTest {
     fun GIVEN_empty_back_stack_WHEN_push_THEN_old_component_not_recreated() {
         val oldStack =
             RouterStack(
-                active = activeEntry(configuration = Config()),
+                active = activeEntry(configuration = Config(id = 1)),
                 backStack = emptyList()
             )
 
-        val newStack = controller.navigate(oldStack = oldStack, transformer = { it + Config() })
+        val newStack = controller.navigate(oldStack = oldStack, transformer = { it + Config(id = 2) })
 
         assertSame(newStack.backStack[0].asCreated().instance, oldStack.active.instance)
     }
@@ -92,11 +92,11 @@ class StackControllerTest {
     fun GIVEN_not_empty_back_stack_WHEN_push_THEN_old_components_not_recreated() {
         val oldStack =
             RouterStack(
-                active = activeEntry(configuration = Config()),
-                backStack = listOf(createdEntry(configuration = Config()), createdEntry(configuration = Config()))
+                active = activeEntry(configuration = Config(id = 3)),
+                backStack = listOf(createdEntry(configuration = Config(id = 1)), createdEntry(configuration = Config(id = 2)))
             )
 
-        val newStack = controller.navigate(oldStack = oldStack, transformer = { it + Config() })
+        val newStack = controller.navigate(oldStack = oldStack, transformer = { it + Config(id = 4) })
 
         assertSame(oldStack.backStack[0].asCreated().instance, newStack.backStack[0].asCreated().instance)
         assertSame(oldStack.backStack[1].asCreated().instance, newStack.backStack[1].asCreated().instance)
@@ -110,10 +110,10 @@ class StackControllerTest {
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config(), stateKeeperDispatcher = stateKeeperDispatcher),
+                    active = activeEntry(configuration = Config(id = 1), stateKeeperDispatcher = stateKeeperDispatcher),
                     backStack = emptyList()
                 ),
-                transformer = { it + Config() }
+                transformer = { it + Config(id = 2) }
             )
 
         assertNotNull(stateKeeperDispatcher.lastSavedState)
@@ -125,10 +125,10 @@ class StackControllerTest {
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
+                    active = activeEntry(configuration = Config(id = 1)),
                     backStack = emptyList()
                 ),
-                transformer = { it + Config() }
+                transformer = { it + Config(id = 2) }
             )
 
         assertSame(Lifecycle.State.RESUMED, newStack.active.lifecycleRegistry.state)
@@ -139,10 +139,10 @@ class StackControllerTest {
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
+                    active = activeEntry(configuration = Config(id = 1)),
                     backStack = emptyList()
                 ),
-                transformer = { it + Config() }
+                transformer = { it + Config(id = 2) }
             )
 
         assertTrue(newStack.active.backHandler.asTest().isStarted)
@@ -153,10 +153,10 @@ class StackControllerTest {
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
+                    active = activeEntry(configuration = Config(id = 1)),
                     backStack = emptyList()
                 ),
-                transformer = { it + Config() }
+                transformer = { it + Config(id = 2) }
             )
 
         assertSame(Lifecycle.State.CREATED, newStack.backStack.first().asCreated().lifecycleRegistry.state)
@@ -167,10 +167,10 @@ class StackControllerTest {
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
+                    active = activeEntry(configuration = Config(id = 1)),
                     backStack = emptyList()
                 ),
-                transformer = { it + Config() }
+                transformer = { it + Config(id = 2) }
             )
 
         assertFalse(newStack.backStack.first().asCreated().backHandler.asTest().isStarted)
@@ -181,30 +181,29 @@ class StackControllerTest {
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
+                    active = activeEntry(configuration = Config(id = 1)),
                     backStack = emptyList()
                 ),
-                transformer = { it + Config() }
+                transformer = { it + Config(id = 2) }
             )
 
-        newStack.backStack
         assertSame(Lifecycle.State.CREATED, (newStack.backStack[0] as RouterEntry.Created).lifecycleRegistry.state)
     }
 
     @Test
     fun GIVEN_back_stack_WHEN_pop_THEN_active_entry_is_back() {
-        val backConfig = Config()
+        val backConfig = Config(id = 1)
 
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
+                    active = activeEntry(configuration = Config(id = 2)),
                     backStack = listOf(createdEntry(configuration = backConfig))
                 ),
                 transformer = { it.dropLast(1) }
             )
 
-        assertSame(backConfig, newStack.active.configuration)
+        assertEquals(backConfig, newStack.active.configuration)
     }
 
     @Test
@@ -212,8 +211,8 @@ class StackControllerTest {
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
-                    backStack = listOf(createdEntry(configuration = Config()))
+                    active = activeEntry(configuration = Config(id = 2)),
+                    backStack = listOf(createdEntry(configuration = Config(id = 1)))
                 ),
                 transformer = { it.dropLast(1) }
             )
@@ -227,8 +226,8 @@ class StackControllerTest {
 
         controller.navigate(
             oldStack = RouterStack(
-                active = activeEntry(configuration = Config(), lifecycleRegistry = lifecycleRegistry),
-                backStack = listOf(createdEntry(configuration = Config()))
+                active = activeEntry(configuration = Config(id = 2), lifecycleRegistry = lifecycleRegistry),
+                backStack = listOf(createdEntry(configuration = Config(id = 1)))
             ),
             transformer = { it.dropLast(1) }
         )
@@ -244,8 +243,8 @@ class StackControllerTest {
 
         controller.navigate(
             oldStack = RouterStack(
-                active = activeEntry(configuration = Config(), instanceKeeperDispatcher = instanceKeeperDispatcher),
-                backStack = listOf(createdEntry(configuration = Config()))
+                active = activeEntry(configuration = Config(id = 2), instanceKeeperDispatcher = instanceKeeperDispatcher),
+                backStack = listOf(createdEntry(configuration = Config(id = 1)))
             ),
             transformer = { it.dropLast(1) }
         )
@@ -258,8 +257,8 @@ class StackControllerTest {
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
-                    backStack = listOf(createdEntry(configuration = Config()))
+                    active = activeEntry(configuration = Config(id = 2)),
+                    backStack = listOf(createdEntry(configuration = Config(id = 1)))
                 ),
                 transformer = { it.dropLast(1) }
             )
@@ -271,8 +270,8 @@ class StackControllerTest {
     fun GIVEN_back_stack_WHEN_pop_THEN_old_components_not_recreated() {
         val oldStack =
             RouterStack(
-                active = activeEntry(configuration = Config()),
-                backStack = listOf(createdEntry(configuration = Config()), createdEntry(configuration = Config()))
+                active = activeEntry(configuration = Config(id = 3)),
+                backStack = listOf(createdEntry(configuration = Config(id = 1)), createdEntry(configuration = Config(id = 2)))
             )
 
         val newStack = controller.navigate(oldStack = oldStack, transformer = { it.dropLast(1) })
@@ -286,8 +285,8 @@ class StackControllerTest {
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
-                    backStack = listOf(createdEntry(configuration = Config(), savedState = TestParcelableContainer()))
+                    active = activeEntry(configuration = Config(id = 2)),
+                    backStack = listOf(createdEntry(configuration = Config(id = 1), savedState = TestParcelableContainer()))
                 ),
                 transformer = { it.dropLast(1) }
             )
@@ -302,8 +301,8 @@ class StackControllerTest {
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
-                    backStack = listOf(destroyedEntry(configuration = Config(), savedState = savedState))
+                    active = activeEntry(configuration = Config(id = 2)),
+                    backStack = listOf(destroyedEntry(configuration = Config(id = 1), savedState = savedState))
                 ),
                 transformer = { it.dropLast(1) }
             )
@@ -316,8 +315,8 @@ class StackControllerTest {
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
-                    backStack = listOf(destroyedEntry(configuration = Config()))
+                    active = activeEntry(configuration = Config(id = 2)),
+                    backStack = listOf(destroyedEntry(configuration = Config(id = 1)))
                 ),
                 transformer = { it.dropLast(1) }
             )
@@ -331,10 +330,10 @@ class StackControllerTest {
 
         controller.navigate(
             oldStack = RouterStack(
-                active = activeEntry(configuration = Config(), lifecycleRegistry = lifecycleRegistry),
-                backStack = listOf(createdEntry(configuration = Config()))
+                active = activeEntry(configuration = Config(id = 2), lifecycleRegistry = lifecycleRegistry),
+                backStack = listOf(createdEntry(configuration = Config(id = 1)))
             ),
-            transformer = { listOf(Config(), Config()) }
+            transformer = { listOf(Config(id = 3), Config(id = 4)) }
         )
 
         assertEquals(Lifecycle.State.DESTROYED, lifecycleRegistry.state)
@@ -346,10 +345,10 @@ class StackControllerTest {
 
         controller.navigate(
             oldStack = RouterStack(
-                active = activeEntry(configuration = Config()),
-                backStack = listOf(createdEntry(configuration = Config(), lifecycleRegistry = lifecycleRegistry))
+                active = activeEntry(configuration = Config(id = 2)),
+                backStack = listOf(createdEntry(configuration = Config(id = 1), lifecycleRegistry = lifecycleRegistry))
             ),
-            transformer = { listOf(Config(), Config()) }
+            transformer = { listOf(Config(id = 3), Config(id = 4)) }
         )
 
         assertEquals(Lifecycle.State.DESTROYED, lifecycleRegistry.state)
@@ -358,13 +357,13 @@ class StackControllerTest {
     @Test
     fun WHEN_navigate_to_different_stack_THEN_new_stack_contains_only_new_configurations() {
         val lifecycleRegistry = LifecycleRegistry().apply { resume() }
-        val newConfigurationStack = listOf(Config(), Config())
+        val newConfigurationStack = listOf(Config(id = 3), Config(id = 4))
 
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config(), lifecycleRegistry = lifecycleRegistry),
-                    backStack = listOf(createdEntry(configuration = Config()))
+                    active = activeEntry(configuration = Config(id = 2), lifecycleRegistry = lifecycleRegistry),
+                    backStack = listOf(createdEntry(configuration = Config(id = 1)))
                 ),
                 transformer = { newConfigurationStack }
             )
@@ -377,10 +376,10 @@ class StackControllerTest {
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
-                    backStack = listOf(createdEntry(configuration = Config()))
+                    active = activeEntry(configuration = Config(id = 2)),
+                    backStack = listOf(createdEntry(configuration = Config(id = 1)))
                 ),
-                transformer = { listOf(Config(), Config()) }
+                transformer = { listOf(Config(id = 3), Config(id = 4)) }
             )
 
         assertEquals(Lifecycle.State.RESUMED, newStack.active.lifecycleRegistry.state)
@@ -391,10 +390,10 @@ class StackControllerTest {
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
-                    backStack = listOf(createdEntry(configuration = Config()))
+                    active = activeEntry(configuration = Config(id = 2)),
+                    backStack = listOf(createdEntry(configuration = Config(id = 1)))
                 ),
-                transformer = { listOf(Config(), Config()) }
+                transformer = { listOf(Config(id = 3), Config(id = 4)) }
             )
 
         assertTrue(newStack.backStack.all { it is RouterEntry.Destroyed })
@@ -402,19 +401,17 @@ class StackControllerTest {
 
     @Test
     fun WHEN_navigate_to_partially_different_stack_with_new_active_component_THEN_new_stack_contains_same_old_configurations_and_new_configurations() {
-        val sameConfig1 = Config()
-        val sameConfig2 = Config()
-        val newConfigurationStack = listOf(Config(), sameConfig1, sameConfig2, Config(), Config())
+        val newConfigurationStack = listOf(Config(id = 6), Config(id = 2), Config(id = 4), Config(id = 7), Config(id = 8))
 
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = Config()),
+                    active = activeEntry(configuration = Config(id = 5)),
                     backStack = listOf(
-                        createdEntry(configuration = Config()),
-                        createdEntry(configuration = sameConfig1),
-                        createdEntry(configuration = Config()),
-                        createdEntry(configuration = sameConfig2)
+                        createdEntry(configuration = Config(id = 1)),
+                        createdEntry(configuration = Config(id = 2)),
+                        createdEntry(configuration = Config(id = 3)),
+                        createdEntry(configuration = Config(id = 4))
                     )
                 ),
                 transformer = { newConfigurationStack }
@@ -425,46 +422,40 @@ class StackControllerTest {
 
     @Test
     fun WHEN_navigate_to_partially_different_stack_with_new_active_component_THEN_same_old_components_not_recreated() {
-        val sameConfig1 = Config()
-        val sameConfig2 = Config()
-
         val oldStack =
             RouterStack(
-                active = activeEntry(configuration = Config()),
+                active = activeEntry(configuration = Config(id = 5)),
                 backStack = listOf(
-                    createdEntry(configuration = Config()),
-                    createdEntry(configuration = sameConfig1),
-                    createdEntry(configuration = Config()),
-                    createdEntry(configuration = sameConfig2)
+                    createdEntry(configuration = Config(id = 1)),
+                    createdEntry(configuration = Config(id = 2)),
+                    createdEntry(configuration = Config(id = 3)),
+                    createdEntry(configuration = Config(id = 4))
                 )
             )
 
         val newStack =
             controller.navigate(
                 oldStack = oldStack,
-                transformer = { listOf(Config(), sameConfig1, sameConfig2, Config(), Config()) }
+                transformer = { listOf(Config(id = 6), Config(id = 2), Config(id = 4), Config(id = 7), Config(id = 8)) }
             )
 
-        assertSame(oldStack.backStack[1].asCreated().instance, newStack.backStack[1].asCreated().instance)
-        assertSame(oldStack.backStack[3].asCreated().instance, newStack.backStack[2].asCreated().instance)
+        assertEquals(oldStack.backStack[1].asCreated().instance, newStack.backStack[1].asCreated().instance)
+        assertEquals(oldStack.backStack[3].asCreated().instance, newStack.backStack[2].asCreated().instance)
     }
 
     @Test
     fun WHEN_navigate_to_partially_different_stack_with_same_active_component_THEN_new_stack_contains_same_old_configurations_and_new_configurations() {
-        val sameConfig1 = Config()
-        val sameConfig2 = Config()
-        val sameConfig3 = Config()
-        val newConfigurationStack = listOf(Config(), sameConfig1, sameConfig2, Config(), sameConfig3)
+        val newConfigurationStack = listOf(Config(id = 6), Config(id = 2), Config(id = 4), Config(id = 7), Config(id = 5))
 
         val newStack =
             controller.navigate(
                 oldStack = RouterStack(
-                    active = activeEntry(configuration = sameConfig3),
+                    active = activeEntry(configuration = Config(id = 5)),
                     backStack = listOf(
-                        createdEntry(configuration = Config()),
-                        createdEntry(configuration = sameConfig1),
-                        createdEntry(configuration = Config()),
-                        createdEntry(configuration = sameConfig2)
+                        createdEntry(configuration = Config(id = 1)),
+                        createdEntry(configuration = Config(id = 2)),
+                        createdEntry(configuration = Config(id = 3)),
+                        createdEntry(configuration = Config(id = 4))
                     )
                 ),
                 transformer = { newConfigurationStack }
@@ -475,25 +466,21 @@ class StackControllerTest {
 
     @Test
     fun WHEN_navigate_to_partially_different_stack_with_same_active_component_THEN_same_old_components_not_recreated() {
-        val sameConfig1 = Config()
-        val sameConfig2 = Config()
-        val sameConfig3 = Config()
-
         val oldStack =
             RouterStack(
-                active = activeEntry(configuration = sameConfig3),
+                active = activeEntry(configuration = Config(id = 5)),
                 backStack = listOf(
-                    createdEntry(configuration = Config()),
-                    createdEntry(configuration = sameConfig1),
-                    createdEntry(configuration = Config()),
-                    createdEntry(configuration = sameConfig2)
+                    createdEntry(configuration = Config(id = 1)),
+                    createdEntry(configuration = Config(id = 2)),
+                    createdEntry(configuration = Config(id = 3)),
+                    createdEntry(configuration = Config(id = 4))
                 )
             )
 
         val newStack =
             controller.navigate(
                 oldStack = oldStack,
-                transformer = { listOf(Config(), sameConfig1, sameConfig2, Config(), sameConfig3) }
+                transformer = { listOf(Config(id = 6), Config(id = 2), Config(id = 4), Config(id = 7), Config(id = 5)) }
             )
 
         assertSame(oldStack.backStack[1].asCreated().instance, newStack.backStack[1].asCreated().instance)
@@ -502,30 +489,48 @@ class StackControllerTest {
     }
 
     @Test
-    fun WHEN_navigate_to_equal_stack_THEN_stack_not_changed() {
-        val sameConfig1 = Config()
-        val sameConfig2 = Config()
-
+    fun WHEN_navigate_to_partially_different_stack_with_same_active_component_from_back_stack_THEN_same_old_components_not_recreated() {
         val oldStack =
             RouterStack(
-                active = activeEntry(configuration = sameConfig1),
-                backStack = listOf(createdEntry(configuration = sameConfig2))
+                active = activeEntry(configuration = Config(id = 5)),
+                backStack = listOf(
+                    createdEntry(configuration = Config(id = 1)),
+                    createdEntry(configuration = Config(id = 2)),
+                    createdEntry(configuration = Config(id = 3)),
+                    createdEntry(configuration = Config(id = 4))
+                )
             )
 
-        val newStack = controller.navigate(oldStack = oldStack, transformer = { listOf(sameConfig2, sameConfig1) })
+        val newStack =
+            controller.navigate(
+                oldStack = oldStack,
+                transformer = { listOf(Config(id = 6), Config(id = 2), Config(id = 4), Config(id = 7), Config(id = 3)) }
+            )
+
+        assertSame(oldStack.backStack[1].asCreated().instance, newStack.backStack[1].asCreated().instance)
+        assertSame(oldStack.backStack[3].asCreated().instance, newStack.backStack[2].asCreated().instance)
+        assertSame(oldStack.backStack[2].asCreated().instance, newStack.active.instance)
+    }
+
+    @Test
+    fun WHEN_navigate_to_equal_stack_THEN_stack_not_changed() {
+        val oldStack =
+            RouterStack(
+                active = activeEntry(configuration = Config(id = 2)),
+                backStack = listOf(createdEntry(configuration = Config(id = 1)))
+            )
+
+        val newStack = controller.navigate(oldStack = oldStack, transformer = { listOf(Config(id = 1), Config(id = 2)) })
 
         assertEquals(oldStack, newStack)
     }
 
     @Test
     fun WHEN_navigate_to_same_stack_THEN_stack_not_changed() {
-        val sameConfig1 = Config()
-        val sameConfig2 = Config()
-
         val oldStack =
             RouterStack(
-                active = activeEntry(configuration = sameConfig1),
-                backStack = listOf(createdEntry(configuration = sameConfig2))
+                active = activeEntry(configuration = Config(id = 1)),
+                backStack = listOf(createdEntry(configuration = Config(id = 2)))
             )
 
         val newStack = controller.navigate(oldStack = oldStack, transformer = { it })
@@ -584,7 +589,7 @@ class StackControllerTest {
             )
     }
 
-    private class Config
+    private data class Config(val id: Int)
 
     private class Component
 
