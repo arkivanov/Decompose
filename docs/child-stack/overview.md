@@ -222,7 +222,7 @@ class RootComponent(
             onDeleted = { itemId ->
                 navigation.pop { // Pop ItemDetails component
                     // Deliver the result to ItemList component
-                    (childStack.active.instance as? ItemList)?.onItemDeleted(id = itemId)
+                    (stack.value.active.instance as? ItemList)?.onItemDeleted(id = itemId)
                 }
             }
         )
