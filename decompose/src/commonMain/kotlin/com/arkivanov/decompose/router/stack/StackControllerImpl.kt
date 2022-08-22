@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.router.stack
 
-import com.arkivanov.decompose.isUnique
 import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.pause
 import com.arkivanov.essenty.lifecycle.resume
@@ -17,20 +16,24 @@ internal class StackControllerImpl<C : Any, T : Any>(
         val oldConfigurationStack = oldStack.configurationStack
         val newConfigurationStack = transformer(oldConfigurationStack)
 
-        if (newConfigurationStack === oldConfigurationStack) {
+        if (newConfigurationStack == oldConfigurationStack) {
             return oldStack
         }
 
         check(newConfigurationStack.isNotEmpty()) { "Configuration stack can not be empty" }
-        check(newConfigurationStack.isUnique()) { "Configurations in the stack must be unique" }
+
+        val newConfigurationStackSet = newConfigurationStack.toSet()
+        check(newConfigurationStackSet.size == newConfigurationStack.size) { "Configurations in the stack must be unique" }
+
+        val oldBackStackMap = oldStack.backStack.associateBy { it.configuration }
 
         val newActiveConfiguration = newConfigurationStack.last()
         val newActiveEntry: RouterEntry.Created<C, *>
-        if (newActiveConfiguration === oldStack.active.configuration) {
+        if (newActiveConfiguration == oldStack.active.configuration) {
             newActiveEntry = oldStack.active
         } else {
             newActiveEntry =
-                when (val entry = oldStack.backStack.find { it.configuration === newActiveConfiguration }) {
+                when (val entry = oldStack.backStack.find { it.configuration == newActiveConfiguration }) {
                     is RouterEntry.Created -> entry.copy(savedState = null)
                     is RouterEntry.Destroyed -> routerEntryFactory(entry.configuration, entry.savedState)
                     null -> routerEntryFactory(newActiveConfiguration)
@@ -41,7 +44,7 @@ internal class StackControllerImpl<C : Any, T : Any>(
             oldStack.active.lifecycleRegistry.pause()
             newActiveEntry.lifecycleRegistry.resume()
             oldStack.active.lifecycleRegistry.stop()
-            if (newConfigurationStack.none { it === oldStack.active.configuration }) {
+            if (oldStack.active.configuration !in newConfigurationStackSet) {
                 oldStack.active.instanceKeeperDispatcher.destroy()
                 oldStack.active.lifecycleRegistry.destroy()
             }
@@ -49,19 +52,16 @@ internal class StackControllerImpl<C : Any, T : Any>(
 
         val newBackStackEntries =
             newConfigurationStack.dropLast(1).map { configuration ->
-                if (oldStack.active.configuration === configuration) {
+                if (oldStack.active.configuration == configuration) {
                     oldStack.active.copy(savedState = oldStack.active.stateKeeperDispatcher.save())
                 } else {
-                    oldStack
-                        .backStack
-                        .find { it.configuration === configuration }
-                        ?: RouterEntry.Destroyed(configuration = configuration)
+                    oldBackStackMap[configuration] ?: RouterEntry.Destroyed(configuration = configuration)
                 }
             }
 
         oldStack
             .backStack
-            .filter { entry -> newConfigurationStack.none { it === entry.configuration } }
+            .filterNot { it.configuration in newConfigurationStackSet }
             .destroy()
 
         return RouterStack(active = newActiveEntry, backStack = newBackStackEntries)
