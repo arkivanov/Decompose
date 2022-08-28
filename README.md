@@ -1,3 +1,5 @@
+# Decompose
+
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Twitter URL](https://img.shields.io/badge/Twitter-@arkann1985-blue.svg?style=social&logo=twitter)](https://twitter.com/arkann1985)
 
@@ -9,13 +11,11 @@
 ![badge][badge-tvos]
 ![badge][badge-watchos]
 
-Should you have any questions or ideas - there is [Discussions](https://github.com/arkivanov/Decompose/discussions) section. Also welcome to the Kotlin Slack channel - [#decompose](https://kotlinlang.slack.com/archives/C03H3N51SKT)!
-
-# Decompose
+Decompose is a Kotlin Multiplatform library for breaking down your code into lifecycle-aware business logic components (aka BLoC), with routing functionality and pluggable UI (Jetpack Compose, Android Views, SwiftUI, JS React, etc.).
 
 Please see the [project website](https://arkivanov.github.io/Decompose/) for documentation and APIs. 
 
-Decompose is a Kotlin Multiplatform library for breaking down your code into lifecycle-aware business logic components (aka BLoC), with routing functionality and pluggable UI (Jetpack Compose, Android Views, SwiftUI, JS React, etc.).
+Should you have any questions or ideas - there is [Discussions](https://github.com/arkivanov/Decompose/discussions) section. Also welcome to the Kotlin Slack channel - [#decompose](https://kotlinlang.slack.com/archives/C03H3N51SKT)!
 
 ## ⚡⚡⚡ Where are all the stars, issues, discussions, pull requests, etc?
 
