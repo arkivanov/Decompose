@@ -1,4 +1,11 @@
-# Decompose
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/media/logo/titled-1.png">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/media/logo/logo-titled-dark.png">
+  <img src="docs/media/logo/titled-1.png" width="300">
+</picture>
+
+<br/>
+<br/>
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Twitter URL](https://img.shields.io/badge/Twitter-@arkann1985-blue.svg?style=social&logo=twitter)](https://twitter.com/arkann1985)
@@ -10,6 +17,8 @@
 ![badge][badge-mac]
 ![badge][badge-tvos]
 ![badge][badge-watchos]
+
+---
 
 Decompose is a Kotlin Multiplatform library for breaking down your code into lifecycle-aware business logic components (aka BLoC), with routing functionality and pluggable UI (Jetpack Compose, Android Views, SwiftUI, JS React, etc.).
 
