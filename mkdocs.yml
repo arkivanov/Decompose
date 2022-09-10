@@ -22,6 +22,7 @@ nav:
 
   - Component:
     - Overview: component/overview.md
+    - Child components: component/child-components.md
     - Lifecycle: component/lifecycle.md
     - State preservation: component/state-preservation.md
     - Instance retaining: component/instance-retaining.md

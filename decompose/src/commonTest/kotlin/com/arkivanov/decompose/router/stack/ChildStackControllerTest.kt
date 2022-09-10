@@ -166,7 +166,7 @@ class ChildStackControllerTest {
                     lifecycleRegistry = LifecycleRegistry(),
                     stateKeeperDispatcher = TestStateKeeperDispatcher(),
                     instanceKeeperDispatcher = InstanceKeeperDispatcher(),
-                    backHandler = TestChildBackHandler(),
+                    backHandler = TestChildBackHandler(isEnabled = true),
                 ),
                 backStack = stack.dropLast(1).map {
                     RouterEntry.Destroyed(configuration = it)

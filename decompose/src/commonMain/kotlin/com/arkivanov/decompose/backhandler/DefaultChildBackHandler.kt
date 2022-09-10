@@ -2,14 +2,18 @@ package com.arkivanov.decompose.backhandler
 
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.backhandler.BackHandler
+import kotlin.properties.Delegates.observable
 
 internal class DefaultChildBackHandler(
     private val parent: BackHandler,
+    isEnabled: Boolean,
 ) : ChildBackHandler {
 
     private val parentCallback = BackCallback(isEnabled = false, onBack = ::onBack)
     private var set = emptySet<BackCallback>()
-    private val enabledChangedListener: (Boolean) -> Unit = { onEnabledChanged() }
+    private val enabledChangedListener: (Boolean) -> Unit = { updateParentCallbackEnabledState() }
+
+    override var isEnabled: Boolean by observable(isEnabled) { _, _, _ -> updateParentCallbackEnabledState() }
 
     override fun start() {
         parent.register(parentCallback)
@@ -24,7 +28,7 @@ internal class DefaultChildBackHandler(
 
         this.set += callback
         callback.addEnabledChangedListener(enabledChangedListener)
-        onEnabledChanged()
+        updateParentCallbackEnabledState()
     }
 
     override fun unregister(callback: BackCallback) {
@@ -32,11 +36,11 @@ internal class DefaultChildBackHandler(
 
         callback.removeEnabledChangedListener(enabledChangedListener)
         this.set -= callback
-        onEnabledChanged()
+        updateParentCallbackEnabledState()
     }
 
-    private fun onEnabledChanged() {
-        parentCallback.isEnabled = set.any(BackCallback::isEnabled)
+    private fun updateParentCallbackEnabledState() {
+        parentCallback.isEnabled = isEnabled && set.any(BackCallback::isEnabled)
     }
 
     private fun onBack() {
