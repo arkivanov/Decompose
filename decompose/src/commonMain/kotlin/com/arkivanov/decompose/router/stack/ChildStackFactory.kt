@@ -27,12 +27,12 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, ComponentContext) -> T,
 ): Value<ChildStack<C, T>> {
-    val routerBackHandler = backHandler.takeIf { handleBackButton }?.child(lifecycle = null)
+    val routerBackHandler = backHandler.takeIf { handleBackButton }?.child()
 
     val routerEntryFactory =
         RouterEntryFactoryImpl(
             lifecycle = lifecycle,
-            backHandler = backHandler.child(lifecycle = null),
+            backHandler = backHandler.child(),
             childFactory = childFactory,
         )
 

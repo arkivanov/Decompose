@@ -37,8 +37,8 @@ public abstract interface class com/arkivanov/decompose/ComponentContext : com/a
 }
 
 public final class com/arkivanov/decompose/ComponentContextExtKt {
-	public static final fun childContext (Lcom/arkivanov/decompose/ComponentContext;Ljava/lang/String;Lcom/arkivanov/essenty/lifecycle/Lifecycle;)Lcom/arkivanov/decompose/ComponentContext;
-	public static synthetic fun childContext$default (Lcom/arkivanov/decompose/ComponentContext;Ljava/lang/String;Lcom/arkivanov/essenty/lifecycle/Lifecycle;ILjava/lang/Object;)Lcom/arkivanov/decompose/ComponentContext;
+	public static final fun childContext (Lcom/arkivanov/decompose/ComponentContext;Ljava/lang/String;)Lcom/arkivanov/decompose/ComponentContext;
+	public static final fun childContext (Lcom/arkivanov/decompose/ComponentContext;Ljava/lang/String;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Z)Lcom/arkivanov/decompose/ComponentContext;
 }
 
 public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivanov/decompose/ComponentContext {
@@ -55,6 +55,9 @@ public final class com/arkivanov/decompose/DefaultComponentContextBuilderKt {
 	public static final fun DefaultComponentContext (Landroidx/lifecycle/Lifecycle;Landroidx/savedstate/SavedStateRegistry;Landroidx/lifecycle/ViewModelStore;Landroidx/activity/OnBackPressedDispatcher;)Lcom/arkivanov/decompose/DefaultComponentContext;
 	public static synthetic fun DefaultComponentContext$default (Landroidx/lifecycle/Lifecycle;Landroidx/savedstate/SavedStateRegistry;Landroidx/lifecycle/ViewModelStore;Landroidx/activity/OnBackPressedDispatcher;ILjava/lang/Object;)Lcom/arkivanov/decompose/DefaultComponentContext;
 	public static final fun defaultComponentContext (Landroidx/savedstate/SavedStateRegistryOwner;)Lcom/arkivanov/decompose/DefaultComponentContext;
+}
+
+public abstract interface annotation class com/arkivanov/decompose/DelicateDecomposeApi : java/lang/annotation/Annotation {
 }
 
 public abstract interface annotation class com/arkivanov/decompose/ExperimentalDecomposeApi : java/lang/annotation/Annotation {
