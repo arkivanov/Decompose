@@ -15,7 +15,6 @@ setupMultiplatform {
     android()
     jvm()
     iosCompat(
-        arm64 = null, // Comment out to enable arm64 target
         simulatorArm64 = null, // Not supported by Compose yet
     )
 }
