@@ -115,6 +115,12 @@ public final class com/arkivanov/decompose/router/stack/StackNavigatorExtKt {
 	public static synthetic fun replaceCurrent$default (Lcom/arkivanov/decompose/router/stack/StackNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
 }
 
+public final class com/arkivanov/decompose/router/stack/ValueExtKt {
+	public static final fun getActive (Lcom/arkivanov/decompose/value/Value;)Lcom/arkivanov/decompose/Child$Created;
+	public static final fun getBackStack (Lcom/arkivanov/decompose/value/Value;)Ljava/util/List;
+	public static final fun getItems (Lcom/arkivanov/decompose/value/Value;)Ljava/util/List;
+}
+
 public abstract interface class com/arkivanov/decompose/router/stack/webhistory/WebHistoryController {
 	public abstract fun attach (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 }
