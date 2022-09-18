@@ -4,9 +4,9 @@ import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.subscribe
 import kotlin.reflect.KProperty
 
-operator fun <T : Any> Value<T>.getValue(thisRef: Any?, property: KProperty<*>): T = value
+operator fun <T> Value<T>.getValue(thisRef: Any?, property: KProperty<*>): T = value
 
-fun <T : Any> Value<T>.observe(
+fun <T> Value<T>.observe(
     lifecycle: Lifecycle,
     mode: ObserveLifecycleMode = ObserveLifecycleMode.START_STOP,
     observer: (T) -> Unit,
@@ -29,11 +29,11 @@ fun <T : Any> Value<T>.observe(
                 onResume = { subscribe(observer) },
                 onPause = { unsubscribe(observer) }
             )
-    }.let {}
+    }
 }
 
 enum class ObserveLifecycleMode {
     CREATE_DESTROY,
     START_STOP,
-    RESUME_PAUSE
+    RESUME_PAUSE,
 }

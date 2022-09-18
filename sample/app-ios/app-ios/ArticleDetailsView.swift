@@ -64,7 +64,7 @@ struct DetailsView_Previews: PreviewProvider {
 class ArticleDetailsPreview: ArticleDetails {
     func onCloseClicked() {}
     
-    var models: Value<ArticleDetailsModel> = mutableValue(
+    var models: ReqValue<ArticleDetailsModel> = value(
         ArticleDetailsModel(
             isToolbarVisible: false,
             article: ArticleDetailsArticle(

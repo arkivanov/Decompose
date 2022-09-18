@@ -14,7 +14,8 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slid
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.ReqValue
+import com.arkivanov.decompose.value.asRequired
 import com.arkivanov.sample.shared.counters.counter.Counter
 import com.arkivanov.sample.shared.counters.counter.CounterContent
 import com.arkivanov.sample.shared.counters.counter.CounterPreview
@@ -69,19 +70,19 @@ internal fun TabContentPreview() {
 }
 
 internal class CountersPreview : Counters {
-    override val firstChildStack: Value<ChildStack<*, Counter>> =
+    override val firstChildStack: ReqValue<ChildStack<*, Counter>> =
         MutableValue(
             ChildStack(
                 configuration = Unit,
                 instance = CounterPreview(),
             )
-        )
+        ).asRequired()
 
-    override val secondChildStack: Value<ChildStack<*, Counter>> =
+    override val secondChildStack: ReqValue<ChildStack<*, Counter>> =
         MutableValue(
             ChildStack(
                 configuration = Unit,
                 instance = CounterPreview(),
             )
-        )
+        ).asRequired()
 }

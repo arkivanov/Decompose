@@ -154,8 +154,7 @@ public abstract interface class com/arkivanov/decompose/router/stack/webhistory/
 	public abstract fun attach (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 }
 
-public abstract class com/arkivanov/decompose/value/MutableValue : com/arkivanov/decompose/value/Value {
-	public fun <init> ()V
+public abstract interface class com/arkivanov/decompose/value/MutableValue : com/arkivanov/decompose/value/Value {
 	public abstract fun getValue ()Ljava/lang/Object;
 	public abstract fun setValue (Ljava/lang/Object;)V
 }
@@ -176,8 +175,29 @@ public final class com/arkivanov/decompose/value/ObserveLifecycleMode : java/lan
 	public static fun values ()[Lcom/arkivanov/decompose/value/ObserveLifecycleMode;
 }
 
-public abstract class com/arkivanov/decompose/value/Value {
+public abstract class com/arkivanov/decompose/value/OptValue : com/arkivanov/decompose/value/Value {
 	public fun <init> ()V
+	public abstract fun getValue ()Ljava/lang/Object;
+	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/arkivanov/decompose/value/OptValueKt {
+	public static final fun asOptional (Lcom/arkivanov/decompose/value/Value;)Lcom/arkivanov/decompose/value/OptValue;
+}
+
+public abstract class com/arkivanov/decompose/value/ReqValue : com/arkivanov/decompose/value/Value {
+	public fun <init> ()V
+	public abstract fun getValue ()Ljava/lang/Object;
+	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/arkivanov/decompose/value/ReqValueKt {
+	public static final fun asRequired (Lcom/arkivanov/decompose/value/Value;)Lcom/arkivanov/decompose/value/ReqValue;
+}
+
+public abstract interface class com/arkivanov/decompose/value/Value {
 	public abstract fun getValue ()Ljava/lang/Object;
 	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun unsubscribe (Lkotlin/jvm/functions/Function1;)V

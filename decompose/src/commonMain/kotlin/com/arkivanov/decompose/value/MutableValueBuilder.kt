@@ -8,9 +8,9 @@ import kotlin.properties.Delegates
  * Returns a new instance of [MutableValue] initialized with the provided [initialValue].
  */
 @Suppress("FunctionName") // Factory function
-fun <T : Any> MutableValue(initialValue: T): MutableValue<T> = MutableValueImpl(initialValue)
+fun <T> MutableValue(initialValue: T): MutableValue<T> = MutableValueImpl(initialValue)
 
-private class MutableValueImpl<T : Any>(initialValue: T) : MutableValue<T>() {
+private class MutableValueImpl<T>(initialValue: T) : MutableValue<T> {
 
     init {
         ensureNeverFrozen()

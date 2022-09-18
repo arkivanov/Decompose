@@ -36,12 +36,14 @@ kotlin {
         }
 
         android.main.dependencies {
+            implementation(project(":extensions-compose-jetbrains"))
             implementation(project(":sample:app-android"))
             implementation(project(":sample:shared:dynamic-features:compose-api"))
             implementation(compose.material)
         }
 
         jvm.main.dependencies {
+            implementation(project(":extensions-compose-jetbrains"))
             implementation(project(":sample:shared:dynamic-features:compose-api"))
             implementation(compose.material)
         }

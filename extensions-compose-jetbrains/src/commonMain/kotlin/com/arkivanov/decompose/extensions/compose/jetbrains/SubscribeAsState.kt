@@ -8,7 +8,7 @@ import androidx.compose.runtime.remember
 import com.arkivanov.decompose.value.Value
 
 @Composable
-fun <T : Any> Value<T>.subscribeAsState(): State<T> {
+fun <T> Value<T>.subscribeAsState(): State<T> {
     val state = remember(this) { mutableStateOf(value) }
 
     DisposableEffect(this) {

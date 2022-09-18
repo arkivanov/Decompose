@@ -71,7 +71,7 @@ struct RootView_Previews: PreviewProvider {
 }
 
 class RootPreview : Root {
-    let childStack: Value<ChildStack<AnyObject, RootChild>> =
+    let childStack: ReqValue<ChildStack<AnyObject, RootChild>> =
         simpleChildStack(RootChild.CountersChild(component: CountersPreview()))
 
     func onCountersTabClicked() {}

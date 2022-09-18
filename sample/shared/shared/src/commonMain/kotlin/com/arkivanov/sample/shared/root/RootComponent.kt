@@ -7,7 +7,8 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.webhistory.WebHistoryController
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.ReqValue
+import com.arkivanov.decompose.value.asRequired
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.sample.shared.counters.CountersComponent
@@ -36,7 +37,7 @@ class RootComponent constructor(
             childFactory = ::child,
         )
 
-    override val childStack: Value<ChildStack<*, Child>> = stack
+    override val childStack: ReqValue<ChildStack<*, Child>> = stack.asRequired()
 
     init {
         webHistoryController?.attach(

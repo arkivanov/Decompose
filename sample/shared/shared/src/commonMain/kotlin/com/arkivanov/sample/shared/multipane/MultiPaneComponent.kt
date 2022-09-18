@@ -3,7 +3,8 @@ package com.arkivanov.sample.shared.multipane
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.ReqValue
+import com.arkivanov.decompose.value.asRequired
 import com.arkivanov.decompose.value.reduce
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.sample.shared.multipane.MultiPane.DetailsChild
@@ -19,7 +20,7 @@ internal class MultiPaneComponent(
     private val database = DefaultArticleDatabase()
 
     private val _models = MutableValue(Model())
-    override val models: Value<Model> = _models
+    override val models: ReqValue<Model> = _models.asRequired()
 
     private val isDetailsToolbarVisible = BehaviorSubject(!_models.value.isMultiPane)
     private val selectedArticleIdSubject = BehaviorSubject<Long?>(null)
@@ -32,7 +33,7 @@ internal class MultiPaneComponent(
             onArticleSelected = ::onArticleSelected
         )
 
-    override val listChildStack: Value<ChildStack<*, ListChild>> = listRouter.stack
+    override val listChildStack: ReqValue<ChildStack<*, ListChild>> = listRouter.stack.asRequired()
 
     private val detailsRouter =
         DetailsRouter(
@@ -42,7 +43,7 @@ internal class MultiPaneComponent(
             onFinished = ::closeDetailsAndShowList
         )
 
-    override val detailsChildStack: Value<ChildStack<*, DetailsChild>> = detailsRouter.stack
+    override val detailsChildStack: ReqValue<ChildStack<*, DetailsChild>> = detailsRouter.stack.asRequired()
 
     private val backCallback = BackCallback(isEnabled = false, onBack = ::closeDetailsAndShowList)
 

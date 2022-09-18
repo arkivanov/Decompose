@@ -2,7 +2,8 @@ package com.arkivanov.sample.shared.counters.counter
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.ReqValue
+import com.arkivanov.decompose.value.asRequired
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.decompose.value.reduce
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
@@ -28,7 +29,7 @@ internal class CounterComponent(
             Handler(stateKeeper.consume(KEY_STATE) ?: State())
         }
 
-    override val model: Value<Model> = handler.state.map { it.toModel() }
+    override val model: ReqValue<Model> = handler.state.map { it.toModel() }.asRequired()
 
     init {
         stateKeeper.register(KEY_STATE) { handler.state.value }

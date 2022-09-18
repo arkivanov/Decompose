@@ -43,7 +43,7 @@ struct ArticleListView_Previews: PreviewProvider {
 class ArticleListPreview: ArticleList {
     func onArticleClicked(id: Int64) { }
 
-    var models: Value<ArticleListModel> = mutableValue(
+    var models: ReqValue<ArticleListModel> = value(
         ArticleListModel(
             articles: [
                 ArticleListArticle(id: 1, title: "Test Title 1"),

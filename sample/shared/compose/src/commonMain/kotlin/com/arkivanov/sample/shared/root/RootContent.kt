@@ -26,7 +26,8 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stac
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.ReqValue
+import com.arkivanov.decompose.value.asRequired
 import com.arkivanov.sample.shared.counters.CountersContent
 import com.arkivanov.sample.shared.counters.CountersPreview
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesContent
@@ -138,13 +139,13 @@ internal fun RootContentPreview() {
 }
 
 internal class RootPreview : Root {
-    override val childStack: Value<ChildStack<*, Root.Child>> =
+    override val childStack: ReqValue<ChildStack<*, Root.Child>> =
         MutableValue(
             ChildStack(
                 configuration = Unit,
                 instance = CountersChild(component = CountersPreview()),
             )
-        )
+        ).asRequired()
 
     override fun onCountersTabClicked() {}
     override fun onMultiPaneTabClicked() {}

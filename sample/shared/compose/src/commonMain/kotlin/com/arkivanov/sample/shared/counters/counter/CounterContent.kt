@@ -17,7 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.ReqValue
+import com.arkivanov.decompose.value.asRequired
 import com.arkivanov.sample.shared.counters.counter.Counter.Model
 
 @Composable
@@ -58,14 +59,14 @@ internal fun CounterContentPreview() {
 }
 
 internal class CounterPreview : Counter {
-    override val model: Value<Model> =
+    override val model: ReqValue<Model> =
         MutableValue(
             Model(
                 title = "Counter 0",
                 text = "123",
                 isBackEnabled = false,
             )
-        )
+        ).asRequired()
 
     override fun onNextClicked() {}
     override fun onPrevClicked() {}

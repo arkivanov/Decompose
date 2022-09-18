@@ -7,8 +7,8 @@
 
 import Shared
 
-func simpleChildStack<T : AnyObject>(_ child: T) -> Value<ChildStack<AnyObject, T>> {
-    return mutableValue(
+func simpleChildStack<T : AnyObject>(_ child: T) -> ReqValue<ChildStack<AnyObject, T>> {
+    return value(
         ChildStack(
             configuration: "config" as AnyObject,
             instance: child

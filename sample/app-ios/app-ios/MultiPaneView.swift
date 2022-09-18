@@ -99,13 +99,13 @@ struct MultiPaneView_Previews: PreviewProvider {
 }
 
 class MultiPanePreview: MultiPane {
-    var listChildStack: Value<ChildStack<AnyObject, MultiPaneListChild>> =
+    var listChildStack: ReqValue<ChildStack<AnyObject, MultiPaneListChild>> =
         simpleChildStack(.List(component: ArticleListPreview()))
 
-    var detailsChildStack: Value<ChildStack<AnyObject, MultiPaneDetailsChild>> =
+    var detailsChildStack: ReqValue<ChildStack<AnyObject, MultiPaneDetailsChild>> =
         simpleChildStack(.Details(component: ArticleDetailsPreview()))
 
-    var models: Value<MultiPaneModel> = mutableValue(MultiPaneModel(isMultiPane: true))
+    var models: ReqValue<MultiPaneModel> = value(MultiPaneModel(isMultiPane: true))
 
     func setMultiPane(isMultiPane: Bool) {}
 }

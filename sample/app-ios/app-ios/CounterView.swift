@@ -46,7 +46,7 @@ struct CounterView_Previews: PreviewProvider {
 }
 
 class CounterPreview : Counter {
-    let model: Value<CounterModel> = mutableValue(
+    let model: ReqValue<CounterModel> = value(
         CounterModel(
             title: "Counter 0",
             text: "123",

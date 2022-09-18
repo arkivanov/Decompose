@@ -1,10 +1,10 @@
 package com.arkivanov.sample.shared.counters.counter
 
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.ReqValue
 
 interface Counter {
 
-    val model: Value<Model>
+    val model: ReqValue<Model>
 
     fun onNextClicked()
 

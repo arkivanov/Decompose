@@ -2,12 +2,12 @@ package com.arkivanov.decompose.value.operator
 
 import com.arkivanov.decompose.value.Value
 
-fun <T : Any, R : Any> Value<T>.map(mapper: (T) -> R): Value<R> = MappedValue(this, mapper)
+fun <T, R> Value<T>.map(mapper: (T) -> R): Value<R> = MappedValue(this, mapper)
 
-private class MappedValue<T : Any, out R : Any>(
+private class MappedValue<T, out R>(
     private val upstream: Value<T>,
     private val mapper: (T) -> R
-) : Value<R>() {
+) : Value<R> {
     private var lastUpstreamValue: T = upstream.value
     private var lastDownstreamValue: R = mapper(lastUpstreamValue)
 

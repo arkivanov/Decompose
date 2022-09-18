@@ -1,10 +1,10 @@
 package com.arkivanov.sample.shared.multipane.details
 
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.ReqValue
 
 interface ArticleDetails {
 
-    val models: Value<Model>
+    val models: ReqValue<Model>
 
     fun onCloseClicked()
 

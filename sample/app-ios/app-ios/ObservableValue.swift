@@ -9,14 +9,14 @@ import SwiftUI
 import Shared
 
 public class ObservableValue<T : AnyObject> : ObservableObject {
-    private let observableValue: Value<T>
+    private let observableValue: ReqValue<T>
 
     @Published
     var value: T
 
     private var observer: ((T) -> Void)?
     
-    init(_ value: Value<T>) {
+    init(_ value: ReqValue<T>) {
         observableValue = value
         self.value = observableValue.value
         observer = { [weak self] value in self?.value = value }

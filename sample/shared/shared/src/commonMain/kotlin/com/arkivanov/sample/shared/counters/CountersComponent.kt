@@ -6,7 +6,8 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.ReqValue
+import com.arkivanov.decompose.value.asRequired
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.sample.shared.counters.counter.Counter
@@ -26,7 +27,7 @@ internal class CountersComponent(
             childFactory = ::firstChild,
         )
 
-    override val firstChildStack: Value<ChildStack<*, Counter>> get() = firstStack
+    override val firstChildStack: ReqValue<ChildStack<*, Counter>> = firstStack.asRequired()
 
     private val secondNavigation = StackNavigation<Config>()
 
@@ -38,7 +39,7 @@ internal class CountersComponent(
             childFactory = ::secondChild,
         )
 
-    override val secondChildStack: Value<ChildStack<*, Counter>> get() = secondStack
+    override val secondChildStack: ReqValue<ChildStack<*, Counter>> = secondStack.asRequired()
 
     private fun firstChild(
         config: Config,

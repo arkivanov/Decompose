@@ -194,6 +194,23 @@ class SomeParent(
 !!!warning 
     Never pass parent's `ComponentContext` to children, always use either the `Child Stack` or the `childContext(...)` function.
 
+## Value and MutableValue state holders
+
+[Value](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value/Value.kt) - is a multiplatform way to expose streams of states. It contains the `value` property, which always returns the current state. It also provides the ability to observe state changes via `subscribe`/`unsubscribe` methods. There is [MutableValue](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value/MutableValueBuilder.kt) which is a mutable variant of `Value`.
+
+Since `Value` is an interface with a generic type parameter, it can't be used in ObjC/Swift. `Value` should be converted to [ReqValue](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value/ReqValue.kt) or [OptValue](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value/OptValue.kt) if you want to expose it to ObjC/Swift. There are corresponding extension functions - `Value.asReqValue()` and `Value.asOptValue()`.
+
+Using `Value` is not mandatory, you can use any other state holders, e.g. [StateFlow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-state-flow/), [State](https://developer.android.com/jetpack/compose/state), [Observable](https://github.com/badoo/Reaktive), [LiveData](https://developer.android.com/topic/libraries/architecture/livedata), etc.
+
+If you are using Jetpack/JetBrains Compose, `Value` can be observed in Composable functions using one of the Compose [extension modules](https://arkivanov.github.io/Decompose/extensions/compose/).
+
+!!!warning
+`Value` is not thread-safe, it should be accessed only from the main thread.
+
+### Why not StateFlow?
+
+Decompose uses `Value` to avoid dependency on Kotlin coroutines. One may prefer using Reaktive, RxJava, etc. instead of coroutines. It also provides better interoperability with ObjC/Swift and simplifies testing. Feel free to convert `Value` to `StateFlow` or any other state holder if you need it.
+
 ## Examples
 
 ### Simplest Component Example
@@ -202,11 +219,13 @@ Here is an example of simple Counter component:
 
 ```kotlin
 class Counter {
-    private val _value = MutableValue(State())
-    val state: Value<State> = _value
+    private val _state = MutableValue(State())
+
+    // Or just use Value if ObjC/Swift interop is not required
+    val state: ReqValue<State> = _state.asRequired()
 
     fun increment() {
-        _value.reduce { it.copy(count = it.count + 1) }
+        _state.reduce { it.copy(count = it.count + 1) }
     }
 
     data class State(val count: Int = 0)
@@ -230,10 +249,6 @@ fun CounterUi(counter: Counter) {
 }
 ```
 
-[Value](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value/Value.kt) - is a multiplatform way to expose streams of states. It contains the `value` property, which always returns the current state. It also provides ability to observe state changes via `subscribe`/`unsubscribe` methods. There is [MutableValue](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value/MutableValueBuilder.kt) which is a mutable variant of `Value`.
-
-If you are using only Jetpack/JetBrains Compose UI, then most likely you can use its `State` and `MutableState` directly, without intermediate `Value`/`MutableValue` from Decompose. You can convert between `State` and `Value` using one of the Compose [extension modules](https://arkivanov.github.io/Decompose/extensions/compose/).
-
 ### SwiftUI Example
 
 ```swift
@@ -255,3 +270,7 @@ struct CounterView: View {
     }
 }
 ```
+
+#### What is ObservableValue?
+
+[ObservableValue](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/ObservableValue.swift) is a wrapper around `Value` that makes it compatible with SwiftUI. It is a simple class that conforms to `ObservableObject` protocol. Unfortunately it [does not look possible](https://github.com/arkivanov/Decompose/issues/206) to publish utils for SwiftUI as a library or framework, so it has to be copied to your project.

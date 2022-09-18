@@ -5,7 +5,8 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.replaceCurrent
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.ReqValue
+import com.arkivanov.decompose.value.asRequired
 import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -29,7 +30,7 @@ internal class DynamicFeatureComponent<out T : Any>(
             childFactory = ::child,
         )
 
-    override val childStack: Value<ChildStack<*, Child<T>>> get() = stack
+    override val childStack: ReqValue<ChildStack<*, Child<T>>> = stack.asRequired()
 
     private fun child(config: Config, componentContext: ComponentContext): Child<T> =
         when (config) {

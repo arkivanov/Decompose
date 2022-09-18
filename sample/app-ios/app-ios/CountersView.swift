@@ -41,6 +41,6 @@ struct CountersView_Previews: PreviewProvider {
 }
 
 class CountersPreview : Counters {
-    let firstChildStack: Value<ChildStack<AnyObject, Counter>> = simpleChildStack(CounterPreview())
-    let secondChildStack: Value<ChildStack<AnyObject, Counter>> = simpleChildStack(CounterPreview())
+    let firstChildStack: ReqValue<ChildStack<AnyObject, Counter>> = simpleChildStack(CounterPreview())
+    let secondChildStack: ReqValue<ChildStack<AnyObject, Counter>> = simpleChildStack(CounterPreview())
 }

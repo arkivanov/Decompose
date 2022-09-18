@@ -1,14 +1,14 @@
 package com.arkivanov.sample.shared.root
 
 import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.ReqValue
 import com.arkivanov.sample.shared.counters.Counters
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeatures
 import com.arkivanov.sample.shared.multipane.MultiPane
 
 interface Root {
 
-    val childStack: Value<ChildStack<*, Child>>
+    val childStack: ReqValue<ChildStack<*, Child>>
 
     fun onCountersTabClicked()
     fun onMultiPaneTabClicked()

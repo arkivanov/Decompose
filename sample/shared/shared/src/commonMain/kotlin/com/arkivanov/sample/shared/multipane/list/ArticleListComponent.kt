@@ -2,7 +2,8 @@ package com.arkivanov.sample.shared.multipane.list
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.ReqValue
+import com.arkivanov.decompose.value.asRequired
 import com.arkivanov.decompose.value.reduce
 import com.arkivanov.sample.shared.multipane.database.ArticleDatabase
 import com.arkivanov.sample.shared.multipane.database.ArticleEntity
@@ -27,7 +28,7 @@ internal class ArticleListComponent(
             )
         )
 
-    override val models: Value<Model> = _models
+    override val models: ReqValue<Model> = _models.asRequired()
 
     init {
         selectedArticleId.subscribeScoped { id ->

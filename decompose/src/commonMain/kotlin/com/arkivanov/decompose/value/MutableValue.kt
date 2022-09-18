@@ -3,11 +3,11 @@ package com.arkivanov.decompose.value
 /**
  * A mutable variant of [Value].
  *
- * Not thread safe, should be accessed only on the Main thread.
+ * Not thread-safe, should be accessed only on the Main thread.
  *
  * @see Value
  */
-abstract class MutableValue<T : Any> : Value<T>() {
+interface MutableValue<T> : Value<T> {
 
     /**
      * When read - returns the current value.
@@ -18,5 +18,5 @@ abstract class MutableValue<T : Any> : Value<T>() {
      *
      * @see Value.value
      */
-    abstract override var value: T
+    override var value: T
 }
