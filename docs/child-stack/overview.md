@@ -115,7 +115,7 @@ class RootComponent(
 
     private val navigation = StackNavigation<Config>()
 
-    private val stack =
+    private val _childStack =
         childStack(
             source = navigation,
             initialConfiguration = Config.List,
@@ -123,7 +123,7 @@ class RootComponent(
             childFactory = ::createChild,
         )
 
-    override val childStack: Value<ChildStack<*, Root.Child>> get() = stack
+    override val childStack: Value<ChildStack<*, Root.Child>> = _childStack
 
     private fun createChild(config: Config, componentContext: ComponentContext): Root.Child =
         when (config) {

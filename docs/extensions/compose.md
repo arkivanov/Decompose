@@ -44,18 +44,18 @@ As mentioned above both modules provide similar functionality. Most of the links
 
 ### Converting Value to State
 
-To convert Decompose [Value](https://github.com/arkivanov/Decompose/tree/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value) to Compose `State` use `Value<T>.subscribeAsState(): State<T>` extensions function:
+To convert Decompose [Value](https://github.com/arkivanov/Decompose/tree/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value) to Compose `State` use `Value<T>.subscribeAsState(): State<T>` extension function:
 
 ```kotlin
 interface SomeComponent {
-    val models: Value<Model>
+    val model: Value<Model>
 
     data class Model(/*...*/)
 }
 
 @Composable
 fun SomeContent(component: SomeComponent) {
-    val models: State<Model> by component.models.subscribeAsState()
+    val model: State<Model> by component.model.subscribeAsState()
 }
 ```
 
