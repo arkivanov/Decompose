@@ -1,6 +1,6 @@
 # Component Overview
 
-A component is just a normal class that encapsulates some logic and possibly another (child) components. Every component has its own lifecycle, which is automatically managed by Decompose. So everything encapsulated by a component is scoped. Please head to the [Lifecycle documentation page](https://arkivanov.github.io/Decompose/component/lifecycle/) for more information.
+A component is just a normal class that encapsulates some logic and possibly another (child) components. Every component has its own lifecycle, which is automatically managed by Decompose. So everything encapsulated by a component is scoped. Please head to the [Lifecycle documentation page](/Decompose/component/lifecycle/) for more information.
 
 UI is optional and is pluggable from outside of components. Components do not depend on UI, the UI depends on components.
 
@@ -139,7 +139,7 @@ fun main() {
 
 Using `Value` is not mandatory, you can use any other state holders, e.g. [StateFlow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-state-flow/), [State](https://developer.android.com/jetpack/compose/state), [Observable](https://github.com/badoo/Reaktive), [LiveData](https://developer.android.com/topic/libraries/architecture/livedata), etc.
 
-If you are using Jetpack/JetBrains Compose, `Value` can be observed in Composable functions using one of the Compose [extension modules](https://arkivanov.github.io/Decompose/extensions/compose/).
+If you are using Jetpack/JetBrains Compose, `Value` can be observed in Composable functions using one of the Compose [extension modules](/Decompose/extensions/compose/).
 
 !!!warning
     `Value` is not thread-safe, it should be accessed only from the main thread.

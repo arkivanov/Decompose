@@ -2,7 +2,7 @@ Decompose provides a number of modules, they are all published to Maven Central 
 
 ## The main Decompose module
 
-The main functionality is provided by the `decompose` module. It contains the core functionality, like [Child Stack](https://arkivanov.github.io/Decompose/child-stack/overview/), [ComponentContext](https://arkivanov.github.io/Decompose/component/overview/#componentcontext), etc.
+The main functionality is provided by the `decompose` module. It contains some core features like [ComponentContext](/Decompose/component/overview/#componentcontext), [Child Stack](/Decompose/navigation/stack/overview/), [Child Overlay](/Decompose/navigation/overlay/overview/), etc.
 
 ### Gradle setup
 
@@ -34,7 +34,7 @@ Due to this fragmentation Decompose provides two separate extension modules for 
 - `extensions-compose-jetpack` - Android library for Jetpack Compose
 - `extensions-compose-jetbrains` - Kotlin Multiplatform library for JetBrains Compose, supports `android` and `jvm` targets
 
-Both modules are used to connect Compose UI to Decompose components. Please see the corresponding [documentation page](https://arkivanov.github.io/Decompose/extensions/compose/).
+Both modules are used to connect Compose UI to Decompose components. Please see the corresponding [documentation page](/Decompose/extensions/compose/).
 
 ### Gradle setup
 
@@ -58,7 +58,7 @@ Typically only one module should be selected, depending on the Compose UI varian
 
 ## Extensions for Android views
 
-The `extensions-android` module provides extensions to connect Android views based UI to Decompose components. Please head to the corresponding [documentation page](https://arkivanov.github.io/Decompose/extensions/android/) for more information.
+The `extensions-android` module provides extensions to connect Android views based UI to Decompose components. Please head to the corresponding [documentation page](/Decompose/extensions/android/) for more information.
 
 ### Gradle setup
 
