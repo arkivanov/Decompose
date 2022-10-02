@@ -44,18 +44,18 @@ As mentioned above both modules provide similar functionality. Most of the links
 
 ### Converting Value to State
 
-To convert Decompose [Value](https://github.com/arkivanov/Decompose/tree/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value) to Compose `State` use `Value<T>.subscribeAsState(): State<T>` extensions function:
+To convert Decompose [Value](https://github.com/arkivanov/Decompose/tree/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value) to Compose `State` use `Value<T>.subscribeAsState(): State<T>` extension function:
 
 ```kotlin
 interface SomeComponent {
-    val models: Value<Model>
+    val model: Value<Model>
 
     data class Model(/*...*/)
 }
 
 @Composable
 fun SomeContent(component: SomeComponent) {
-    val models: State<Model> by component.models.subscribeAsState()
+    val model: State<Model> by component.model.subscribeAsState()
 }
 ```
 
@@ -91,7 +91,7 @@ fun main() {
 
 ### Navigating between Composable components
 
-The [Child Stack](https://arkivanov.github.io/Decompose/child-stack/overview/) feature provides [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) as `Value<ChildStack>` that can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `ChildStack` changes.
+The [Child Stack](/Decompose/navigation/stack/overview/) feature provides [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) as `Value<ChildStack>` that can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `ChildStack` changes.
 
 Both Compose extension modules provide the [Children(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-jetbrains/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/jetbrains/stack/Children.kt) function which has the following features:
 

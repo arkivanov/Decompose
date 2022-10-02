@@ -1,26 +1,32 @@
-# Navigation
+# Navigation with Child Stack
 
 ## The StackNavigator
 
-All navigation in Decompose is done through the [`StackNavigator`](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/StackNavigator.kt) interface, which is implemented by `StackNavigation`. There is `navigate(transformer: (List<C>) -> List<C>, onComplete: (newStack: List<C>, oldStack: List<C>) -> Unit)` method with two arguments:
+All navigation in `Child Stack` is performed using the [`StackNavigator`](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/StackNavigator.kt) interface, which is extended by the `StackNavigation` interface.
+
+`StackNavigator` contains the `navigate` method with the following arguments:
 
 - `transformer` - converts the current stack of configurations into a new one. The stack is represented as `List`, where the last element is the top of the stack, and the first element is the bottom of the stack.
 - `onComplete` - called when navigation is finished.
 
-There is also `navigate(transformer: (stack: List<C>) -> List<C>)` extension function for convenience, without the `onComplete` callback.
+There is also `navigate` extension function without the `onComplete` callback, for convenience.
 
 !!!warning
     The configuration stack returned by the `transformer` function must not be empty.
+
+```kotlin title="Creating the navigation"
+val navigation = StackNavigation<Configuration>()
+```
 
 ### The navigation process
 
 During the navigation process, the `Child Stack` compares the new stack of configurations with the previous one. The `Child Stack` ensures that all removed components are destroyed, and that there is only one component resumed at a time - the top one. All components in the back stack are always either stopped or destroyed.
 
-The `Child Stack` usually performs the navigation synchronously, which means that by the time the `navigate` method returns, the navigation is finished and all component lifecycles are moved into required states. However the navigation is performed asynchronously in case of recursive invocations - e.g. `pop` is called from `onResume` lifecycle callback of a component being pushed. All recursive invocations are queued and performed one by one once the current navigation is finished.
+The `Child Stack` usually performs the navigation synchronously, which means that by the time the `navigate` method returns, the navigation is finished and all component lifecycles are moved into required states. However, the navigation is performed asynchronously in case of recursive invocations - e.g. `pop` is called from `onResume` lifecycle callback of a component being pushed. All recursive invocations are queued and performed one by one once the current navigation is finished.
 
 ## StackNavigator extension functions
 
-There are `StackNavigator` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/StackNavigatorExt.kt) that provide conveniences for navigating, some of which were already used in the [Child Stack overview example](overview#routing-example).
+There are `StackNavigator` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/StackNavigatorExt.kt) to simplify the navigation. Some of which were already used in the [Child Stack overview example](overview#routing-example).
 
 The preceding examples will utilize the following `sealed class` & `navigation` for showcasing the usage of the `StackNavigator` extensions.
 
@@ -46,7 +52,7 @@ navigation.push(Configuration.C)
 
 ![](../media/RouterPush.png)
 
-### Pop
+### pop
 
 Pops the latest configuration at the top of the stack.
 
@@ -65,7 +71,7 @@ navigation.pop { isSuccess ->
 
 ![](../media/RouterPop.png)
 
-### Pop While
+### popWhile
 
 Drops the configurations at the top of the stack while the provided predicate returns true.
 
@@ -75,7 +81,7 @@ navigation.popWhile { topOfStack: Configuration -> topOfStack !is B }
 
 ![](../media/RouterPopWhile.png)
 
-### Replace Current
+### replaceCurrent
 
 Replaces the current configuration at the top of the stack with the provided `Configuration`.
 
@@ -85,7 +91,7 @@ navigation.replaceCurrent(Configuration.D)
 
 ![](../media/RouterReplaceCurrent.png)
 
-### Bring to Front
+### bringToFront
 
 Removes all components with configurations of the provided `Configuration`'s class, and adds the provided `Configuration` to the top of the stack. This is primarily helpful when implementing a Decompose app with [bottom navigation](https://github.com/arkivanov/Decompose/discussions/178)
 

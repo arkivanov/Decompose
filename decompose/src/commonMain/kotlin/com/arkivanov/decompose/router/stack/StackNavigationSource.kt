@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.router.stack
 
 /**
- * Represents a source of navigation events.
+ * Represents a source of navigation events for `Child Stack`.
  *
  * @see StackNavigator
  */

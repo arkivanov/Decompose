@@ -2,7 +2,7 @@ package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.backhandler.child
+import com.arkivanov.decompose.backhandler.childBackHandler
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
 import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
@@ -26,7 +26,7 @@ internal class RouterEntryFactoryImpl<C : Any, out T : Any>(
         val mergedLifecycle = MergedLifecycle(lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
         val instanceKeeperRegistry = instanceKeeperDispatcher ?: InstanceKeeperDispatcher()
-        val backHandler = backHandler.child()
+        val backHandler = backHandler.childBackHandler()
 
         val component =
             childFactory(
