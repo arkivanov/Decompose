@@ -1,6 +1,6 @@
 # Component Overview
 
-A component is just a normal class that encapsulates some logic and possibly another (child) components. Every component has its own lifecycle, which is automatically managed by Decompose. So everything encapsulated by a component is scoped. Please head to the [Lifecycle documentation page](https://arkivanov.github.io/Decompose/component/lifecycle/) for more information.
+A component is just a normal class that encapsulates some logic and possibly another (child) components. Every component has its own lifecycle, which is automatically managed by Decompose. So everything encapsulated by a component is scoped. Please head to the [Lifecycle documentation page](/Decompose/component/lifecycle/) for more information.
 
 UI is optional and is pluggable from outside of components. Components do not depend on UI, the UI depends on components.
 
@@ -133,66 +133,20 @@ fun main() {
 }
 ```
 
-## Child components
+## Value and MutableValue state holders
 
-Decompose provides ability to organize components into trees, so each parent component is only aware of its immediate children. Hence the name of the library - "Decompose". You decompose your project by multiple independent reusable components. When adding a sub-tree into another place (reusing), you only need to satisfy its top component's dependencies.
+[Value](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value/Value.kt) - is a multiplatform way to expose streams of states. It contains the `value` property, which always returns the current state. It also provides the ability to observe state changes via `subscribe`/`unsubscribe` methods. There is [MutableValue](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value/MutableValueBuilder.kt) which is a mutable variant of `Value`. Since `Value` is a class (not an interface) with a generic type parameter, it can be used to expose state streams to ObjC/Swift.
 
-There are two common ways to add a child component:
+Using `Value` is not mandatory, you can use any other state holders, e.g. [StateFlow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-state-flow/), [State](https://developer.android.com/jetpack/compose/state), [Observable](https://github.com/badoo/Reaktive), [LiveData](https://developer.android.com/topic/libraries/architecture/livedata), etc.
 
-- Using `Child Stack` - prefer this option when a navigation between components is required. Please head to the [Child Stack documentation page](https://arkivanov.github.io/Decompose/child-stack/overview/) for more information.
-- Manually - prefer this option if you need to add a permanent child component, or to manually control its `Lifecycle`.
+If you are using Jetpack/JetBrains Compose, `Value` can be observed in Composable functions using one of the Compose [extension modules](/Decompose/extensions/compose/).
 
-### Adding a child component manually
+!!!warning
+    `Value` is not thread-safe, it should be accessed only from the main thread.
 
-In order to add a child component manually, you need to create a separate child `ComponentContext` for it. There is `ComponentContext.childContext(key: String, lifecycle: Lifecycle? = null)` extension function provided by the library, which creates a new instance of `ComponentContext` and attaches it to the parent one. This function has two arguments: 
+### Why not StateFlow?
 
-* `key` - A key of the child `ComponentContext`, must be unique within the parent `ComponentContext`
-* `lifecycle` - An optional `Lifecycle` of the child `ComponentContext`, can be used if the child component needs to be destroyed earlier, or if you need manual control. If supplied, then the following conditions apply:
-
-    * the resulting `Lifecycle` of the child component will honour both the parent `Lifecycle` and the supplied one
-    * when the supplied `Lifecycle` is explicitly destroyed, the child `ComponentContext` detaches from its parent
-
-Here is an example of creating a permanent child component:
-
-```kotlin
-class SomeParent(
-    componentContext: ComponentContext
-) : ComponentContext by componentContext {
-
-    private val counter: Counter = Counter(childContext(key = "Counter"))
-}
-```
-
-Here is an example of creating a child component with manual lifecycle:
-
-```kotlin
-class SomeParent(
-    componentContext: ComponentContext
-) : ComponentContext by componentContext {
-
-    private var counterHolder: CounterHolder? = null
-
-    fun createCounter() {
-        val lifecycle = LifecycleRegistry()
-        val counter = Counter(childContext(key = "Counter", lifecycle = lifecycle))
-        lifecycle.resume()
-        counterHolder = CounterHolder(counter, lifecycle)
-    }
-
-    fun destroyCounter() {
-        counterHolder?.lifecycle?.destroy()
-        counterHolder = null
-    }
-
-    private class CounterHolder(
-        val counter: Counter,
-        val lifecycle: LifecycleRegistry,
-    )
-}
-```
-
-!!!warning 
-    Never pass parent's `ComponentContext` to children, always use either the `Child Stack` or the `childContext(...)` function.
+Decompose uses `Value` to avoid dependency on Kotlin coroutines. One may prefer using Reaktive, RxJava, etc. instead of coroutines. It also provides better interoperability with ObjC/Swift and simplifies testing. Feel free to convert `Value` to `StateFlow` or any other state holder if you need it.
 
 ## Examples
 
@@ -202,11 +156,11 @@ Here is an example of simple Counter component:
 
 ```kotlin
 class Counter {
-    private val _value = MutableValue(State())
-    val state: Value<State> = _value
+    private val _state = MutableValue(State())
+    val state: Value<State> = _state
 
     fun increment() {
-        _value.reduce { it.copy(count = it.count + 1) }
+        _state.reduce { it.copy(count = it.count + 1) }
     }
 
     data class State(val count: Int = 0)
@@ -230,10 +184,6 @@ fun CounterUi(counter: Counter) {
 }
 ```
 
-[Value](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value/Value.kt) - is a multiplatform way to expose streams of states. It contains the `value` property, which always returns the current state. It also provides ability to observe state changes via `subscribe`/`unsubscribe` methods. There is [MutableValue](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value/MutableValueBuilder.kt) which is a mutable variant of `Value`.
-
-If you are using only Jetpack/JetBrains Compose UI, then most likely you can use its `State` and `MutableState` directly, without intermediate `Value`/`MutableValue` from Decompose. You can convert between `State` and `Value` using one of the Compose [extension modules](https://arkivanov.github.io/Decompose/extensions/compose/).
-
 ### SwiftUI Example
 
 ```swift
@@ -255,3 +205,7 @@ struct CounterView: View {
     }
 }
 ```
+
+#### What is ObservableValue?
+
+[ObservableValue](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/ObservableValue.swift) is a wrapper around `Value` that makes it compatible with SwiftUI. It is a simple class that conforms to `ObservableObject` protocol. Unfortunately it [does not look possible](https://github.com/arkivanov/Decompose/issues/206) to publish utils for SwiftUI as a library or framework, so it has to be copied to your project.

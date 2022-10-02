@@ -3,6 +3,7 @@ package com.arkivanov.sample.shared.multipane
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.active
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
@@ -47,13 +48,13 @@ internal class ListRouter(
         )
 
     fun moveToBackStack() {
-        if (stack.value.active.configuration !is Config.None) {
+        if (stack.active.configuration !is Config.None) {
             navigation.push(Config.None)
         }
     }
 
     fun show() {
-        if (stack.value.active.configuration !is Config.List) {
+        if (stack.active.configuration !is Config.List) {
             navigation.pop()
         }
     }
