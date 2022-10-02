@@ -149,6 +149,20 @@ class StackControllerTest {
     }
 
     @Test
+    fun WHEN_push_THEN_new_active_component_back_handler_enabled() {
+        val newStack =
+            controller.navigate(
+                oldStack = RouterStack(
+                    active = activeEntry(configuration = Config(id = 1)),
+                    backStack = emptyList()
+                ),
+                transformer = { it + Config(id = 2) }
+            )
+
+        assertTrue(newStack.active.backHandler.asTest().isEnabled)
+    }
+
+    @Test
     fun WHEN_push_THEN_old_active_component_stopped() {
         val newStack =
             controller.navigate(
@@ -174,6 +188,20 @@ class StackControllerTest {
             )
 
         assertFalse(newStack.backStack.first().asCreated().backHandler.asTest().isStarted)
+    }
+
+    @Test
+    fun WHEN_push_THEN_old_active_component_back_handler_enabled() {
+        val newStack =
+            controller.navigate(
+                oldStack = RouterStack(
+                    active = activeEntry(configuration = Config(id = 1)),
+                    backStack = emptyList()
+                ),
+                transformer = { it + Config(id = 2) }
+            )
+
+        assertTrue(newStack.backStack.first().asCreated().backHandler.asTest().isEnabled)
     }
 
     @Test
@@ -550,7 +578,7 @@ class StackControllerTest {
             lifecycleRegistry: LifecycleRegistry = LifecycleRegistry().apply { resume() },
             stateKeeperDispatcher: StateKeeperDispatcher = TestStateKeeperDispatcher(),
             instanceKeeperDispatcher: InstanceKeeperDispatcher = InstanceKeeperDispatcher(),
-            backHandler: ChildBackHandler = TestChildBackHandler(isStarted = true),
+            backHandler: ChildBackHandler = TestChildBackHandler(isStarted = true, isEnabled = true),
         ): RouterEntry.Created<Config, Component> =
             RouterEntry.Created(
                 configuration = configuration,
@@ -567,7 +595,7 @@ class StackControllerTest {
             savedState: ParcelableContainer? = null,
             lifecycleRegistry: LifecycleRegistry = LifecycleRegistry().apply { create() },
             stateKeeperDispatcher: StateKeeperDispatcher = TestStateKeeperDispatcher(savedState),
-            backHandler: ChildBackHandler = TestChildBackHandler(),
+            backHandler: ChildBackHandler = TestChildBackHandler(isEnabled = true),
         ): RouterEntry.Created<Config, Component> =
             RouterEntry.Created(
                 configuration = configuration,

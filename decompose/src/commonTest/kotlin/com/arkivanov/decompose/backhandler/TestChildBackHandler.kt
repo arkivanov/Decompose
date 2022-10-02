@@ -3,7 +3,10 @@ package com.arkivanov.decompose.backhandler
 import com.arkivanov.decompose.ensureNeverFrozen
 import com.arkivanov.essenty.backhandler.BackCallback
 
-class TestChildBackHandler(var isStarted: Boolean = false) : ChildBackHandler {
+class TestChildBackHandler(
+    var isStarted: Boolean = false,
+    override var isEnabled: Boolean = false,
+) : ChildBackHandler {
 
     init {
         ensureNeverFrozen()

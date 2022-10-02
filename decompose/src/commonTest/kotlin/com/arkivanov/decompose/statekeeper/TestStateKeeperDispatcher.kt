@@ -13,7 +13,7 @@ class TestStateKeeperDispatcher(
 ) : StateKeeperDispatcher {
 
     private val savedState: MutableMap<String, ParcelableContainer>? = initialSavedState?.consume<SavedState>()?.map
-    private val suppliers = HashMap<String, () -> Parcelable>()
+    private val suppliers = HashMap<String, () -> Parcelable?>()
 
     var lastSavedState: ParcelableContainer? = null
 
@@ -29,7 +29,7 @@ class TestStateKeeperDispatcher(
             ?.remove(key)
             ?.consume(clazz)
 
-    override fun <T : Parcelable> register(key: String, supplier: () -> T) {
+    override fun <T : Parcelable> register(key: String, supplier: () -> T?) {
         check(key !in suppliers)
         suppliers[key] = supplier
     }

@@ -4,15 +4,13 @@ import com.arkivanov.decompose.router.stack.StackSaver.RestoredStack
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.parcelable.Parcelize
-import com.arkivanov.essenty.parcelable.consumeRequired
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.consume
-import kotlin.reflect.KClass
 
-internal class StackSaverImpl<C : Parcelable>(
-    private val configurationClass: KClass<out C>,
+internal class StackSaverImpl<C : Any>(
     private val stateKeeper: StateKeeper,
-    private val parcelableContainerFactory: (Parcelable?) -> ParcelableContainer,
+    private val saveConfiguration: (C) -> ParcelableContainer,
+    private val restoreConfiguration: (ParcelableContainer) -> C,
 ) : StackSaver<C> {
 
     override fun register(key: String, supplier: () -> RouterStack<C, *>) {
@@ -28,12 +26,12 @@ internal class StackSaverImpl<C : Parcelable>(
     private fun RouterStack<C, *>.save(): SavedState =
         SavedState(
             active = SavedEntry(
-                configuration = parcelableContainerFactory(active.configuration),
+                configuration = saveConfiguration(active.configuration),
                 savedState = active.stateKeeperDispatcher.save()
             ),
             backStack = backStack.map {
                 SavedEntry(
-                    configuration = parcelableContainerFactory(it.configuration),
+                    configuration = saveConfiguration(it.configuration),
                     savedState = it.savedState
                 )
             }
@@ -56,7 +54,7 @@ internal class StackSaverImpl<C : Parcelable>(
 
     private fun SavedEntry.restore(): RouterEntry.Destroyed<C> =
         RouterEntry.Destroyed(
-            configuration = configuration.consumeRequired(configurationClass),
+            configuration = restoreConfiguration(configuration),
             savedState = savedState
         )
 

@@ -14,7 +14,7 @@ interface StackNavigator<C : Any> {
      *
      * The `Child Stack` usually performs the navigation synchronously, which means that by the time
      * the `navigate` method returns, the navigation is finished and all component lifecycles are
-     * moved into required states. However the navigation is performed asynchronously in case of
+     * moved into required states. However, the navigation is performed asynchronously in case of
      * recursive invocations - e.g. `pop` is called from `onResume` lifecycle callback of a
      * component being pushed. All recursive invocations are queued and performed one by one once
      * the current navigation is finished.

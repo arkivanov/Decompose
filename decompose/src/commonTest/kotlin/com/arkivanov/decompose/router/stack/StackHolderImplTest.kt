@@ -33,6 +33,13 @@ class StackHolderImplTest {
     }
 
     @Test
+    fun WHEN_created_THEN_active_component_back_handler_enabled() {
+        val holder = stackHolder()
+
+        assertTrue(holder.stack.active.backHandler.asTest().isEnabled)
+    }
+
+    @Test
     fun WHEN_recreated_THEN_instances_retained_in_active_component() {
         val instanceKeeperDispatcher = InstanceKeeperDispatcher()
         val stackSaver = stackSaver()
@@ -176,7 +183,7 @@ class StackHolderImplTest {
                 lifecycleRegistry = LifecycleRegistry(),
                 stateKeeperDispatcher = stateKeeper,
                 instanceKeeperDispatcher = instanceKeeper,
-                backHandler = TestChildBackHandler(),
+                backHandler = TestChildBackHandler(isEnabled = true),
             )
         }
     }

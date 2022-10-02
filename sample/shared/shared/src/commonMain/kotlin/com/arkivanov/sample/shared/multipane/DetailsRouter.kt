@@ -3,6 +3,7 @@ package com.arkivanov.sample.shared.multipane
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.active
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.popWhile
@@ -60,7 +61,7 @@ internal class DetailsRouter(
     }
 
     fun isShown(): Boolean =
-        when (stack.value.active.configuration) {
+        when (stack.active.configuration) {
             is Config.None -> false
             is Config.Details -> true
         }

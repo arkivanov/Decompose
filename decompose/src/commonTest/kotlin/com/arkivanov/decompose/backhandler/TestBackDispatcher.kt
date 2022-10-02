@@ -2,9 +2,9 @@ package com.arkivanov.decompose.backhandler
 
 import com.arkivanov.decompose.ensureNeverFrozen
 import com.arkivanov.essenty.backhandler.BackCallback
-import com.arkivanov.essenty.backhandler.BackHandler
+import com.arkivanov.essenty.backhandler.BackDispatcher
 
-internal class TestBackHandler : BackHandler {
+internal class TestBackDispatcher : BackDispatcher {
 
     init {
         ensureNeverFrozen()
@@ -12,7 +12,8 @@ internal class TestBackHandler : BackHandler {
 
     private var set = emptySet<BackCallback>()
     val size: Int get() = set.size
-    val isEnabled: Boolean get() = set.any(BackCallback::isEnabled)
+
+    override val isEnabled: Boolean get() = set.any(BackCallback::isEnabled)
 
     override fun register(callback: BackCallback) {
         check(callback !in set) { "Callback is already registered" }
@@ -24,5 +25,14 @@ internal class TestBackHandler : BackHandler {
         check(callback in set) { "Callback is not registered" }
 
         this.set -= callback
+    }
+
+    override fun back(): Boolean {
+        set.lastOrNull(BackCallback::isEnabled)?.also {
+            it.onBack()
+            return true
+        }
+
+        return false
     }
 }
