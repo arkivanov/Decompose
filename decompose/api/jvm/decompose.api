@@ -106,6 +106,10 @@ public final class com/arkivanov/decompose/router/overlay/OverlayNavigatorExtKt 
 	public static final fun navigate (Lcom/arkivanov/decompose/router/overlay/OverlayNavigator;Lkotlin/jvm/functions/Function1;)V
 }
 
+public final class com/arkivanov/decompose/router/overlay/ValueExtKt {
+	public static final fun getOverlay (Lcom/arkivanov/decompose/value/Value;)Lcom/arkivanov/decompose/Child$Created;
+}
+
 public final class com/arkivanov/decompose/router/stack/ChildStack {
 	public fun <init> (Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;)V
 	public synthetic fun <init> (Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
