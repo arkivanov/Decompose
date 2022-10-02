@@ -30,11 +30,16 @@ nav:
     - Scoping jobs and subscriptions: component/scopes.md
     - Custom ComponentContext: component/custom-component-context.md
 
-  - Child Stack:
-    - Overview: child-stack/overview.md
-    - Navigation: child-stack/navigation.md
-    - Deep linking: child-stack/deeplinking.md
-    - Web browser history: child-stack/browser-history.md
+  - Navigation:
+    - Overview: navigation/overview.md
+    - Child Stack:
+      - Overview: navigation/stack/overview.md
+      - Navigation: navigation/stack/navigation.md
+      - Deep linking: navigation/stack/deeplinking.md
+      - Web browser history: navigation/stack/browser-history.md
+    - Child Overlay:
+      - Overview: navigation/overlay/overview.md
+      - Navigation: navigation/overlay/navigation.md
 
   - Extensions:
     - Overview: extensions/overview.md
@@ -55,6 +60,7 @@ theme:
   language: en
   features:
     - navigation.tabs
+    - navigation.expand
   palette:
     scheme: default
     primary: indigo
