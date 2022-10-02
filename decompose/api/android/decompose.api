@@ -84,8 +84,8 @@ public final class com/arkivanov/decompose/router/overlay/ChildOverlay {
 }
 
 public final class com/arkivanov/decompose/router/overlay/ChildOverlayFactoryKt {
-	public static final fun childOverlay (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/overlay/OverlayNavigationSource;Ljava/lang/String;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;ZZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
-	public static synthetic fun childOverlay$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/overlay/OverlayNavigationSource;Ljava/lang/String;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;ZZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun childOverlay (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/overlay/OverlayNavigationSource;Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/jvm/functions/Function0;ZZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childOverlay$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/overlay/OverlayNavigationSource;Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/jvm/functions/Function0;ZZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
 }
 
 public abstract interface class com/arkivanov/decompose/router/overlay/OverlayNavigation : com/arkivanov/decompose/router/overlay/OverlayNavigationSource, com/arkivanov/decompose/router/overlay/OverlayNavigator {

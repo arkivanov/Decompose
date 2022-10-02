@@ -19,8 +19,9 @@ import kotlin.reflect.KClass
  * Initializes and manages component overlay. An overlay component can be either active or dismissed (destroyed).
  *
  * @param source a source of navigation events
- * @param key a key of the overlay, must be unique within the parent component
  * @param configurationClass a [KClass] of the component configurations
+ * @param key a key of the overlay, must be unique within the parent (hosting) component,
+ * default value is derived from the [configurationClass.simpleName].
  * @param initialConfiguration a component configuration that should be shown if there is
  * no saved state, return `null` to show nothing.
  * @param persistent determines whether the navigation state should pre preserved or not,
@@ -32,8 +33,8 @@ import kotlin.reflect.KClass
  */
 fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
     source: OverlayNavigationSource<C>,
-    key: String,
     configurationClass: KClass<out C>,
+    key: String = "ChildOverlay_${configurationClass.simpleName}",
     initialConfiguration: () -> C? = { null },
     persistent: Boolean = true,
     handleBackButton: Boolean = false,
@@ -64,7 +65,7 @@ fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
  */
 inline fun <reified C : Parcelable, T : Any> ComponentContext.childOverlay(
     source: OverlayNavigationSource<C>,
-    key: String,
+    key: String = "ChildOverlay_${C::class.simpleName}",
     noinline initialConfiguration: () -> C? = { null },
     persistent: Boolean = true,
     handleBackButton: Boolean = false,
