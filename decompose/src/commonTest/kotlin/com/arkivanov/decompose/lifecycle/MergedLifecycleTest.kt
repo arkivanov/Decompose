@@ -398,6 +398,7 @@ class MergedLifecycleTest {
         lifecycle1.create()
         lifecycle1.destroy()
 
+        toString()
         val merged = MergedLifecycle(lifecycle1, lifecycle2)
 
         assertEquals(Lifecycle.State.DESTROYED, merged.state)

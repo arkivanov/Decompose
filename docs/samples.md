@@ -10,6 +10,8 @@ This sample demonstrates the following features:
 * Pluggable UI (Android Views, Jetpack Compose, SwiftUI, JS React)
 * [Play Feature Delivery](https://developer.android.com/guide/playcore/feature-delivery) for Android
 
+Please note that Gradle files included in this sample project are not supposed to be used as a reference. They share the configuration with the reset of the library, which simplifies the maintenance a lot. Please refer to the [KMP documentation](https://kotlinlang.org/docs/multiplatform-mobile-getting-started.html) for information on configuring a KMP project. You can also check other sample projects described below.
+
 Content:
 
 * [shared](https://github.com/arkivanov/Decompose/tree/master/sample/shared/shared) - this is a shared module that contains the following components:

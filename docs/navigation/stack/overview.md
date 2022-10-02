@@ -1,43 +1,25 @@
-# Child Stack Overview
+# Child Stack overview
 
 ## The Child Stack
 
-A key unit is `Child Stack`. It is a feature responsible for managing a stack of components, just like `FragmentManager`.
+`Child Stack` is a navigation model for managing a stack of components, just like `FragmentManager`.
 
-Each component has its own `Lifecycle`. Each time a new component is pushed to the stack, the currently active component is stopped. When a component is popped from the stack, the previous component is resumed. This allows business logic to run while the component is in the back stack.
+Each component has its own `Lifecycle`. Each time a new component is pushed to the stack, the currently active component is stopped. When a component is popped from the stack, the previous component is resumed. This allows business logic to run while the component is in the back stack. It is possible to have more than one `Child Stack` in a component, nested stacks are also supported.
 
-The `Child Stack` feature consists of the two main interfaces:
+The `Child Stack` navigation consists of two main entities:
 
 - [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) - a simple data class that stores a stack of components and their configurations.
     - ChildStack#active - contains the currently active component.
     - ChildStack#backStack - contains the back stack of inactive components.
 - [StackNavigation](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/StackNavigation.kt) - an interface that accepts navigation commands and forwards them to all subscribed observers.
 
-Child components can also have their own `Child Stacks` (nested navigation), and each component can have more than one `Child Stack`.
-
 ### Component Configurations
 
-Each component created and managed by the `Child Stack` has its `Configuration`. It is just a class with all the data required for the component instantiation.
+Each component created and managed by the `Child Stack` has a configuration, please read the documentation about [child configurations](/Decompose/navigation/overview/#component-configurations-and-child-factories). 
 
-`Configurations` must meet the following requirements:
+`Child Stack` adds one additional requirement for child configurations:
 
-1. Be immutable
-2. [Correctly](https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#hashCode--) implement `equals()` and `hashCode()` methods
-3. Be unique (by equality) in the `Child Stack`
-4. Implement `Parcelable` interface
-
-#### Configurations are the keys
-
-Each `Configuration` is a unique key of a component. The `Child Stack` uses `Configurations` to check what components should be alive and what should be destroyed. On the client side, `Configurations` allow you to instantiate components with proper input parameters. For convenience and safety, you may define your `Configurations` as `data class`, and use only `val` properties and immutable data structures.
-
-#### Configurations are Parcelable
-
-`Configurations` can be persisted via Android's [saved state](https://developer.android.com/guide/components/activities/activity-lifecycle#save-simple,-lightweight-ui-state-using-onsaveinstancestate), thus allowing back stack restoration after configurations change or process death. When the back stack is restored, only currently active components are recreated. All others in the back stack remain destroyed, and recreated on demand when navigating back.
-
-Decompose uses [Essenty](https://github.com/arkivanov/Essenty) library, which provides both `Parcelable` interface and `@Parcelize` annotation in common code using expect/actual, which works well with Kotlin Multiplatform. Please familiarise yourself with Essenty library.
-
-!!!warning
-    On Android the amount of data that can be preserved is [limited](https://developer.android.com/guide/components/activities/parcelables-and-bundles). Please take care of the `Configuration` sizes.
+- Configurations must be unique (by equality) within the `Child Stack`.
 
 ### Initializing the Child Stack
 
@@ -47,13 +29,11 @@ There are three steps to initialize the `Child Stack`:
 - Initialize the `Child Stack` using the `ComponentContext#childStack` extension function and pass `StackNavigation` into it along with other arguments. 
 - The `childStack` function returns `Value<ChildStack>` that can be observed in the UI. Assign the returned `Value` to another property or a variable.
 
-## Routing example
+## Example
 
 Here is a very basic example of navigation between two child components:
 
-```kotlin
-// ItemList component
-
+```kotlin title="ItemList component"
 interface ItemList {
 
     // Omitted code
@@ -74,9 +54,7 @@ class ItemListComponent(
 }
 ```
 
-```kotlin
-// ItemDetails component
-
+```kotlin title="ItemDetails component"
 interface ItemDetails {
 
     // Omitted code
@@ -98,7 +76,7 @@ class ItemDetailsComponent(
 }
 ```
 
-```kotlin
+```kotlin title="Root component"
 interface Root {
 
     val childStack: Value<ChildStack<*, Child>>
@@ -115,7 +93,7 @@ class RootComponent(
 
     private val navigation = StackNavigation<Config>()
 
-    private val stack =
+    private val _childStack =
         childStack(
             source = navigation,
             initialConfiguration = Config.List,
@@ -123,7 +101,7 @@ class RootComponent(
             childFactory = ::createChild,
         )
 
-    override val childStack: Value<ChildStack<*, Root.Child>> get() = stack
+    override val childStack: Value<ChildStack<*, Root.Child>> = _childStack
 
     private fun createChild(config: Config, componentContext: ComponentContext): Root.Child =
         when (config) {
@@ -314,9 +292,34 @@ class RootComponent(
 
 ## Multiple Child Stacks in a component
 
-When multiple `Child Stacks` are required in one component, each such `Child Stack` must have a unique key associated. The keys are required to be unique only within the component, so it is ok for different components to have `Child Stacks` with same keys. An exception will be thrown if multiple `Child Stacks` with the same key are detected in a component.
+When multiple `Child Stacks` are required in one component, each such `Child Stack` must have a unique key associated. The keys are required to be unique only within the parent (hosting) component, so it is ok for different components to have `Child Stacks` with same keys. An exception will be thrown if multiple `Child Stacks` with the same key are detected in a component.
 
-```kotlin
+By default, key value is derived from the `simpleName` property of the configuration class. The key must be explicitly specified if multiple `Child Stacks` use the same configuration class.
+
+```kotlin title="Two Child Stacks with the same configuration class"
+class Root(
+    componentContext: ComponentContext
+) : ComponentContext by componentContext {
+
+    private val topNavigation = StackNavigation<TopConfig>()
+    
+    private val topStack =
+        childStack<Config, TopChild>(
+            source = topNavigation,
+            // Omitted code
+        )
+
+    private val bottomNavigation = StackNavigation<BottomConfig>()
+    
+    private val bottomStack =
+        childStack<Config, BottomChild>(
+            source = bottomNavigation,
+            // Omitted code
+        )
+}
+```
+
+```kotlin title="Two Child Stacks with different configuration classes"
 class Root(
     componentContext: ComponentContext
 ) : ComponentContext by componentContext {
