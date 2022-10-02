@@ -292,9 +292,34 @@ class RootComponent(
 
 ## Multiple Child Stacks in a component
 
-When multiple `Child Stacks` are required in one component, each such `Child Stack` must have a unique key associated. The keys are required to be unique only within the component, so it is ok for different components to have `Child Stacks` with same keys. An exception will be thrown if multiple `Child Stacks` with the same key are detected in a component.
+When multiple `Child Stacks` are required in one component, each such `Child Stack` must have a unique key associated. The keys are required to be unique only within the parent (hosting) component, so it is ok for different components to have `Child Stacks` with same keys. An exception will be thrown if multiple `Child Stacks` with the same key are detected in a component.
 
-```kotlin
+By default, key value is derived from the `simpleName` property of the configuration class. The key must be explicitly specified if multiple `Child Stacks` use the same configuration class.
+
+```kotlin title="Two Child Stacks with the same configuration class"
+class Root(
+    componentContext: ComponentContext
+) : ComponentContext by componentContext {
+
+    private val topNavigation = StackNavigation<TopConfig>()
+    
+    private val topStack =
+        childStack<Config, TopChild>(
+            source = topNavigation,
+            // Omitted code
+        )
+
+    private val bottomNavigation = StackNavigation<BottomConfig>()
+    
+    private val bottomStack =
+        childStack<Config, BottomChild>(
+            source = bottomNavigation,
+            // Omitted code
+        )
+}
+```
+
+```kotlin title="Two Child Stacks with different configuration classes"
 class Root(
     componentContext: ComponentContext
 ) : ComponentContext by componentContext {

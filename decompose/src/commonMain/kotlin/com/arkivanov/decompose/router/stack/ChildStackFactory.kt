@@ -19,7 +19,8 @@ import kotlin.reflect.KClass
  * @param initialStack a stack of component configurations (ordered from tail to head) that should be set
  * if there is no saved state, must be not empty and unique
  * @param configurationClass a [KClass] of the component configurations
- * @param key a key of the stack, must be unique if there are multiple stacks in the same component
+ * @param key a key of the stack, must be unique if there are multiple stacks in the same component,
+ * default value is derived from [configurationClass.simpleName].
  * @param handleBackButton determines whether the overlay should be automatically dismissed
  * on back button press or not, default is `false`.
  * @param childFactory a factory function that creates new child instances
@@ -29,7 +30,7 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
     source: StackNavigationSource<C>,
     initialStack: () -> List<C>,
     configurationClass: KClass<out C>,
-    key: String = "DefaultChildStack",
+    key: String = "ChildStack_${configurationClass.simpleName}",
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, ComponentContext) -> T,
 ): Value<ChildStack<C, T>> =
@@ -53,7 +54,7 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
 inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
     source: StackNavigationSource<C>,
     noinline initialStack: () -> List<C>,
-    key: String = "DefaultRouter",
+    key: String = "ChildStack_${C::class.simpleName}",
     handleBackButton: Boolean = false,
     noinline childFactory: (configuration: C, ComponentContext) -> T
 ): Value<ChildStack<C, T>> =
@@ -72,7 +73,7 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
 inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
     source: StackNavigationSource<C>,
     initialConfiguration: C,
-    key: String = "DefaultRouter",
+    key: String = "ChildStack_${C::class.simpleName}",
     handleBackButton: Boolean = false,
     noinline childFactory: (configuration: C, ComponentContext) -> T
 ): Value<ChildStack<C, T>> =
