@@ -18,23 +18,22 @@ import kotlin.reflect.KClass
 /**
  * Initializes and manages component overlay. An overlay component can be either active or dismissed (destroyed).
  *
- * @param source a source of navigation events
- * @param configurationClass a [KClass] of the component configurations
- * @param key a key of the overlay, must be unique within the parent (hosting) component,
- * default value is derived from the [configurationClass.simpleName].
+ * @param source a source of navigation events.
+ * @param configurationClass a [KClass] of the component configurations.
+ * @param key a key of the overlay, must be unique within the parent (hosting) component.
  * @param initialConfiguration a component configuration that should be shown if there is
  * no saved state, return `null` to show nothing.
  * @param persistent determines whether the navigation state should pre preserved or not,
  * default is `true`.
  * @param handleBackButton determines whether the overlay should be automatically dismissed
  * on back button press or not, default is `false`.
- * @param childFactory a factory function that creates new child instances
- * @return an observable [Value] of [ChildOverlay]
+ * @param childFactory a factory function that creates new child instances.
+ * @return an observable [Value] of [ChildOverlay].
  */
 fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
     source: OverlayNavigationSource<C>,
     configurationClass: KClass<out C>,
-    key: String = "ChildOverlay_${configurationClass.simpleName}",
+    key: String = "DefaultChildOverlay",
     initialConfiguration: () -> C? = { null },
     persistent: Boolean = true,
     handleBackButton: Boolean = false,
@@ -65,7 +64,7 @@ fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
  */
 inline fun <reified C : Parcelable, T : Any> ComponentContext.childOverlay(
     source: OverlayNavigationSource<C>,
-    key: String = "ChildOverlay_${C::class.simpleName}",
+    key: String = "DefaultChildOverlay",
     noinline initialConfiguration: () -> C? = { null },
     persistent: Boolean = true,
     handleBackButton: Boolean = false,
