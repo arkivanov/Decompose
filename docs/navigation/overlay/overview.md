@@ -58,7 +58,6 @@ class DefaultRootComponent(
     private val _dialog =
         childOverlay(
             source = dialogNavigation,
-            key = "Dialog",
             // persistent = false, // Disable navigation state saving, if needed
             handleBackButton = true, // Close the dialog on back button press
         ) { config, componentContext ->
@@ -79,5 +78,34 @@ class DefaultRootComponent(
     private data class DialogConfig(
         val message: String,
     ) : Parcelable
+}
+```
+
+## Multiple Child Overlays in a component
+
+When multiple `Child Overlays` are used in one component, each such `Child Overlay` must have a unique key associated. The keys are required to be unique only within the parent (hosting) component, so it is ok for different components to have `Child Overlays` with same keys. An exception will be thrown if multiple `Child Overlays` with the same key are detected in a component.
+
+```kotlin title="Two Child Overlays in one component"
+class Root(
+    componentContext: ComponentContext
+) : ComponentContext by componentContext {
+
+    private val topNavigation = OverlayNavigation<TopConfig>()
+    
+    private val topOverlay =
+        childOverlay<TopConfig, TopChild>(
+            source = topNavigation,
+            key = "TopOverlay",
+            // Omitted code
+        )
+
+    private val bottomNavigation = OverlayNavigation<BottomConfig>()
+    
+    private val bottomOverlay =
+        childOverlay<BottomConfig, BottomChild>(
+            source = bottomNavigation,
+            key = "BottomOverlay",
+            // Omitted code
+        )
 }
 ```
