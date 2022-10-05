@@ -71,7 +71,7 @@ fun <C : Any> StackNavigator<C>.replaceCurrent(configuration: C, onComplete: () 
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
 fun <C : Any> StackNavigator<C>.replaceAll(vararg configurations: C, onComplete: () -> Unit = { }) {
-    navigate(transformer = { configurations.toList() }, onComplete = { _,_->onComplete() })
+    navigate(transformer = { configurations.toList() }, onComplete = { _, _ -> onComplete() })
 }
 
 /**
