@@ -1,6 +1,8 @@
-# How to initialize Child Overlay with custom ComponentContext 
+# Child Overlay with custom `ComponentContext`
 
-In order to pass this `AppComponentContext` to child overlay components, make an extension function on the `AppComponentContext` interface. This custom extension function will initialize the `Child Overlay` and provide child `AppComponentContext`.
+Custom `ComponentContext` allowes to pass extra data and functionality to all initialized child components. See [Custom ComponentContext](../../component/custom-component-context.md) page for more information about creating custom AppComponentContext.
+
+In order to pass custom component context like `AppComponentContext` to child overlay components, make an extension function on your `AppComponentContext` interface. This custom extension function will initialize the `Child Overlay` and provide every child an `AppComponentContext`.
 
 ```kotlin
 fun <C : Parcelable, T : Any> AppComponentContext.appChildOverlay(
@@ -50,20 +52,39 @@ inline fun <reified C : Parcelable, T : Any> AppComponentContext.appChildStack(
     )
 ```
 
-Finally, in your components you can create the new extension function that will utilize the new custom `AppComponentContext`.
+Finally, in your components you can use the new extension function that will utilize the custom `AppComponentContext`.
 
 ```kotlin
-class MyComponent(componentContext: AppComponentContext) : AppComponentContext by componentContext {
+interface RootComponent {
+    val dialog: Value<ChildOverlay<*, DialogComponent>>
+}
 
-    private val navigation = OverlayNavigation<Configuration>()
+class DefaultRootComponent(
+    componentContext: AppComponentContext,
+) : RootComponent, AppComponentContext by componentContext {
 
-    private val childStack = appChildOverlay(
-        source = navigation,
-        persistent = false,
-        handleBackButton = true,
-        childFactory = { configuration, appComponentContext -> {
-            // return child components using the custom component context
+    private val dialogNavigation = OverlayNavigation<DialogConfig>()
+
+    private val _dialog =
+        appChildOverlay(
+            source = dialogNavigation,
+            // persistent = false, // Disable navigation state saving, if needed
+            handleBackButton = true, // Close the dialog on back button press
+        ) { config, componentContext ->
+            DefaultDialogComponent(
+                componentContext = componentContext,
+                message = config.message,
+                onDismissed = dialogNavigation::dismiss,
+            )
         }
-    )
+
+    override val dialog: Value<ChildOverlay<*, DialogComponent>> = _dialog
+
+    private fun showDialog(message: String) {
+        dialogNavigation.activate(DialogConfig(message = message))
+    }
+
+    @Parcelize
+    private data class DialogConfig(val message: String) : Parcelable
 }
 ```
