@@ -1,6 +1,6 @@
 # Child Overlay with custom `ComponentContext`
 
-Custom `ComponentContext` allowes to pass extra data and functionality to all initialized child components. See [Custom ComponentContext](../../component/custom-component-context.md) page for more information about creating custom AppComponentContext.
+Custom `ComponentContext` allows passing extra data and functionality to every child component. See [Custom ComponentContext](../../component/custom-component-context.md) page for more information about creating custom `AppComponentContext`.
 
 In order to pass custom component context like `AppComponentContext` to child overlay components, make an extension function on your `AppComponentContext` interface. This custom extension function will initialize the `Child Overlay` and provide every child an `AppComponentContext`.
 
