@@ -22,7 +22,7 @@ class DefaultAppComponentContext(
 }
 ```
 
-## Custom ComponentContext with navigation
+## Navigation with custom ComponentContext
 
-- [With Child Stack](../navigation/stack/component-context.md)
-- [With Child Overlay](../navigation/overlay/component-context.md)
+- [Using Child Stack](../navigation/stack/component-context.md)
+- [Using Child Overlay](../navigation/overlay/component-context.md)
