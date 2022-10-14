@@ -41,7 +41,7 @@ sealed class Configuration {
 val navigation = StackNavigation<Configuration>()
 ```
 
-### Push
+### push
 
 Pushes the provided `Configuration` at the top of the stack.
 
@@ -50,7 +50,7 @@ navigation.push(Configuration.B)
 navigation.push(Configuration.C)
 ```
 
-![](../media/RouterPush.png)
+![](../../media/RouterPush.png)
 
 ### pop
 
@@ -69,7 +69,7 @@ navigation.pop { isSuccess ->
 }
 ```
 
-![](../media/RouterPop.png)
+![](../../media/RouterPop.png)
 
 ### popWhile
 
@@ -79,7 +79,7 @@ Drops the configurations at the top of the stack while the provided predicate re
 navigation.popWhile { topOfStack: Configuration -> topOfStack !is B }
 ```
 
-![](../media/RouterPopWhile.png)
+![](Decompose/media/RouterPopWhile.png)
 
 ### replaceCurrent
 
@@ -89,7 +89,7 @@ Replaces the current configuration at the top of the stack with the provided `Co
 navigation.replaceCurrent(Configuration.D)
 ```
 
-![](../media/RouterReplaceCurrent.png)
+![](../../media/RouterReplaceCurrent.png)
 
 ### bringToFront
 
@@ -102,4 +102,4 @@ Removes all components with configurations of the provided `Configuration`'s cla
 navigation.bringToFront(Configuration.B)
 ```
 
-![](../media/RouterBringToFront.png)
+![](../../media/RouterBringToFront.png)
