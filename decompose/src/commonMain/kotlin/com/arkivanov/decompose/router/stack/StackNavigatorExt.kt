@@ -66,6 +66,15 @@ fun <C : Any> StackNavigator<C>.replaceCurrent(configuration: C, onComplete: () 
 }
 
 /**
+ * Replaces the whole stack with the provided [configurations].
+ *
+ * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
+ */
+fun <C : Any> StackNavigator<C>.replaceAll(vararg configurations: C, onComplete: () -> Unit = { }) {
+    navigate(transformer = { configurations.toList() }, onComplete = { _, _ -> onComplete() })
+}
+
+/**
  * Removes all components with configurations of [configuration]'s class, and adds the provided [configuration] to the top of the stack.
  * The operation is performed as one transaction. If there is already a component with the same configuration, it will not be recreated.
  */
