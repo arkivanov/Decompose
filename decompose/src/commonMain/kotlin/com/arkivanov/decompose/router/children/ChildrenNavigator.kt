@@ -111,9 +111,12 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     }
 
     private fun switch(newStates: List<ChildNavState<C>>) {
+        val newConfigurations = newStates.mapTo(HashSet(), ChildNavState<C>::configuration)
+        check(newConfigurations.size == newStates.size) { "Configurations must be unique" }
+
         val oldItems = items.associateBy(ChildItem<C, *>::configuration)
         val newItems = prepareNewItems(newStates = newStates, oldItems = oldItems)
-        destroyOldItems(newStates = newStates, oldItems = oldItems.values)
+        destroyOldItems(newConfigurations = newConfigurations, oldItems = oldItems.values)
         processNewItems(newItems = newItems)
     }
 
@@ -176,13 +179,12 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     }
 
     private fun destroyOldItems(
-        newStates: List<ChildNavState<C>>,
+        newConfigurations: Set<C>,
         oldItems: Collection<ChildItem<C, T>>,
     ) {
-        val newStatesSet = newStates.mapTo(HashSet(), ChildNavState<C>::configuration)
         for (item in oldItems) {
             val child = item as? Created ?: continue
-            if (item.configuration !in newStatesSet) {
+            if (item.configuration !in newConfigurations) {
                 child.backHandler.stop()
                 child.instanceKeeperDispatcher.destroy()
                 child.lifecycleRegistry.destroy()

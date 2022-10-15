@@ -1,15 +1,13 @@
 package com.arkivanov.decompose.router.overlay
 
+import com.arkivanov.decompose.router.children.NavigationSource
+
 /**
  * Represents a source of navigation events for `Child Overlay`.
  *
  * @see OverlayNavigator
  */
-interface OverlayNavigationSource<C : Any> {
-
-    fun subscribe(observer: (Event<C>) -> Unit)
-
-    fun unsubscribe(observer: (Event<C>) -> Unit)
+interface OverlayNavigationSource<C : Any> : NavigationSource<OverlayNavigationSource.Event<C>> {
 
     class Event<C : Any>(
         val transformer: (configuration: C?) -> C?,
