@@ -20,13 +20,15 @@ interface ChildNavState<out C : Any> {
      */
     enum class Status {
         /**
-         * The child is destroyed but still managed, e.g. it's state may be saved and restored later.
+         * The child component is instantiated and active. Its maximum lifecycle state is `RESUMED`,
+         * depending on the parent's lifecycle state. An active component can handle back button presses.
+         * The state of the component is saved when it switches from `ACTIVE` to any other status.
          */
         DESTROYED,
 
         /**
-         * The child is created but not started. The state is saved when the child switches from
-         * [ACTIVE] to [INACTIVE]. Back button handling is disabled.
+         * The child component is instantiated and inactive. Its maximum lifecycle state is `CREATED`,
+         * depending on the parent's lifecycle state. An inactive component cannot handle back button presses.
          */
         INACTIVE,
 
