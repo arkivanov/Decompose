@@ -14,13 +14,20 @@ internal class DefaultChildBackHandler(
     private val enabledChangedListener: (Boolean) -> Unit = { updateParentCallbackEnabledState() }
 
     override var isEnabled: Boolean by observable(isEnabled) { _, _, _ -> updateParentCallbackEnabledState() }
+    private var isStarted = false
 
     override fun start() {
-        parent.register(parentCallback)
+        if (!isStarted) {
+            isStarted = true
+            parent.register(parentCallback)
+        }
     }
 
     override fun stop() {
-        parent.unregister(parentCallback)
+        if (isStarted) {
+            isStarted = false
+            parent.unregister(parentCallback)
+        }
     }
 
     override fun register(callback: BackCallback) {
