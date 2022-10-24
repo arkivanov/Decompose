@@ -20,11 +20,7 @@ internal sealed interface ChildItem<out C : Any, out T : Any> {
         val stateKeeperDispatcher: StateKeeperDispatcher,
         val instanceKeeperDispatcher: InstanceKeeperDispatcher,
         val backHandler: ChildBackHandler,
-    ) : ChildItem<C, T> {
-        enum class ChildStatus {
-            INACTIVE, ACTIVE
-        }
-    }
+    ) : ChildItem<C, T>
 
     data class Destroyed<out C : Any>(
         override val configuration: C,

@@ -119,6 +119,7 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
         childFactory = childFactory,
     )
 
+@OptIn(ExperimentalDecomposeApi::class)
 private data class StackNavState<out C : Any>(
     val active: C,
     val backStack: List<SimpleChildNavState<C>>,
