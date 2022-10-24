@@ -17,7 +17,7 @@ setupMultiplatform {
     android()
     jvm()
     macosCompat()
-    iosCompat(simulatorArm64 = null)
+    iosCompat()
 }
 
 setupPublication()
