@@ -56,6 +56,7 @@ fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
         childFactory = childFactory,
     )
 
+@OptIn(ExperimentalDecomposeApi::class)
 private data class OverlayNavState<out C : Any>(
     val configuration: C?,
 ) : NavState<C> {
