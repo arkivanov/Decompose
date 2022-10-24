@@ -14,9 +14,7 @@ plugins {
 setupMultiplatform {
     android()
     jvm()
-    iosCompat(
-        simulatorArm64 = null, // Not supported by Compose yet
-    )
+    iosCompat()
 }
 
 kotlin {
