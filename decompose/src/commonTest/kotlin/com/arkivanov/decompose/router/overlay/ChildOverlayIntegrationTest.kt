@@ -1,10 +1,12 @@
 package com.arkivanov.decompose.router.overlay
 
+import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.getValue
 import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.instancekeeper.getOrCreate
@@ -19,7 +21,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -47,81 +48,81 @@ class ChildOverlayIntegrationTest {
 
     @Test
     fun WHEN_created_without_configuration_THEN_overlay_not_active() {
-        val overlay = context.childOverlay(initialConfiguration = null)
+        val overlay by context.childOverlay(initialConfiguration = null)
 
-        overlay.value.assertOverlay(null)
+        overlay.assertOverlay(null)
     }
 
     @Test
     fun WHEN_created_with_configuration_THEN_overlay_active() {
-        val overlay = context.childOverlay(initialConfiguration = Config(1))
+        val overlay by context.childOverlay(initialConfiguration = Config(1))
 
-        overlay.value.assertOverlay(1)
+        overlay.assertOverlay(1)
     }
 
     @Test
     fun GIVEN_not_active_WHEN_activate_THEN_overlay_active() {
-        val overlay = context.childOverlay(initialConfiguration = null)
+        val overlay by context.childOverlay(initialConfiguration = null)
 
         navigation.activate(Config(1))
 
-        overlay.value.assertOverlay(1)
+        overlay.assertOverlay(1)
     }
 
     @Test
     fun GIVEN_active_WHEN_dismiss_THEN_overlay_not_active() {
-        val overlay = context.childOverlay(initialConfiguration = Config(1))
+        val overlay by context.childOverlay(initialConfiguration = Config(1))
 
         navigation.dismiss()
 
-        overlay.value.assertOverlay(null)
+        overlay.assertOverlay(null)
     }
 
     @Test
     fun GIVEN_active_WHEN_activate_with_same_configuration_THEN_same_overlay_active() {
-        val overlay = context.childOverlay(initialConfiguration = Config(1))
+        val overlay by context.childOverlay(initialConfiguration = Config(1))
 
         navigation.activate(Config(1))
 
-        overlay.value.assertOverlay(1)
+        overlay.assertOverlay(1)
     }
 
     @Test
     fun GIVEN_active_WHEN_activate_with_same_configuration_THEN_same_instance_active() {
-        val overlay = context.childOverlay(initialConfiguration = Config(1))
-        val instance = overlay.value.overlay?.instance
+        val overlay by context.childOverlay(initialConfiguration = Config(1))
+        val instance = overlay.requireOverlay().instance
 
         navigation.activate(Config(1))
 
-        assertSame(instance, overlay.value.overlay?.instance)
+        assertSame(instance, overlay.overlay?.instance)
     }
 
     @Test
     fun GIVEN_active_WHEN_activate_with_other_configuration_THEN_other_overlay_active() {
-        val overlay = context.childOverlay(initialConfiguration = Config(1))
+        val overlay by context.childOverlay(initialConfiguration = Config(1))
 
         navigation.activate(Config(2))
 
-        overlay.value.assertOverlay(2)
+        overlay.assertOverlay(2)
     }
 
     @Test
     fun GIVEN_not_active_WHEN_activate_THEN_lifecycle_resumed() {
-        val overlay = context.childOverlay(initialConfiguration = null)
+        val overlay by context.childOverlay(initialConfiguration = null)
 
         navigation.activate(Config(1))
 
-        assertEquals(Lifecycle.State.RESUMED, overlay.value.overlay?.instance?.lifecycle?.state)
+        assertEquals(Lifecycle.State.RESUMED, overlay.requireOverlay().instance.lifecycle.state)
     }
 
     @Test
     fun GIVEN_active_WHEN_dismiss_THEN_lifecycle_destroyed() {
-        val overlay = context.childOverlay(initialConfiguration = Config(1))
-        val lifecycle = overlay.value.overlay?.instance?.lifecycle
+        val overlay by context.childOverlay(initialConfiguration = Config(1))
+        val lifecycle = overlay.requireOverlay().instance.lifecycle
 
         navigation.dismiss()
 
-        assertEquals(Lifecycle.State.DESTROYED, lifecycle?.state)
+        assertEquals(Lifecycle.State.DESTROYED, lifecycle.state)
     }
 
     @Test
@@ -140,11 +141,11 @@ class ChildOverlayIntegrationTest {
 
     @Test
     fun GIVEN_active_WHEN_back_pressed_THEN_overlay_not_active() {
-        val overlay = context.childOverlay(initialConfiguration = Config(1))
+        val overlay by context.childOverlay(initialConfiguration = Config(1))
 
         backDispatcher.back()
 
-        overlay.value.assertOverlay(null)
+        overlay.assertOverlay(null)
     }
 
     @Test
@@ -164,23 +165,23 @@ class ChildOverlayIntegrationTest {
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
-        val newOverlay = newContext.childOverlay(initialConfiguration = null, persistent = true)
+        val newOverlay by newContext.childOverlay(initialConfiguration = null, persistent = true)
 
-        newOverlay.value.assertOverlay(1)
+        newOverlay.assertOverlay(1)
     }
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_THEN_overlay_state_restored() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
-        val overlay = oldContext.childOverlay(initialConfiguration = Config(1), persistent = true)
-        overlay.value.overlay?.instance?.stateKeeper?.register("key") { Config(10) }
+        val overlay by oldContext.childOverlay(initialConfiguration = Config(1), persistent = true)
+        overlay.requireOverlay().instance.stateKeeper.register("key") { Config(10) }
 
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
-        val newOverlay = newContext.childOverlay(initialConfiguration = null, persistent = true)
-        val restoredState = newOverlay.value.overlay?.instance?.stateKeeper?.consume<Config>("key")
+        val newOverlay by newContext.childOverlay(initialConfiguration = null, persistent = true)
+        val restoredState = newOverlay.requireOverlay().instance.stateKeeper.consume<Config>("key")
 
         assertEquals(Config(10), restoredState)
     }
@@ -194,9 +195,9 @@ class ChildOverlayIntegrationTest {
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
-        val newOverlay = newContext.childOverlay(initialConfiguration = null, persistent = false)
+        val newOverlay by newContext.childOverlay(initialConfiguration = null, persistent = false)
 
-        newOverlay.value.assertOverlay(null)
+        newOverlay.assertOverlay(null)
     }
 
     @Test
@@ -207,27 +208,36 @@ class ChildOverlayIntegrationTest {
     }
 
     @Test
-    fun WHEN_created_not_persistent_THEN_not_registered_in_parent_StateKeeper() {
-        context.childOverlay(initialConfiguration = Config(1), persistent = false)
-
-        stateKeeperDispatcher.assertSupplierNotRegistered(key = "key")
-    }
-
-    @Test
     fun GIVEN_persistent_WHEN_recreated_THEN_overlay_instance_retained() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
-        val overlay = oldContext.childOverlay(initialConfiguration = Config(1), persistent = true)
-        val oldInstance = overlay.value.overlay?.instance?.instanceKeeper?.getOrCreate(::TestInstance)
+        val oldOverlay by oldContext.childOverlay(initialConfiguration = Config(1), persistent = true)
+        val oldInstance = oldOverlay.requireOverlay().instance.instanceKeeper.getOrCreate(::TestInstance)
 
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
-        val newOverlay = newContext.childOverlay(initialConfiguration = null, persistent = true)
-        val retainedInstance = newOverlay.value.overlay?.instance?.instanceKeeper?.getOrCreate(::TestInstance)
+        val newOverlay by newContext.childOverlay(initialConfiguration = null, persistent = true)
+        val retainedInstance = newOverlay.requireOverlay().instance.instanceKeeper.getOrCreate(::TestInstance)
 
         assertSame(oldInstance, retainedInstance)
+    }
+
+    @Test
+    fun GIVEN_persistent_WHEN_recreated_THEN_overlay_instance_not_destroyed() {
+        val oldStateKeeper = TestStateKeeperDispatcher()
+        val instanceKeeper = InstanceKeeperDispatcher()
+        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
+        val oldOverlay by oldContext.childOverlay(initialConfiguration = Config(1), persistent = true)
+        val instance = oldOverlay.requireOverlay().instance.instanceKeeper.getOrCreate(::TestInstance)
+
+        val savedState = oldStateKeeper.save()
+        val newStateKeeper = TestStateKeeperDispatcher(savedState)
+        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
+        newContext.childOverlay(initialConfiguration = null, persistent = true)
+
+        assertFalse(instance.isDestroyed)
     }
 
     @Test
@@ -238,10 +248,19 @@ class ChildOverlayIntegrationTest {
     }
 
     @Test
-    fun WHEN_created_not_persistent_THEN_not_registered_in_parent_InstanceKeeper() {
-        context.childOverlay(initialConfiguration = Config(1), persistent = false)
+    fun GIVEN_not_persistent_WHEN_recreated_THEN_overlay_instance_destroyed() {
+        val oldStateKeeper = TestStateKeeperDispatcher()
+        val instanceKeeper = InstanceKeeperDispatcher()
+        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
+        val oldOverlay by oldContext.childOverlay(initialConfiguration = Config(1), persistent = false)
+        val instance = oldOverlay.requireOverlay().instance.instanceKeeper.getOrCreate(::TestInstance)
 
-        assertNull(instanceKeeperDispatcher.get(key = "key"))
+        val savedState = oldStateKeeper.save()
+        val newStateKeeper = TestStateKeeperDispatcher(savedState)
+        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
+        newContext.childOverlay(initialConfiguration = null, persistent = false)
+
+        assertTrue(instance.isDestroyed)
     }
 
     private fun ComponentContext.childOverlay(
@@ -256,6 +275,9 @@ class ChildOverlayIntegrationTest {
             persistent = persistent,
             childFactory = ::Component,
         )
+
+    private fun ChildOverlay<Config, Component>.requireOverlay(): Child.Created<Config, Component> =
+        requireNotNull(overlay)
 
     private fun ChildOverlay<Config, Component>.assertOverlay(id: Int?) {
         assertEquals(id, overlay?.configuration?.id)
