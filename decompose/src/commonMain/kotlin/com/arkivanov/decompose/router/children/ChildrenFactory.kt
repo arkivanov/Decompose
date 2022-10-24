@@ -24,10 +24,11 @@ import com.arkivanov.essenty.statekeeper.consume
  * clients. [NavState] represents a persistent state of the navigation. It also holds a navigation
  * state for each child - [ChildNavState]. Both [NavState] and [ChildNavState] must be immutable, and
  * correctly implement `equals` and `hashCode` methods (or just be data classes). There must be no
- * duplicated (be equality) [ChildNavState.configuration] within a [NavState].
+ * duplicated (by equality) [ChildNavState.configuration] within a [NavState].
  *
  * The navigation is performed by transforming the current [NavState] to a new one. The implementation
- * calculates diffs between the old and the new [NavState], and manipulates child components as needed.
+ * calculates diffs between the old list of [ChildNavState] and the new one, and manipulates child
+ * components as needed.
  *
  * @param C a type of component configurations.
  * @param T a type of components.
