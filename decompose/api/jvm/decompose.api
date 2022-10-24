@@ -111,9 +111,7 @@ public final class com/arkivanov/decompose/router/overlay/OverlayNavigationFacto
 	public static final fun OverlayNavigation ()Lcom/arkivanov/decompose/router/overlay/OverlayNavigation;
 }
 
-public abstract interface class com/arkivanov/decompose/router/overlay/OverlayNavigationSource {
-	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
+public abstract interface class com/arkivanov/decompose/router/overlay/OverlayNavigationSource : com/arkivanov/decompose/router/children/NavigationSource {
 }
 
 public final class com/arkivanov/decompose/router/overlay/OverlayNavigationSource$Event {
@@ -167,9 +165,7 @@ public final class com/arkivanov/decompose/router/stack/StackNavigationFactoryKt
 	public static final fun StackNavigation ()Lcom/arkivanov/decompose/router/stack/StackNavigation;
 }
 
-public abstract interface class com/arkivanov/decompose/router/stack/StackNavigationSource {
-	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
+public abstract interface class com/arkivanov/decompose/router/stack/StackNavigationSource : com/arkivanov/decompose/router/children/NavigationSource {
 }
 
 public final class com/arkivanov/decompose/router/stack/StackNavigationSource$Event {

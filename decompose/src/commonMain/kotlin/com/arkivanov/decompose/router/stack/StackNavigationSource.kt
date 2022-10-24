@@ -1,15 +1,13 @@
 package com.arkivanov.decompose.router.stack
 
+import com.arkivanov.decompose.router.children.NavigationSource
+
 /**
  * Represents a source of navigation events for `Child Stack`.
  *
  * @see StackNavigator
  */
-interface StackNavigationSource<C : Any> {
-
-    fun subscribe(observer: (Event<C>) -> Unit)
-
-    fun unsubscribe(observer: (Event<C>) -> Unit)
+interface StackNavigationSource<C : Any> : NavigationSource<StackNavigationSource.Event<C>> {
 
     class Event<C : Any>(
         val transformer: (stack: List<C>) -> List<C>,
