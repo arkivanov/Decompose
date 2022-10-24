@@ -2,17 +2,14 @@ package com.arkivanov.decompose.router.overlay
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.Optional
-import com.arkivanov.decompose.instancekeeper.attachTo
-import com.arkivanov.decompose.optionalOf
-import com.arkivanov.decompose.router.stack.StackNavigationSource
-import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.router.children.ChildNavState.Status
+import com.arkivanov.decompose.router.children.NavState
+import com.arkivanov.decompose.router.children.SimpleChildNavState
+import com.arkivanov.decompose.router.children.children
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.operator.map
-import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.ParcelableContainer
-import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import kotlin.reflect.KClass
 
 /**
@@ -30,6 +27,7 @@ import kotlin.reflect.KClass
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildOverlay].
  */
+@OptIn(ExperimentalDecomposeApi::class)
 fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
     source: OverlayNavigationSource<C>,
     configurationClass: KClass<out C>,
@@ -39,25 +37,37 @@ fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, ComponentContext) -> T,
 ): Value<ChildOverlay<C, T>> =
-    childStack(
-        lifecycle = lifecycle,
-        stateKeeper = if (persistent) stateKeeper else StateKeeperDispatcher(),
-        instanceKeeper = if (persistent) instanceKeeper else InstanceKeeperDispatcher().attachTo(lifecycle),
-        backHandler = backHandler,
-        source = StackNavigationSourceImpl(source),
-        initialStack = { configurationStack(initialConfiguration()) },
-        saveConfiguration = { ParcelableContainer(it.value) },
-        restoreConfiguration = { optionalOf(it.consume(configurationClass)) },
+    children(
+        source = source,
         key = key,
-        handleBackButton = handleBackButton,
-        childFactory = { configuration, componentContext ->
-            if (configuration.value != null) {
-                optionalOf(childFactory(configuration.value, componentContext))
+        initialNavState = { OverlayNavState(configuration = initialConfiguration()) },
+        saveNavState = { navState -> ParcelableContainer(navState.configuration?.takeIf { persistent }) },
+        restoreNavState = { container -> OverlayNavState(container.consume(configurationClass)) },
+        navTransformer = { navState, event -> OverlayNavState(configuration = event.transformer(navState.configuration)) },
+        onEventComplete = { event, newNavState, oldNavState -> event.onComplete(newNavState.configuration, oldNavState.configuration) },
+        backTransformer = { navState ->
+            if (handleBackButton && (navState.configuration != null)) {
+                { OverlayNavState(configuration = null) }
             } else {
-                optionalOf()
+                null
             }
         },
-    ).map { it.active.toChildOverlay() }
+        stateMapper = { _, children -> ChildOverlay(overlay = children.firstOrNull() as? Child.Created?) },
+        childFactory = childFactory,
+    )
+
+@OptIn(ExperimentalDecomposeApi::class)
+private data class OverlayNavState<out C : Any>(
+    val configuration: C?,
+) : NavState<C> {
+
+    override val children: List<SimpleChildNavState<C>> =
+        if (configuration == null) {
+            emptyList()
+        } else {
+            listOf(SimpleChildNavState(configuration = configuration, status = Status.ACTIVE))
+        }
+}
 
 /**
  * A convenience extension function for [ComponentContext.childOverlay].
@@ -79,47 +89,3 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childOverlay(
         handleBackButton = handleBackButton,
         childFactory = childFactory,
     )
-
-private fun <C : Parcelable, T : Any> Child.Created<Optional<C>, Optional<T>>.toChildOverlay(): ChildOverlay<C, T> =
-    if ((configuration.value != null) && (instance.value != null)) {
-        ChildOverlay(
-            overlay = Child.Created(
-                configuration = configuration.value,
-                instance = instance.value,
-            )
-        )
-    } else {
-        ChildOverlay()
-    }
-
-private fun <C : Any> configurationStack(configuration: C?): List<Optional<C>> =
-    listOfNotNull(optionalOf(), configuration?.let(::optionalOf))
-
-private class StackNavigationSourceImpl<C : Parcelable>(
-    private val delegate: OverlayNavigationSource<C>,
-) : StackNavigationSource<Optional<C>> {
-
-    private var map = HashMap<(StackNavigationSource.Event<Optional<C>>) -> Unit, (OverlayNavigationSource.Event<C>) -> Unit>()
-
-    override fun subscribe(observer: (StackNavigationSource.Event<Optional<C>>) -> Unit) {
-        check(observer !in map)
-
-        val sourceObserver: (OverlayNavigationSource.Event<C>) -> Unit = { observer(it.toStackEvent()) }
-        map += observer to sourceObserver
-        delegate.subscribe(sourceObserver)
-    }
-
-    private fun OverlayNavigationSource.Event<C>.toStackEvent(): StackNavigationSource.Event<Optional<C>> =
-        StackNavigationSource.Event(
-            transformer = { stack -> configurationStack(transformer(stack.last().value)) },
-            onComplete = { newStack, oldStack ->
-                onComplete(newStack.lastOrNull()?.value, oldStack.lastOrNull()?.value)
-            },
-        )
-
-    override fun unsubscribe(observer: (StackNavigationSource.Event<Optional<C>>) -> Unit) {
-        map.remove(observer)?.also {
-            delegate.unsubscribe(it)
-        }
-    }
-}

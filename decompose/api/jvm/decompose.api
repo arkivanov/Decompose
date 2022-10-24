@@ -1,5 +1,6 @@
 public abstract class com/arkivanov/decompose/Child {
 	public abstract fun getConfiguration ()Ljava/lang/Object;
+	public abstract fun getInstance ()Ljava/lang/Object;
 }
 
 public final class com/arkivanov/decompose/Child$Created : com/arkivanov/decompose/Child {
@@ -10,7 +11,7 @@ public final class com/arkivanov/decompose/Child$Created : com/arkivanov/decompo
 	public static synthetic fun copy$default (Lcom/arkivanov/decompose/Child$Created;Ljava/lang/Object;Ljava/lang/Object;ILjava/lang/Object;)Lcom/arkivanov/decompose/Child$Created;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getConfiguration ()Ljava/lang/Object;
-	public final fun getInstance ()Ljava/lang/Object;
+	public fun getInstance ()Ljava/lang/Object;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -22,6 +23,8 @@ public final class com/arkivanov/decompose/Child$Destroyed : com/arkivanov/decom
 	public static synthetic fun copy$default (Lcom/arkivanov/decompose/Child$Destroyed;Ljava/lang/Object;ILjava/lang/Object;)Lcom/arkivanov/decompose/Child$Destroyed;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getConfiguration ()Ljava/lang/Object;
+	public synthetic fun getInstance ()Ljava/lang/Object;
+	public fun getInstance ()Ljava/lang/Void;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -57,6 +60,32 @@ public final class com/arkivanov/decompose/lifecycle/MergedLifecycle : com/arkiv
 	public fun unsubscribe (Lcom/arkivanov/essenty/lifecycle/Lifecycle$Callbacks;)V
 }
 
+public abstract interface class com/arkivanov/decompose/router/children/ChildNavState {
+	public abstract fun getConfiguration ()Ljava/lang/Object;
+	public abstract fun getStatus ()Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+}
+
+public final class com/arkivanov/decompose/router/children/ChildNavState$Status : java/lang/Enum {
+	public static final field ACTIVE Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+	public static final field DESTROYED Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+	public static final field INACTIVE Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+	public static fun values ()[Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+}
+
+public final class com/arkivanov/decompose/router/children/ChildrenFactoryKt {
+	public static final fun children (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+}
+
+public abstract interface class com/arkivanov/decompose/router/children/NavState {
+	public abstract fun getChildren ()Ljava/util/List;
+}
+
+public abstract interface class com/arkivanov/decompose/router/children/NavigationSource {
+	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
+}
+
 public final class com/arkivanov/decompose/router/overlay/ChildOverlay {
 	public fun <init> ()V
 	public fun <init> (Lcom/arkivanov/decompose/Child$Created;)V
@@ -82,9 +111,7 @@ public final class com/arkivanov/decompose/router/overlay/OverlayNavigationFacto
 	public static final fun OverlayNavigation ()Lcom/arkivanov/decompose/router/overlay/OverlayNavigation;
 }
 
-public abstract interface class com/arkivanov/decompose/router/overlay/OverlayNavigationSource {
-	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
+public abstract interface class com/arkivanov/decompose/router/overlay/OverlayNavigationSource : com/arkivanov/decompose/router/children/NavigationSource {
 }
 
 public final class com/arkivanov/decompose/router/overlay/OverlayNavigationSource$Event {
@@ -138,9 +165,7 @@ public final class com/arkivanov/decompose/router/stack/StackNavigationFactoryKt
 	public static final fun StackNavigation ()Lcom/arkivanov/decompose/router/stack/StackNavigation;
 }
 
-public abstract interface class com/arkivanov/decompose/router/stack/StackNavigationSource {
-	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
+public abstract interface class com/arkivanov/decompose/router/stack/StackNavigationSource : com/arkivanov/decompose/router/children/NavigationSource {
 }
 
 public final class com/arkivanov/decompose/router/stack/StackNavigationSource$Event {

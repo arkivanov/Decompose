@@ -1,4 +1,4 @@
-package com.arkivanov.decompose.router.stack
+package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
@@ -11,17 +11,17 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
-internal class RouterEntryFactoryImpl<C : Any, out T : Any>(
+internal class DefaultChildItemFactory<C : Any, out T : Any>(
     private val lifecycle: Lifecycle,
     private val backHandler: BackHandler,
-    private val childFactory: (configuration: C, ComponentContext) -> T
-) : RouterEntryFactory<C, T> {
+    private val childFactory: (configuration: C, ComponentContext) -> T,
+) : ChildItemFactory<C, T> {
 
     override fun invoke(
         configuration: C,
         savedState: ParcelableContainer?,
         instanceKeeperDispatcher: InstanceKeeperDispatcher?
-    ): RouterEntry.Created<C, T> {
+    ): ChildItem.Created<C, T> {
         val componentLifecycleRegistry = LifecycleRegistry()
         val mergedLifecycle = MergedLifecycle(lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
@@ -39,7 +39,7 @@ internal class RouterEntryFactoryImpl<C : Any, out T : Any>(
                 )
             )
 
-        return RouterEntry.Created(
+        return ChildItem.Created(
             configuration = configuration,
             instance = component,
             lifecycleRegistry = componentLifecycleRegistry,
