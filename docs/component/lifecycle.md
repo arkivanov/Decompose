@@ -41,3 +41,121 @@ class SomeComponent(
     }
 }
 ```
+
+## Managing lifecycle
+
+**The components lifecycle is coupled to the Android Activity lifecycle and there is no need to handle it on Android**. But other targets have differect lifecycles and the developer should take care of controlling the Decompose lifecycle manually. Check `sample` module for full implementation for the different targets.
+
+Here are examples:
+
+### On Compose for Desktop
+
+The easiest way to control the lifecycle when using JetBrains Compose is by using the extensions functions artifact.
+
+- [How to setup](../extensions/compose.md#setup-extensions-for-jetbrains-compose)
+- [How to manage lifecycle](../extensions/compose.md#controlling-the-lifecycle-on-desktop)
+
+### On iOS
+
+Where you configure your `RootComponent`:
+
+1. Initialize an `LifecycleRegistry` 
+2. Pass it to the context 
+3. Trigger manually `onCreate()` and `onDestroy()`
+4. Attach `resume` and `stop` on `onAppear` and `onDisappear`
+
+```swift
+@main
+struct app_iosApp: App {
+    @StateObject
+    private var rootHolder = RootHolder()
+        
+        var body: some Scene {
+            WindowGroup {
+                RootView(rootHolder.root)
+                    // 4. Attach `resume` and `stop` on `onAppear` and `onDisappear`
+                    .onAppear { LifecycleRegistryExtKt.resume(self.rootHolder.lifecycle) }
+                    .onDisappear { LifecycleRegistryExtKt.stop(self.rootHolder.lifecycle) }
+            }
+        }
+}
+
+private class RootHolder : ObservableObject {
+    let lifecycle: LifecycleRegistry
+    let root: Root
+    
+    init() {
+        // 1. Initialize an `LifecycleRegistry`
+        lifecycle = LifecycleRegistryKt.LifecycleRegistry()
+        
+        root = RootComponent(
+            // 2. Pass the lifecycle registry to the context 
+            componentContext: DefaultComponentContext(lifecycle: lifecycle),
+            featureInstaller: DefaultFeatureInstaller.shared,
+            deepLink: RootComponentDeepLinkNone.shared,
+            webHistoryController: nil
+        )
+        
+        // 3. (1) Trigger manually `onCreate()`
+        lifecycle.onCreate()
+    }
+    
+    // 3. (2) Trigger manually `onDestroy()`
+    deinit {
+        lifecycle.onDestroy()
+    }
+}
+```
+
+
+### On JavaScript
+
+Where you configure your `RootComponent`:
+
+1. Initialize an `LifecycleRegistry`
+2. Pass it to your context
+3. Create extensions function for attaching lifecycle to the document
+4. Attach it to the document via simple extension function
+
+```kotlin
+@OptIn(ExperimentalDecomposeApi::class)
+fun main() {
+    // 1. Initialize an `LifecycleRegistry`
+    val lifecycle = LifecycleRegistry()
+
+    val root =
+        RootComponent(
+            // 2. Pass the lifecycle registry to your context
+            componentContext = DefaultComponentContext(lifecycle = lifecycle),
+            featureInstaller = DefaultFeatureInstaller,
+            deepLink = RootComponent.DeepLink.Web(path = window.location.pathname),
+            webHistoryController = DefaultWebHistoryController(),
+        )
+
+    // 4. Attach to document by functions below
+    lifecycle.attachToDocument()
+
+    createRoot(document.getElementById("app")!!).render(
+        RootContent.create {
+            component = root
+        }
+    )
+}
+
+// 3. Create extension functions for attaching lifecycle to document
+private fun LifecycleRegistry.attachToDocument() {
+    fun onVisibilityChanged() {
+        if (document.visibilityState == "visible") {
+            resume()
+        } else {
+            stop()
+        }
+    }
+
+    onVisibilityChanged()
+
+    document.addEventListener(type = "visibilitychange", callback = { onVisibilityChanged() })
+}
+
+private val Document.visibilityState: String get() = asDynamic().visibilityState.unsafeCast<String>()
+```
