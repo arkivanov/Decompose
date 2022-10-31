@@ -67,3 +67,9 @@ The `children` function returns an observable `Value` of the resulting children 
 ## Examples
 
 Both [Child Stack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStackFactory.kt) and [Child Overlay](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/overlay/ChildOverlayFactory.kt) are implemented using the `Generic Navigation`. Please refer to their source code for implementation details.
+
+### Sample project
+
+See the sample project has the [CustomNavigationComponent](https://github.com/arkivanov/Decompose/blob/master/sample/shared/shared/src/commonMain/kotlin/com/arkivanov/sample/shared/customnavigation/DefaultCustomNavigationComponent.kt), which demonstrates how to use the `Generic Navigation`.
+
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCustomNavigationDesktop.gif" width="392">
