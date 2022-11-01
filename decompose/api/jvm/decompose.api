@@ -86,6 +86,26 @@ public abstract interface class com/arkivanov/decompose/router/children/Navigati
 	public abstract fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
 }
 
+public final class com/arkivanov/decompose/router/children/SimpleChildNavState : com/arkivanov/decompose/router/children/ChildNavState {
+	public fun <init> (Ljava/lang/Object;Lcom/arkivanov/decompose/router/children/ChildNavState$Status;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+	public final fun copy (Ljava/lang/Object;Lcom/arkivanov/decompose/router/children/ChildNavState$Status;)Lcom/arkivanov/decompose/router/children/SimpleChildNavState;
+	public static synthetic fun copy$default (Lcom/arkivanov/decompose/router/children/SimpleChildNavState;Ljava/lang/Object;Lcom/arkivanov/decompose/router/children/ChildNavState$Status;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/children/SimpleChildNavState;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getConfiguration ()Ljava/lang/Object;
+	public fun getStatus ()Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/arkivanov/decompose/router/children/SimpleNavigation : com/arkivanov/decompose/router/children/NavigationSource {
+	public fun <init> ()V
+	public final fun navigate (Ljava/lang/Object;)V
+	public fun subscribe (Lkotlin/jvm/functions/Function1;)V
+	public fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
+}
+
 public final class com/arkivanov/decompose/router/overlay/ChildOverlay {
 	public fun <init> ()V
 	public fun <init> (Lcom/arkivanov/decompose/Child$Created;)V
