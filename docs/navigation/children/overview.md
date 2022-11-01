@@ -20,6 +20,8 @@ The `Status` can be one of the following:
 
 If you want to completely remove the child component from the navigation, you should remove its `ChildNavState` from the `NavState` altogether.
 
+The [SimpleChildNavState](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/children/SimpleChildNavState.kt) class implements the `ChildNavState` interfaces. It can be used in simple cases when custom implementation is not required.
+
 ## Using the Generic Navigation
 
 Using the `Generic Navigation` is pretty similar to any other navigation model, there is [ComponentContext.children(...)](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/children/ChildrenFactory.kt) extension function.
@@ -49,7 +51,7 @@ The `children` function has the following type parameters:
 
 The `children` function accepts the following arguments:
 
-- `source: NavigationSource<E>` - an observable source of navigation events, the `Generic Navigation` subscribes to the source and performs the navigation.
+- `source: NavigationSource<E>` - an observable source of navigation events, the `Generic Navigation` subscribes to the source and performs the navigation. The [SimpleNavigation](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/children/SimpleNavigation.kt) class can be used in simple cases when custom implementation is not required.
 - `key: String` - a key of the navigation, must be unique if there are multiple `children` used in the same component.
 - `initialNavState: () -> N` - an initial navigation state that should be used if there is no previously saved state.
 - `saveNavState: (navState: N) -> ParcelableContainer` - a function that saves the provided navigation state into `ParcelableContainer`, called when the hosting component goes to background.
