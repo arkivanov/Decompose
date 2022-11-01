@@ -6,6 +6,7 @@ import com.arkivanov.sample.shared.counters.CountersContent
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesContent
 import com.arkivanov.sample.shared.multipane.MultiPaneContent
 import com.arkivanov.sample.shared.root.Root.Child.CountersChild
+import com.arkivanov.sample.shared.root.Root.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.Root.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.Root.Child.MultiPaneChild
 import com.arkivanov.sample.shared.useAsState
@@ -54,6 +55,7 @@ var RootContent: FC<RProps<Root>> = FC { props ->
                 is CountersChild -> componentContent(component = child.component, content = CountersContent)
                 is MultiPaneChild -> componentContent(component = child.component, content = MultiPaneContent)
                 is DynamicFeaturesChild -> componentContent(component = child.component, content = DynamicFeaturesContent)
+                is CustomNavigationChild -> NotImplementedContent()
             }.let {}
         }
 
@@ -69,6 +71,7 @@ var RootContent: FC<RProps<Root>> = FC { props ->
                 is CountersChild -> TabItem.COUNTERS
                 is MultiPaneChild -> TabItem.MULTI_PANE
                 is DynamicFeaturesChild -> TabItem.DYNAMIC_FEATURES
+                is CustomNavigationChild -> TabItem.CUSTOM_NAVIGATION
             }
 
             onChange = { _, newValue ->
@@ -76,6 +79,7 @@ var RootContent: FC<RProps<Root>> = FC { props ->
                     TabItem.COUNTERS -> props.component.onCountersTabClicked()
                     TabItem.MULTI_PANE -> props.component.onMultiPaneTabClicked()
                     TabItem.DYNAMIC_FEATURES -> props.component.onDynamicFeaturesTabClicked()
+                    TabItem.CUSTOM_NAVIGATION -> props.component.onCustomNavigationTabClicked()
                 }
             }
 
@@ -96,10 +100,16 @@ var RootContent: FC<RProps<Root>> = FC { props ->
                 label = ReactNode("Dynamic Features")
                 icon = Icon.create { +"downloading" }
             }
+
+            BottomNavigationAction {
+                value = TabItem.CUSTOM_NAVIGATION
+                label = ReactNode("Custom Navigation")
+                icon = Icon.create { +"location_on" }
+            }
         }
     }
 }
 
 private enum class TabItem {
-    COUNTERS, MULTI_PANE, DYNAMIC_FEATURES
+    COUNTERS, MULTI_PANE, DYNAMIC_FEATURES, CUSTOM_NAVIGATION
 }

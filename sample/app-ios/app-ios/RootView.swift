@@ -77,4 +77,5 @@ class RootPreview : Root {
     func onCountersTabClicked() {}
     func onMultiPaneTabClicked() {}
     func onDynamicFeaturesTabClicked() {}
+    func onCustomNavigationTabClicked() {}
 }

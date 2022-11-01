@@ -2,15 +2,13 @@ package com.arkivanov.sample.shared.root
 
 import android.view.View
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.android.stack.StackRouterView
 import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.layoutInflater
+import com.arkivanov.decompose.extensions.android.stack.StackRouterView
 import com.arkivanov.decompose.value.observe
 import com.arkivanov.sample.shared.R
 import com.arkivanov.sample.shared.counters.CountersView
-import com.arkivanov.sample.shared.root.Root.Child.CountersChild
-import com.arkivanov.sample.shared.root.Root.Child.DynamicFeaturesChild
-import com.arkivanov.sample.shared.root.Root.Child.MultiPaneChild
+import com.arkivanov.sample.shared.root.Root.Child.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 @ExperimentalDecomposeApi
@@ -26,7 +24,8 @@ fun ViewContext.RootView(root: Root): View {
             when (child) {
                 is CountersChild -> CountersView(child.component)
                 is MultiPaneChild,
-                is DynamicFeaturesChild -> NotImplementedView()
+                is DynamicFeaturesChild,
+                is CustomNavigationChild -> NotImplementedView()
             }
         )
     }
@@ -39,6 +38,7 @@ fun ViewContext.RootView(root: Root): View {
                 R.id.tab_counters -> root.onCountersTabClicked()
                 R.id.tab_multipane -> root.onMultiPaneTabClicked()
                 R.id.tab_dynamic_features -> root.onDynamicFeaturesTabClicked()
+                R.id.tab_custom_navigation -> root.onCustomNavigationTabClicked()
                 else -> error("Unrecognized item id: $id")
             }
 
@@ -55,6 +55,7 @@ fun ViewContext.RootView(root: Root): View {
                 is CountersChild -> R.id.tab_counters
                 is MultiPaneChild -> R.id.tab_multipane
                 is DynamicFeaturesChild -> R.id.tab_dynamic_features
+                is CustomNavigationChild -> R.id.tab_custom_navigation
             }
 
         navigationView.setOnNavigationItemSelectedListener(listener)

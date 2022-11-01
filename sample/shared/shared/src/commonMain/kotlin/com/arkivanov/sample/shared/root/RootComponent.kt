@@ -11,11 +11,13 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.sample.shared.counters.CountersComponent
+import com.arkivanov.sample.shared.customnavigation.DefaultCustomNavigationComponent
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesComponent
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.FeatureInstaller
 import com.arkivanov.sample.shared.multipane.MultiPaneComponent
 import com.arkivanov.sample.shared.root.Root.Child
 import com.arkivanov.sample.shared.root.Root.Child.CountersChild
+import com.arkivanov.sample.shared.root.Root.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.Root.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.Root.Child.MultiPaneChild
 
@@ -52,6 +54,7 @@ class RootComponent constructor(
             is Config.Counters -> CountersChild(CountersComponent(componentContext))
             is Config.MultiPane -> MultiPaneChild(MultiPaneComponent(componentContext))
             is Config.DynamicFeatures -> DynamicFeaturesChild(DynamicFeaturesComponent(componentContext, featureInstaller))
+            is Config.CustomNavigation -> CustomNavigationChild(DefaultCustomNavigationComponent(componentContext))
         }
 
     override fun onCountersTabClicked() {
@@ -66,10 +69,15 @@ class RootComponent constructor(
         navigation.bringToFront(Config.DynamicFeatures)
     }
 
+    override fun onCustomNavigationTabClicked() {
+        navigation.bringToFront(Config.CustomNavigation)
+    }
+
     private companion object {
         private const val WEB_PATH_COUNTERS = "counters"
         private const val WEB_PATH_MULTI_PANE = "multi-pane"
         private const val WEB_PATH_DYNAMIC_FEATURES = "dynamic-features"
+        private const val WEB_PATH_CUSTOM_NAVIGATION = "custom-navigation"
 
         private fun getInitialStack(deepLink: DeepLink): List<Config> =
             when (deepLink) {
@@ -82,6 +90,7 @@ class RootComponent constructor(
                 Config.Counters -> "/$WEB_PATH_COUNTERS"
                 Config.MultiPane -> "/$WEB_PATH_MULTI_PANE"
                 Config.DynamicFeatures -> "/$WEB_PATH_DYNAMIC_FEATURES"
+                Config.CustomNavigation -> "/$WEB_PATH_CUSTOM_NAVIGATION"
             }
 
         private fun getConfigForPath(path: String): Config =
@@ -89,6 +98,7 @@ class RootComponent constructor(
                 WEB_PATH_COUNTERS -> Config.Counters
                 WEB_PATH_MULTI_PANE -> Config.MultiPane
                 WEB_PATH_DYNAMIC_FEATURES -> Config.DynamicFeatures
+                WEB_PATH_CUSTOM_NAVIGATION -> Config.CustomNavigation
                 else -> Config.Counters
             }
     }
@@ -102,6 +112,9 @@ class RootComponent constructor(
 
         @Parcelize
         object DynamicFeatures : Config
+
+        @Parcelize
+        object CustomNavigation : Config
     }
 
     sealed interface DeepLink {
