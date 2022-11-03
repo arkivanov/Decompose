@@ -44,11 +44,11 @@ class SomeComponent(
 
 ## Managing the root lifecycle
 
-When creating a root component, it's required to supply the root lifecycle (see the [docs](../component/overview/#root-componentcontext) for more information about the root `ComponentContext`). The way how the root lifecycle is controlled depends on the platform.
+When creating a root component, it's required to supply the root lifecycle (see the [docs](../overview/#root-componentcontext) for more information about the root `ComponentContext`). The way how the root lifecycle is controlled depends on the platform.
 
 ### On Android
 
-On Android, the root lifecycle should be attached to a hosting Activity or a Fragment. See the [docs](../component/overview/#root-componentcontext-in-android) to read about root `ComponentContext` on Android.
+On Android, the root lifecycle should be attached to a hosting Activity or a Fragment. See the [docs](../overview/#root-componentcontext-in-android) to read about root `ComponentContext` on Android.
 
 ### On Compose for Desktop
 
