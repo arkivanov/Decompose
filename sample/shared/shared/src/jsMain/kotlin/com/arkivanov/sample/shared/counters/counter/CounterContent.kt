@@ -16,7 +16,7 @@ import mui.system.ResponsiveStyleValue
 import mui.system.sx
 import react.FC
 
-internal val CounterContent: FC<RProps<Counter>> = FC { props ->
+internal val CounterContent: FC<RProps<CounterComponent>> = FC { props ->
     val model by props.component.model.useAsState()
 
     Paper {

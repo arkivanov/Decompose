@@ -9,18 +9,18 @@ import SwiftUI
 import Shared
 
 struct CountersView: View {
-    private let counters: Counters
+    private let counters: CountersComponent
 
     @ObservedObject
-    private var firstChildStack: ObservableValue<ChildStack<AnyObject, Counter>>
+    private var firstChildStack: ObservableValue<ChildStack<AnyObject, CounterComponent>>
 
     @ObservedObject
-    private var secondChildStack: ObservableValue<ChildStack<AnyObject, Counter>>
+    private var secondChildStack: ObservableValue<ChildStack<AnyObject, CounterComponent>>
 
-    private var firstActiveChild: Counter { firstChildStack.value.active.instance }
-    private var secondActiveChild: Counter { secondChildStack.value.active.instance }
+    private var firstActiveChild: CounterComponent { firstChildStack.value.active.instance }
+    private var secondActiveChild: CounterComponent { secondChildStack.value.active.instance }
 
-    init(_ counters: Counters) {
+    init(_ counters: CountersComponent) {
         self.counters = counters
         firstChildStack = ObservableValue(counters.firstChildStack)
         secondChildStack = ObservableValue(counters.secondChildStack)
@@ -36,11 +36,11 @@ struct CountersView: View {
 
 struct CountersView_Previews: PreviewProvider {
     static var previews: some View {
-        CountersView(CountersPreview())
+        CountersView(PreviewCountersComponent())
     }
 }
 
-class CountersPreview : Counters {
-    let firstChildStack: Value<ChildStack<AnyObject, Counter>> = simpleChildStack(CounterPreview())
-    let secondChildStack: Value<ChildStack<AnyObject, Counter>> = simpleChildStack(CounterPreview())
+class PreviewCountersComponent : CountersComponent {
+    let firstChildStack: Value<ChildStack<AnyObject, CounterComponent>> = simpleChildStack(PreviewCounterComponent())
+    let secondChildStack: Value<ChildStack<AnyObject, CounterComponent>> = simpleChildStack(PreviewCounterComponent())
 }

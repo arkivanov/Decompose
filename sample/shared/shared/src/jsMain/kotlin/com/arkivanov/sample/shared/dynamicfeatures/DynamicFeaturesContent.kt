@@ -2,8 +2,8 @@ package com.arkivanov.sample.shared.dynamicfeatures
 
 import com.arkivanov.sample.shared.RProps
 import com.arkivanov.sample.shared.componentContent
-import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeatures.Child.Feature1Child
-import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeatures.Child.Feature2Child
+import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesComponent.Child.Feature1Child
+import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesComponent.Child.Feature2Child
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeatureContent
 import com.arkivanov.sample.shared.dynamicfeatures.feature1.Feature1Content
 import com.arkivanov.sample.shared.dynamicfeatures.feature2.Feature2Content
@@ -19,7 +19,7 @@ import mui.material.PaperVariant
 import mui.system.sx
 import react.FC
 
-val DynamicFeaturesContent: FC<RProps<DynamicFeatures>> = FC { props ->
+val DynamicFeaturesContent: FC<RProps<DynamicFeaturesComponent>> = FC { props ->
     val childStack by props.component.childStack.useAsState()
 
     Box {

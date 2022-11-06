@@ -9,14 +9,14 @@ import SwiftUI
 import Shared
 
 struct RootView: View {
-    private let root: Root
+    private let root: RootComponent
     
     @ObservedObject
-    private var childStack: ObservableValue<ChildStack<AnyObject, RootChild>>
+    private var childStack: ObservableValue<ChildStack<AnyObject, RootComponentChild>>
     
-    private var activeChild: RootChild { childStack.value.active.instance }
+    private var activeChild: RootComponentChild { childStack.value.active.instance }
     
-    init(_ root: Root) {
+    init(_ root: RootComponent) {
         self.root = root
         childStack = ObservableValue(root.childStack)
     }
@@ -30,13 +30,13 @@ struct RootView: View {
                 Button(action: root.onCountersTabClicked) {
                     Label("Counters", systemImage: "123.rectangle")
                         .labelStyle(VerticalLabelStyle())
-                        .opacity(activeChild is RootChild.CountersChild ? 1 : 0.5)
+                        .opacity(activeChild is RootComponentChild.CountersChild ? 1 : 0.5)
                 }
                 
                 Button(action: root.onMultiPaneTabClicked) {
                     Label("Multi-Pane", systemImage: "list.bullet")
                         .labelStyle(VerticalLabelStyle())
-                        .opacity(activeChild is RootChild.MultiPaneChild ? 1 : 0.5)
+                        .opacity(activeChild is RootComponentChild.MultiPaneChild ? 1 : 0.5)
                 }
             }
         }
@@ -44,12 +44,12 @@ struct RootView: View {
 }
 
 private struct ChildView: View {
-    let child: RootChild
+    let child: RootComponentChild
     
     var body: some View {
         switch child {
-        case let child as RootChild.CountersChild: CountersView(child.component)
-        case let child as RootChild.MultiPaneChild: MultiPaneView(child.component)
+        case let child as RootComponentChild.CountersChild: CountersView(child.component)
+        case let child as RootComponentChild.MultiPaneChild: MultiPaneView(child.component)
         default: EmptyView()
         }
     }
@@ -66,13 +66,13 @@ private struct VerticalLabelStyle: LabelStyle {
 
 struct RootView_Previews: PreviewProvider {
     static var previews: some View {
-        RootView(RootPreview())
+        RootView(PreviewRootComponent())
     }
 }
 
-class RootPreview : Root {
-    let childStack: Value<ChildStack<AnyObject, RootChild>> =
-        simpleChildStack(RootChild.CountersChild(component: CountersPreview()))
+class PreviewRootComponent : RootComponent {
+    let childStack: Value<ChildStack<AnyObject, RootComponentChild>> =
+        simpleChildStack(RootComponentChild.CountersChild(component: PreviewCountersComponent()))
 
     func onCountersTabClicked() {}
     func onMultiPaneTabClicked() {}

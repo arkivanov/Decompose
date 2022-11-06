@@ -8,16 +8,16 @@ import com.arkivanov.decompose.extensions.android.stack.StackRouterView
 import com.arkivanov.decompose.value.observe
 import com.arkivanov.sample.shared.R
 import com.arkivanov.sample.shared.counters.CountersView
-import com.arkivanov.sample.shared.root.Root.Child.*
+import com.arkivanov.sample.shared.root.RootComponent.Child.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 @ExperimentalDecomposeApi
 @Suppress("FunctionName") // Factory function
-fun ViewContext.RootView(root: Root): View {
+fun ViewContext.RootView(component: RootComponent): View {
     val layout = layoutInflater.inflate(R.layout.root, parent, false)
     val router: StackRouterView = layout.findViewById(R.id.router)
 
-    router.children(root.childStack, lifecycle) { parent, child, _ ->
+    router.children(component.childStack, lifecycle) { parent, child, _ ->
         parent.removeAllViews()
 
         parent.addView(
@@ -35,10 +35,10 @@ fun ViewContext.RootView(root: Root): View {
     val listener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (val id = item.itemId) {
-                R.id.tab_counters -> root.onCountersTabClicked()
-                R.id.tab_multipane -> root.onMultiPaneTabClicked()
-                R.id.tab_dynamic_features -> root.onDynamicFeaturesTabClicked()
-                R.id.tab_custom_navigation -> root.onCustomNavigationTabClicked()
+                R.id.tab_counters -> component.onCountersTabClicked()
+                R.id.tab_multipane -> component.onMultiPaneTabClicked()
+                R.id.tab_dynamic_features -> component.onDynamicFeaturesTabClicked()
+                R.id.tab_custom_navigation -> component.onCustomNavigationTabClicked()
                 else -> error("Unrecognized item id: $id")
             }
 
@@ -47,7 +47,7 @@ fun ViewContext.RootView(root: Root): View {
 
     navigationView.setOnNavigationItemSelectedListener(listener)
 
-    root.childStack.observe(lifecycle) { state ->
+    component.childStack.observe(lifecycle) { state ->
         navigationView.setOnNavigationItemSelectedListener(null)
 
         navigationView.selectedItemId =

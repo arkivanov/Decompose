@@ -17,15 +17,12 @@ import mui.material.IconButton
 import mui.material.IconButtonColor
 import mui.material.IconButtonEdge
 import mui.material.Size
-import mui.material.Stack
-import mui.material.StackDirection
 import mui.material.Toolbar
 import mui.material.Typography
-import mui.system.ResponsiveStyleValue
 import mui.system.sx
 import react.FC
 
-val ArticleDetailsContent: FC<RProps<ArticleDetails>> = FC { props ->
+val ArticleDetailsContent: FC<RProps<ArticleDetailsComponent>> = FC { props ->
     val model by props.component.models.useAsState()
 
     Box {

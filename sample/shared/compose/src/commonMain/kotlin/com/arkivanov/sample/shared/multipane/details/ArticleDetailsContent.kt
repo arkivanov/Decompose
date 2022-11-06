@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 
 @Composable
-internal fun ArticleDetailsContent(component: ArticleDetails, modifier: Modifier = Modifier) {
+internal fun ArticleDetailsContent(component: ArticleDetailsComponent, modifier: Modifier = Modifier) {
     val model by component.models.subscribeAsState()
     val article = model.article
 

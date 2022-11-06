@@ -18,10 +18,10 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.sample.shared.counters.counter.Counter.Model
+import com.arkivanov.sample.shared.counters.counter.CounterComponent.Model
 
 @Composable
-internal fun CounterContent(component: Counter, modifier: Modifier = Modifier) {
+internal fun CounterContent(component: CounterComponent, modifier: Modifier = Modifier) {
     val model by component.model.subscribeAsState()
 
     Column(
@@ -54,10 +54,10 @@ internal fun CounterContent(component: Counter, modifier: Modifier = Modifier) {
 @Preview
 @Composable
 internal fun CounterContentPreview() {
-    CounterContent(component = CounterPreview())
+    CounterContent(component = PreviewCounterComponent())
 }
 
-internal class CounterPreview : Counter {
+internal class PreviewCounterComponent : CounterComponent {
     override val model: Value<Model> =
         MutableValue(
             Model(

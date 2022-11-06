@@ -13,8 +13,8 @@ import com.arkivanov.decompose.extensions.android.DefaultViewContext
 import com.arkivanov.decompose.extensions.android.child
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DefaultFeatureInstaller
-import com.arkivanov.sample.shared.root.Root
 import com.arkivanov.sample.shared.root.RootComponent
+import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootContent
 import com.arkivanov.sample.shared.root.RootView
 
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val root =
-            RootComponent(
+            DefaultRootComponent(
                 componentContext = defaultComponentContext(),
                 featureInstaller = DefaultFeatureInstaller(context = this),
             )
@@ -37,18 +37,18 @@ class MainActivity : AppCompatActivity() {
         }.let {}
     }
 
-    private fun drawViaCompose(root: Root) {
+    private fun drawViaCompose(root: RootComponent) {
         setContent {
             MaterialTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    RootContent(root = root, modifier = Modifier.fillMaxSize())
+                    RootContent(component = root, modifier = Modifier.fillMaxSize())
                 }
             }
         }
     }
 
     @OptIn(ExperimentalDecomposeApi::class)
-    private fun drawViaViews(root: Root) {
+    private fun drawViaViews(root: RootComponent) {
         setContentView(R.layout.main_activity)
 
         val viewContext =

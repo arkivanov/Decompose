@@ -9,14 +9,14 @@ import SwiftUI
 import Shared
 
 struct CounterView: View {
-    private let counter: Counter
+    private let counter: CounterComponent
     
     @ObservedObject
-    private var observableModel: ObservableValue<CounterModel>
+    private var observableModel: ObservableValue<CounterComponentModel>
 
-    private var model: CounterModel { observableModel.value }
+    private var model: CounterComponentModel { observableModel.value }
     
-    init(_ counter: Counter) {
+    init(_ counter: CounterComponent) {
         self.counter = counter
         observableModel = ObservableValue(counter.model)
     }
@@ -41,13 +41,13 @@ struct CounterView: View {
 
 struct CounterView_Previews: PreviewProvider {
     static var previews: some View {
-        CounterView(CounterPreview())
+        CounterView(PreviewCounterComponent())
     }
 }
 
-class CounterPreview : Counter {
-    let model: Value<CounterModel> = mutableValue(
-        CounterModel(
+class PreviewCounterComponent : CounterComponent {
+    let model: Value<CounterComponentModel> = mutableValue(
+        CounterComponentModel(
             title: "Counter 0",
             text: "123",
             isBackEnabled: false

@@ -13,7 +13,7 @@ import com.arkivanov.sample.shared.counters.counter.CounterView
 
 @ExperimentalDecomposeApi
 @Suppress("FunctionName") // Factory function
-internal fun ViewContext.CountersView(counters: Counters): View {
+internal fun ViewContext.CountersView(component: CountersComponent): View {
     val layout = layoutInflater.inflate(R.layout.counters, parent, false) as LinearLayout
     val firstRouter: StackRouterView = layout.findViewById(R.id.router_first)
     val secondRouter: StackRouterView = layout.findViewById(R.id.router_second)
@@ -25,12 +25,12 @@ internal fun ViewContext.CountersView(counters: Counters): View {
             LinearLayout.VERTICAL
         }
 
-    firstRouter.children(counters.firstChildStack, lifecycle) { parent, child, _ ->
+    firstRouter.children(component.firstChildStack, lifecycle) { parent, child, _ ->
         parent.removeAllViews()
         parent.addView(CounterView(child))
     }
 
-    secondRouter.children(counters.secondChildStack, lifecycle) { parent, child, _ ->
+    secondRouter.children(component.secondChildStack, lifecycle) { parent, child, _ ->
         parent.removeAllViews()
         parent.addView(CounterView(child))
     }
