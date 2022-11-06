@@ -41,7 +41,11 @@ class DefaultCustomNavigationComponent(
             restoreNavState = { it.consumeRequired(NavigationState::class) },
             navTransformer = { navState, transformer -> transformer(navState) },
             onEventComplete = { _, _, _ -> },
-            backTransformer = { null },
+            backTransformer = {
+                it.takeIf { it.index > 0 }?.let { navState ->
+                    { navState.copy(index = navState.index - 1) }
+                }
+            },
             stateMapper = { navState, children ->
                 Children(
                     items = children.map { it as Child.Created },
