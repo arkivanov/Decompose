@@ -34,17 +34,17 @@ There are three steps to initialize the `Child Stack`:
 Here is a very basic example of navigation between two child components:
 
 ```kotlin title="ItemList component"
-interface ItemList {
+interface ItemListComponent {
 
     // Omitted code
 
     fun onItemClicked(id: Long)
 }
 
-class ItemListComponent(
+class DefaultItemListComponent(
     componentContext: ComponentContext,
     private val onItemSelected: (id: Long) -> Unit
-) : ItemList, ComponentContext by componentContext {
+) : ItemListComponent, ComponentContext by componentContext {
 
     // Omitted code
 
@@ -55,18 +55,18 @@ class ItemListComponent(
 ```
 
 ```kotlin title="ItemDetails component"
-interface ItemDetails {
+interface ItemDetailsComponent {
 
     // Omitted code
 
     fun onCloseClicked()
 }
 
-class ItemDetailsComponent(
+class DefaultItemDetailsComponent(
     componentContext: ComponentContext,
     itemId: Long,
     private val onFinished: () -> Unit
-) : ItemDetails, ComponentContext by componentContext {
+) : ItemDetailsComponent, ComponentContext by componentContext {
 
     // Omitted code
 
@@ -77,19 +77,19 @@ class ItemDetailsComponent(
 ```
 
 ```kotlin title="Root component"
-interface Root {
+interface RootComponent {
 
     val childStack: Value<ChildStack<*, Child>>
 
     sealed class Child {
-        class List(val component: ItemList) : Child()
-        class Details(val component: ItemDetails) : Child()
+        class ListChild(val component: ItemList) : Child()
+        class DetailsChild(val component: ItemDetails) : Child()
     }
 }
 
-class RootComponent(
+class DefaultRootComponent(
     componentContext: ComponentContext
-) : Root, ComponentContext by componentContext {
+) : RootComponent, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
 
@@ -101,22 +101,22 @@ class RootComponent(
             childFactory = ::createChild,
         )
 
-    override val childStack: Value<ChildStack<*, Root.Child>> = _childStack
+    override val childStack: Value<ChildStack<*, RootComponent.Child>> = _childStack
 
-    private fun createChild(config: Config, componentContext: ComponentContext): Root.Child =
+    private fun createChild(config: Config, componentContext: ComponentContext): RootComponent.Child =
         when (config) {
-            is Config.List -> Root.Child.List(itemList(componentContext))
-            is Config.Details -> Root.Child.Details(itemDetails(componentContext, config))
+            is Config.List -> ListChild(itemList(componentContext))
+            is Config.Details -> DetailsChild(itemDetails(componentContext, config))
         }
 
-    private fun itemList(componentContext: ComponentContext): ItemList =
-        ItemListComponent(
+    private fun itemList(componentContext: ComponentContext): ItemListComponent =
+        DefaultItemListComponent(
             componentContext = componentContext,
             onItemSelected = { navigation.push(Config.Details(itemId = it)) }
         )
 
-    private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetails =
-        ItemDetailsComponent(
+    private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetailsComponent =
+        DefaultItemDetailsComponent(
             componentContext = componentContext,
             itemId = config.itemId,
             onFinished = { navigation.pop() }
@@ -143,22 +143,22 @@ To deliver a result from one component to another:
 - After the navigation is performed, call a method on the `first` component with the `result`.
 
 ```kotlin
-interface ItemList {
+interface ItemListComponent {
 
     fun onItemClicked(id: Long)
 
     fun onItemDeleted(id: Long)
 }
 
-interface ItemDetails {
+interface ItemDetailsComponent {
 
     fun onDeleteClicked()
 }
 
-class ItemListComponent(
+class DefaultItemListComponent(
     componentContext: ComponentContext,
     private val onItemSelected: (id: Long) -> Unit,
-) : ItemList, ComponentContext by componentContext {
+) : ItemListComponent, ComponentContext by componentContext {
 
     override fun onItemClicked(id: Long) {
         onItemSelected(id)
@@ -169,11 +169,11 @@ class ItemListComponent(
     }
 }
 
-class ItemDetailsComponent(
+class DefaultItemDetailsComponent(
     componentContext: ComponentContext,
     private val itemId: Long,
     private val onDeleted: (itemId: Long) -> Unit
-) : ItemDetails, ComponentContext by componentContext {
+) : ItemDetailsComponent, ComponentContext by componentContext {
 
     override fun onDeleteClicked() {
         // TODO: Delete the item
@@ -181,20 +181,20 @@ class ItemDetailsComponent(
     }
 }
 
-class RootComponent(
+class DefaultRootComponent(
     componentContext: ComponentContext
-) : Root, ComponentContext by componentContext {
+) : RootComponent, ComponentContext by componentContext {
 
     // Omitted code
 
-    private fun itemList(componentContext: ComponentContext): ItemList =
-        ItemListComponent(
+    private fun itemList(componentContext: ComponentContext): ItemListComponent =
+        DefaultItemListComponent(
             componentContext = componentContext,
             onItemSelected = { navigation.push(Config.Details(itemId = it)) }
         )
 
-    private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetails =
-        ItemDetailsComponent(
+    private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetailsComponent =
+        DefaultItemDetailsComponent(
             componentContext = componentContext,
             itemId = config.itemId,
             onDeleted = { itemId ->
@@ -216,7 +216,7 @@ It is also possible to deliver results using reactive streams - e.g. coroutines 
 Here is an example using Reaktive library. Kotlin coroutines `SharedFlow` should be very similar.
 
 ```kotlin
-interface ItemList {
+interface ItemListComponent {
 
     fun onItemClicked(id: Long)
 
@@ -225,7 +225,7 @@ interface ItemList {
     }
 }
 
-interface ItemDetails {
+interface ItemDetailsComponent {
 
     fun onDeleteClicked()
 }
@@ -238,11 +238,11 @@ fun LifecycleOwner.disposableScope(): DisposableScope {
     return scope
 }
 
-class ItemListComponent(
+class DefaultItemListComponent(
     componentContext: ComponentContext,
     input: Observable<ItemList.Input>,
     private val onItemSelected: (id: Long) -> Unit,
-) : ItemList, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
+) : ItemListComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
     init {
         // Subscribe to input
@@ -258,24 +258,24 @@ class ItemListComponent(
     }
 }
 
-class RootComponent(
+class DefaultRootComponent(
     componentContext: ComponentContext
-) : Root, ComponentContext by componentContext {
+) : RootComponent, ComponentContext by componentContext {
 
     // Omitted code
 
     // Or MutableSharedFlow<ItemList.Input>(extraBufferCapacity = Int.MAX_VALUE)
     private val listInput = PublishSubject<ItemList.Input>()
 
-    private fun itemList(componentContext: ComponentContext): ItemList =
-        ItemListComponent(
+    private fun itemList(componentContext: ComponentContext): DefaultItemListComponent =
+        DefaultItemListComponent(
             componentContext = componentContext,
             input = listInput, // Pass listInput to ItemListComponent
             onItemSelected = { navigation.push(Config.Details(itemId = it)) },
         )
 
-    private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetails =
-        ItemDetailsComponent(
+    private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetailsComponent =
+        DefaultItemDetailsComponent(
             componentContext = componentContext,
             itemId = config.itemId,
             onItemDeleted = { id ->
@@ -295,9 +295,9 @@ class RootComponent(
 When multiple `Child Stacks` are used in one component, each such `Child Stack` must have a unique key associated. The keys are required to be unique only within the parent (hosting) component, so it is ok for different components to have `Child Stacks` with same keys. An exception will be thrown if multiple `Child Stacks` with the same key are detected in a component.
 
 ```kotlin title="Two Child Stacks in one component"
-class Root(
+class DefaultRootComponent(
     componentContext: ComponentContext
-) : ComponentContext by componentContext {
+) : RootComponent, ComponentContext by componentContext {
 
     private val topNavigation = StackNavigation<TopConfig>()
     

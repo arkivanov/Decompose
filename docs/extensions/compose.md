@@ -108,8 +108,8 @@ interface RootComponent {
     val childStack: Value<ChildStack<*, Child>>
 
     sealed class Child {
-        data class Main(val component: MainComponent) : Child()
-        data class Details(val component: DetailsComponent) : Child()
+        data class MainChild(val component: MainComponent) : Child()
+        data class DetailsChild(val component: DetailsComponent) : Child()
     }
 }
 
@@ -117,8 +117,8 @@ interface RootComponent {
 fun RootContent(rootComponent: RootComponent) {
     Children(rootComponent.childStack) {
         when (val child = it.instance) {
-            is RootComponent.Child.Main -> MainContent(child.component)
-            is RootComponent.Child.Details -> DetailsContent(child.component)
+            is MainChild -> MainContent(child.component)
+            is DetailsChild -> DetailsContent(child.component)
         }
     }
 }
@@ -130,12 +130,12 @@ interface MainComponent
 interface DetailsComponent
 
 @Composable
-fun MainContent(profileComponent: MainComponent) {
+fun MainContent(component: MainComponent) {
     // Omitted code
 }
 
 @Composable
-fun DetailsContent(settingsComponent: DetailsComponent) {
+fun DetailsContent(component: DetailsComponent) {
     // Omitted code
 }
 ```
@@ -148,9 +148,9 @@ Decompose provides the [Child Animation API](https://github.com/arkivanov/Decomp
 
 ```kotlin
 @Composable
-fun RootContent(rootComponent: RootComponent) {
+fun RootContent(component: RootComponent) {
     Children(
-        stack = rootComponent.childStack,
+        stack = component.childStack,
         animation = stackAnimation(fade()),
     ) {
         // Omitted code
@@ -164,9 +164,9 @@ fun RootContent(rootComponent: RootComponent) {
 
 ```kotlin
 @Composable
-fun RootContent(rootComponent: RootComponent) {
+fun RootContent(component: RootComponent) {
     Children(
-        stack = rootComponent.childStack,
+        stack = component.childStack,
         animation = stackAnimation(slide()),
     ) {
         // Omitted code
@@ -182,9 +182,9 @@ It is also possible to combine animators using the `plus` operator. Please note 
 
 ```kotlin
 @Composable
-fun RootContent(rootComponent: RootComponent) {
+fun RootContent(component: RootComponent) {
     Children(
-        stack = rootComponent.childStack,
+        stack = component.childStack,
         animation = stackAnimation(fade() + scale())
     ) {
         // Omitted code
@@ -200,13 +200,13 @@ Previous examples demonstrate simple cases, when all children have the same anim
 
 ```kotlin
 @Composable
-fun RootContent(rootComponent: RootComponent) {
+fun RootContent(component: RootComponent) {
     Children(
-        stack = rootComponent.childStack,
+        stack = component.childStack,
         animation = stackAnimation { child, otherChild, direction ->
             when (child.instance) {
-                is RootComponent.Child.Main -> fade() + scale()
-                is RootComponent.Child.Details -> fade() + slide()
+                is MainChild -> fade() + scale()
+                is DetailsChild -> fade() + slide()
             }
         }
     ) {
@@ -225,7 +225,7 @@ Implementing `StackAnimation` manually. This is the most flexible low-level API.
 
 ```kotlin
 @Composable
-fun RootContent(rootComponent: RootComponent) {
+fun RootContent(component: RootComponent) {
     Children(
         stack = rootComponent.childStack,
         animation = someAnimation(),
@@ -246,9 +246,9 @@ Using the `stackAnimation` helper function and implementing `StackAnimator`. The
 
 ```kotlin
 @Composable
-fun RootContent(rootComponent: RootComponent) {
+fun RootContent(component: RootComponent) {
     Children(
-        stack = rootComponent.childStack,
+        stack = component.childStack,
         animation = stackAnimation(someAnimator()),
     ) {
         // Omitted code
@@ -267,9 +267,9 @@ Using `stackAnimation` and `stackAnimator` helper functions. This is the simples
 
 ```kotlin
 @Composable
-fun RootContent(rootComponent: RootComponent) {
+fun RootContent(component: RootComponent) {
     Children(
-        stack = rootComponent.childStack,
+        stack = component.childStack,
         animation = stackAnimation(someAnimator()),
     ) {
         // Omitted code

@@ -16,8 +16,8 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stac
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.sample.shared.multipane.MultiPane.DetailsChild
-import com.arkivanov.sample.shared.multipane.MultiPane.ListChild
+import com.arkivanov.sample.shared.multipane.MultiPaneComponent.DetailsChild
+import com.arkivanov.sample.shared.multipane.MultiPaneComponent.ListChild
 import com.arkivanov.sample.shared.multipane.details.ArticleDetailsContent
 import com.arkivanov.sample.shared.multipane.list.ArticleListContent
 
@@ -26,7 +26,7 @@ private const val LIST_PANE_WEIGHT = 0.4F
 private const val DETAILS_PANE_WEIGHT = 0.6F
 
 @Composable
-internal fun MultiPaneContent(component: MultiPane, modifier: Modifier = Modifier) {
+internal fun MultiPaneContent(component: MultiPaneComponent, modifier: Modifier = Modifier) {
     BoxWithConstraints(modifier = modifier) {
         val model by component.models.subscribeAsState()
         val isMultiPane = model.isMultiPane

@@ -10,10 +10,10 @@ import com.arkivanov.decompose.router.stack.popWhile
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
-import com.arkivanov.sample.shared.multipane.MultiPane.DetailsChild
+import com.arkivanov.sample.shared.multipane.MultiPaneComponent.DetailsChild
 import com.arkivanov.sample.shared.multipane.database.ArticleDatabase
-import com.arkivanov.sample.shared.multipane.details.ArticleDetails
 import com.arkivanov.sample.shared.multipane.details.ArticleDetailsComponent
+import com.arkivanov.sample.shared.multipane.details.DefaultArticleDetailsComponent
 import com.badoo.reaktive.observable.Observable
 
 internal class DetailsRouter(
@@ -39,8 +39,8 @@ internal class DetailsRouter(
             is Config.Details -> DetailsChild.Details(articleDetails(componentContext = componentContext, articleId = config.articleId))
         }
 
-    private fun articleDetails(componentContext: ComponentContext, articleId: Long): ArticleDetails =
-        ArticleDetailsComponent(
+    private fun articleDetails(componentContext: ComponentContext, articleId: Long): ArticleDetailsComponent =
+        DefaultArticleDetailsComponent(
             componentContext = componentContext,
             database = database,
             articleId = articleId,

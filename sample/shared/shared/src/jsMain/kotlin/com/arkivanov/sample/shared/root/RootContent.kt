@@ -5,10 +5,10 @@ import com.arkivanov.sample.shared.componentContent
 import com.arkivanov.sample.shared.counters.CountersContent
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesContent
 import com.arkivanov.sample.shared.multipane.MultiPaneContent
-import com.arkivanov.sample.shared.root.Root.Child.CountersChild
-import com.arkivanov.sample.shared.root.Root.Child.CustomNavigationChild
-import com.arkivanov.sample.shared.root.Root.Child.DynamicFeaturesChild
-import com.arkivanov.sample.shared.root.Root.Child.MultiPaneChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.CountersChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
 import com.arkivanov.sample.shared.useAsState
 import csstype.BoxSizing
 import csstype.Display
@@ -28,7 +28,7 @@ import react.FC
 import react.ReactNode
 import react.create
 
-var RootContent: FC<RProps<Root>> = FC { props ->
+var RootContent: FC<RProps<RootComponent>> = FC { props ->
     val childStack by props.component.childStack.useAsState()
 
     Box {

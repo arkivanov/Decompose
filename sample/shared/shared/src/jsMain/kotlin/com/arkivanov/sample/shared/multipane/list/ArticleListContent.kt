@@ -10,7 +10,7 @@ import mui.material.Typography
 import mui.system.sx
 import react.FC
 
-val ArticleListContent: FC<RProps<ArticleList>> = FC { props ->
+val ArticleListContent: FC<RProps<ArticleListComponent>> = FC { props ->
     val model by props.component.models.useAsState()
 
     mui.material.List {

@@ -29,21 +29,21 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.counters.CountersContent
-import com.arkivanov.sample.shared.counters.CountersPreview
+import com.arkivanov.sample.shared.counters.PreviewCountersComponent
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationContent
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesContent
 import com.arkivanov.sample.shared.multipane.MultiPaneContent
-import com.arkivanov.sample.shared.root.Root.Child
-import com.arkivanov.sample.shared.root.Root.Child.CountersChild
-import com.arkivanov.sample.shared.root.Root.Child.CustomNavigationChild
-import com.arkivanov.sample.shared.root.Root.Child.DynamicFeaturesChild
-import com.arkivanov.sample.shared.root.Root.Child.MultiPaneChild
+import com.arkivanov.sample.shared.root.RootComponent.Child
+import com.arkivanov.sample.shared.root.RootComponent.Child.CountersChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
-fun RootContent(root: Root, modifier: Modifier = Modifier) {
-    val childStack by root.childStack.subscribeAsState()
+fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
+    val childStack by component.childStack.subscribeAsState()
     val activeComponent = childStack.active.instance
 
     Column(modifier = modifier) {
@@ -63,7 +63,7 @@ fun RootContent(root: Root, modifier: Modifier = Modifier) {
         BottomNavigation(modifier = Modifier.fillMaxWidth()) {
             BottomNavigationItem(
                 selected = activeComponent is CountersChild,
-                onClick = root::onCountersTabClicked,
+                onClick = component::onCountersTabClicked,
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Refresh,
@@ -75,7 +75,7 @@ fun RootContent(root: Root, modifier: Modifier = Modifier) {
 
             BottomNavigationItem(
                 selected = activeComponent is MultiPaneChild,
-                onClick = root::onMultiPaneTabClicked,
+                onClick = component::onMultiPaneTabClicked,
                 icon = {
                     Icon(
                         imageVector = Icons.Default.List,
@@ -87,7 +87,7 @@ fun RootContent(root: Root, modifier: Modifier = Modifier) {
 
             BottomNavigationItem(
                 selected = activeComponent is DynamicFeaturesChild,
-                onClick = root::onDynamicFeaturesTabClicked,
+                onClick = component::onDynamicFeaturesTabClicked,
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Favorite,
@@ -99,7 +99,7 @@ fun RootContent(root: Root, modifier: Modifier = Modifier) {
 
             BottomNavigationItem(
                 selected = activeComponent is CustomNavigationComponent,
-                onClick = root::onCustomNavigationTabClicked,
+                onClick = component::onCustomNavigationTabClicked,
                 icon = {
                     Icon(
                         imageVector = Icons.Default.LocationOn,
@@ -153,15 +153,15 @@ private fun Direction.flipSide(): Direction =
 @Preview
 @Composable
 internal fun RootContentPreview() {
-    RootContent(RootPreview())
+    RootContent(PreviewRootComponent())
 }
 
-internal class RootPreview : Root {
+internal class PreviewRootComponent : RootComponent {
     override val childStack: Value<ChildStack<*, Child>> =
         MutableValue(
             ChildStack(
                 configuration = Unit,
-                instance = CountersChild(component = CountersPreview()),
+                instance = CountersChild(component = PreviewCountersComponent()),
             )
         )
 
