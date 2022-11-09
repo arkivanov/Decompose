@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Refresh
@@ -25,6 +28,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.isEn
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.decompose.router.overlay.ChildOverlay
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -32,6 +36,8 @@ import com.arkivanov.sample.shared.counters.CountersContent
 import com.arkivanov.sample.shared.counters.PreviewCountersComponent
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationContent
+import com.arkivanov.sample.shared.dialog.DialogComponent
+import com.arkivanov.sample.shared.dialog.DialogContent
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesContent
 import com.arkivanov.sample.shared.multipane.MultiPaneContent
 import com.arkivanov.sample.shared.root.RootComponent.Child
@@ -45,8 +51,17 @@ import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
 fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
     val childStack by component.childStack.subscribeAsState()
     val activeComponent = childStack.active.instance
+    val dialogState by component.dialog.subscribeAsState()
 
     Column(modifier = modifier) {
+        TopAppBar(
+            title = { Text("Decompose App Samples") },
+            actions = {
+                IconButton(onClick = { component.onInfoActionClicked() }) {
+                    Icon(Icons.Filled.Info, contentDescription = "Show Application Info")
+                }
+            }
+        )
         Children(
             stack = childStack,
             modifier = Modifier.weight(weight = 1F),
@@ -109,6 +124,8 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
                 label = { Text(text = "Custom Nav", softWrap = false) },
             )
         }
+
+        DialogContent(dialogComponent = dialogState.overlay?.instance)
     }
 }
 
@@ -164,9 +181,14 @@ internal class PreviewRootComponent : RootComponent {
                 instance = CountersChild(component = PreviewCountersComponent()),
             )
         )
+    override val dialog: Value<ChildOverlay<*, DialogComponent>> =
+        MutableValue(
+            ChildOverlay<Unit, DialogComponent>()
+        )
 
     override fun onCountersTabClicked() {}
     override fun onMultiPaneTabClicked() {}
     override fun onDynamicFeaturesTabClicked() {}
     override fun onCustomNavigationTabClicked() {}
+    override fun onInfoActionClicked() {}
 }
