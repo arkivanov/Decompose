@@ -6,28 +6,26 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 
 @Composable
-fun DialogContent(dialogComponent: DialogComponent?) {
-    dialogComponent?.run {
-        AlertDialog(
-            onDismissRequest = {
-                dialogComponent.onDismissClicked()
-            },
-            title = {
-                Text(text = "Decompose Sample Dialog")
-            },
-            text = {
-                Text(text = dialogComponent.message)
-            },
-            confirmButton = {},
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        dialogComponent.onDismissClicked()
-                    }
-                ) {
-                    Text("Dismiss")
+fun DialogContent(dialogComponent: DialogComponent) {
+    AlertDialog(
+        onDismissRequest = {
+            dialogComponent.onDismissClicked()
+        },
+        title = {
+            Text(text = "Decompose Sample Dialog")
+        },
+        text = {
+            Text(text = dialogComponent.message)
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    dialogComponent.onDismissClicked()
                 }
+            ) {
+                Text("Dismiss")
             }
-        )
-    }
+        }
+    )
 }
