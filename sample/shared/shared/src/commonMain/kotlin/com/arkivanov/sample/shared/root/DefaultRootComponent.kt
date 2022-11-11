@@ -2,8 +2,14 @@ package com.arkivanov.sample.shared.root
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.router.overlay.ChildOverlay
+import com.arkivanov.decompose.router.overlay.OverlayNavigation
+import com.arkivanov.decompose.router.overlay.activate
+import com.arkivanov.decompose.router.overlay.childOverlay
+import com.arkivanov.decompose.router.overlay.dismiss
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.active
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.webhistory.WebHistoryController
@@ -12,6 +18,8 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.sample.shared.counters.DefaultCountersComponent
 import com.arkivanov.sample.shared.customnavigation.DefaultCustomNavigationComponent
+import com.arkivanov.sample.shared.dialog.DefaultDialogComponent
+import com.arkivanov.sample.shared.dialog.DialogComponent
 import com.arkivanov.sample.shared.dynamicfeatures.DefaultDynamicFeaturesComponent
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.FeatureInstaller
 import com.arkivanov.sample.shared.multipane.DefaultMultiPaneComponent
@@ -31,6 +39,8 @@ class DefaultRootComponent constructor(
 
     private val navigation = StackNavigation<Config>()
 
+    private val dialogNavigation = OverlayNavigation<DialogConfig>()
+
     private val stack =
         childStack(
             source = navigation,
@@ -39,6 +49,30 @@ class DefaultRootComponent constructor(
         )
 
     override val childStack: Value<ChildStack<*, Child>> = stack
+
+    private val _dialog =
+        childOverlay(
+            source = dialogNavigation,
+            persistent = false,
+            handleBackButton = true,
+        ) { config, componentContext ->
+            DefaultDialogComponent(
+                message = config.message,
+                onDismissed = dialogNavigation::dismiss,
+            )
+        }
+
+    override val dialog: Value<ChildOverlay<*, DialogComponent>> = _dialog
+
+    override fun onInfoActionClicked() {
+        val message = when (stack.active.configuration) {
+            Config.Counters -> "You currently on Counters Tab"
+            Config.MultiPane -> "You currently on Multi-Pane Tab"
+            Config.DynamicFeatures -> "You are currently on Dyn Features Tab"
+            Config.CustomNavigation -> "You are currently on Custom Nav Tab"
+        }
+        dialogNavigation.activate(DialogConfig(message))
+    }
 
     init {
         webHistoryController?.attach(
@@ -116,6 +150,9 @@ class DefaultRootComponent constructor(
         @Parcelize
         object CustomNavigation : Config
     }
+
+    @Parcelize
+    private data class DialogConfig(val message: String) : Parcelable
 
     sealed interface DeepLink {
         object None : DeepLink
