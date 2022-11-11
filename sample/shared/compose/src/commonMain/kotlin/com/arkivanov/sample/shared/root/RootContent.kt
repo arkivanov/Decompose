@@ -52,7 +52,6 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
     val childStack by component.childStack.subscribeAsState()
     val activeComponent = childStack.active.instance
     val dialogState by component.dialog.subscribeAsState()
-    val dialogComponent = dialogState.overlay?.instance
 
     Column(modifier = modifier) {
         TopAppBar(
@@ -126,7 +125,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
             )
         }
 
-        dialogComponent?.let {
+        dialogState.overlay?.instance?.also {
             DialogContent(dialogComponent = it)
         }
     }
