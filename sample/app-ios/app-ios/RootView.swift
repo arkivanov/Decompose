@@ -74,8 +74,12 @@ class PreviewRootComponent : RootComponent {
     let childStack: Value<ChildStack<AnyObject, RootComponentChild>> =
         simpleChildStack(RootComponentChild.CountersChild(component: PreviewCountersComponent()))
 
+    let dialog: Value<ChildOverlay<AnyObject, DialogComponent>> =
+        mutableValue(ChildOverlay(overlay: nil))
+
     func onCountersTabClicked() {}
     func onMultiPaneTabClicked() {}
     func onDynamicFeaturesTabClicked() {}
     func onCustomNavigationTabClicked() {}
+    func onInfoActionClicked() {}
 }
