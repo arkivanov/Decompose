@@ -51,11 +51,10 @@ import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
 fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
     val childStack by component.childStack.subscribeAsState()
     val activeComponent = childStack.active.instance
-    val dialogState by component.dialog.subscribeAsState()
 
     Column(modifier = modifier) {
         TopAppBar(
-            title = { Text("Decompose App Samples") },
+            title = { Text(text = "Decompose Sample") },
             actions = {
                 IconButton(onClick = { component.onInfoActionClicked() }) {
                     Icon(Icons.Filled.Info, contentDescription = "Show Application Info")
@@ -125,7 +124,8 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
             )
         }
 
-        dialogState.overlay?.instance?.also {
+        val dialogOverlay by component.dialog.subscribeAsState()
+        dialogOverlay.overlay?.instance?.also {
             DialogContent(dialogComponent = it)
         }
     }
