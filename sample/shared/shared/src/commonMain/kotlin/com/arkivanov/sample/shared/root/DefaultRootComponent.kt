@@ -55,8 +55,9 @@ class DefaultRootComponent constructor(
             source = dialogNavigation,
             persistent = false,
             handleBackButton = true,
-        ) { config, componentContext ->
+        ) { config, _ ->
             DefaultDialogComponent(
+                title = config.title,
                 message = config.message,
                 onDismissed = dialogNavigation::dismiss,
             )
@@ -65,13 +66,20 @@ class DefaultRootComponent constructor(
     override val dialog: Value<ChildOverlay<*, DialogComponent>> = _dialog
 
     override fun onInfoActionClicked() {
-        val message = when (stack.active.configuration) {
-            Config.Counters -> "You currently on Counters Tab"
-            Config.MultiPane -> "You currently on Multi-Pane Tab"
-            Config.DynamicFeatures -> "You are currently on Dyn Features Tab"
-            Config.CustomNavigation -> "You are currently on Custom Nav Tab"
-        }
-        dialogNavigation.activate(DialogConfig(message))
+        val message =
+            when (stack.active.configuration) {
+                Config.Counters -> "You currently on Counters Tab"
+                Config.MultiPane -> "You currently on Multi-Pane Tab"
+                Config.DynamicFeatures -> "You are currently on Dyn Features Tab"
+                Config.CustomNavigation -> "You are currently on Custom Nav Tab"
+            }
+
+        dialogNavigation.activate(
+            DialogConfig(
+                title = "Decompose Sample",
+                message = message,
+            )
+        )
     }
 
     init {
@@ -152,7 +160,10 @@ class DefaultRootComponent constructor(
     }
 
     @Parcelize
-    private data class DialogConfig(val message: String) : Parcelable
+    private data class DialogConfig(
+        val title: String,
+        val message: String,
+    ) : Parcelable
 
     sealed interface DeepLink {
         object None : DeepLink
