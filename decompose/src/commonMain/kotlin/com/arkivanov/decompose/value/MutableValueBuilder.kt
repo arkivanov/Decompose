@@ -1,6 +1,7 @@
 package com.arkivanov.decompose.value
 
 import com.arkivanov.decompose.Relay
+import com.arkivanov.decompose.assertMainThread
 import com.arkivanov.decompose.ensureNeverFrozen
 import kotlin.properties.Delegates
 
@@ -17,7 +18,10 @@ private class MutableValueImpl<T : Any>(initialValue: T) : MutableValue<T>() {
     }
 
     private val relay = Relay<T>()
-    override var value: T by Delegates.observable(initialValue) { _, _, value -> relay.accept(value) }
+    override var value: T by Delegates.observable(initialValue) { _, _, value ->
+        assertMainThread()
+        relay.accept(value)
+    }
 
     override fun subscribe(observer: (T) -> Unit) {
         relay.subscribe(observer)

@@ -17,9 +17,14 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DefaultFeatureInstaller
 import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootContent
+import com.badoo.reaktive.coroutinesinterop.asScheduler
+import com.badoo.reaktive.scheduler.overrideSchedulers
+import kotlinx.coroutines.Dispatchers
 
 @OptIn(ExperimentalDecomposeApi::class)
 fun main() {
+    overrideSchedulers(main = Dispatchers.Main::asScheduler)
+
     val lifecycle = LifecycleRegistry()
 
     val root =
