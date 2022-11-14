@@ -25,6 +25,9 @@ kotlin {
             implementation(project(":sample:shared:shared"))
             implementation(project(":sample:shared:compose"))
             implementation(compose.desktop.currentOs)
+            implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesSwing)
+            implementation(deps.reaktive.reaktive)
+            implementation(deps.reaktive.coroutinesInterop)
         }
     }
 }

@@ -23,11 +23,13 @@ kotlin {
         val nonAndroid by bundle()
         val native by bundle()
         val nonNative by bundle()
+        val darwin by bundle()
 
         (nonAndroid + native + nonNative) dependsOn common
         (allSet - android) dependsOn nonAndroid
         (allSet - nativeSet) dependsOn nonNative
-        nativeSet dependsOn native
+        (nativeSet + darwin) dependsOn native
+        darwinSet dependsOn darwin
 
         all {
             languageSettings {
