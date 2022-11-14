@@ -7,8 +7,12 @@ import com.arkivanov.decompose.extensions.android.layoutInflater
 import com.arkivanov.decompose.extensions.android.stack.StackRouterView
 import com.arkivanov.decompose.value.observe
 import com.arkivanov.sample.shared.R
+import com.arkivanov.sample.shared.beginDelayedSlideTransition
 import com.arkivanov.sample.shared.counters.CountersView
-import com.arkivanov.sample.shared.root.RootComponent.Child.*
+import com.arkivanov.sample.shared.root.RootComponent.Child.CountersChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 @ExperimentalDecomposeApi
@@ -17,17 +21,27 @@ fun ViewContext.RootView(component: RootComponent): View {
     val layout = layoutInflater.inflate(R.layout.root, parent, false)
     val router: StackRouterView = layout.findViewById(R.id.router)
 
-    router.children(component.childStack, lifecycle) { parent, child, _ ->
-        parent.removeAllViews()
+    router.children(component.childStack, lifecycle) { parent, newStack, oldStack ->
+        val oldView: View? = parent.getChildAt(0)
 
-        parent.addView(
-            when (child) {
+        val newView: View =
+            when (val child = newStack.active.instance) {
                 is CountersChild -> CountersView(child.component)
                 is MultiPaneChild,
                 is DynamicFeaturesChild,
                 is CustomNavigationChild -> NotImplementedView()
             }
-        )
+
+        if ((oldView != null) && (oldStack != null)) {
+            parent.beginDelayedSlideTransition(
+                newView = newView,
+                oldView = oldView,
+                isForward = newStack.active.instance.index > oldStack.active.instance.index,
+            )
+        }
+
+        parent.removeAllViews()
+        parent.addView(newView)
     }
 
     val navigationView: BottomNavigationView = layout.findViewById(R.id.navigation_view)
@@ -63,3 +77,12 @@ fun ViewContext.RootView(component: RootComponent): View {
 
     return layout
 }
+
+private val RootComponent.Child.index: Int
+    get() =
+        when (this) {
+            is CountersChild -> 0
+            is MultiPaneChild -> 1
+            is DynamicFeaturesChild -> 2
+            is CustomNavigationChild -> 3
+        }
