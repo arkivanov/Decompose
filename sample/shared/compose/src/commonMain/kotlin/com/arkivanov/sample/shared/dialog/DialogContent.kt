@@ -17,7 +17,7 @@ fun DialogContent(dialogComponent: DialogComponent) {
             dialogComponent.onDismissClicked()
         },
         title = {
-            Text(text = "Decompose Sample Dialog")
+            Text(text = dialogComponent.title)
         },
         text = {
             Text(text = dialogComponent.message)
