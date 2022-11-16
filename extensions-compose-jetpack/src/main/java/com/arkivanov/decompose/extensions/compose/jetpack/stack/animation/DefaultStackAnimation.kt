@@ -20,6 +20,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 
 @ExperimentalDecomposeApi
 internal class DefaultStackAnimation<C : Any, T : Any>(
+    private val disableInputDuringAnimation: Boolean,
     private val selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator?,
 ) : StackAnimation<C, T> {
 
@@ -54,8 +55,8 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             }
 
             // A workaround until https://issuetracker.google.com/issues/214231672.
-            // Normally only the exiting child be disabled.
-            if (items.size > 1) {
+            // Normally only the exiting child should be disabled.
+            if (disableInputDuringAnimation && (items.size > 1)) {
                 Overlay(modifier = Modifier.matchParentSize())
             }
         }
