@@ -34,7 +34,7 @@ struct ArticleDetailsView: View {
                         .aspectRatio(contentMode: .fit)
                         .imageScale(.large)
                         .foregroundColor(.blue)
-                        .onTapGesture { component.onCloseClicked() }
+                        .onTapGesture(perform: component.onCloseClicked)
                 )
             }
         } else {
