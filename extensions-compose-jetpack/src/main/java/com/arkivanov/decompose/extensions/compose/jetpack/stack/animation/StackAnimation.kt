@@ -12,7 +12,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
  * Tracks the [ChildStack] changes and animates between child widget.
  */
 @ExperimentalDecomposeApi
-interface StackAnimation<C : Any, T : Any> {
+fun interface StackAnimation<C : Any, T : Any> {
 
     @Composable
     operator fun invoke(
@@ -21,30 +21,6 @@ interface StackAnimation<C : Any, T : Any> {
         content: @Composable (child: Child.Created<C, T>) -> Unit,
     )
 }
-
-/**
- * Factory function for [StackAnimation] while `fun interface` with a `@Composable` function
- * is not supported - [b/221488059](https://issuetracker.google.com/issues/221488059).
- */
-@Suppress("FunctionName") // Factory function
-@ExperimentalDecomposeApi
-inline fun <C : Any, T : Any> StackAnimation(
-    crossinline content: @Composable (
-        stack: ChildStack<C, T>,
-        modifier: Modifier,
-        content: @Composable (child: Child.Created<C, T>) -> Unit,
-    ) -> Unit
-): StackAnimation<C, T> =
-    object : StackAnimation<C, T> {
-        @Composable
-        override operator fun invoke(
-            stack: ChildStack<C, T>,
-            modifier: Modifier,
-            content: @Composable (child: Child.Created<C, T>) -> Unit,
-        ) {
-            content(stack, modifier, content)
-        }
-    }
 
 /**
  * Creates an implementation of [StackAnimation] that allows different [StackAnimator]s.

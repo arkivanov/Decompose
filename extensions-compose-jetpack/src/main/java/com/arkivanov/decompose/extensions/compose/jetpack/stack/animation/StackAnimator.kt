@@ -11,7 +11,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
  * Animates a child widget in the given [Direction].
  */
 @ExperimentalDecomposeApi
-interface StackAnimator {
+fun interface StackAnimator {
 
     /**
      * Animates the [content] in the given [Direction], and calls [onFinished] at the end.
@@ -23,21 +23,6 @@ interface StackAnimator {
         content: @Composable (Modifier) -> Unit,
     )
 }
-
-/**
- * Factory function for [StackAnimator] while `fun interface` with a `@Composable` function
- * is not supported - [b/221488059](https://issuetracker.google.com/issues/221488059).
- */
-@ExperimentalDecomposeApi
-inline fun StackAnimator(
-    crossinline content: @Composable (Direction, onFinished: () -> Unit, content: @Composable (Modifier) -> Unit) -> Unit,
-): StackAnimator =
-    object : StackAnimator {
-        @Composable
-        override operator fun invoke(direction: Direction, onFinished: () -> Unit, content: @Composable (Modifier) -> Unit) {
-            content(direction, onFinished, content)
-        }
-    }
 
 /**
  * Creates an implementation of [StackAnimator] with a convenient frame-by-frame rendering.
