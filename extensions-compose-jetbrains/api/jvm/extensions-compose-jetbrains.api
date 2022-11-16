@@ -61,7 +61,6 @@ public abstract interface class com/arkivanov/decompose/extensions/compose/jetbr
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimationKt {
-	public static final fun StackAnimation (Lkotlin/jvm/functions/Function5;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
 	public static final fun stackAnimation (Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;Z)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
 	public static final fun stackAnimation (ZLkotlin/jvm/functions/Function3;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
 	public static synthetic fun stackAnimation$default (Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;ZILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
@@ -73,7 +72,6 @@ public abstract interface class com/arkivanov/decompose/extensions/compose/jetbr
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimatorKt {
-	public static final fun StackAnimator (Lkotlin/jvm/functions/Function5;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;
 	public static final fun plus (Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;
 	public static final fun stackAnimator (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function5;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;
 	public static synthetic fun stackAnimator$default (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function5;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;
