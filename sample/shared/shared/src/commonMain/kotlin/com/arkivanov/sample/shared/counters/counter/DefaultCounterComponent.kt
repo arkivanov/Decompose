@@ -1,6 +1,7 @@
 package com.arkivanov.sample.shared.counters.counter
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.overlay.*
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
@@ -11,6 +12,8 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.essenty.statekeeper.consume
 import com.arkivanov.sample.shared.counters.counter.CounterComponent.Model
+import com.arkivanov.sample.shared.dialog.DefaultDialogComponent
+import com.arkivanov.sample.shared.dialog.DialogComponent
 import com.badoo.reaktive.disposable.scope.DisposableScope
 import com.badoo.reaktive.observable.observableInterval
 import com.badoo.reaktive.scheduler.mainScheduler
@@ -29,6 +32,28 @@ internal class DefaultCounterComponent(
         }
 
     override val model: Value<Model> = handler.state.map { it.toModel() }
+
+    private val dialogNavigation = OverlayNavigation<DialogConfig>()
+
+    private val _dialogOverlay =
+        childOverlay<DialogConfig, DialogComponent>(
+            source = dialogNavigation,
+            persistent = false,
+            handleBackButton = true,
+            childFactory = { config, _ ->
+                DefaultDialogComponent(
+                    title = "Counter",
+                    message = "Value: ${config.count}",
+                    onDismissed = dialogNavigation::dismiss,
+                )
+            }
+        )
+
+    override val dialogOverlay: Value<ChildOverlay<*, DialogComponent>> = _dialogOverlay
+
+    override fun onInfoClicked() {
+        dialogNavigation.activate(DialogConfig(count = handler.state.value.count))
+    }
 
     init {
         stateKeeper.register(KEY_STATE) { handler.state.value }
@@ -56,6 +81,11 @@ internal class DefaultCounterComponent(
     @Parcelize
     private data class State(
         val count: Int = 0,
+    ) : Parcelable
+
+    @Parcelize
+    private data class DialogConfig(
+        val count: Int,
     ) : Parcelable
 
     private class Handler(initialState: State) : InstanceKeeper.Instance, DisposableScope by DisposableScope() {

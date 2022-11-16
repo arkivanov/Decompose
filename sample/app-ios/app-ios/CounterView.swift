@@ -54,6 +54,10 @@ class PreviewCounterComponent : CounterComponent {
         )
     )
     
+    let dialogOverlay: Value<ChildOverlay<AnyObject, DialogComponent>> =
+        mutableValue(ChildOverlay(overlay: nil))
+    
+    func onInfoClicked() {}
     func onNextClicked() {}
     func onPrevClicked() {}
 }
