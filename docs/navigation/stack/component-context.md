@@ -48,19 +48,19 @@ inline fun <reified C : Parcelable, T : Any> AppComponentContext.appChildStack(
 Finally, in your components you can use the new extension function that will utilize the custom `AppComponentContext`.
 
 ```kotlin
-interface Root {
+interface RootComponent {
 
     val childStack: Value<ChildStack<*, Child>>
 
     sealed class Child {
-        class List(val component: ItemList) : Child()
-        class Details(val component: ItemDetails) : Child()
+        class ListChild(val component: ItemList) : Child()
+        class DetailsChild(val component: ItemDetails) : Child()
     }
 }
 
-class RootComponent(
+class DefaultRootComponent(
     componentContext: AppComponentContext
-) : Root, AppComponentContext by componentContext {
+) : RootComponent, AppComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
 
@@ -72,15 +72,15 @@ class RootComponent(
             childFactory = ::createChild,
         )
 
-    override val childStack: Value<ChildStack<*, Root.Child>> = _childStack
+    override val childStack: Value<ChildStack<*, RootComponent.Child>> = _childStack
 
-    private fun createChild(config: Config, componentContext: AppComponentContext): Root.Child =
+    private fun createChild(config: Config, componentContext: AppComponentContext): RootComponent.Child =
         TODO('Initialize child based on config with the custom component context')
 
-    private fun itemList(componentContext: AppComponentContext): ItemList =
+    private fun itemList(componentContext: AppComponentContext): ItemListComponent =
         TODO('Initialize ItemDetails with the custom component context')
 
-    private fun itemDetails(componentContext: AppComponentContext, config: Config.Details): ItemDetails =
+    private fun itemDetails(componentContext: AppComponentContext, config: Config.Details): ItemDetailsComponent =
         TODO('Initialize ItemDetails with the custom component context')
 
     private sealed class Config : Parcelable {

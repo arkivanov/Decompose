@@ -13,5 +13,10 @@
     <item
         android:id="@+id/tab_dynamic_features"
         android:icon="@drawable/ic_tab_dynamic_features"
-        android:title="Dynamic Features" />
+        android:title="Dyn Features" />
+
+    <item
+        android:id="@+id/tab_custom_navigation"
+        android:icon="@drawable/ic_tab_custom_navigation"
+        android:title="Custom Nav" />
 </menu>

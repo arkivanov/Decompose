@@ -10,17 +10,17 @@ import com.arkivanov.sample.shared.R
 
 @ExperimentalDecomposeApi
 @Suppress("FunctionName") // Factory function
-internal fun ViewContext.CounterView(counter: Counter): View {
+internal fun ViewContext.CounterView(component: CounterComponent): View {
     val layout = layoutInflater.inflate(R.layout.counter, parent, false)
     val counterTitle: TextView = layout.findViewById(R.id.text_title)
     val counterText: TextView = layout.findViewById(R.id.text_count)
     val nextButton: TextView = layout.findViewById(R.id.button_next)
     val prevButton: TextView = layout.findViewById(R.id.button_prev)
 
-    nextButton.setOnClickListener { counter.onNextClicked() }
-    prevButton.setOnClickListener { counter.onPrevClicked() }
+    nextButton.setOnClickListener { component.onNextClicked() }
+    prevButton.setOnClickListener { component.onPrevClicked() }
 
-    counter.model.observe(lifecycle) { data ->
+    component.model.observe(lifecycle) { data ->
         counterTitle.text = data.title
         counterText.text = data.text
         prevButton.isEnabled = data.isBackEnabled

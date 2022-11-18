@@ -48,7 +48,7 @@ The following `ViewContext` [extensions](https://github.com/arkivanov/Decompose/
 
 ## Examples
 
-You can find an example of using this extensions module in the [Counter](https://github.com/arkivanov/Decompose/tree/master/sample/counter/shared/src/androidMain/kotlin/com/arkivanov/sample/counter/shared/ui/android) sample.
+You can find an example of using this extension module in the [Counter](https://github.com/arkivanov/Decompose/tree/master/sample/shared/shared/src/androidMain/kotlin/com/arkivanov/sample/shared/counters) sample.
 
 Initializing the root in `Activity`:
 
@@ -103,19 +103,19 @@ fun ViewContext.CounterRootView(counterRoot: CounterRoot): View {
 
     nextButton.setOnClickListener { counterRoot.onNextChild() }
 
-    // Create a child `ViewContext` for the inner `CounterView`
+    // Create a child `ViewContext` for the `CounterView`
     child(layout.findViewById(R.id.container_counter)) {
         // Reuse the `CounterView`
         CounterView(counterRoot.counter)
     }
 
     // Subscribe the `StackRouterView` to the `ChildStack` changes
-    routerView.children(counterRoot.childStack, lifecycle) { parent, child, _ ->
+    routerView.children(counterRoot.childStack, lifecycle) { parent, newStack, _ ->
         // Remove all existing views
         parent.removeAllViews()
 
         // Add the child view for the currently active child component
-        parent.addView(CounterInnerView(child.inner))
+        parent.addView(CounterView(newStack.active.instance))
     }
 
     return layout

@@ -1,48 +1,20 @@
 package com.arkivanov.sample.shared.multipane.details
 
-import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.reduce
-import com.arkivanov.sample.shared.multipane.database.ArticleDatabase
-import com.arkivanov.sample.shared.multipane.database.ArticleEntity
-import com.arkivanov.sample.shared.multipane.details.ArticleDetails.Article
-import com.arkivanov.sample.shared.multipane.details.ArticleDetails.Model
-import com.arkivanov.sample.shared.multipane.utils.disposableScope
-import com.badoo.reaktive.disposable.scope.DisposableScope
-import com.badoo.reaktive.observable.Observable
 
-internal class ArticleDetailsComponent(
-    componentContext: ComponentContext,
-    database: ArticleDatabase,
-    articleId: Long,
-    isToolbarVisible: Observable<Boolean>,
-    private val onFinished: () -> Unit
-) : ArticleDetails, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
+interface ArticleDetailsComponent {
 
-    private val _models =
-        MutableValue(
-            Model(
-                isToolbarVisible = false,
-                article = database.getById(id = articleId).toArticle()
-            )
-        )
+    val models: Value<Model>
 
-    override val models: Value<Model> = _models
+    fun onCloseClicked()
 
-    init {
-        isToolbarVisible.subscribeScoped { isVisible ->
-            _models.reduce { it.copy(isToolbarVisible = isVisible) }
-        }
-    }
+    data class Model(
+        val isToolbarVisible: Boolean,
+        val article: Article
+    )
 
-    private fun ArticleEntity.toArticle(): Article =
-        Article(
-            title = title,
-            text = text
-        )
-
-    override fun onCloseClicked() {
-        onFinished()
-    }
+    data class Article(
+        val title: String,
+        val text: String
+    )
 }

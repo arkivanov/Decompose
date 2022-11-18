@@ -19,7 +19,7 @@ import mui.system.ResponsiveStyleValue
 import mui.system.sx
 import react.FC
 
-val CountersContent: FC<RProps<Counters>> = FC { props ->
+val CountersContent: FC<RProps<CountersComponent>> = FC { props ->
     val firstChildStack by props.component.firstChildStack.useAsState()
     val secondChildStack by props.component.secondChildStack.useAsState()
 

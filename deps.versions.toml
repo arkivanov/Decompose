@@ -1,6 +1,6 @@
 [versions]
 
-decompose = "1.0.0-alpha-07-native-compose"
+decompose = "1.0.0-beta-01-native-compose"
 kotlin = "1.7.20"
 essenty = "0.6.0"
 reaktive = "1.2.1"
@@ -30,6 +30,7 @@ essenty-instanceKeeper = { group = "com.arkivanov.essenty", name = "instance-kee
 essenty-backHandler = { group = "com.arkivanov.essenty", name = "back-handler", version.ref = "essenty" }
 
 reaktive-reaktive = { group = "com.badoo.reaktive", name = "reaktive", version.ref = "reaktive" }
+reaktive-coroutinesInterop = { group = "com.badoo.reaktive", name = "coroutines-interop", version.ref = "reaktive" }
 
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }
 

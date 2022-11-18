@@ -9,14 +9,14 @@ import SwiftUI
 import Shared
 
 struct ArticleListView: View {
-    private let component: ArticleList
+    private let component: ArticleListComponent
 
     @ObservedObject
-    private var observableModel: ObservableValue<ArticleListModel>
+    private var observableModel: ObservableValue<ArticleListComponentModel>
 
-    private var model: ArticleListModel { observableModel.value }
+    private var model: ArticleListComponentModel { observableModel.value }
 
-    init(_ component: ArticleList) {
+    init(_ component: ArticleListComponent) {
         self.component = component
         observableModel = ObservableValue(component.models)
     }
@@ -36,19 +36,19 @@ struct ArticleListView: View {
 
 struct ArticleListView_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleListView(ArticleListPreview())
+        ArticleListView(PreviewArticleListComponent())
     }
 }
 
-class ArticleListPreview: ArticleList {
+class PreviewArticleListComponent: ArticleListComponent {
     func onArticleClicked(id: Int64) { }
 
-    var models: Value<ArticleListModel> = mutableValue(
-        ArticleListModel(
+    var models: Value<ArticleListComponentModel> = mutableValue(
+        ArticleListComponentModel(
             articles: [
-                ArticleListArticle(id: 1, title: "Test Title 1"),
-                ArticleListArticle(id: 2, title: "Test Title 2"),
-                ArticleListArticle(id: 3, title: "Test Title 3")
+                ArticleListComponentArticle(id: 1, title: "Test Title 1"),
+                ArticleListComponentArticle(id: 2, title: "Test Title 2"),
+                ArticleListComponentArticle(id: 3, title: "Test Title 3")
             ],
             selectedArticleId: 1
         )
