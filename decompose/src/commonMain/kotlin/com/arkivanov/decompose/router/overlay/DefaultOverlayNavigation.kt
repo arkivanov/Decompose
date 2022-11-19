@@ -3,13 +3,7 @@ package com.arkivanov.decompose.router.overlay
 import com.arkivanov.decompose.Relay
 import com.arkivanov.decompose.router.overlay.OverlayNavigationSource.Event
 
-/**
- * Returns a default implementation of [OverlayNavigation].
- * Broadcasts navigation events to all subscribed observers.
- */
-fun <C : Any> OverlayNavigation(): OverlayNavigation<C> = OverlayNavigationImpl()
-
-private class OverlayNavigationImpl<C : Any> : OverlayNavigation<C> {
+internal class DefaultOverlayNavigation<C : Any> : OverlayNavigation<C> {
 
     private val relay = Relay<Event<C>>()
 
