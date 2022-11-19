@@ -3,14 +3,7 @@ package com.arkivanov.decompose.router.stack
 import com.arkivanov.decompose.Relay
 import com.arkivanov.decompose.router.stack.StackNavigationSource.Event
 
-/**
- * Returns a default implementation of [StackNavigation].
- * Broadcasts navigation events to all subscribed observers.
- */
-@Suppress("FunctionName") // Factory function
-fun <C : Any> StackNavigation(): StackNavigation<C> = StackNavigationImpl()
-
-private class StackNavigationImpl<C : Any> : StackNavigation<C> {
+internal class DefaultStackNavigation<C : Any> : StackNavigation<C> {
 
     private val relay = Relay<Event<C>>()
 
