@@ -13,11 +13,22 @@ import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DefaultFeatureInstaller
-import com.arkivanov.sample.shared.root.RootComponent
+import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootContent
-import kotlinx.cinterop.*
-import platform.UIKit.*
-import platform.Foundation.*
+import kotlinx.cinterop.ObjCObjectBase
+import kotlinx.cinterop.autoreleasepool
+import kotlinx.cinterop.cstr
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.toCValues
+import platform.Foundation.NSStringFromClass
+import platform.UIKit.UIApplication
+import platform.UIKit.UIApplicationDelegateProtocol
+import platform.UIKit.UIApplicationDelegateProtocolMeta
+import platform.UIKit.UIApplicationMain
+import platform.UIKit.UIResponder
+import platform.UIKit.UIResponderMeta
+import platform.UIKit.UIScreen
+import platform.UIKit.UIWindow
 
 fun main() {
     val args = emptyArray<String>()
@@ -39,7 +50,7 @@ class SkikoAppDelegate : UIResponder, UIApplicationDelegateProtocol {
     private val lifecycle = LifecycleRegistry()
 
     private val root =
-        RootComponent(
+        DefaultRootComponent(
             componentContext = DefaultComponentContext(lifecycle = lifecycle),
             featureInstaller = DefaultFeatureInstaller,
         )
@@ -55,11 +66,10 @@ class SkikoAppDelegate : UIResponder, UIApplicationDelegateProtocol {
         window!!.rootViewController = Application("Minesweeper") {
             Column {
                 // To skip upper part of screen.
-                Box(modifier = Modifier
-                    .height(100.dp))
+                Box(modifier = Modifier.height(100.dp))
 
                 RootContent(
-                    root = root,
+                    component = root,
                     modifier = Modifier.weight(1F).fillMaxWidth(),
                 )
             }
