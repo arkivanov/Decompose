@@ -9,6 +9,7 @@ import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.decompose.R
@@ -31,14 +32,15 @@ class StackRouterView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private var currentChild: ActiveChild? = null
+    private var currentStack: ChildStack<*, *>? = null
+    private var currentChild: ActiveChild<*, *>? = null
     private val inactiveChildren = HashMap<String, InactiveChild>()
     private var savedState: Bundle? = null
 
     fun <C : Any, T : Any> children(
         stack: Value<ChildStack<C, T>>,
         lifecycle: Lifecycle,
-        replaceChildView: ViewContext.(parent: ViewGroup, child: T, configuration: C) -> Unit
+        replaceChildView: ViewContext.(parent: ViewGroup, newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>?) -> Unit,
     ) {
         stack.observe(lifecycle) {
             onStackChanged(it, lifecycle, replaceChildView)
@@ -96,29 +98,34 @@ class StackRouterView @JvmOverloads constructor(
     private fun <C : Any, T : Any> onStackChanged(
         stack: ChildStack<C, T>,
         lifecycle: Lifecycle,
-        replaceChildView: ViewContext.(ViewGroup, T, C) -> Unit
+        replaceChildView:  ViewContext.(parent: ViewGroup, newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>?) -> Unit,
     ) {
         val activeChild = stack.active
-        val currentChild: ActiveChild? = currentChild
 
-        if (currentChild?.configuration === activeChild.configuration) {
+        @Suppress("UNCHECKED_CAST")
+        val currentStack = currentStack as ChildStack<C, T>?
+
+        @Suppress("UNCHECKED_CAST")
+        val currentChild = currentChild as ActiveChild<C, T>?
+
+        if (currentChild?.child?.configuration == activeChild.configuration) {
             return
         }
 
         val currentChildView = currentChild?.let { findChildView(it.key) }
 
-        if ((currentChildView != null) && stack.backStack.any { it.configuration === currentChild.configuration }) {
-            inactiveChildren[currentChild.key] = InactiveChild(currentChild.configuration, currentChildView.saveHierarchyState())
+        if ((currentChildView != null) && stack.backStack.any { it.configuration == currentChild.child.configuration }) {
+            inactiveChildren[currentChild.key] = InactiveChild(currentChild.child.configuration, currentChildView.saveHierarchyState())
         }
         currentChild?.lifecycle?.destroy()
 
         val childViewLifecycle = LifecycleRegistry()
         val viewContext = DefaultViewContext(this, MergedLifecycle(lifecycle, childViewLifecycle))
-        viewContext.replaceChildView(this, activeChild.instance, activeChild.configuration)
+        viewContext.replaceChildView(this, stack, currentStack)
 
         val newChildView = findNewChildView()
 
-        val activeChildKey = activeChild.configuration.toString()
+        val activeChildKey = activeChild.configuration.hashCode().toString()
 
         newChildView.key = activeChildKey
 
@@ -136,7 +143,8 @@ class StackRouterView @JvmOverloads constructor(
 
         childViewLifecycle.resume()
 
-        this.currentChild = ActiveChild(activeChildKey, activeChild.configuration, childViewLifecycle)
+        this.currentStack = stack
+        this.currentChild = ActiveChild(activeChildKey, activeChild, childViewLifecycle)
 
         inactiveChildren.values.removeAll { child ->
             stack.backStack.none { it.configuration === child.configuration }
@@ -149,9 +157,9 @@ class StackRouterView @JvmOverloads constructor(
                 .also(::saveHierarchyState)
     }
 
-    private class ActiveChild(
+    private class ActiveChild<out C : Any, out T : Any>(
         val key: String,
-        val configuration: Any,
+        val child: Child<C, T>,
         val lifecycle: LifecycleRegistry
     )
 

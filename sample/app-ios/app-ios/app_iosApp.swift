@@ -24,15 +24,15 @@ struct app_iosApp: App {
 
 private class RootHolder : ObservableObject {
     let lifecycle: LifecycleRegistry
-    let root: Root
+    let root: RootComponent
     
     init() {
         lifecycle = LifecycleRegistryKt.LifecycleRegistry()
         
-        root = RootComponent(
+        root = DefaultRootComponent(
             componentContext: DefaultComponentContext(lifecycle: lifecycle),
             featureInstaller: DefaultFeatureInstaller.shared,
-            deepLink: RootComponentDeepLinkNone.shared,
+            deepLink: DefaultRootComponentDeepLinkNone.shared,
             webHistoryController: nil
         )
         

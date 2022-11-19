@@ -2,8 +2,8 @@ package com.arkivanov.sample.shared.multipane
 
 import com.arkivanov.sample.shared.RProps
 import com.arkivanov.sample.shared.componentContent
-import com.arkivanov.sample.shared.multipane.MultiPane.DetailsChild
-import com.arkivanov.sample.shared.multipane.MultiPane.ListChild
+import com.arkivanov.sample.shared.multipane.MultiPaneComponent.DetailsChild
+import com.arkivanov.sample.shared.multipane.MultiPaneComponent.ListChild
 import com.arkivanov.sample.shared.multipane.details.ArticleDetailsContent
 import com.arkivanov.sample.shared.multipane.list.ArticleListContent
 import com.arkivanov.sample.shared.useAsState
@@ -22,7 +22,7 @@ import react.useEffectOnce
 
 private const val MULTI_PANE_WIDTH_THRESHOLD = 960
 
-val MultiPaneContent: FC<RProps<MultiPane>> = FC { props ->
+val MultiPaneContent: FC<RProps<MultiPaneComponent>> = FC { props ->
     val model by props.component.models.useAsState()
     val listChildStack by props.component.listChildStack.useAsState()
     val detailsChildStack by props.component.detailsChildStack.useAsState()

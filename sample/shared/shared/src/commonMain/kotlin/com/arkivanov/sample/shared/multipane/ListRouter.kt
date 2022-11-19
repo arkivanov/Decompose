@@ -10,10 +10,10 @@ import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
-import com.arkivanov.sample.shared.multipane.MultiPane.ListChild
+import com.arkivanov.sample.shared.multipane.MultiPaneComponent.ListChild
 import com.arkivanov.sample.shared.multipane.database.ArticleDatabase
-import com.arkivanov.sample.shared.multipane.list.ArticleList
 import com.arkivanov.sample.shared.multipane.list.ArticleListComponent
+import com.arkivanov.sample.shared.multipane.list.DefaultArticleListComponent
 import com.badoo.reaktive.observable.Observable
 
 internal class ListRouter(
@@ -39,8 +39,8 @@ internal class ListRouter(
             is Config.None -> ListChild.None
         }
 
-    private fun articleList(componentContext: ComponentContext): ArticleList =
-        ArticleListComponent(
+    private fun articleList(componentContext: ComponentContext): ArticleListComponent =
+        DefaultArticleListComponent(
             componentContext = componentContext,
             database = database,
             selectedArticleId = selectedArticleId,

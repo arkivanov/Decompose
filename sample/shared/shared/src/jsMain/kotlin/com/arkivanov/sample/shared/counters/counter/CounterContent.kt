@@ -1,6 +1,8 @@
 package com.arkivanov.sample.shared.counters.counter
 
 import com.arkivanov.sample.shared.RProps
+import com.arkivanov.sample.shared.componentContent
+import com.arkivanov.sample.shared.dialog.DialogComponentContent
 import com.arkivanov.sample.shared.useAsState
 import csstype.AlignItems
 import csstype.BoxSizing
@@ -16,7 +18,7 @@ import mui.system.ResponsiveStyleValue
 import mui.system.sx
 import react.FC
 
-internal val CounterContent: FC<RProps<Counter>> = FC { props ->
+internal val CounterContent: FC<RProps<CounterComponent>> = FC { props ->
     val model by props.component.model.useAsState()
 
     Paper {
@@ -41,6 +43,14 @@ internal val CounterContent: FC<RProps<Counter>> = FC { props ->
             Button {
                 variant = ButtonVariant.contained
                 color = ButtonColor.primary
+                onClick = { props.component.onInfoClicked() }
+
+                +"Info"
+            }
+
+            Button {
+                variant = ButtonVariant.contained
+                color = ButtonColor.primary
                 onClick = { props.component.onNextClicked() }
 
                 +"Next"
@@ -54,5 +64,10 @@ internal val CounterContent: FC<RProps<Counter>> = FC { props ->
                 +"Prev"
             }
         }
+    }
+
+    val dialogOverlay by props.component.dialogOverlay.useAsState()
+    dialogOverlay.overlay?.instance?.also { dialog ->
+        componentContent(component = dialog, content = DialogComponentContent)
     }
 }

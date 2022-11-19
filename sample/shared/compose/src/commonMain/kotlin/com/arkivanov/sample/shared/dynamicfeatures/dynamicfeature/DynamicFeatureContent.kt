@@ -12,28 +12,31 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeatureContent
+import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeatureComponent.Child.ErrorChild
+import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeatureComponent.Child.FeatureChild
+import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeatureComponent.Child.LoadingChild
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun <T : Any> DynamicFeatureContent(
-    dynamicFeature: DynamicFeature<T>,
+    component: DynamicFeatureComponent<T>,
     modifier: Modifier = Modifier,
     contentSupplier: () -> DynamicFeatureContent<T>,
 ) {
     Children(
-        stack = dynamicFeature.childStack,
+        stack = component.childStack,
         modifier = modifier,
         animation = stackAnimation(fade()),
     ) {
         when (val child = it.instance) {
-            is DynamicFeature.Child.Loading -> Loading(name = child.name, modifier = Modifier.fillMaxSize())
+            is LoadingChild -> Loading(name = child.name, modifier = Modifier.fillMaxSize())
 
-            is DynamicFeature.Child.Feature -> {
+            is FeatureChild -> {
                 val content = remember(contentSupplier)
                 content(component = child.feature, modifier = Modifier.fillMaxSize())
             }
 
-            is DynamicFeature.Child.Error -> Error(name = child.name, modifier = Modifier.fillMaxSize())
+            is ErrorChild -> Error(name = child.name, modifier = Modifier.fillMaxSize())
         }.let {}
     }
 }

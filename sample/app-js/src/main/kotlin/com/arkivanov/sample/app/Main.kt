@@ -7,7 +7,7 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DefaultFeatureInstaller
-import com.arkivanov.sample.shared.root.RootComponent
+import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootContent
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -20,10 +20,10 @@ fun main() {
     val lifecycle = LifecycleRegistry()
 
     val root =
-        RootComponent(
+        DefaultRootComponent(
             componentContext = DefaultComponentContext(lifecycle = lifecycle),
             featureInstaller = DefaultFeatureInstaller,
-            deepLink = RootComponent.DeepLink.Web(path = window.location.pathname),
+            deepLink = DefaultRootComponent.DeepLink.Web(path = window.location.pathname),
             webHistoryController = DefaultWebHistoryController(),
         )
 

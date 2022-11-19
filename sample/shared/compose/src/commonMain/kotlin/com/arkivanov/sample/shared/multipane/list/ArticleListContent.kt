@@ -17,10 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.sample.shared.multipane.list.ArticleListComponent.Model
 
 @Composable
-internal fun ArticleListContent(component: ArticleList, modifier: Modifier = Modifier) {
-    val model: ArticleList.Model by component.models.subscribeAsState()
+internal fun ArticleListContent(component: ArticleListComponent, modifier: Modifier = Modifier) {
+    val model: Model by component.models.subscribeAsState()
 
     LazyColumn(modifier = modifier.fillMaxSize()) {
         items(model.articles) { article ->

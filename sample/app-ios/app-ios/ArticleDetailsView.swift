@@ -9,14 +9,14 @@ import SwiftUI
 import Shared
 
 struct ArticleDetailsView: View {
-    private let component: ArticleDetails
+    private let component: ArticleDetailsComponent
     
     @ObservedObject
-    private var observableModel: ObservableValue<ArticleDetailsModel>
+    private var observableModel: ObservableValue<ArticleDetailsComponentModel>
     
-    private var model: ArticleDetailsModel { observableModel.value }
+    private var model: ArticleDetailsComponentModel { observableModel.value }
     
-    init(_ component: ArticleDetails) {
+    init(_ component: ArticleDetailsComponent) {
         self.component = component
         observableModel = ObservableValue(component.models)
     }
@@ -34,7 +34,7 @@ struct ArticleDetailsView: View {
                         .aspectRatio(contentMode: .fit)
                         .imageScale(.large)
                         .foregroundColor(.blue)
-                        .onTapGesture { component.onCloseClicked() }
+                        .onTapGesture(perform: component.onCloseClicked)
                 )
             }
         } else {
@@ -57,17 +57,17 @@ struct DetailsTextView: View {
 
 struct DetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleDetailsView(ArticleDetailsPreview())
+        ArticleDetailsView(PreviewArticleDetailsComponent())
     }
 }
 
-class ArticleDetailsPreview: ArticleDetails {
+class PreviewArticleDetailsComponent: ArticleDetailsComponent {
     func onCloseClicked() {}
     
-    var models: Value<ArticleDetailsModel> = mutableValue(
-        ArticleDetailsModel(
+    var models: Value<ArticleDetailsComponentModel> = mutableValue(
+        ArticleDetailsComponentModel(
             isToolbarVisible: false,
-            article: ArticleDetailsArticle(
+            article: ArticleDetailsComponentArticle(
                 title: "You can use this approach to create loops of any type. For example, this code ", text: "You can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each color name and color value:, u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each , u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each "
             )
         )
