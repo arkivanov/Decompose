@@ -16,32 +16,37 @@ struct CounterView: View {
     
     @ObservedObject
     private var dialogOverlay: ObservableValue<ChildOverlay<AnyObject, DialogComponent>>
-
+    
     private var model: CounterComponentModel { observableModel.value }
-
+    
     init(_ counter: CounterComponent) {
         self.counter = counter
         observableModel = ObservableValue(counter.model)
         dialogOverlay = ObservableValue(counter.dialogOverlay)
     }
-
+    
     var body: some View {
-        VStack(spacing: 8) {
-            Text(model.title)
-                .font(.title)
-            
-            Text(model.text)
-           
-            Button("Info", action: counter.onInfoClicked)
-            
-            Button("Next", action: counter.onNextClicked)
-            
-            Button("Prev", action: counter.onPrevClicked)
-                .disabled(!model.isBackEnabled)
+        NavigationView {
+            VStack(alignment: .center, spacing: 8) {
+                Text(model.text)
+                
+                Button("Info", action: counter.onInfoClicked)
+                
+                Button("Next", action: counter.onNextClicked)
+                
+                Button("Prev", action: counter.onPrevClicked)
+                    .disabled(!model.isBackEnabled)
+            }
+            .navigationBarTitle(model.title, displayMode: .inline)
+            .navigationBarItems(
+                leading: !model.isBackEnabled ? nil :
+                    Image(systemName: "arrow.backward")
+                    .aspectRatio(contentMode: .fit)
+                    .imageScale(.large)
+                    .foregroundColor(.blue)
+                    .onTapGesture(perform: counter.onPrevClicked)
+            )
         }
-        .padding()
-        .frame(width: 180)
-        .border(Color.black, width: 2)
         .alert(
             item: dialogOverlay.value.overlay?.instance,
             onDismiss: { $0.onDismissClicked() },
@@ -89,7 +94,7 @@ class PreviewCounterComponent : CounterComponent {
     )
     
     let dialogOverlay: Value<ChildOverlay<AnyObject, DialogComponent>> =
-        mutableValue(ChildOverlay(overlay: nil))
+    mutableValue(ChildOverlay(overlay: nil))
     
     func onInfoClicked() {}
     func onNextClicked() {}
