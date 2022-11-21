@@ -14,6 +14,8 @@ struct CountersView: View {
     @ObservedObject
     private var childStack: ObservableValue<ChildStack<AnyObject, CounterComponent>>
 
+    private var components: [CounterComponent] { childStack.value.items.map { $0.instance! } }
+
     private var activeChild: CounterComponent { childStack.value.active.instance }
 
     init(_ counters: CountersComponent) {
@@ -22,7 +24,9 @@ struct CountersView: View {
     }
 
     var body: some View {
-        CounterView(childStack.value.active.instance)
+        ChildStackView(components: components, backAction: counters.onPrev) {
+            CounterView($0)
+        }
     }
 }
 
@@ -35,4 +39,5 @@ struct CountersView_Previews: PreviewProvider {
 class PreviewCountersComponent : CountersComponent {
     let childStack: Value<ChildStack<AnyObject, CounterComponent>> =
         simpleChildStack(PreviewCounterComponent())
+    func onPrev() {}
 }

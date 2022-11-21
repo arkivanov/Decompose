@@ -7,4 +7,5 @@ import com.arkivanov.sample.shared.counters.counter.CounterComponent
 interface CountersComponent {
 
     val childStack: Value<ChildStack<*, CounterComponent>>
+    fun onPrev()
 }

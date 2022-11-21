@@ -23,6 +23,8 @@ internal class DefaultCountersComponent(
 
     override val childStack: Value<ChildStack<*, CounterComponent>> get() = _childStack
 
+    override fun onPrev() = navigation.pop()
+
     private fun child(
         config: Config,
         componentContext: ComponentContext,
