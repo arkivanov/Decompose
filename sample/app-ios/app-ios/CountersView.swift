@@ -15,6 +15,7 @@ struct CountersView: View {
     private var childStack: ObservableValue<ChildStack<AnyObject, CounterComponent>>
 
     private var components: [CounterComponent] { childStack.value.items.map { $0.instance! } }
+    private var componentIndexes: [Int] { components.enumerated().map { $0.offset } }
 
     private var activeChild: CounterComponent { childStack.value.active.instance }
 
@@ -24,8 +25,18 @@ struct CountersView: View {
     }
 
     var body: some View {
-        ChildStackView(components: components, backAction: counters.onPrev) {
-            CounterView($0)
+        if #available(iOS 16, *) {
+            let pathBinding = Binding(get: { componentIndexes.dropFirst() },  set: { _ in activeChild.onPrevClicked() })
+            NavigationStack(path: pathBinding) {
+                CounterView(components[0])
+                        .navigationDestination(for: Int.self) {
+                            CounterView(components[$0])
+                        }
+            }
+        } else {
+            ChildStackView(components: components, backAction: activeChild.onPrevClicked) {
+                CounterView($0)
+            }
         }
     }
 }
