@@ -1,10 +1,10 @@
 import SwiftUI
 import UIKit
+import Shared
 
-struct ChildStackView<Component: AnyObject, Content: View>: UIViewControllerRepresentable {
-    var components: [Component]
-    var backAction: () -> Void
-    var renderBody: (Component) -> Content
+struct CountersStackView<Content: View>: UIViewControllerRepresentable {
+    var components: [CounterComponent]
+    var renderBody: (CounterComponent) -> Content
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -22,24 +22,26 @@ struct ChildStackView<Component: AnyObject, Content: View>: UIViewControllerRepr
         navigationController.setViewControllers(context.coordinator.viewControllers, animated: true)
     }
 
-    private func createViewController(_ component: Component, _ coordinator: Coordinator? = nil) -> NavigationItemHostingController<Content> {
+    private func createViewController(_ component: CounterComponent) -> NavigationItemHostingController<Content> {
         let controller = NavigationItemHostingController(rootView: renderBody(component))
-        controller.coordinator = coordinator
+        controller.stackView = self
+        controller.component = component
+        controller.navigationItem.title = component.model.value.title
         return controller
     }
 
     class Coordinator: NSObject {
-        var parent: ChildStackView<Component, Content>
+        var parent: CountersStackView<Content>
         var viewControllers: [NavigationItemHostingController<Content>]
-        var preservedComponents: [Component]
+        var preservedComponents: [CounterComponent]
 
-        init(_ parent: ChildStackView<Component, Content>) {
+        init(_ parent: CountersStackView<Content>) {
             self.parent = parent
             preservedComponents = parent.components
             viewControllers = parent.components.map { parent.createViewController($0) }
         }
 
-        func syncChanges(_ parent: ChildStackView<Component, Content>) {
+        func syncChanges(_ parent: CountersStackView<Content>) {
             self.parent = parent
             let count = max(preservedComponents.count, parent.components.count)
 
@@ -47,9 +49,9 @@ struct ChildStackView<Component: AnyObject, Content: View>: UIViewControllerRepr
                 if (i >= parent.components.count) {
                     viewControllers.removeLast()
                 } else if (i >= preservedComponents.count) {
-                    viewControllers.append(parent.createViewController(parent.components[i], self))
+                    viewControllers.append(parent.createViewController(parent.components[i]))
                 } else if (parent.components[i] !== preservedComponents[i]) {
-                    viewControllers[i] = parent.createViewController(parent.components[i], self)
+                    viewControllers[i] = parent.createViewController(parent.components[i])
                 }
             }
 
@@ -58,16 +60,32 @@ struct ChildStackView<Component: AnyObject, Content: View>: UIViewControllerRepr
     }
 
     class NavigationItemHostingController<Content: View>: UIHostingController<Content> {
-        fileprivate(set) weak var coordinator: Coordinator?
+        fileprivate(set) var stackView: CountersStackView?
+        fileprivate(set) weak var component: CounterComponent?
 
         override func viewDidDisappear(_ animated: Bool) {
             super.viewDidDisappear(animated)
 
-            guard let coordinator = coordinator else { return }
-
-            if isMovingFromParent && coordinator.viewControllers.last === self {
-                coordinator.parent.backAction()
+            if isMovingFromParent && stackView?.components.last === component {
+                component?.onPrevClicked()
             }
         }
     }
 }
+
+// stubs for XCode < 14:
+#if compiler(<5.7)
+struct NavigationStack<Path, Root>: View {
+    var path: Path
+    @ViewBuilder var root: () -> Root
+    var body: some View {
+        EmptyView()
+    }
+}
+
+extension View {
+    public func navigationDestination<D, C>(for data: D.Type, @ViewBuilder destination: @escaping (D) -> C) -> some View where D: Hashable, C: View {
+        EmptyView()
+    }
+}
+#endif

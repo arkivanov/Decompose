@@ -26,7 +26,7 @@ struct CountersView: View {
 
     var body: some View {
         if #available(iOS 16, *) {
-            let pathBinding = Binding(get: { componentIndexes.dropFirst() },  set: { _ in activeChild.onPrevClicked() })
+            let pathBinding = Binding(get: { componentIndexes.dropFirst() }, set: { _ in activeChild.onPrevClicked() })
             NavigationStack(path: pathBinding) {
                 CounterView(components[0])
                         .navigationDestination(for: Int.self) {
@@ -34,7 +34,7 @@ struct CountersView: View {
                         }
             }
         } else {
-            ChildStackView(components: components, backAction: activeChild.onPrevClicked) {
+            CountersStackView(components: components) {
                 CounterView($0)
             }
         }
@@ -47,8 +47,7 @@ struct CountersView_Previews: PreviewProvider {
     }
 }
 
-class PreviewCountersComponent : CountersComponent {
+class PreviewCountersComponent: CountersComponent {
     let childStack: Value<ChildStack<AnyObject, CounterComponent>> =
-        simpleChildStack(PreviewCounterComponent())
-    func onPrev() {}
+            simpleChildStack(PreviewCounterComponent())
 }

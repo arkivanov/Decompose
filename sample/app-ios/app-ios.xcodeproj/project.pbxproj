@@ -20,7 +20,7 @@
 		798DB856282F0E6F0072CCBD /* MultiPaneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB855282F0E6F0072CCBD /* MultiPaneView.swift */; };
 		798DB858282F0EDF0072CCBD /* ArticleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB857282F0EDF0072CCBD /* ArticleListView.swift */; };
 		798DB85A282F11800072CCBD /* ArticleDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB859282F11800072CCBD /* ArticleDetailsView.swift */; };
-		B308A81878CCE92C321B927F /* ChildStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308A300355A5948E5DC6CB8 /* ChildStackView.swift */; };
+		B308A81878CCE92C321B927F /* CountersStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308A300355A5948E5DC6CB8 /* CountersStackView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,7 +38,7 @@
 		798DB855282F0E6F0072CCBD /* MultiPaneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPaneView.swift; sourceTree = "<group>"; };
 		798DB857282F0EDF0072CCBD /* ArticleListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleListView.swift; sourceTree = "<group>"; };
 		798DB859282F11800072CCBD /* ArticleDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleDetailsView.swift; sourceTree = "<group>"; };
-		B308A300355A5948E5DC6CB8 /* ChildStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChildStackView.swift; sourceTree = "<group>"; };
+		B308A300355A5948E5DC6CB8 /* CountersStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountersStackView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +84,7 @@
 				798DB855282F0E6F0072CCBD /* MultiPaneView.swift */,
 				798DB857282F0EDF0072CCBD /* ArticleListView.swift */,
 				798DB859282F11800072CCBD /* ArticleDetailsView.swift */,
-				B308A300355A5948E5DC6CB8 /* ChildStackView.swift */,
+				B308A300355A5948E5DC6CB8 /* CountersStackView.swift */,
 			);
 			path = "app-ios";
 			sourceTree = "<group>";
@@ -199,7 +199,7 @@
 				798DB852282F096C0072CCBD /* CountersView.swift in Sources */,
 				798DB85A282F11800072CCBD /* ArticleDetailsView.swift in Sources */,
 				798DB84A282F08670072CCBD /* CounterView.swift in Sources */,
-				B308A81878CCE92C321B927F /* ChildStackView.swift in Sources */,
+				B308A81878CCE92C321B927F /* CountersStackView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
