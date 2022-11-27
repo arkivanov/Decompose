@@ -10,9 +10,7 @@ import com.arkivanov.decompose.router.children.SimpleNavigation
 import com.arkivanov.decompose.router.children.children
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.parcelable.Parcelize
-import com.arkivanov.essenty.parcelable.consumeRequired
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent.Children
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent.Mode
 import com.arkivanov.sample.shared.customnavigation.KittenComponent.ImageType
@@ -24,8 +22,8 @@ class DefaultCustomNavigationComponent(
 
     private val navigation = SimpleNavigation<(NavigationState) -> NavigationState>()
 
-    private val _children =
-        children<Config, KittenComponent, (NavigationState) -> NavigationState, NavigationState, Children<Config, KittenComponent>>(
+    private val _children: Value<Children<Config, KittenComponent>> =
+        children(
             source = navigation,
             key = "carousel",
             initialNavState = {
@@ -37,8 +35,6 @@ class DefaultCustomNavigationComponent(
                     mode = Mode.CAROUSEL,
                 )
             },
-            saveNavState = ::ParcelableContainer,
-            restoreNavState = { it.consumeRequired(NavigationState::class) },
             navTransformer = { navState, transformer -> transformer(navState) },
             onEventComplete = { _, _, _ -> },
             backTransformer = {
