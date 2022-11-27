@@ -32,5 +32,9 @@ Different kinds of navigation may have additional requirements for configuration
 
 Decompose uses [Essenty](https://github.com/arkivanov/Essenty) library, which provides both `Parcelable` interface and `@Parcelize` annotation in common code using expect/actual, which works well with Kotlin Multiplatform. Please familiarise yourself with Essenty library.
 
+#### Android target
+
+If you support the `android` target, make sure you have applied [kotlin-parcelize](https://developer.android.com/kotlin/parcelize) Gradle plugin. Otherwise, your code won't compile for Android.
+
 !!!warning
     On Android the amount of data that can be preserved is [limited](https://developer.android.com/guide/components/activities/parcelables-and-bundles). Please mind the size of configurations.
