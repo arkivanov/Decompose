@@ -11,6 +11,7 @@ struct CountersStackView<Content: View>: UIViewControllerRepresentable {
     }
 
     func makeUIViewController(context: Context) -> UINavigationController {
+        context.coordinator.syncChanges(self)
         let navigationController = UINavigationController(
                 rootViewController: context.coordinator.viewControllers.first!)
 
@@ -22,9 +23,9 @@ struct CountersStackView<Content: View>: UIViewControllerRepresentable {
         navigationController.setViewControllers(context.coordinator.viewControllers, animated: true)
     }
 
-    private func createViewController(_ component: CounterComponent) -> NavigationItemHostingController<Content> {
+    private func createViewController(_ component: CounterComponent, _ coordinator: Coordinator) -> NavigationItemHostingController<Content> {
         let controller = NavigationItemHostingController(rootView: renderBody(component))
-        controller.stackView = self
+        controller.coordinator = coordinator
         controller.component = component
         controller.navigationItem.title = component.model.value.title
         return controller
@@ -32,13 +33,11 @@ struct CountersStackView<Content: View>: UIViewControllerRepresentable {
 
     class Coordinator: NSObject {
         var parent: CountersStackView<Content>
-        var viewControllers: [NavigationItemHostingController<Content>]
-        var preservedComponents: [CounterComponent]
+        var viewControllers = [NavigationItemHostingController<Content>]()
+        var preservedComponents = [CounterComponent]()
 
         init(_ parent: CountersStackView<Content>) {
             self.parent = parent
-            preservedComponents = parent.components
-            viewControllers = parent.components.map { parent.createViewController($0) }
         }
 
         func syncChanges(_ parent: CountersStackView<Content>) {
@@ -49,9 +48,9 @@ struct CountersStackView<Content: View>: UIViewControllerRepresentable {
                 if (i >= parent.components.count) {
                     viewControllers.removeLast()
                 } else if (i >= preservedComponents.count) {
-                    viewControllers.append(parent.createViewController(parent.components[i]))
+                    viewControllers.append(parent.createViewController(parent.components[i], self))
                 } else if (parent.components[i] !== preservedComponents[i]) {
-                    viewControllers[i] = parent.createViewController(parent.components[i])
+                    viewControllers[i] = parent.createViewController(parent.components[i], self)
                 }
             }
 
@@ -60,13 +59,13 @@ struct CountersStackView<Content: View>: UIViewControllerRepresentable {
     }
 
     class NavigationItemHostingController<Content: View>: UIHostingController<Content> {
-        fileprivate(set) var stackView: CountersStackView?
+        fileprivate(set) weak var coordinator: Coordinator?
         fileprivate(set) weak var component: CounterComponent?
 
         override func viewDidDisappear(_ animated: Bool) {
             super.viewDidDisappear(animated)
 
-            if isMovingFromParent && stackView?.components.last === component {
+            if isMovingFromParent && coordinator?.preservedComponents.last === component {
                 component?.onPrevClicked()
             }
         }
