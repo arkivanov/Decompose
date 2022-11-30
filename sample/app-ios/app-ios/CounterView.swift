@@ -26,27 +26,17 @@ struct CounterView: View {
     }
     
     var body: some View {
-        NavigationView {
-            VStack(alignment: .center, spacing: 8) {
-                Text(model.text)
-                
-                Button("Info", action: counter.onInfoClicked)
-                
-                Button("Next", action: counter.onNextClicked)
-                
-                Button("Prev", action: counter.onPrevClicked)
-                    .disabled(!model.isBackEnabled)
-            }
-            .navigationBarTitle(model.title, displayMode: .inline)
-            .navigationBarItems(
-                leading: !model.isBackEnabled ? nil :
-                    Image(systemName: "arrow.backward")
-                    .aspectRatio(contentMode: .fit)
-                    .imageScale(.large)
-                    .foregroundColor(.blue)
-                    .onTapGesture(perform: counter.onPrevClicked)
-            )
+        VStack(alignment: .center, spacing: 8) {
+            Text(model.text)
+
+            Button("Info", action: counter.onInfoClicked)
+
+            Button("Next", action: counter.onNextClicked)
+
+            Button("Prev", action: counter.onPrevClicked)
+                .disabled(!model.isBackEnabled)
         }
+        .navigationBarTitle(model.title, displayMode: .inline)
         .alert(
             item: dialogOverlay.value.overlay?.instance,
             onDismiss: { $0.onDismissClicked() },
