@@ -19,6 +19,7 @@ buildscript {
         classpath(deps.android.gradle)
         classpath(deps.jetbrains.compose.composeGradlePlug)
         classpath(deps.jetbrains.kotlinx.binaryCompatibilityValidator)
+        classpath(deps.parcelizeDarwin.gradlePlug)
     }
 }
 
