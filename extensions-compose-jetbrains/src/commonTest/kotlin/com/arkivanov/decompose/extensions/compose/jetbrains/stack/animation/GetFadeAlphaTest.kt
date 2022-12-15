@@ -1,6 +1,6 @@
 package com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation
 
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class GetFadeAlphaTest {
