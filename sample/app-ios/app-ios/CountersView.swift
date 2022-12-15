@@ -12,24 +12,31 @@ struct CountersView: View {
     private let counters: CountersComponent
 
     @ObservedObject
-    private var firstChildStack: ObservableValue<ChildStack<AnyObject, CounterComponent>>
+    private var childStack: ObservableValue<ChildStack<AnyObject, CounterComponent>>
 
-    @ObservedObject
-    private var secondChildStack: ObservableValue<ChildStack<AnyObject, CounterComponent>>
+    private var components: [CounterComponent] { childStack.value.items.filter { $0.instance != nil }.map { $0.instance! } }
+    private var componentWrappers: [StackComponent<CounterComponent>] { components.map { StackComponent($0) } }
 
-    private var firstActiveChild: CounterComponent { firstChildStack.value.active.instance }
-    private var secondActiveChild: CounterComponent { secondChildStack.value.active.instance }
+    private var activeChild: CounterComponent { childStack.value.active.instance }
 
     init(_ counters: CountersComponent) {
         self.counters = counters
-        firstChildStack = ObservableValue(counters.firstChildStack)
-        secondChildStack = ObservableValue(counters.secondChildStack)
+        childStack = ObservableValue(counters.childStack)
     }
 
     var body: some View {
-        VStack(spacing: 8) {
-            CounterView(firstChildStack.value.active.instance)
-            CounterView(secondChildStack.value.active.instance)
+        if #available(iOS 16, *) {
+            let pathBinding = Binding(get: { componentWrappers.dropFirst() }, set: { _ in activeChild.onPrevClicked() })
+            NavigationStack(path: pathBinding) {
+                CounterView(components[0])
+                        .navigationDestination(for: StackComponent<CounterComponent>.self) {
+                            CounterView($0.component)
+                        }
+            }
+        } else {
+            CountersStackView(components: components) {
+                CounterView($0)
+            }
         }
     }
 }
@@ -40,7 +47,7 @@ struct CountersView_Previews: PreviewProvider {
     }
 }
 
-class PreviewCountersComponent : CountersComponent {
-    let firstChildStack: Value<ChildStack<AnyObject, CounterComponent>> = simpleChildStack(PreviewCounterComponent())
-    let secondChildStack: Value<ChildStack<AnyObject, CounterComponent>> = simpleChildStack(PreviewCounterComponent())
+class PreviewCountersComponent: CountersComponent {
+    let childStack: Value<ChildStack<AnyObject, CounterComponent>> =
+            simpleChildStack(PreviewCounterComponent())
 }

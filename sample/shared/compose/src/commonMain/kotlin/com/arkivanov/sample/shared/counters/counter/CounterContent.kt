@@ -1,20 +1,20 @@
 package com.arkivanov.sample.shared.counters.counter
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.decompose.router.overlay.ChildOverlay
@@ -29,17 +29,24 @@ internal fun CounterContent(component: CounterComponent, modifier: Modifier = Mo
     val model by component.model.subscribeAsState()
 
     Column(
-        modifier = modifier
-            .border(BorderStroke(width = 1.dp, color = Color.Black))
-            .padding(16.dp),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            text = model.title,
-            style = MaterialTheme.typography.h5,
+        TopAppBar(
+            title = { Text(text = model.title) },
+            navigationIcon = model.isBackEnabled.takeIf { it }?.let {
+                {
+                    IconButton(onClick = component::onPrevClicked) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back button",
+                        )
+                    }
+                }
+            },
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.weight(1F))
 
         Text(text = model.text)
 
@@ -59,6 +66,8 @@ internal fun CounterContent(component: CounterComponent, modifier: Modifier = Mo
         ) {
             Text(text = "Prev")
         }
+
+        Spacer(modifier = Modifier.weight(1F))
     }
 
     val dialogOverlay by component.dialogOverlay.subscribeAsState()

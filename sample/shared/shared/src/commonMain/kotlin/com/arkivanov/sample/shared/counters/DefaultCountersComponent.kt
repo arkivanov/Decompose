@@ -1,11 +1,7 @@
 package com.arkivanov.sample.shared.counters
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.decompose.router.stack.StackNavigation
-import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.pop
-import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -16,31 +12,18 @@ internal class DefaultCountersComponent(
     componentContext: ComponentContext,
 ) : CountersComponent, ComponentContext by componentContext {
 
-    private val firstNavigation = StackNavigation<Config>()
+    private val navigation = StackNavigation<Config>()
 
-    private val firstStack =
+    private val _childStack =
         childStack(
-            source = firstNavigation,
+            source = navigation,
             initialConfiguration = Config(index = 0, isBackEnabled = false),
-            key = "FirstStack",
-            childFactory = ::firstChild,
+            childFactory = ::child,
         )
 
-    override val firstChildStack: Value<ChildStack<*, CounterComponent>> get() = firstStack
+    override val childStack: Value<ChildStack<*, CounterComponent>> get() = _childStack
 
-    private val secondNavigation = StackNavigation<Config>()
-
-    private val secondStack =
-        childStack(
-            source = secondNavigation,
-            initialConfiguration = Config(index = 0, isBackEnabled = false),
-            key = "SecondStack",
-            childFactory = ::secondChild,
-        )
-
-    override val secondChildStack: Value<ChildStack<*, CounterComponent>> get() = secondStack
-
-    private fun firstChild(
+    private fun child(
         config: Config,
         componentContext: ComponentContext,
     ): CounterComponent =
@@ -48,20 +31,8 @@ internal class DefaultCountersComponent(
             componentContext = componentContext,
             title = "Counter ${config.index}",
             isBackEnabled = config.isBackEnabled,
-            onNext = { firstNavigation.push(Config(index = config.index + 1, isBackEnabled = true)) },
-            onPrev = firstNavigation::pop,
-        )
-
-    private fun secondChild(
-        config: Config,
-        componentContext: ComponentContext,
-    ): CounterComponent =
-        DefaultCounterComponent(
-            componentContext = componentContext,
-            title = "Counter ${config.index}",
-            isBackEnabled = config.isBackEnabled,
-            onNext = { secondNavigation.push(Config(index = config.index + 1, isBackEnabled = true)) },
-            onPrev = secondNavigation::pop,
+            onNext = { navigation.push(Config(index = config.index + 1, isBackEnabled = true)) },
+            onPrev = navigation::pop,
         )
 
     @Parcelize

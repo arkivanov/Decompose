@@ -10,6 +10,7 @@ plugins {
     id("kotlin-multiplatform")
     id("com.android.library")
     id("kotlin-parcelize")
+    id("com.arkivanov.parcelize.darwin") // Optional, only if you need state preservation on Darwin (Apple) targets
     id("com.arkivanov.gradle.setup")
 }
 
@@ -30,6 +31,12 @@ kotlin {
                     baseName = "Shared"
                     export(project(":decompose"))
                     export(deps.essenty.lifecycle)
+
+                    // Optional, only if you need state preservation on Darwin (Apple) targets
+                    export(deps.essenty.stateKeeper)
+
+                    // Optional, only if you need state preservation on Darwin (Apple) targets
+                    export(deps.parcelizeDarwin.runtime)
                 }
             }
         }
@@ -46,6 +53,7 @@ kotlin {
             api(project(":decompose"))
             implementation(project(":sample:shared:dynamic-features:api"))
             api(deps.essenty.lifecycle)
+            api(deps.essenty.stateKeeper)
             implementation(deps.reaktive.reaktive)
         }
 

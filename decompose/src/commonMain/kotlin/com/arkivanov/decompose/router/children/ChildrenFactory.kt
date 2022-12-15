@@ -12,6 +12,7 @@ import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.parcelable.Parcelize
+import com.arkivanov.essenty.parcelable.consumeRequired
 import com.arkivanov.essenty.statekeeper.consume
 
 /**
@@ -132,6 +133,35 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
 
     return state
 }
+
+/**
+ * A convenience method for the main [children] method. Allows having [Parcelable] navigation state [N],
+ * so it's automatically saved and restored. This method can be used if the custom save/restore logic
+ * is not required.
+ */
+@ExperimentalDecomposeApi
+inline fun <C : Parcelable, T : Any, E : Any, reified N, S : Any> ComponentContext.children(
+    source: NavigationSource<E>,
+    key: String,
+    noinline initialNavState: () -> N,
+    noinline navTransformer: (navState: N, event: E) -> N,
+    noinline onEventComplete: (event: E, newNavState: N, oldNavState: N) -> Unit,
+    noinline backTransformer: (navState: N) -> (() -> N)?,
+    noinline stateMapper: (navState: N, children: List<Child<C, T>>) -> S,
+    noinline childFactory: (configuration: C, componentContext: ComponentContext) -> T,
+): Value<S> where N : NavState<C>, N : Parcelable =
+    children(
+        source = source,
+        key = key,
+        initialNavState = initialNavState,
+        saveNavState = { ParcelableContainer(it) },
+        restoreNavState = { it.consumeRequired(N::class) },
+        navTransformer = navTransformer,
+        onEventComplete = onEventComplete,
+        backTransformer = backTransformer,
+        stateMapper = stateMapper,
+        childFactory = childFactory,
+    )
 
 @Parcelize
 private class SavedState(
