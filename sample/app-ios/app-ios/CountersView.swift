@@ -14,7 +14,7 @@ struct CountersView: View {
     @ObservedObject
     private var childStack: ObservableValue<ChildStack<AnyObject, CounterComponent>>
 
-    private var components: [CounterComponent] { childStack.value.items.map { $0.instance! } }
+    private var components: [CounterComponent] { childStack.value.items.filter { $0.instance != nil }.map { $0.instance! } }
     private var componentWrappers: [StackComponent<CounterComponent>] { components.map { StackComponent($0) } }
 
     private var activeChild: CounterComponent { childStack.value.active.instance }
