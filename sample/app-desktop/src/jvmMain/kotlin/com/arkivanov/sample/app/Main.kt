@@ -20,8 +20,9 @@ import com.arkivanov.sample.shared.root.RootContent
 import com.badoo.reaktive.coroutinesinterop.asScheduler
 import com.badoo.reaktive.scheduler.overrideSchedulers
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@OptIn(ExperimentalDecomposeApi::class)
+@OptIn(ExperimentalDecomposeApi::class, ExperimentalCoroutinesApi::class)
 fun main() {
     overrideSchedulers(main = Dispatchers.Main::asScheduler)
 

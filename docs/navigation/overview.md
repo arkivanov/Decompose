@@ -2,10 +2,13 @@
 
 Decompose provides the ability to create [permanent child components](/Decompose/navigation/stack/overview/) using the `childStack` extension function. But if you need to dynamically switch child components, then navigation comes in handy.
 
-Currently, Decompose provides two ways to navigate:
+Currently, Decompose provides two predefined navigation models:
 
 - [Child Stack](/Decompose/navigation/stack/overview/) - prefer this way if you need to organize child components in a stack and navigate between them.
 - [Child Overlay](/Decompose/navigation/overlay/overview/) - prefer this way if you need to activate-dismiss a child component.
+
+If none of this fit your needs, Decompose introduces [Generic Navigation](https://arkivanov.github.io/Decompose/navigation/children/overview/) that can be used to create your own custom navigation models.
+It offers a flexible API and allows you to create almost any kind of navigation.
 
 ## Component configurations and child factories
 
@@ -28,6 +31,10 @@ Different kinds of navigation may have additional requirements for configuration
 `Configurations` can be persisted via Android's [saved state](https://developer.android.com/guide/components/activities/activity-lifecycle#save-simple,-lightweight-ui-state-using-onsaveinstancestate), thus allowing the navigation state to be restored after configuration changes or process death.
 
 Decompose uses [Essenty](https://github.com/arkivanov/Essenty) library, which provides both `Parcelable` interface and `@Parcelize` annotation in common code using expect/actual, which works well with Kotlin Multiplatform. Please familiarise yourself with Essenty library.
+
+#### Android target
+
+If you support the `android` target, make sure you have applied [kotlin-parcelize](https://developer.android.com/kotlin/parcelize) Gradle plugin. Otherwise, your code won't compile for Android.
 
 !!!warning
     On Android the amount of data that can be preserved is [limited](https://developer.android.com/guide/components/activities/parcelables-and-bundles). Please mind the size of configurations.

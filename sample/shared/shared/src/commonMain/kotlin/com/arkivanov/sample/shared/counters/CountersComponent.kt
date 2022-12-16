@@ -6,6 +6,5 @@ import com.arkivanov.sample.shared.counters.counter.CounterComponent
 
 interface CountersComponent {
 
-    val firstChildStack: Value<ChildStack<*, CounterComponent>>
-    val secondChildStack: Value<ChildStack<*, CounterComponent>>
+    val childStack: Value<ChildStack<*, CounterComponent>>
 }

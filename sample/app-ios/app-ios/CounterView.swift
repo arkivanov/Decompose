@@ -16,32 +16,27 @@ struct CounterView: View {
     
     @ObservedObject
     private var dialogOverlay: ObservableValue<ChildOverlay<AnyObject, DialogComponent>>
-
+    
     private var model: CounterComponentModel { observableModel.value }
-
+    
     init(_ counter: CounterComponent) {
         self.counter = counter
         observableModel = ObservableValue(counter.model)
         dialogOverlay = ObservableValue(counter.dialogOverlay)
     }
-
+    
     var body: some View {
-        VStack(spacing: 8) {
-            Text(model.title)
-                .font(.title)
-            
+        VStack(alignment: .center, spacing: 8) {
             Text(model.text)
-           
+
             Button("Info", action: counter.onInfoClicked)
-            
+
             Button("Next", action: counter.onNextClicked)
-            
+
             Button("Prev", action: counter.onPrevClicked)
                 .disabled(!model.isBackEnabled)
         }
-        .padding()
-        .frame(width: 180)
-        .border(Color.black, width: 2)
+        .navigationBarTitle(model.title, displayMode: .inline)
         .alert(
             item: dialogOverlay.value.overlay?.instance,
             onDismiss: { $0.onDismissClicked() },
@@ -89,7 +84,7 @@ class PreviewCounterComponent : CounterComponent {
     )
     
     let dialogOverlay: Value<ChildOverlay<AnyObject, DialogComponent>> =
-        mutableValue(ChildOverlay(overlay: nil))
+    mutableValue(ChildOverlay(overlay: nil))
     
     func onInfoClicked() {}
     func onNextClicked() {}

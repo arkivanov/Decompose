@@ -1,21 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.arkivanov.decompose.extensions.android.stack.StackRouterView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/router"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
-
-    <com.arkivanov.decompose.extensions.android.stack.StackRouterView
-        android:id="@+id/router_first"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Space
-        android:layout_width="16dp"
-        android:layout_height="16dp" />
-
-    <com.arkivanov.decompose.extensions.android.stack.StackRouterView
-        android:id="@+id/router_second"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+    android:layout_height="match_parent" />
