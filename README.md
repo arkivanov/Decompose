@@ -57,7 +57,7 @@ Additional resources:
 * Shared navigation logic
 * Lifecycle-aware components
 * Components in the back stack are not destroyed, they continue working in background without UI
-* Components and UI state preservation (mostly useful in Android)
+* State preservation (on Android and experimentally on Apple targets)
 * Instances retaining (aka ViewModels) over configuration changes (mostly useful in Android)
 
 ## Setup
