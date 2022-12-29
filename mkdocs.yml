@@ -17,6 +17,7 @@ nav:
   - Getting started:
     - Overview: index.md
     - Installation: getting-started/installation.md
+    - Quick start: getting-started/quick-start.md
     - License: getting-started/license.md
     - Contributing: getting-started/contributing.md
 

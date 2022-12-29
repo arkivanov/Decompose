@@ -20,7 +20,7 @@
 
 ---
 
-Decompose is a Kotlin Multiplatform library for breaking down your code into lifecycle-aware business logic components (aka BLoC), with routing functionality and pluggable UI (Jetpack Compose, Android Views, SwiftUI, JS React, etc.).
+Decompose is a Kotlin Multiplatform library for breaking down your code into tree-structured lifecycle-aware business logic components (aka BLoC), with routing functionality and pluggable UI (Jetpack Compose, Android Views, SwiftUI, JS React, etc.).
 
 Please see the [project website](https://arkivanov.github.io/Decompose/) for documentation and APIs. 
 
@@ -90,9 +90,13 @@ Here are some key concepts of the library, more details can be found in the docu
 
 <img src="docs/media/ComponentStructure.png" width="512">
 
+## Quick start
+
+Please refer to the [Quick start](https://arkivanov.github.io/Decompose/getting-started/quick-start/) section of the docs.
+
 ## Samples
 
-Check out the [project website](https://arkivanov.github.io/Decompose/samples/) for a full description of each sample.
+Check out the [Samples](https://arkivanov.github.io/Decompose/samples/) section of the docs for a full description of each sample.
 
 ## Articles
 
