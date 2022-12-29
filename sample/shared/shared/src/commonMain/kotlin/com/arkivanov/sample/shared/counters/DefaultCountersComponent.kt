@@ -18,6 +18,7 @@ internal class DefaultCountersComponent(
         childStack(
             source = navigation,
             initialConfiguration = Config(index = 0, isBackEnabled = false),
+            backStackRecreationDepth = Int.MAX_VALUE, // Useful for swipe navigation in SwiftUI after process death
             childFactory = ::child,
         )
 
