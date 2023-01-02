@@ -21,6 +21,8 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -211,10 +213,10 @@ class ChildStackIntegrationTest {
     }
 
     @Test
-    fun WHEN_recreated_THEN_stack_restored() {
+    fun GIVEN_persistent_WHEN_recreated_THEN_stack_restored() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
-        oldContext.childStack(initialStack = listOf(Config(1), Config(2)))
+        oldContext.childStack(initialStack = listOf(Config(1), Config(2)), persistent = true)
 
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
@@ -222,6 +224,20 @@ class ChildStackIntegrationTest {
         val newStack by newContext.childStack(initialStack = emptyList())
 
         newStack.assertStack(1 to null, 2 to 2)
+    }
+
+    @Test
+    fun GIVEN_not_persistent_WHEN_recreated_THEN_stack_not_restored() {
+        val oldStateKeeper = TestStateKeeperDispatcher()
+        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
+        oldContext.childStack(initialStack = listOf(Config(1), Config(2)), persistent = false)
+
+        val savedState = oldStateKeeper.save()
+        val newStateKeeper = TestStateKeeperDispatcher(savedState)
+        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
+        val newStack by newContext.childStack(initialStack = listOf(Config(1)))
+
+        newStack.assertStack(1 to 1)
     }
 
     @Test
@@ -239,10 +255,10 @@ class ChildStackIntegrationTest {
     }
 
     @Test
-    fun WHEN_recreated_THEN_state_restored_for_active_child() {
+    fun GIVEN_persistent_WHEN_recreated_THEN_state_restored_for_active_child() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
-        val oldStack by oldContext.childStack(initialStack = listOf(Config(1)))
+        val oldStack by oldContext.childStack(initialStack = listOf(Config(1)), persistent = true)
         oldStack.active.instance.stateKeeper.register(key = "key") { Config(10) }
 
         val savedState = oldStateKeeper.save()
@@ -252,6 +268,22 @@ class ChildStackIntegrationTest {
         val restoredState = newStack.active.instance.stateKeeper.consume<Config>(key = "key")
 
         assertEquals(Config(10), restoredState)
+    }
+
+    @Test
+    fun GIVEN_not_persistent_WHEN_recreated_THEN_state_not_restored_for_active_child() {
+        val oldStateKeeper = TestStateKeeperDispatcher()
+        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
+        val oldStack by oldContext.childStack(initialStack = listOf(Config(1)), persistent = false)
+        oldStack.active.instance.stateKeeper.register(key = "key") { Config(10) }
+
+        val savedState = oldStateKeeper.save()
+        val newStateKeeper = TestStateKeeperDispatcher(savedState)
+        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
+        val newStack by newContext.childStack(initialStack = listOf(Config(1)))
+        val restoredState = newStack.active.instance.stateKeeper.consume<Config>(key = "key")
+
+        assertNull(restoredState)
     }
 
     @Test
@@ -273,11 +305,11 @@ class ChildStackIntegrationTest {
     }
 
     @Test
-    fun WHEN_recreated_THEN_instance_retained_for_active_component() {
+    fun GIVEN_persistent_WHEN_recreated_THEN_instance_retained_for_active_component() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
-        val oldStack by oldContext.childStack(initialStack = listOf(Config(1)))
+        val oldStack by oldContext.childStack(initialStack = listOf(Config(1)), persistent = true)
         val oldInstance = oldStack.active.instance.instanceKeeper.getOrCreate(::TestInstance)
 
         val savedState = oldStateKeeper.save()
@@ -290,11 +322,28 @@ class ChildStackIntegrationTest {
     }
 
     @Test
-    fun WHEN_recreated_THEN_instance_not_destroyed_for_active_component() {
+    fun GIVEN_not_persistent_WHEN_recreated_THEN_instance_not_retained_for_active_component() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
-        val stack by oldContext.childStack(initialStack = listOf(Config(1)))
+        val oldStack by oldContext.childStack(initialStack = listOf(Config(1)), persistent = false)
+        val oldInstance = oldStack.active.instance.instanceKeeper.getOrCreate(::TestInstance)
+
+        val savedState = oldStateKeeper.save()
+        val newStateKeeper = TestStateKeeperDispatcher(savedState)
+        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
+        val newStack by newContext.childStack(initialStack = listOf(Config(1)))
+        val newInstance = newStack.active.instance.instanceKeeper.getOrCreate(::TestInstance)
+
+        assertNotSame(oldInstance, newInstance)
+    }
+
+    @Test
+    fun GIVEN_persistent_WHEN_recreated_THEN_instance_not_destroyed_for_active_component() {
+        val oldStateKeeper = TestStateKeeperDispatcher()
+        val instanceKeeper = InstanceKeeperDispatcher()
+        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
+        val stack by oldContext.childStack(initialStack = listOf(Config(1)), persistent = true)
         val instance = stack.active.instance.instanceKeeper.getOrCreate(::TestInstance)
 
         val savedState = oldStateKeeper.save()
@@ -303,6 +352,22 @@ class ChildStackIntegrationTest {
         newContext.childStack(initialStack = emptyList())
 
         assertFalse(instance.isDestroyed)
+    }
+
+    @Test
+    fun GIVEN_not_persistent_WHEN_recreated_THEN_instance_destroyed_for_active_component() {
+        val oldStateKeeper = TestStateKeeperDispatcher()
+        val instanceKeeper = InstanceKeeperDispatcher()
+        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
+        val stack by oldContext.childStack(initialStack = listOf(Config(1)), persistent = false)
+        val instance = stack.active.instance.instanceKeeper.getOrCreate(::TestInstance)
+
+        val savedState = oldStateKeeper.save()
+        val newStateKeeper = TestStateKeeperDispatcher(savedState)
+        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
+        newContext.childStack(initialStack = listOf(Config(1)))
+
+        assertTrue(instance.isDestroyed)
     }
 
     @Test
@@ -458,11 +523,13 @@ class ChildStackIntegrationTest {
 
     private fun ComponentContext.childStack(
         initialStack: List<Config>,
+        persistent: Boolean = true,
         backStackCreateDepth: Int = 0,
     ): Value<ChildStack<Config, Component>> =
         childStack(
             source = navigation,
             initialStack = { initialStack },
+            persistent = persistent,
             backStackCreateDepth = backStackCreateDepth,
             handleBackButton = true,
             childFactory = ::Component,

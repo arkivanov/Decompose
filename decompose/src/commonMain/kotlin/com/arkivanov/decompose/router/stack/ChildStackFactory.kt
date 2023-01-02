@@ -24,6 +24,8 @@ import kotlin.reflect.KClass
  * if there is no saved state, must be not empty and unique.
  * @param configurationClass a [KClass] of the component configurations.
  * @param key a key of the stack, must be unique if there are multiple stacks in the same component.
+ * @param persistent determines whether the navigation state should pre preserved or not,
+ * default is `true`.
  * @param backStackCreateDepth automatically creates the specified amount of components
  * in the back stack, e.g. when initialized, during navigation or after process death.
  * Default value is `0`, which means that a component is only created when it becomes active.
@@ -40,6 +42,7 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
     initialStack: () -> List<C>,
     configurationClass: KClass<out C>,
     key: String = "DefaultChildStack",
+    persistent: Boolean = true,
     backStackCreateDepth: Int = 0,
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, ComponentContext) -> T,
@@ -60,12 +63,16 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
             )
         },
         saveNavState = { navState ->
-            ParcelableContainer(
-                StackSavedNavState(
-                    activeConfiguration = ParcelableContainer(navState.active),
-                    backStackConfigurations = navState.backStack.map { ParcelableContainer(it.configuration) },
+            if (persistent) {
+                ParcelableContainer(
+                    StackSavedNavState(
+                        activeConfiguration = ParcelableContainer(navState.active),
+                        backStackConfigurations = navState.backStack.map { ParcelableContainer(it.configuration) },
+                    )
                 )
-            )
+            } else {
+                null
+            }
         },
         restoreNavState = { container ->
             val state = container.consumeRequired<StackSavedNavState>()
@@ -187,6 +194,7 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
     source: StackNavigationSource<C>,
     noinline initialStack: () -> List<C>,
     key: String = "DefaultChildStack",
+    persistent: Boolean = true,
     backStackCreateDepth: Int = 0,
     handleBackButton: Boolean = false,
     noinline childFactory: (configuration: C, ComponentContext) -> T
@@ -196,6 +204,7 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
         initialStack = initialStack,
         configurationClass = C::class,
         key = key,
+        persistent = persistent,
         handleBackButton = handleBackButton,
         backStackCreateDepth = backStackCreateDepth,
         childFactory = childFactory,
@@ -208,6 +217,7 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
     source: StackNavigationSource<C>,
     initialConfiguration: C,
     key: String = "DefaultChildStack",
+    persistent: Boolean = true,
     backStackCreateDepth: Int = 0,
     handleBackButton: Boolean = false,
     noinline childFactory: (configuration: C, ComponentContext) -> T
@@ -217,6 +227,7 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
         initialStack = { listOf(initialConfiguration) },
         configurationClass = C::class,
         key = key,
+        persistent = persistent,
         handleBackButton = handleBackButton,
         backStackCreateDepth = backStackCreateDepth,
         childFactory = childFactory,

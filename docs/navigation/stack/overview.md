@@ -138,9 +138,11 @@ class DefaultRootComponent(
 
 Use the `backStackCreateDepth` argument to control how many components in the back stack are automatically created. E.g. use `1` to always create the last component in the back stack (in addition to the active component which is always created), use `Int.MAX_VALUE` to create all components in the back stack. Default value is `0`, which means that a component is only created when it becomes active. The automatic creation of components in the back stack may be useful with swipe-back navigation, e.g. in SwiftUI.
 
-## Configuration changes and process death on (not only) Android
+## Screen recreation and process death on (not only) Android
 
 `Child Stack` automatically preserves the stack when a configuration change or process death occurs. By default, only the active component is recreated, components in the back stack remain destroyed and are created on demand.
+
+Use the `persistent` argument to disable stack preservation completely. When disabled, the stack is reset to the initial state when a configuration change or process death occurs.
 
 ## Delivering a result when navigating back
 

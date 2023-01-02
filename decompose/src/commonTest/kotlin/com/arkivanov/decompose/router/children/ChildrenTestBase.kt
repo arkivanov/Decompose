@@ -40,6 +40,14 @@ internal open class ChildrenTestBase {
 
     protected fun ComponentContext.children(
         initialNavState: List<SimpleChildNavState<Config>> = emptyList(),
+        saveNavState: (navState: List<SimpleChildNavState<Config>>) -> ParcelableContainer? = { navState ->
+            ParcelableContainer(
+                SavedNavState(
+                    configurations = navState.map { it.configuration },
+                    statuses = navState.map { it.status },
+                )
+            )
+        },
         restoreNavState: (container: ParcelableContainer) -> List<SimpleChildNavState<Config>> = { container ->
             val savedState = container.consumeRequired<SavedNavState>()
             savedState.configurations.zip(savedState.statuses).map { (configuration, status) ->
@@ -56,14 +64,7 @@ internal open class ChildrenTestBase {
             source = navigation,
             key = "Key",
             initialNavState = { TestNavState(children = initialNavState) },
-            saveNavState = { navState ->
-                ParcelableContainer(
-                    SavedNavState(
-                        configurations = navState.children.map { it.configuration },
-                        statuses = navState.children.map { it.status },
-                    )
-                )
-            },
+            saveNavState = { navState -> saveNavState(navState.children) },
             restoreNavState = { container -> TestNavState(children = restoreNavState(container)) },
             navTransformer = { navState, event -> event.transformer(navState) },
             onEventComplete = { event, newNavState, oldNavState -> event.onComplete(newNavState, oldNavState) },
