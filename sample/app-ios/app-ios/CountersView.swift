@@ -9,35 +9,22 @@ import SwiftUI
 import Shared
 
 struct CountersView: View {
-    private let counters: CountersComponent
-
     @ObservedObject
     private var childStack: ObservableValue<ChildStack<AnyObject, CounterComponent>>
-
-    private var components: [CounterComponent] { childStack.value.items.filter { $0.instance != nil }.map { $0.instance! } }
-    private var componentWrappers: [StackComponent<CounterComponent>] { components.map { StackComponent($0) } }
-
-    private var activeChild: CounterComponent { childStack.value.active.instance }
-
+    
+    private var stack: ChildStack<AnyObject, CounterComponent> { childStack.value }
+    
     init(_ counters: CountersComponent) {
-        self.counters = counters
         childStack = ObservableValue(counters.childStack)
     }
-
+    
     var body: some View {
-        if #available(iOS 16, *) {
-            let pathBinding = Binding(get: { componentWrappers.dropFirst() }, set: { _ in activeChild.onPrevClicked() })
-            NavigationStack(path: pathBinding) {
-                CounterView(components[0])
-                        .navigationDestination(for: StackComponent<CounterComponent>.self) {
-                            CounterView($0.component)
-                        }
-            }
-        } else {
-            CountersStackView(components: components) {
-                CounterView($0)
-            }
-        }
+        StackView(
+            stack: stack.items,
+            getTitle: { $0.model.value.title },
+            onBack: stack.active.instance.onPrevClicked,
+            childContent: CounterView.init
+        )
     }
 }
 
@@ -49,5 +36,5 @@ struct CountersView_Previews: PreviewProvider {
 
 class PreviewCountersComponent: CountersComponent {
     let childStack: Value<ChildStack<AnyObject, CounterComponent>> =
-            simpleChildStack(PreviewCounterComponent())
+    simpleChildStack(PreviewCounterComponent())
 }

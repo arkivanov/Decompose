@@ -132,6 +132,12 @@ class DefaultRootComponent(
 }
 ```
 
+## Configuration changes and process death on (not only) Android
+
+`Child Stack` automatically preserves the stack when a configuration change or process death occurs. By default, only the active component is recreated, components in the back stack remain destroyed and are recreated on demand.
+
+Use the `backStackRecreationDepth` argument to control how many components in the back stack are automatically recreated. E.g. use `1` to always recreate the last component in the back stack (in addition to the active component which is always recreated), use `Int.MAX_VALUE` to recreate all components in the back stack. Default value is `0`, which means that a component is only recreated when it becomes active. The automatic recreation of components in the back stack may be useful with swipe-back navigation, e.g. in SwiftUI.
+
 ## Delivering a result when navigating back
 
 To deliver a result from one component to another:

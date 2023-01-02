@@ -13,6 +13,7 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.essenty.parcelable.consumeRequired
+import kotlin.math.max
 import kotlin.reflect.KClass
 
 /**
@@ -25,6 +26,11 @@ import kotlin.reflect.KClass
  * @param key a key of the stack, must be unique if there are multiple stacks in the same component.
  * @param handleBackButton determines whether the overlay should be automatically dismissed
  * on back button press or not, default is `false`.
+ * @param backStackRecreationDepth automatically recreates the specified amount of components
+ * in the back stack after configuration change or process death (e.g. on Android).
+ * Default value is `0`, which means that a component is only recreated when it becomes active.
+ * Use `1` to always recreate the previous component in the stack. Use [Int.MAX_VALUE] to
+ * recreate all components in the stack.
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildStack].
  */
@@ -35,6 +41,7 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
     configurationClass: KClass<out C>,
     key: String = "DefaultChildStack",
     handleBackButton: Boolean = false,
+    backStackRecreationDepth: Int = 0,
     childFactory: (configuration: C, ComponentContext) -> T,
 ): Value<ChildStack<C, T>> =
     children(
@@ -64,12 +71,14 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
 
             StackNavState(
                 active = state.activeConfiguration.consumeRequired(configurationClass),
-                backStack = state.backStackConfigurations.map {
-                    SimpleChildNavState(
-                        configuration = it.consumeRequired(configurationClass),
-                        status = Status.DESTROYED,
-                    )
-                }
+                backStack = state.backStackConfigurations
+                    .map {
+                        SimpleChildNavState(
+                            configuration = it.consumeRequired(configurationClass),
+                            status = Status.DESTROYED,
+                        )
+                    }
+                    .withRecreationDepth(recreationDepth = backStackRecreationDepth)
             )
         },
         navTransformer = { navState, event ->
@@ -92,7 +101,8 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
                                 null -> Status.DESTROYED
                             },
                         )
-                    },
+                    }
+                    .withRecreationDepth(recreationDepth = backStackRecreationDepth),
             )
         },
         onEventComplete = { event, newNavState, oldNavState ->
@@ -103,7 +113,7 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
                 {
                     StackNavState(
                         active = navState.backStack.last().configuration,
-                        backStack = navState.backStack.dropLast(1),
+                        backStack = navState.backStack.dropLast(1).withRecreationDepth(recreationDepth = backStackRecreationDepth),
                     )
                 }
             } else {
@@ -118,6 +128,31 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
         },
         childFactory = childFactory,
     )
+
+@ExperimentalDecomposeApi
+private fun <C : Any> List<SimpleChildNavState<C>>.withRecreationDepth(recreationDepth: Int): List<SimpleChildNavState<C>> =
+    if (isRecreationRequired(recreationDepth = recreationDepth)) {
+        mapIndexed { index, item ->
+            when (item.status) {
+                Status.DESTROYED -> if (lastIndex - index < recreationDepth) item.copy(status = Status.INACTIVE) else item
+                Status.INACTIVE,
+                Status.ACTIVE -> item
+            }
+        }
+    } else {
+        this
+    }
+
+@ExperimentalDecomposeApi
+private fun List<SimpleChildNavState<*>>.isRecreationRequired(recreationDepth: Int): Boolean {
+    for (i in lastIndex downTo max(lastIndex - recreationDepth + 1, 0)) {
+        if (get(i).status == Status.DESTROYED) {
+            return true
+        }
+    }
+
+    return false
+}
 
 @OptIn(ExperimentalDecomposeApi::class)
 private data class StackNavState<out C : Any>(
@@ -152,6 +187,7 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
     noinline initialStack: () -> List<C>,
     key: String = "DefaultChildStack",
     handleBackButton: Boolean = false,
+    backStackRecreationDepth: Int = 0,
     noinline childFactory: (configuration: C, ComponentContext) -> T
 ): Value<ChildStack<C, T>> =
     childStack(
@@ -160,6 +196,7 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
         configurationClass = C::class,
         key = key,
         handleBackButton = handleBackButton,
+        backStackRecreationDepth = backStackRecreationDepth,
         childFactory = childFactory,
     )
 
@@ -171,6 +208,7 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
     initialConfiguration: C,
     key: String = "DefaultChildStack",
     handleBackButton: Boolean = false,
+    backStackRecreationDepth: Int = 0,
     noinline childFactory: (configuration: C, ComponentContext) -> T
 ): Value<ChildStack<C, T>> =
     childStack(
@@ -179,5 +217,6 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
         configurationClass = C::class,
         key = key,
         handleBackButton = handleBackButton,
+        backStackRecreationDepth = backStackRecreationDepth,
         childFactory = childFactory,
     )

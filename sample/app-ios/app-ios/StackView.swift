@@ -2,48 +2,78 @@ import SwiftUI
 import UIKit
 import Shared
 
-struct CountersStackView<Content: View>: UIViewControllerRepresentable {
-    var components: [CounterComponent]
-    var renderBody: (CounterComponent) -> Content
+struct StackView<T: AnyObject, Content: View>: View {
+    var stack: [Child<AnyObject, T>]
+    var getTitle: (T) -> String
+    var onBack: () -> Void
+    
+    @ViewBuilder
+    var childContent: (T) -> Content
+    
+    var body: some View {
+        if #available(iOS 16, *) {
+            NavigationStack(path: Binding(get: { stack.dropFirst() }, set: { _ in onBack() })) {
+                childContent(stack.first!.instance!)
+                    .navigationDestination(for: Child<AnyObject, T>.self) {
+                        childContent($0.instance!)
+                    }
+            }
+        } else {
+            StackInteropView(
+                components: stack.map { $0.instance! },
+                getTitle: getTitle,
+                onBack: onBack,
+                childContent: childContent
+            )
+        }
+    }
+}
 
+private struct StackInteropView<T: AnyObject, Content: View>: UIViewControllerRepresentable {
+    var components: [T]
+    var getTitle: (T) -> String
+    var onBack: () -> Void
+    var childContent: (T) -> Content
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
-
+    
     func makeUIViewController(context: Context) -> UINavigationController {
         context.coordinator.syncChanges(self)
         let navigationController = UINavigationController(
-                rootViewController: context.coordinator.viewControllers.first!)
-
+            rootViewController: context.coordinator.viewControllers.first!)
+        
         return navigationController
     }
-
+    
     func updateUIViewController(_ navigationController: UINavigationController, context: Context) {
         context.coordinator.syncChanges(self)
         navigationController.setViewControllers(context.coordinator.viewControllers, animated: true)
     }
-
-    private func createViewController(_ component: CounterComponent, _ coordinator: Coordinator) -> NavigationItemHostingController<Content> {
-        let controller = NavigationItemHostingController(rootView: renderBody(component))
+    
+    private func createViewController(_ component: T, _ coordinator: Coordinator) -> NavigationItemHostingController {
+        let controller = NavigationItemHostingController(rootView: childContent(component))
         controller.coordinator = coordinator
         controller.component = component
-        controller.navigationItem.title = component.model.value.title
+        controller.onBack = onBack
+        controller.navigationItem.title = getTitle(component)
         return controller
     }
-
+    
     class Coordinator: NSObject {
-        var parent: CountersStackView<Content>
-        var viewControllers = [NavigationItemHostingController<Content>]()
-        var preservedComponents = [CounterComponent]()
-
-        init(_ parent: CountersStackView<Content>) {
+        var parent: StackInteropView<T, Content>
+        var viewControllers = [NavigationItemHostingController]()
+        var preservedComponents = [T]()
+        
+        init(_ parent: StackInteropView<T, Content>) {
             self.parent = parent
         }
-
-        func syncChanges(_ parent: CountersStackView<Content>) {
+        
+        func syncChanges(_ parent: StackInteropView<T, Content>) {
             self.parent = parent
             let count = max(preservedComponents.count, parent.components.count)
-
+            
             for i in 0..<count {
                 if (i >= parent.components.count) {
                     viewControllers.removeLast()
@@ -53,20 +83,21 @@ struct CountersStackView<Content: View>: UIViewControllerRepresentable {
                     viewControllers[i] = parent.createViewController(parent.components[i], self)
                 }
             }
-
+            
             preservedComponents = parent.components
         }
     }
-
-    class NavigationItemHostingController<Content: View>: UIHostingController<Content> {
+    
+    class NavigationItemHostingController: UIHostingController<Content> {
         fileprivate(set) weak var coordinator: Coordinator?
-        fileprivate(set) weak var component: CounterComponent?
-
+        fileprivate(set) var component: T?
+        fileprivate(set) var onBack: (() -> Void)?
+        
         override func viewDidDisappear(_ animated: Bool) {
             super.viewDidDisappear(animated)
-
+            
             if isMovingFromParent && coordinator?.preservedComponents.last === component {
-                component?.onPrevClicked()
+                onBack?()
             }
         }
     }
@@ -74,7 +105,7 @@ struct CountersStackView<Content: View>: UIViewControllerRepresentable {
 
 // stubs for XCode < 14:
 #if compiler(<5.7)
-struct NavigationStack<Path, Root>: View {
+private struct NavigationStack<Path, Root>: View {
     var path: Path
     @ViewBuilder var root: () -> Root
     var body: some View {
@@ -82,7 +113,7 @@ struct NavigationStack<Path, Root>: View {
     }
 }
 
-extension View {
+private extension View {
     public func navigationDestination<D, C>(for data: D.Type, @ViewBuilder destination: @escaping (D) -> C) -> some View where D: Hashable, C: View {
         EmptyView()
     }
