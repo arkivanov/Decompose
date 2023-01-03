@@ -132,11 +132,15 @@ class DefaultRootComponent(
 }
 ```
 
+## Components in the back stack
+
+`Child Stack` can not be empty, there is always one active (resumed) child component. Components in the back stack are either stopped or destroyed. When `Child Stack` is first initialized or recreated after e.g. process death, only the active component is created, components in the back stack remain destroyed and are created on demand.
+
+Use the `backStackCreateDepth` argument to control how many components in the back stack are automatically created. E.g. use `1` to always create the last component in the back stack (in addition to the active component which is always created), use `Int.MAX_VALUE` to create all components in the back stack. Default value is `0`, which means that a component is only created when it becomes active. The automatic creation of components in the back stack may be useful with swipe-back navigation, e.g. in SwiftUI.
+
 ## Configuration changes and process death on (not only) Android
 
-`Child Stack` automatically preserves the stack when a configuration change or process death occurs. By default, only the active component is recreated, components in the back stack remain destroyed and are recreated on demand.
-
-Use the `backStackRecreationDepth` argument to control how many components in the back stack are automatically recreated. E.g. use `1` to always recreate the last component in the back stack (in addition to the active component which is always recreated), use `Int.MAX_VALUE` to recreate all components in the back stack. Default value is `0`, which means that a component is only recreated when it becomes active. The automatic recreation of components in the back stack may be useful with swipe-back navigation, e.g. in SwiftUI.
+`Child Stack` automatically preserves the stack when a configuration change or process death occurs. By default, only the active component is recreated, components in the back stack remain destroyed and are created on demand.
 
 ## Delivering a result when navigating back
 
