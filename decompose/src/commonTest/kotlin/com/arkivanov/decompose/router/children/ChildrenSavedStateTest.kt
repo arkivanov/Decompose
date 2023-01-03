@@ -12,6 +12,7 @@ import com.arkivanov.essenty.statekeeper.consume
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @Suppress("TestFunctionName")
@@ -136,7 +137,7 @@ internal class ChildrenSavedStateTest : ChildrenTestBase() {
     }
 
     @Test
-    fun WHEN_recreated_THEN_navigation_state_restored() {
+    fun GIVEN_saving_state_WHEN_recreated_THEN_navigation_state_restored() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
         oldContext.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
@@ -150,7 +151,21 @@ internal class ChildrenSavedStateTest : ChildrenTestBase() {
     }
 
     @Test
-    fun WHEN_recreated_THEN_child_states_restored() {
+    fun GIVEN_not_saving_state_WHEN_recreated_THEN_navigation_state_not_restored() {
+        val oldStateKeeper = TestStateKeeperDispatcher()
+        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
+        oldContext.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE), saveNavState = { null })
+
+        val savedState = oldStateKeeper.save()
+        val newStateKeeper = TestStateKeeperDispatcher(savedState)
+        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
+        val newChildren by newContext.children(initialNavState = listOf(1 by ACTIVE))
+
+        newChildren.assertChildren(1 to 1)
+    }
+
+    @Test
+    fun GIVEN_saving_state_WHEN_recreated_THEN_child_states_restored() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
         val oldChildren by oldContext.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
@@ -163,6 +178,22 @@ internal class ChildrenSavedStateTest : ChildrenTestBase() {
         val restoredState3 = newChildren.getById(id = 3).requireInstance().stateKeeper.consume<Config>(key = "key")
 
         assertEquals(Config(id = 30), restoredState3)
+    }
+
+    @Test
+    fun GIVEN_not_saving_state_WHEN_recreated_THEN_child_states_not_restored() {
+        val oldStateKeeper = TestStateKeeperDispatcher()
+        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
+        val oldChildren by oldContext.children(initialNavState = listOf(1 by ACTIVE), saveNavState = { null })
+        oldChildren.getById(id = 1).requireInstance().stateKeeper.register(key = "key") { Config(id = 30) }
+
+        val savedState = oldStateKeeper.save()
+        val newStateKeeper = TestStateKeeperDispatcher(savedState)
+        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
+        val newChildren by newContext.children(initialNavState = listOf(1 by ACTIVE))
+        val restoredState3 = newChildren.getById(id = 1).requireInstance().stateKeeper.consume<Config>(key = "key")
+
+        assertNull(restoredState3)
     }
 
     @Test

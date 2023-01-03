@@ -195,8 +195,8 @@ public final class com/arkivanov/decompose/router/stack/ChildStack {
 }
 
 public final class com/arkivanov/decompose/router/stack/ChildStackFactoryKt {
-	public static final fun childStack (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;IZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
-	public static synthetic fun childStack$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;IZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun childStack (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZIZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childStack$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZIZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
 }
 
 public abstract interface class com/arkivanov/decompose/router/stack/StackNavigation : com/arkivanov/decompose/router/stack/StackNavigationSource, com/arkivanov/decompose/router/stack/StackNavigator {

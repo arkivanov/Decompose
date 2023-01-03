@@ -21,6 +21,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -245,6 +246,23 @@ class ChildOverlayIntegrationTest {
         context.childOverlay(initialConfiguration = Config(1), persistent = true)
 
         assertNotNull(instanceKeeperDispatcher.get(key = "key"))
+    }
+
+    @Test
+    fun GIVEN_not_persistent_WHEN_recreated_THEN_overlay_instance_not_retained() {
+        val oldStateKeeper = TestStateKeeperDispatcher()
+        val instanceKeeper = InstanceKeeperDispatcher()
+        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
+        val oldOverlay by oldContext.childOverlay(initialConfiguration = Config(1), persistent = false)
+        val oldInstance = oldOverlay.requireOverlay().instance.instanceKeeper.getOrCreate(::TestInstance)
+
+        val savedState = oldStateKeeper.save()
+        val newStateKeeper = TestStateKeeperDispatcher(savedState)
+        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
+        val newOverlay by newContext.childOverlay(initialConfiguration = Config(1), persistent = false)
+        val newInstance = newOverlay.requireOverlay().instance.instanceKeeper.getOrCreate(::TestInstance)
+
+        assertNotSame(oldInstance, newInstance)
     }
 
     @Test
