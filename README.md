@@ -20,7 +20,7 @@
 
 ---
 
-Decompose is a Kotlin Multiplatform library for breaking down your code into lifecycle-aware business logic components (aka BLoC), with routing functionality and pluggable UI (Jetpack Compose, Android Views, SwiftUI, JS React, etc.).
+Decompose is a Kotlin Multiplatform library for breaking down your code into tree-structured lifecycle-aware business logic components (aka BLoC), with routing functionality and pluggable UI (Jetpack Compose, Android Views, SwiftUI, JS React, etc.).
 
 Please see the [project website](https://arkivanov.github.io/Decompose/) for documentation and APIs. 
 
@@ -57,7 +57,7 @@ Additional resources:
 * Shared navigation logic
 * Lifecycle-aware components
 * Components in the back stack are not destroyed, they continue working in background without UI
-* Components and UI state preservation (mostly useful in Android)
+* State preservation (on Android and experimentally on Apple targets)
 * Instances retaining (aka ViewModels) over configuration changes (mostly useful in Android)
 
 ## Setup
@@ -90,14 +90,19 @@ Here are some key concepts of the library, more details can be found in the docu
 
 <img src="docs/media/ComponentStructure.png" width="512">
 
+## Quick start
+
+Please refer to the [Quick start](https://arkivanov.github.io/Decompose/getting-started/quick-start/) section of the docs.
+
 ## Samples
 
-Check out the [project website](https://arkivanov.github.io/Decompose/samples/) for a full description of each sample.
+Check out the [Samples](https://arkivanov.github.io/Decompose/samples/) section of the docs for a full description of each sample.
 
 ## Articles
 
 - [Decompose — experiments with Kotlin Multiplatform lifecycle-aware components and navigation](https://proandroiddev.com/decompose-experiments-with-kotlin-multiplatform-lifecycle-aware-components-and-navigation-a04ef3c7f6a3?source=friends_link&sk=f7d289cc329b6c8a765fc049e36c313f)
 - [Fully cross-platform Kotlin applications (almost)](https://proandroiddev.com/fully-cross-platform-kotlin-applications-almost-29c7054f8f28?source=friends_link&sk=4619fdcb17912fde589bc4fca83efbbd)
+- [A comprehensive thirty-line navigation for Jetpack/Multiplatform Compose](https://medium.com/p/5b723c4f256e) - if you find Decompose verbose and would prefer something built on top of Jetpack Compose.
 
 ## Author
 

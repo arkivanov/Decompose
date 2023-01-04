@@ -60,7 +60,7 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
     source: NavigationSource<E>,
     key: String,
     initialNavState: () -> N,
-    saveNavState: (navState: N) -> ParcelableContainer,
+    saveNavState: (navState: N) -> ParcelableContainer?,
     restoreNavState: (container: ParcelableContainer) -> N,
     navTransformer: (navState: N, event: E) -> N,
     onEventComplete: (event: E, newNavState: N, oldNavState: N) -> Unit,
@@ -86,10 +86,12 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
         )
 
     stateKeeper.register(key = key) {
-        SavedState(
-            navState = saveNavState(navigator.navState),
-            childState = navigator.saveChildState(),
-        )
+        saveNavState(navigator.navState)?.let { savedNavState ->
+            SavedState(
+                navState = savedNavState,
+                childState = navigator.saveChildState(),
+            )
+        }
     }
 
     val state = MutableValue(stateMapper(navigator.navState, navigator.children))

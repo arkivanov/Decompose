@@ -105,16 +105,44 @@ class DefaultRootComponent constructor(
 
     private sealed interface Config : Parcelable {
         @Parcelize
-        object Counters : Config
+        object Counters : Config {
+            /**
+             * Only required for state preservation on JVM/desktop via StateKeeper, as it uses Serializable.
+             * Temporary workaround for https://youtrack.jetbrains.com/issue/KT-40218.
+             */
+            @Suppress("unused")
+            private fun readResolve(): Any = Counters
+        }
 
         @Parcelize
-        object MultiPane : Config
+        object MultiPane : Config {
+            /**
+             * Only required for state preservation on JVM/desktop via StateKeeper, as it uses Serializable.
+             * Temporary workaround for https://youtrack.jetbrains.com/issue/KT-40218.
+             */
+            @Suppress("unused")
+            private fun readResolve(): Any = MultiPane
+        }
 
         @Parcelize
-        object DynamicFeatures : Config
+        object DynamicFeatures : Config {
+            /**
+             * Only required for state preservation on JVM/desktop via StateKeeper, as it uses Serializable.
+             * Temporary workaround for https://youtrack.jetbrains.com/issue/KT-40218.
+             */
+            @Suppress("unused")
+            private fun readResolve(): Any = DynamicFeatures
+        }
 
         @Parcelize
-        object CustomNavigation : Config
+        object CustomNavigation : Config {
+            /**
+             * Only required for state preservation on JVM/desktop via StateKeeper, as it uses Serializable.
+             * Temporary workaround for https://youtrack.jetbrains.com/issue/KT-40218.
+             */
+            @Suppress("unused")
+            private fun readResolve(): Any = CustomNavigation
+        }
     }
 
     sealed interface DeepLink {

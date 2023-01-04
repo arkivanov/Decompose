@@ -1,6 +1,6 @@
 # State preservation
 
-Sometimes it might be necessary to preserve state or data in a component when it gets destroyed. A very common use case is Android Activity recreation due to configuration changes, or process death. The `ComponentContext` interface extends the `StateKeeperOwner` interface, which provides the `StateKeeper` - a multiplatform abstraction for state preservation. It is provided by [Essenty](https://github.com/arkivanov/Essenty) library (from the same author).
+Sometimes it might be necessary to preserve state or data in a component when it gets destroyed. A very common use case is Android Activity recreation due to configuration changes, or process death on Android or iOS. The `ComponentContext` interface extends the `StateKeeperOwner` interface, which provides the `StateKeeper` - a multiplatform abstraction for state preservation. It is provided by [Essenty](https://github.com/arkivanov/Essenty) library (from the same author).
 
 The `decompose` module adds Essenty's `state-keeper` module as `api` dependency, so you don't need to explicitly add it to your project. Please familiarise yourself with Essenty library, especially with the `StateKeeper`.
 
@@ -26,3 +26,9 @@ class SomeComponent(
     private class State(val someValue: Int = 0) : Parcelable
 }
 ```
+
+## Darwin (Apple) targets support
+
+Decompose provides an experimental support for state preservation on all Darwin (Apple) targets. It works via `Essenty` library and [parcelize-darwin](https://github.com/arkivanov/parcelize-darwin) compiler plugin (from the same author). Please read the documentation of both before using state preservation on Darwin targets.
+
+This only affects your project if you explicitly enable the `parcelize-darwin` compiler plugin in your project. Otherwise, it's just no-op.

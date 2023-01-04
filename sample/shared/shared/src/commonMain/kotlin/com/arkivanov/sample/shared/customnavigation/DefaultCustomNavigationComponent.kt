@@ -101,12 +101,13 @@ class DefaultCustomNavigationComponent(
         val mode: Mode,
     ) : NavState<Config>, Parcelable {
 
-        override val children: List<SimpleChildNavState<Config>> =
-            configurations.mapIndexed { index, config ->
-                SimpleChildNavState(
-                    configuration = config,
-                    status = if (index == this.index) ChildNavState.Status.ACTIVE else ChildNavState.Status.INACTIVE,
-                )
-            }
+        override val children: List<SimpleChildNavState<Config>>
+            get() =
+                configurations.mapIndexed { index, config ->
+                    SimpleChildNavState(
+                        configuration = config,
+                        status = if (index == this.index) ChildNavState.Status.ACTIVE else ChildNavState.Status.INACTIVE,
+                    )
+                }
     }
 }

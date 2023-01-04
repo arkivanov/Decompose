@@ -41,7 +41,7 @@ fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
         source = source,
         key = key,
         initialNavState = { OverlayNavState(configuration = initialConfiguration()) },
-        saveNavState = { navState -> ParcelableContainer(navState.configuration?.takeIf { persistent }) },
+        saveNavState = { navState -> if (persistent) ParcelableContainer(navState.configuration) else null },
         restoreNavState = { container -> OverlayNavState(container.consume(configurationClass)) },
         navTransformer = { navState, event -> OverlayNavState(configuration = event.transformer(navState.configuration)) },
         onEventComplete = { event, newNavState, oldNavState -> event.onComplete(newNavState.configuration, oldNavState.configuration) },

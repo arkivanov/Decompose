@@ -1,3 +1,5 @@
+# Installation
+
 Decompose provides a number of modules, they are all published to Maven Central Repository.
 
 ## The main Decompose module
