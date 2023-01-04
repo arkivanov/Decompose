@@ -35,6 +35,8 @@ class DefaultKittenComponent(
             onStart = handler::resume,
             onStop = handler::pause,
         )
+
+        stateKeeper.register(KEY_STATE) { handler.state.value }
     }
 
     private fun State.toModel(): Model =
