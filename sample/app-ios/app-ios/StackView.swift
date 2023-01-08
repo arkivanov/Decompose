@@ -3,13 +3,17 @@ import UIKit
 import Shared
 
 struct StackView<T: AnyObject, Content: View>: View {
-    var stack: [Child<AnyObject, T>]
+    @ObservedObject
+    var stackValue: ObservableValue<ChildStack<AnyObject, T>>
+
     var getTitle: (T) -> String
     var onBack: () -> Void
     
     @ViewBuilder
     var childContent: (T) -> Content
     
+    var stack: [Child<AnyObject, T>] { stackValue.value.items }
+
     var body: some View {
         if #available(iOS 16, *) {
             NavigationStack(path: Binding(get: { stack.dropFirst() }, set: { _ in onBack() })) {

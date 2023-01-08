@@ -20,7 +20,7 @@ struct CountersView: View {
     
     var body: some View {
         StackView(
-            stack: stack.items,
+            stackValue: childStack,
             getTitle: { $0.model.value.title },
             onBack: stack.active.instance.onPrevClicked,
             childContent: CounterView.init
