@@ -35,7 +35,7 @@ jobs:
           script: ./gradlew :extensions-compose-jetpack:connectedDebugAndroidTest --stacktrace
   macos-build:
     name: Build on macOS
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
       - name: Checkout
         uses: actions/checkout@v3
