@@ -41,7 +41,9 @@ import com.arkivanov.essenty.statekeeper.consume
  * `children` used in the same component.
  * @param initialNavState an initial navigation state that should be used if there is no previously saved state.
  * @param saveNavState a function that saves the provided navigation state into [ParcelableContainer].
+ * The navigation state is not saved if `null` is returned.
  * @param restoreNavState a function that restores the navigation state from the provided [ParcelableContainer].
+ * If `null` is returned then [initialNavState] is used instead.
  * The restored navigation state must have the same amount of child configurations and in the same order.
  * The restored child [Statuses][ChildNavState.Status] can be any, e.g. a previously active child may become
  * destroyed, etc.
@@ -61,7 +63,7 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
     key: String,
     initialNavState: () -> N,
     saveNavState: (navState: N) -> ParcelableContainer?,
-    restoreNavState: (container: ParcelableContainer) -> N,
+    restoreNavState: (container: ParcelableContainer) -> N?,
     navTransformer: (navState: N, event: E) -> N,
     onEventComplete: (event: E, newNavState: N, oldNavState: N) -> Unit,
     backTransformer: (navState: N) -> (() -> N)?,
@@ -70,20 +72,20 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
 ): Value<S> {
     val mainBackHandler = backHandler.child()
 
-    val savedState = stateKeeper.consume<SavedState>(key = key)
-
     val navigator =
-        ChildrenNavigator(
-            lifecycle = lifecycle,
-            retainedInstanceSupplier = { factory -> instanceKeeper.getOrCreate(key = key, factory = factory) },
-            childItemFactory = DefaultChildItemFactory(
+        stateKeeper.consume<SavedState>(key = key).let { savedState ->
+            ChildrenNavigator(
                 lifecycle = lifecycle,
-                backHandler = backHandler.child(),
-                childFactory = childFactory,
-            ),
-            navState = savedState?.navState?.let(restoreNavState) ?: initialNavState(),
-            savedChildState = savedState?.childState,
-        )
+                retainedInstanceSupplier = { factory -> instanceKeeper.getOrCreate(key = key, factory = factory) },
+                childItemFactory = DefaultChildItemFactory(
+                    lifecycle = lifecycle,
+                    backHandler = backHandler.child(),
+                    childFactory = childFactory,
+                ),
+                navState = savedState?.navState?.let(restoreNavState) ?: initialNavState(),
+                savedChildState = savedState?.childState,
+            )
+        }
 
     stateKeeper.register(key = key) {
         saveNavState(navigator.navState)?.let { savedNavState ->
