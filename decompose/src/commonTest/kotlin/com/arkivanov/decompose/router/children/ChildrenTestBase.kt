@@ -48,7 +48,7 @@ internal open class ChildrenTestBase {
                 )
             )
         },
-        restoreNavState: (container: ParcelableContainer) -> List<SimpleChildNavState<Config>> = { container ->
+        restoreNavState: (container: ParcelableContainer) -> List<SimpleChildNavState<Config>>? = { container ->
             val savedState = container.consumeRequired<SavedNavState>()
             savedState.configurations.zip(savedState.statuses).map { (configuration, status) ->
                 SimpleChildNavState(
@@ -65,7 +65,7 @@ internal open class ChildrenTestBase {
             key = "Key",
             initialNavState = { TestNavState(children = initialNavState) },
             saveNavState = { navState -> saveNavState(navState.children) },
-            restoreNavState = { container -> TestNavState(children = restoreNavState(container)) },
+            restoreNavState = { container -> restoreNavState(container)?.let(::TestNavState) },
             navTransformer = { navState, event -> event.transformer(navState) },
             onEventComplete = { event, newNavState, oldNavState -> event.onComplete(newNavState, oldNavState) },
             backTransformer = {

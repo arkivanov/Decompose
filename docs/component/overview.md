@@ -40,6 +40,9 @@ class Counter(
 
 When instantiating a root component, the `ComponentContext` should be created manually. There is [DefaultComponentContext](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/DefaultComponentContext.kt) which is the default implementation class of the `ComponentContext`.
 
+!!!warning
+    The root `ComponentContext` and the root component should be always created on the UI thread.
+
 ### Root ComponentContext in Android
 
 Decompose provides a few handy [helper functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/androidMain/kotlin/com/arkivanov/decompose/DefaultComponentContextBuilder.kt) for creating the root `ComponentContext` in Android. The preferred way is to create the root `ComponentContext` in an `Activity` or a `Fragment`.
@@ -62,13 +65,13 @@ class MyFragment : DialogFragment() {
     // Create custom OnBackPressedDispatcher
     private val onBackPressedDispatcher = OnBackPressedDispatcher(::dismiss)
 
-    private lateinit var root: Root
+    private lateinit var root: RootComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         root =
-            Root(
+            DefaultRootComponent(
                 DefaultComponentContext(
                     lifecycle = lifecycle,
                     savedStateRegistry = savedStateRegistry,
@@ -92,7 +95,7 @@ class MyFragment : DialogFragment() {
 
 ### Root ComponentContext in Jetpack/JetBrains Compose
 
-It is advised to not create the root `ComponentContext` (and a root component) directly in a `Composable` function. Compositions may be performed in a background thread, which may break things. The preferred way is to create the root component outside of Compose.
+It is advised to not create the root `ComponentContext` (and a root component) directly in a `Composable` function. Compositions may be performed in a background thread, which may break things. The preferred way is to create the root component on the UI thread outside of Compose.
 
 !!!warning
     If you can't avoid creating the root component in a `Composable` function, please make sure you use `remember`. This will prevent the root component and its `ComponentContext` from being recreated on each composition.
@@ -107,12 +110,28 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Create the root component before starting Compose
-        val root = RootComponent(componentContext = defaultComponentContext())
+        val root = DefaultRootComponent(componentContext = defaultComponentContext())
 
         // Start Compose
         setContent {
             // The rest of the code
         }
+    }
+}
+```
+
+#### JVM/Desktop with Compose
+
+Make sure you always create the root component on the UI thread. Please refer to samples for an example of [runOnUiThread](https://github.com/arkivanov/Decompose/blob/master/sample/app-desktop/src/jvmMain/kotlin/com/arkivanov/sample/app/Utils.kt) function .
+
+```kotlin
+fun main() {
+    // Create the root component on the UI thread before starting Compose
+    val root = runOnUiThread { DefaultRootComponent(componentContext = DefaultComponentContext(...)) }
+
+    // Start Compose
+    application {
+        // The rest of the code
     }
 }
 ```
@@ -123,8 +142,9 @@ Prefer creating the root `ComponentContext` (and a root component) before starti
 
 ```kotlin
 fun main() {
-    // Create the root component before starting Compose
-    val root = RootComponent(componentContext = DefaultComponentContext(...))
+    // Create the root component before starting Compose.
+    // Make sure that this happens on the UI thread.
+    val root = DefaultRootComponent(componentContext = DefaultComponentContext(...))
 
     // Start Compose
     application {
