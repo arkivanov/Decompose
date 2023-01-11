@@ -37,12 +37,46 @@ fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, ComponentContext) -> T,
 ): Value<ChildOverlay<C, T>> =
+    childOverlay(
+        source = source,
+        saveConfiguration = { if (persistent) ParcelableContainer(it) else null },
+        restoreConfiguration = { it.consume(configurationClass) },
+        key = key,
+        initialConfiguration = initialConfiguration,
+        handleBackButton = handleBackButton,
+        childFactory = childFactory,
+    )
+
+/**
+ * Initializes and manages component overlay. An overlay component can be either active or dismissed (destroyed).
+ *
+ * @param source a source of navigation events.
+ * @param key a key of the overlay, must be unique within the parent (hosting) component.
+ * @param saveConfiguration a function that saves the provided configuration into [ParcelableContainer].
+ * @param restoreConfiguration a function that restores the configuration from the provided [ParcelableContainer].
+ * @param initialConfiguration a component configuration that should be shown if there is
+ * no saved state, return `null` to show nothing.
+ * @param handleBackButton determines whether the overlay should be automatically dismissed
+ * on back button press or not, default is `false`.
+ * @param childFactory a factory function that creates new child instances.
+ * @return an observable [Value] of [ChildOverlay].
+ */
+@ExperimentalDecomposeApi
+fun <C : Any, T : Any> ComponentContext.childOverlay(
+    source: OverlayNavigationSource<C>,
+    saveConfiguration: (C?) -> ParcelableContainer?,
+    restoreConfiguration: (ParcelableContainer) -> C?,
+    key: String = "DefaultChildOverlay",
+    initialConfiguration: () -> C? = { null },
+    handleBackButton: Boolean = false,
+    childFactory: (configuration: C, ComponentContext) -> T,
+): Value<ChildOverlay<C, T>> =
     children(
         source = source,
         key = key,
         initialNavState = { OverlayNavState(configuration = initialConfiguration()) },
-        saveNavState = { navState -> if (persistent) ParcelableContainer(navState.configuration) else null },
-        restoreNavState = { container -> OverlayNavState(container.consume(configurationClass)) },
+        saveNavState = { saveConfiguration(it.configuration) },
+        restoreNavState = { OverlayNavState(restoreConfiguration(it)) },
         navTransformer = { navState, event -> OverlayNavState(configuration = event.transformer(navState.configuration)) },
         onEventComplete = { event, newNavState, oldNavState -> event.onComplete(newNavState.configuration, oldNavState.configuration) },
         backTransformer = { navState ->
@@ -55,19 +89,6 @@ fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
         stateMapper = { _, children -> ChildOverlay(overlay = children.firstOrNull() as? Child.Created?) },
         childFactory = childFactory,
     )
-
-@OptIn(ExperimentalDecomposeApi::class)
-private data class OverlayNavState<out C : Any>(
-    val configuration: C?,
-) : NavState<C> {
-
-    override val children: List<SimpleChildNavState<C>> =
-        if (configuration == null) {
-            emptyList()
-        } else {
-            listOf(SimpleChildNavState(configuration = configuration, status = Status.ACTIVE))
-        }
-}
 
 /**
  * A convenience extension function for [ComponentContext.childOverlay].
@@ -89,3 +110,16 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childOverlay(
         handleBackButton = handleBackButton,
         childFactory = childFactory,
     )
+
+@OptIn(ExperimentalDecomposeApi::class)
+private data class OverlayNavState<out C : Any>(
+    val configuration: C?,
+) : NavState<C> {
+
+    override val children: List<SimpleChildNavState<C>> =
+        if (configuration == null) {
+            emptyList()
+        } else {
+            listOf(SimpleChildNavState(configuration = configuration, status = Status.ACTIVE))
+        }
+}
