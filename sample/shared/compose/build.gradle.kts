@@ -33,5 +33,12 @@ kotlin {
             implementation(project(":sample:shared:dynamic-features:feature1Impl"))
             implementation(project(":sample:shared:dynamic-features:feature2Impl"))
         }
+
+        jvm.test.dependencies {
+            implementation(deps.jetbrains.compose.ui.uiTestJunit4)
+            implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesSwing)
+            implementation(deps.junit.junit)
+            implementation(compose.desktop.currentOs)
+        }
     }
 }

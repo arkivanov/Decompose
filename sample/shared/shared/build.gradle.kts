@@ -59,6 +59,11 @@ kotlin {
             implementation(deps.reaktive.reaktive)
         }
 
+
+        common.test.dependencies {
+            implementation(deps.reaktive.reaktiveTesting)
+        }
+
         android.main.dependencies {
             implementation(project(":extensions-android"))
             implementation(deps.android.material.material)

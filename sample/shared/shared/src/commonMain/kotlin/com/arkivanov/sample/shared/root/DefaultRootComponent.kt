@@ -22,7 +22,7 @@ import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
 
 @OptIn(ExperimentalDecomposeApi::class)
-class DefaultRootComponent constructor(
+class DefaultRootComponent(
     componentContext: ComponentContext,
     private val featureInstaller: FeatureInstaller,
     deepLink: DeepLink = DeepLink.None,

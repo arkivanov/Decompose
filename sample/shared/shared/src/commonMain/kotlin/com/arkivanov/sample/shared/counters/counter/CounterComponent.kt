@@ -16,8 +16,8 @@ interface CounterComponent {
     fun onPrevClicked()
 
     data class Model(
-        val title: String,
-        val text: String,
-        val isBackEnabled: Boolean,
+        val title: String = "",
+        val text: String = "",
+        val isBackEnabled: Boolean = false,
     )
 }

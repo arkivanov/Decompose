@@ -9,6 +9,7 @@ This sample demonstrates the following features:
 * Retaining instances (using `InstanceKeeper`)
 * Pluggable UI (Android Views, Jetpack Compose, SwiftUI, JS React)
 * [Play Feature Delivery](https://developer.android.com/guide/playcore/feature-delivery) for Android
+* Tests, including UI tests (Jetpack Compose)
 
 Please note that Gradle files included in this sample project are not supposed to be used as a reference. They share the configuration with the reset of the library, which simplifies the maintenance a lot. Please refer to the [KMP documentation](https://kotlinlang.org/docs/multiplatform-mobile-getting-started.html) for information on configuring a KMP project. You can also check other sample projects described below.
 
@@ -32,6 +33,11 @@ Content:
 * [Desktop sample app](https://github.com/arkivanov/Decompose/tree/master/sample/app-desktop)
 * [iOS sample app](https://github.com/arkivanov/Decompose/tree/master/sample/app-ios)
 * [Web (JS) sample app](https://github.com/arkivanov/Decompose/tree/master/sample/app-js)
+* Tests
+    * [RootComponentIntegrationTest](https://github.com/arkivanov/Decompose/tree/master/sample/shared/shared/src/commonTest/kotlin/com/arkivanov/sample/shared/root/RootComponentIntegrationTest.kt) - integration tests for `RootComponent`, including navigation tests.
+    * [CountersComponentIntegrationTest](https://github.com/arkivanov/Decompose/tree/master/sample/shared/shared/src/commonTest/kotlin/com/arkivanov/sample/shared/counters/CountersComponentIntegrationTest.kt) - integration tests for `CountersComponent`, including navigation tests.
+    * [CounterComponentTest](https://github.com/arkivanov/Decompose/tree/master/sample/shared/shared/src/commonTest/kotlin/com/arkivanov/sample/shared/counters/counter/CounterComponentTest.kt) - unit tests for `CounterComponent`. Includes supplying test dependencies, tests for instance retaining and state preservation, etc.
+    * [CounterContentTest](https://github.com/arkivanov/Decompose/tree/master/sample/shared/compose/src/jvmTest/kotlin/com/arkivanov/sample/shared/counters/counter/CounterContentTest.kt) - UI tests (Jetpack Compose) for `CounterComponent`.
 
 !!!warning
     The Multi-Pane sample is only for advanced single-pane/multi-pane navigation and layout. For generic master-detail navigation please refer to the Sample Todo List App described below.
