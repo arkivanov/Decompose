@@ -34,6 +34,7 @@ parcelizeDarwin-gradlePlug = { group = "com.arkivanov.parcelize.darwin", name = 
 parcelizeDarwin-runtime = { group = "com.arkivanov.parcelize.darwin", name = "runtime", version.ref = "parcelizeDarwin" }
 
 reaktive-reaktive = { group = "com.badoo.reaktive", name = "reaktive", version.ref = "reaktive" }
+reaktive-reaktiveTesting = { group = "com.badoo.reaktive", name = "reaktive-testing", version.ref = "reaktive" }
 reaktive-coroutinesInterop = { group = "com.badoo.reaktive", name = "coroutines-interop", version.ref = "reaktive" }
 
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }

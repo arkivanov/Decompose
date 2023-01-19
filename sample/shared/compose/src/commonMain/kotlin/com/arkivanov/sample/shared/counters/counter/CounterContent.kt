@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.decompose.router.overlay.ChildOverlay
@@ -33,7 +34,12 @@ internal fun CounterContent(component: CounterComponent, modifier: Modifier = Mo
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         TopAppBar(
-            title = { Text(text = model.title) },
+            title = {
+                Text(
+                    text = model.title,
+                    modifier = Modifier.testTag("title"),
+                )
+            },
             navigationIcon = model.isBackEnabled.takeIf { it }?.let {
                 {
                     IconButton(onClick = component::onPrevClicked) {
@@ -48,7 +54,10 @@ internal fun CounterContent(component: CounterComponent, modifier: Modifier = Mo
 
         Spacer(modifier = Modifier.weight(1F))
 
-        Text(text = model.text)
+        Text(
+            text = model.text,
+            modifier = Modifier.testTag("text"),
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -56,12 +65,16 @@ internal fun CounterContent(component: CounterComponent, modifier: Modifier = Mo
             Text(text = "Info")
         }
 
-        Button(onClick = component::onNextClicked) {
+        Button(
+            onClick = component::onNextClicked,
+            modifier = Modifier.testTag("next"),
+        ) {
             Text(text = "Next")
         }
 
         Button(
             onClick = component::onPrevClicked,
+            modifier = Modifier.testTag("prev"),
             enabled = model.isBackEnabled,
         ) {
             Text(text = "Prev")
