@@ -4,7 +4,6 @@ import com.arkivanov.decompose.value.Value
 import react.ChildrenBuilder
 import react.FC
 import react.StateInstance
-import react.key
 import react.useEffectOnce
 import react.useState
 

@@ -33,10 +33,6 @@ dependencies {
     implementation(compose.material)
     implementation(deps.androidx.core.coreKtx)
     implementation(deps.androidx.appcompat.appcompat)
-    implementation(deps.androidx.lifecycle.lifecycleCommonJava8)
     implementation(deps.androidx.activity.activityCompose)
     implementation(deps.android.material.material)
-
-    // Temporary dependency until stable release
-    implementation("androidx.activity:activity-ktx:1.6.0-alpha05")
 }

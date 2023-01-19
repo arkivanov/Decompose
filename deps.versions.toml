@@ -7,19 +7,19 @@ parcelizeDarwin = "0.1.2"
 reaktive = "1.2.1"
 junit = "4.13.2"
 jetbrainsCompose = "1.2.0"
-jetbrainsKotlinWrappers = "0.0.1-pre.325-kotlin-1.6.10"
-jetbrainsKotlinxCoroutines = "1.6.1"
+jetbrainsKotlinWrappers = "1.0.0-pre.478"
+jetbrainsKotlinxCoroutines = "1.6.4"
 jetbrainsBinaryCompatibilityValidator = "0.10.0"
 jetpackCompose = "1.2.1"
 jetpackComposeCompiler = "1.3.2"
 androidGradle = "7.2.2"
-androidMaterial = "1.3.0"
-androidPlay = "1.10.0"
-androidxCore = "1.3.2"
-androidxAppcompat = "1.2.0"
-androidxLifecycle = "2.3.1"
-androidxActivity = "1.3.1"
-androidxTestCore = "1.4.0"
+androidMaterial = "1.6.1"
+androidPlay = "1.10.3"
+androidxCore = "1.9.0"
+androidxAppcompat = "1.6.0"
+androidxLifecycle = "2.5.1"
+androidxActivity = "1.6.1"
+androidxTestCore = "1.5.0"
 
 [libraries]
 
@@ -45,13 +45,9 @@ jetbrains-kotlinWrappers-kotlinWrappersBom = { group = "org.jetbrains.kotlin-wra
 jetbrains-kotlinx-binaryCompatibilityValidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version.ref = "jetbrainsBinaryCompatibilityValidator" }
 jetbrains-kotlinx-kotlinxCoroutinesSwing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "jetbrainsKotlinxCoroutines" }
 
-androidx-compose-compiler-compiler = { group = "androidx.compose.compiler", name = "compiler", version.ref = "jetpackCompose" }
-androidx-compose-runtime-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "jetpackCompose" }
 androidx-compose-foundation-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "jetpackCompose" }
-androidx-compose-material-material = { group = "androidx.compose.material", name = "material", version.ref = "jetpackCompose" }
 androidx-compose-ui-uiTestJunit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "jetpackCompose" }
 androidx-compose-ui-uiTestManifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "jetpackCompose" }
-androidx-compose-ui-uiTooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "jetpackCompose" }
 
 android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradle" }
 android-material-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }

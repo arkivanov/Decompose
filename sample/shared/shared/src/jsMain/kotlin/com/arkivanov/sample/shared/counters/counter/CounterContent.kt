@@ -7,7 +7,6 @@ import com.arkivanov.sample.shared.useAsState
 import csstype.AlignItems
 import csstype.BoxSizing
 import csstype.number
-import csstype.px
 import mui.material.AppBar
 import mui.material.AppBarPosition
 import mui.material.Button
@@ -21,7 +20,8 @@ import mui.material.Size
 import mui.material.Stack
 import mui.material.Toolbar
 import mui.material.Typography
-import mui.system.ResponsiveStyleValue
+import mui.material.styles.TypographyVariant
+import mui.system.responsive
 import mui.system.sx
 import react.FC
 
@@ -29,7 +29,7 @@ internal val CounterContent: FC<RProps<CounterComponent>> = FC { props ->
     val model by props.component.model.useAsState()
 
     Stack {
-        spacing = ResponsiveStyleValue(2)
+        spacing = responsive(2)
 
         sx {
             alignItems = AlignItems.center
@@ -58,7 +58,7 @@ internal val CounterContent: FC<RProps<CounterComponent>> = FC { props ->
                         flexGrow = number(1.0)
                     }
 
-                    variant = "h6"
+                    variant = TypographyVariant.h6
                     +model.title
                 }
             }

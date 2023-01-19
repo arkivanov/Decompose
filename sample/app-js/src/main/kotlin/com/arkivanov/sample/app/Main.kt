@@ -9,11 +9,12 @@ import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DefaultFeatureInstaller
 import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootContent
-import kotlinx.browser.document
 import kotlinx.browser.window
-import org.w3c.dom.Document
 import react.create
 import react.dom.client.createRoot
+import web.dom.DocumentVisibilityState
+import web.dom.document
+import web.events.EventType
 
 @OptIn(ExperimentalDecomposeApi::class)
 fun main() {
@@ -38,7 +39,7 @@ fun main() {
 
 private fun LifecycleRegistry.attachToDocument() {
     fun onVisibilityChanged() {
-        if (document.visibilityState == "visible") {
+        if (document.visibilityState == DocumentVisibilityState.visible) {
             resume()
         } else {
             stop()
@@ -47,7 +48,5 @@ private fun LifecycleRegistry.attachToDocument() {
 
     onVisibilityChanged()
 
-    document.addEventListener(type = "visibilitychange", callback = { onVisibilityChanged() })
+    document.addEventListener(type = EventType("visibilitychange"), callback = { onVisibilityChanged() })
 }
-
-private val Document.visibilityState: String get() = asDynamic().visibilityState.unsafeCast<String>()
