@@ -1,7 +1,7 @@
 package com.arkivanov.sample.shared
 
-import kotlinx.js.Object
-import kotlinx.js.jso
+import js.core.Object
+import js.core.jso
 
 var uniqueId: Long = 0L
 

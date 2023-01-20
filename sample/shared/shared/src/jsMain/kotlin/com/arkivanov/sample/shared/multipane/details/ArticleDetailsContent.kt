@@ -19,6 +19,7 @@ import mui.material.IconButtonEdge
 import mui.material.Size
 import mui.material.Toolbar
 import mui.material.Typography
+import mui.material.styles.TypographyVariant
 import mui.system.sx
 import react.FC
 
@@ -51,7 +52,7 @@ val ArticleDetailsContent: FC<RProps<ArticleDetailsComponent>> = FC { props ->
                     }
 
                     Typography {
-                        variant = "h6"
+                        variant = TypographyVariant.h6
 
                         sx {
                             flexGrow = number(1.0)

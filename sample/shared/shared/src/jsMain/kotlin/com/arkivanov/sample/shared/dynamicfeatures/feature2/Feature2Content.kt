@@ -7,14 +7,14 @@ import mui.material.ButtonColor
 import mui.material.ButtonVariant
 import mui.material.Stack
 import mui.material.Typography
-import mui.system.ResponsiveStyleValue
+import mui.system.responsive
 import react.FC
 
 val Feature2Content: FC<RProps<Feature2>> = FC { props ->
     val model by props.component.models.useAsState()
 
     Stack {
-        spacing = ResponsiveStyleValue(2)
+        spacing = responsive(2)
 
         Typography { +model.title }
 
