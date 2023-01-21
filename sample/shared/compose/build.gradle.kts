@@ -14,6 +14,10 @@ setupMultiplatform {
     jvm()
 }
 
+android {
+    namespace = "com.arkivanov.sample.shared.compose"
+}
+
 kotlin {
     setupSourceSets {
         val jvm by bundle()

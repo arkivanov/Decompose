@@ -19,6 +19,10 @@ setupMultiplatform {
 setupPublication()
 setupBinaryCompatibilityValidator()
 
+android {
+    namespace = "com.arkivanov.decompose.extensions.compose.jetbrains"
+}
+
 kotlin {
     setupSourceSets {
         val android by bundle()

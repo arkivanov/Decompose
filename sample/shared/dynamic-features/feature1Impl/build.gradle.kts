@@ -23,6 +23,10 @@ setupMultiplatform {
     )
 }
 
+android {
+    namespace = "com.arkivanov.sample.shared.dynamicfeatures.feature1impl"
+}
+
 kotlin {
     setupSourceSets {
         val android by bundle()

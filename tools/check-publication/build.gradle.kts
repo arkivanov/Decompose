@@ -1,10 +1,6 @@
 import com.arkivanov.gradle.bundle
-import com.arkivanov.gradle.iosCompat
-import com.arkivanov.gradle.macosCompat
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupSourceSets
-import com.arkivanov.gradle.tvosCompat
-import com.arkivanov.gradle.watchosCompat
 
 plugins {
     id("kotlin-multiplatform")
@@ -24,6 +20,10 @@ repositories {
 setupMultiplatform()
 
 val version = deps.versions.decompose.get()
+
+android {
+    namespace = "com.arkivanov.decompose.tools.checkpublication"
+}
 
 kotlin {
     setupSourceSets {

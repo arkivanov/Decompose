@@ -12,6 +12,10 @@ setupAndroidLibrary()
 setupPublication()
 setupBinaryCompatibilityValidator()
 
+android {
+    namespace = "com.arkivanov.decompose.extensions.android"
+}
+
 dependencies {
     implementation(project(":decompose"))
 }

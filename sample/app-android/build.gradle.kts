@@ -15,6 +15,8 @@ setupAndroidApp(
 )
 
 android {
+    namespace = "com.arkivanov.sample.app"
+
     packagingOptions {
         exclude("META-INF/*")
     }

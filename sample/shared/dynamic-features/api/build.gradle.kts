@@ -16,6 +16,10 @@ setupMultiplatform {
     )
 }
 
+android {
+    namespace = "com.arkivanov.sample.shared.dynamicfeatures.api"
+}
+
 kotlin {
     sourceSets {
         commonMain {

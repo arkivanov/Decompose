@@ -18,6 +18,10 @@ setupMultiplatform()
 setupPublication()
 setupBinaryCompatibilityValidator()
 
+android {
+    namespace = "com.arkivanov.decompose"
+}
+
 kotlin {
     setupSourceSets {
         val android by bundle()
