@@ -197,7 +197,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Always create the root component outside of Compose
+        // Always create the root component outside Compose on the main thread
         val root =
             DefaultRootComponent(
                 componentContext = defaultComponentContext(),
@@ -216,17 +216,19 @@ class MainActivity : AppCompatActivity() {
 
 ### Desktop with Jetpack Compose
 
-Use `LifecycleController` to bind the root lifecycle with the main window state.
+Use `LifecycleController` to bind the root lifecycle with the main window state. See an example of `runOnUiThread` function here - [Utils.kt](https://github.com/arkivanov/Decompose/blob/master/sample/app-desktop/src/jvmMain/kotlin/com/arkivanov/sample/app/Utils.kt).
 
 ```kotlin
 fun main() {
     val lifecycle = LifecycleRegistry()
 
-    // Always create the root component outside of Compose
+    // Always create the root component outside Compose on the main thread
     val root =
-        DefaultRootComponent(
-            componentContext = DefaultComponentContext(lifecycle = lifecycle),
-        )
+        runOnUiThread {
+            DefaultRootComponent(
+                componentContext = DefaultComponentContext(lifecycle = lifecycle),
+            )
+        }
 
     application {
         val windowState = rememberWindowState()
