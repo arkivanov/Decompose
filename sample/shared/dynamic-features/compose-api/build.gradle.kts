@@ -13,6 +13,10 @@ setupMultiplatform {
     jvm()
 }
 
+android {
+    namespace = "com.arkivanov.sample.shared.dynamicfeatures.composeapi"
+}
+
 kotlin {
     setupSourceSets {
         common.main.dependencies {

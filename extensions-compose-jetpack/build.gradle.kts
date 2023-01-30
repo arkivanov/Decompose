@@ -13,6 +13,8 @@ setupPublication()
 setupBinaryCompatibilityValidator()
 
 android {
+    namespace = "com.arkivanov.decompose.extensions.compose.jetpack"
+
     buildFeatures {
         compose = true
     }

@@ -23,6 +23,10 @@ setupMultiplatform {
     )
 }
 
+android {
+    namespace = "com.arkivanov.sample.shared"
+}
+
 kotlin {
     targets
         .filterIsInstance<KotlinNativeTarget>()
