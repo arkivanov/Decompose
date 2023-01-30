@@ -12,8 +12,8 @@ import android.widget.FrameLayout
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.InternalDecomposeApi
-import com.arkivanov.decompose.R
 import com.arkivanov.decompose.extensions.android.DefaultViewContext
+import com.arkivanov.decompose.extensions.android.R
 import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.forEachChild
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
