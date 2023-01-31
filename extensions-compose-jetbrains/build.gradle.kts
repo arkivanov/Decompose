@@ -14,6 +14,9 @@ plugins {
 setupMultiplatform {
     android()
     jvm()
+    js(IR) {
+        browser()
+    }
 }
 
 setupPublication()
