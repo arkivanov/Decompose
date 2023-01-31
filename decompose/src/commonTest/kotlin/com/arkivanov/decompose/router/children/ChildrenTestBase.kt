@@ -3,7 +3,6 @@ package com.arkivanov.decompose.router.children
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackDispatcher
@@ -17,7 +16,6 @@ import com.arkivanov.essenty.parcelable.consumeRequired
 import kotlin.test.BeforeTest
 import kotlin.test.assertContentEquals
 
-@OptIn(ExperimentalDecomposeApi::class)
 internal open class ChildrenTestBase {
 
     private val navigation = SimpleNavigation<(TestNavState) -> TestNavState>()

@@ -2,7 +2,6 @@ package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.backhandler.child
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -59,7 +58,6 @@ import com.arkivanov.essenty.statekeeper.consume
  * @param childFactory a factory function that creates new child component instances.
  * @return an observable [Value] of the resulting children state.
  */
-@ExperimentalDecomposeApi
 fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.children(
     source: NavigationSource<E>,
     key: String,
@@ -151,7 +149,6 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
  * so it's automatically saved and restored. This method can be used if the custom save/restore logic
  * is not required.
  */
-@ExperimentalDecomposeApi
 inline fun <C : Parcelable, T : Any, E : Any, reified N, S : Any> ComponentContext.children(
     source: NavigationSource<E>,
     key: String,

@@ -1,13 +1,11 @@
 package com.arkivanov.decompose.router.children
 
-import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.router.children.ChildNavState.Status.ACTIVE
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.INACTIVE
-import com.arkivanov.decompose.router.children.ChildNavState.Status.ACTIVE
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Suppress("TestFunctionName")
 internal class ChildrenBasicTest : ChildrenTestBase() {
 

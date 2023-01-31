@@ -1,7 +1,6 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.children.ChildItem.Created
 import com.arkivanov.decompose.router.children.ChildItem.Created.*
 import com.arkivanov.decompose.router.children.ChildNavState.Status
@@ -14,7 +13,6 @@ import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.essenty.parcelable.ParcelableContainer
 
-@OptIn(ExperimentalDecomposeApi::class)
 internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     lifecycle: Lifecycle,
     retainedInstanceSupplier: (factory: () -> InstanceKeeper.Instance) -> InstanceKeeper.Instance,

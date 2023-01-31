@@ -1,11 +1,8 @@
 package com.arkivanov.decompose.router.children
 
-import com.arkivanov.decompose.ExperimentalDecomposeApi
-
 /**
  * Represents a child navigation state.
  */
-@ExperimentalDecomposeApi
 interface ChildNavState<out C : Any> {
 
     /**

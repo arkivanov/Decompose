@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.router.children
 
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.children.ChildNavState.Status.ACTIVE
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.INACTIVE
@@ -11,7 +10,6 @@ import com.arkivanov.essenty.lifecycle.stop
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Suppress("TestFunctionName")
 internal class ChildrenLifecycleTest : ChildrenTestBase() {
 

@@ -2,7 +2,6 @@ package com.arkivanov.decompose.router.overlay
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
 import com.arkivanov.decompose.router.children.SimpleChildNavState
@@ -27,7 +26,6 @@ import kotlin.reflect.KClass
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildOverlay].
  */
-@OptIn(ExperimentalDecomposeApi::class)
 fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
     source: OverlayNavigationSource<C>,
     configurationClass: KClass<out C>,
@@ -61,7 +59,6 @@ fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildOverlay].
  */
-@ExperimentalDecomposeApi
 fun <C : Any, T : Any> ComponentContext.childOverlay(
     source: OverlayNavigationSource<C>,
     saveConfiguration: (C?) -> ParcelableContainer?,
@@ -111,7 +108,6 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childOverlay(
         childFactory = childFactory,
     )
 
-@OptIn(ExperimentalDecomposeApi::class)
 private data class OverlayNavState<out C : Any>(
     val configuration: C?,
 ) : NavState<C> {

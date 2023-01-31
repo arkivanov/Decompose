@@ -2,7 +2,6 @@ package com.arkivanov.sample.shared.customnavigation
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.children.ChildNavState
 import com.arkivanov.decompose.router.children.NavState
 import com.arkivanov.decompose.router.children.SimpleChildNavState
@@ -15,7 +14,6 @@ import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent.Ch
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent.Mode
 import com.arkivanov.sample.shared.customnavigation.KittenComponent.ImageType
 
-@OptIn(ExperimentalDecomposeApi::class)
 class DefaultCustomNavigationComponent(
     componentContext: ComponentContext,
 ) : CustomNavigationComponent, ComponentContext by componentContext {

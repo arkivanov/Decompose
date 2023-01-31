@@ -2,7 +2,6 @@ package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.GettingList
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
@@ -94,7 +93,6 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildStack].
  */
-@OptIn(ExperimentalDecomposeApi::class)
 fun <C : Any, T : Any> ComponentContext.childStack(
     source: StackNavigationSource<C>,
     initialStack: () -> List<C>,
@@ -215,7 +213,6 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
         childFactory = childFactory,
     )
 
-@ExperimentalDecomposeApi
 private fun <C : Any> List<SimpleChildNavState<C>>.withCreateDepth(createDepth: Int): List<SimpleChildNavState<C>> =
     if (isCreateRequired(createDepth = createDepth)) {
         mapIndexed { index, item ->
@@ -229,7 +226,6 @@ private fun <C : Any> List<SimpleChildNavState<C>>.withCreateDepth(createDepth: 
         this
     }
 
-@ExperimentalDecomposeApi
 private fun List<SimpleChildNavState<*>>.isCreateRequired(createDepth: Int): Boolean {
     for (i in lastIndex downTo max(lastIndex - createDepth + 1, 0)) {
         if (get(i).status == Status.DESTROYED) {
@@ -240,7 +236,6 @@ private fun List<SimpleChildNavState<*>>.isCreateRequired(createDepth: Int): Boo
     return false
 }
 
-@OptIn(ExperimentalDecomposeApi::class)
 private data class StackNavState<out C : Any>(
     val active: C,
     val backStack: List<SimpleChildNavState<C>>,
@@ -259,7 +254,6 @@ private data class StackNavState<out C : Any>(
         }
 }
 
-@ExperimentalDecomposeApi
 private fun <C : Any> StackNavState(configurations: List<C>, backStackCreateDepth: Int): StackNavState<C> {
     require(configurations.isNotEmpty()) { "Configuration stack must not be empty" }
 
