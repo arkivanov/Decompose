@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.isFront
@@ -21,7 +20,6 @@ import com.arkivanov.sample.shared.counters.counter.CounterComponent
 import com.arkivanov.sample.shared.counters.counter.CounterContent
 import com.arkivanov.sample.shared.counters.counter.PreviewCounterComponent
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 internal fun CountersContent(component: CountersComponent, modifier: Modifier = Modifier) {
     Children(

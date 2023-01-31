@@ -14,7 +14,6 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.plus
@@ -28,7 +27,6 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.io.Serializable
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Suppress("TestFunctionName")
 @RunWith(Parameterized::class)
 class ChildrenTest(

@@ -9,7 +9,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
@@ -62,7 +61,6 @@ internal fun MultiPaneContent(component: MultiPaneComponent, modifier: Modifier 
     }
 }
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 private fun ListPane(stack: Value<ChildStack<*, ListChild>>, modifier: Modifier) {
     Children(
@@ -77,7 +75,6 @@ private fun ListPane(stack: Value<ChildStack<*, ListChild>>, modifier: Modifier)
     }
 }
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 private fun DetailsPane(stack: Value<ChildStack<*, DetailsChild>>, modifier: Modifier) {
     Children(
