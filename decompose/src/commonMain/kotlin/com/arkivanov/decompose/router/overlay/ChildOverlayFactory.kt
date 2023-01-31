@@ -78,6 +78,7 @@ fun <C : Any, T : Any> ComponentContext.childOverlay(
         saveNavState = { saveConfiguration(it.configuration) },
         restoreNavState = { OverlayNavState(restoreConfiguration(it)) },
         navTransformer = { navState, event -> OverlayNavState(configuration = event.transformer(navState.configuration)) },
+        stateMapper = { _, children -> ChildOverlay(overlay = children.firstOrNull() as? Child.Created?) },
         onEventComplete = { event, newNavState, oldNavState -> event.onComplete(newNavState.configuration, oldNavState.configuration) },
         backTransformer = { navState ->
             if (handleBackButton && (navState.configuration != null)) {
@@ -86,7 +87,6 @@ fun <C : Any, T : Any> ComponentContext.childOverlay(
                 null
             }
         },
-        stateMapper = { _, children -> ChildOverlay(overlay = children.firstOrNull() as? Child.Created?) },
         childFactory = childFactory,
     )
 

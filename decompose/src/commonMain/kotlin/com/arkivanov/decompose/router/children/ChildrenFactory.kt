@@ -49,11 +49,13 @@ import com.arkivanov.essenty.statekeeper.consume
  * destroyed, etc.
  * @param navTransformer a function that transforms the current navigation state to a new one using the provided
  * navigation event.
+ * @param stateMapper combines the provided navigation state and list of child components to a resulting state.
+ * @param onNavStateChanged called every time the navigation state changes, `oldNavState` is `null` when
+ * called first time during initialisation.
  * @param onEventComplete called when a navigation event is processed and the navigation completed.
  * @param backTransformer a function that checks the provided navigation state, and either returns another function
  * transforming the navigation state to a new one, or `null` if back button handling should be disabled. Called
- * during the initialisation and after each navigation event.
- * @param stateMapper combines the provided navigation state and list of child components to a resulting state.
+ * during initialisation and after each navigation event.
  * @param childFactory a factory function that creates new child component instances.
  * @return an observable [Value] of the resulting children state.
  */
@@ -65,9 +67,10 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
     saveNavState: (navState: N) -> ParcelableContainer?,
     restoreNavState: (container: ParcelableContainer) -> N?,
     navTransformer: (navState: N, event: E) -> N,
-    onEventComplete: (event: E, newNavState: N, oldNavState: N) -> Unit,
-    backTransformer: (navState: N) -> (() -> N)?,
     stateMapper: (navState: N, children: List<Child<C, T>>) -> S,
+    onNavStateChanged: (newNavState: N, oldNavState: N?) -> Unit = { _, _ -> },
+    onEventComplete: (event: E, newNavState: N, oldNavState: N) -> Unit = { _, _, _ -> },
+    backTransformer: (navState: N) -> (() -> N)? = { null },
     childFactory: (configuration: C, componentContext: ComponentContext) -> T,
 ): Value<S> {
     val mainBackHandler = backHandler.child()
@@ -102,17 +105,20 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
 
     lateinit var backCallback: BackCallback
 
-    fun onAfterNavigate(navState: N) {
-        bt = backTransformer(navState)
+    fun onAfterNavigate(newNavState: N, oldNavState: N) {
+        bt = backTransformer(newNavState)
         backCallback.isEnabled = bt != null
-        state.value = stateMapper(navState, navigator.children)
+        state.value = stateMapper(newNavState, navigator.children)
+        onNavStateChanged(newNavState, oldNavState)
     }
 
     backCallback =
         BackCallback(isEnabled = bt != null) {
             bt?.invoke()?.also { navState ->
+                val oldNavState = navigator.navState
                 navigator.navigate(navState = navState)
-                onAfterNavigate(navState)
+                val newNavState = navigator.navState
+                onAfterNavigate(newNavState, oldNavState)
             }
         }
 
@@ -123,7 +129,7 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
             val oldNavState = navigator.navState
             navigator.navigate(navState = navTransformer(navigator.navState, event))
             val newNavState = navigator.navState
-            onAfterNavigate(newNavState)
+            onAfterNavigate(newNavState, oldNavState)
             onEventComplete(event, newNavState, oldNavState)
         }
 
@@ -134,6 +140,8 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
         stateKeeper.unregister(key = key)
         mainBackHandler.unregister(backCallback)
     }
+
+    onNavStateChanged(navigator.navState, null)
 
     return state
 }
@@ -149,9 +157,10 @@ inline fun <C : Parcelable, T : Any, E : Any, reified N, S : Any> ComponentConte
     key: String,
     noinline initialNavState: () -> N,
     noinline navTransformer: (navState: N, event: E) -> N,
-    noinline onEventComplete: (event: E, newNavState: N, oldNavState: N) -> Unit,
-    noinline backTransformer: (navState: N) -> (() -> N)?,
     noinline stateMapper: (navState: N, children: List<Child<C, T>>) -> S,
+    noinline onNavStateChanged: (newNavState: N, oldNavState: N?) -> Unit = { _, _ -> },
+    noinline onEventComplete: (event: E, newNavState: N, oldNavState: N) -> Unit = { _, _, _ -> },
+    noinline backTransformer: (navState: N) -> (() -> N)? = { null },
     noinline childFactory: (configuration: C, componentContext: ComponentContext) -> T,
 ): Value<S> where N : NavState<C>, N : Parcelable =
     children(
@@ -161,9 +170,10 @@ inline fun <C : Parcelable, T : Any, E : Any, reified N, S : Any> ComponentConte
         saveNavState = { ParcelableContainer(it) },
         restoreNavState = { it.consumeRequired(N::class) },
         navTransformer = navTransformer,
+        stateMapper = stateMapper,
+        onNavStateChanged = onNavStateChanged,
         onEventComplete = onEventComplete,
         backTransformer = backTransformer,
-        stateMapper = stateMapper,
         childFactory = childFactory,
     )
 

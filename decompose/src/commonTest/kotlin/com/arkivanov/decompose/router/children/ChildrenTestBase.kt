@@ -4,7 +4,6 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.Relay
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackDispatcher
@@ -21,7 +20,7 @@ import kotlin.test.assertContentEquals
 @OptIn(ExperimentalDecomposeApi::class)
 internal open class ChildrenTestBase {
 
-    private val navigation = TestNavigation()
+    private val navigation = SimpleNavigation<(TestNavState) -> TestNavState>()
     protected val lifecycle = LifecycleRegistry()
     protected val backDispatcher = BackDispatcher()
 
@@ -39,62 +38,58 @@ internal open class ChildrenTestBase {
     }
 
     protected fun ComponentContext.children(
-        initialNavState: List<SimpleChildNavState<Config>> = emptyList(),
-        saveNavState: (navState: List<SimpleChildNavState<Config>>) -> ParcelableContainer? = { navState ->
+        initialNavState: TestNavState = TestNavState(),
+        saveNavState: (navState: TestNavState) -> ParcelableContainer? = { navState ->
             ParcelableContainer(
                 SavedNavState(
-                    configurations = navState.map { it.configuration },
-                    statuses = navState.map { it.status },
+                    configurations = navState.children.map { it.configuration },
+                    statuses = navState.children.map { it.status },
                 )
             )
         },
-        restoreNavState: (container: ParcelableContainer) -> List<SimpleChildNavState<Config>>? = { container ->
+        restoreNavState: (container: ParcelableContainer) -> TestNavState? = { container ->
             val savedState = container.consumeRequired<SavedNavState>()
-            savedState.configurations.zip(savedState.statuses).map { (configuration, status) ->
-                SimpleChildNavState(
-                    configuration = configuration,
-                    status = status,
-                )
-            }
+            TestNavState(
+                children = savedState.configurations.zip(savedState.statuses).map { (configuration, status) ->
+                    SimpleChildNavState(
+                        configuration = configuration,
+                        status = status,
+                    )
+                },
+            )
         },
-        backTransformer: (navState: List<SimpleChildNavState<Config>>) -> (() -> List<SimpleChildNavState<Config>>)? = { null },
+        onNavStateChanged: (newNavState: TestNavState, oldNavState: TestNavState?) -> Unit = { _, _ -> },
+        onEventComplete: (
+            event: (TestNavState) -> TestNavState,
+            newNavState: TestNavState,
+            oldNavState: TestNavState,
+        ) -> Unit = { _, _, _ -> },
+        backTransformer: (navState: TestNavState) -> (() -> TestNavState)? = { null },
         childFactory: (Config, ComponentContext) -> Component = ::Component,
     ): Value<List<Child<Config, Component>>> =
         children(
             source = navigation,
             key = "Key",
-            initialNavState = { TestNavState(children = initialNavState) },
-            saveNavState = { navState -> saveNavState(navState.children) },
-            restoreNavState = { container -> restoreNavState(container)?.let(::TestNavState) },
-            navTransformer = { navState, event -> event.transformer(navState) },
-            onEventComplete = { event, newNavState, oldNavState -> event.onComplete(newNavState, oldNavState) },
-            backTransformer = {
-                backTransformer(it.children)?.let { transformer ->
-                    { TestNavState(children = transformer()) }
-                }
-            },
+            initialNavState = { initialNavState },
+            saveNavState = saveNavState,
+            restoreNavState = restoreNavState,
+            navTransformer = { navState, event -> event(navState) },
+            onNavStateChanged = onNavStateChanged,
+            onEventComplete = onEventComplete,
+            backTransformer = backTransformer,
             stateMapper = { _, children -> children },
             childFactory = childFactory,
         )
 
     protected fun navigate(transformer: (List<SimpleChildNavState<Config>>) -> List<SimpleChildNavState<Config>>) {
-        navigate(transformer = transformer, onComplete = null)
-    }
-
-    protected fun navigate(
-        transformer: (List<SimpleChildNavState<Config>>) -> List<SimpleChildNavState<Config>>,
-        onComplete: ((newNavState: List<SimpleChildNavState<Config>>, oldNavState: List<SimpleChildNavState<Config>>) -> Unit)?,
-    ) {
-        navigation.navigate(
-            Event(
-                transformer = { TestNavState(children = transformer(it.children)) },
-                onComplete = { newNavState, oldNavState -> onComplete?.invoke(newNavState.children, oldNavState.children) },
-            )
-        )
+        navigation.navigate { it.copy(children = transformer(it.children)) }
     }
 
     protected infix fun Int.by(status: ChildNavState.Status): SimpleChildNavState<Config> =
         SimpleChildNavState(configuration = Config(id = this), status = status)
+
+    protected fun stateOf(vararg children: SimpleChildNavState<Config>): TestNavState =
+        TestNavState(children = children.asList())
 
     protected fun List<Child<Config, Component>>.assertChildren(vararg children: Pair<Int, Int?>) {
         assertContentEquals(
@@ -135,25 +130,4 @@ internal open class ChildrenTestBase {
         val configurations: List<Config>,
         val statuses: List<ChildNavState.Status>,
     ) : Parcelable
-
-    protected class Event(
-        val transformer: (TestNavState) -> TestNavState,
-        val onComplete: (newNavState: TestNavState, oldNavState: TestNavState) -> Unit,
-    )
-
-    protected class TestNavigation : NavigationSource<Event> {
-        private val relay = Relay<Event>()
-
-        override fun subscribe(observer: (Event) -> Unit) {
-            relay.subscribe(observer)
-        }
-
-        override fun unsubscribe(observer: (Event) -> Unit) {
-            relay.unsubscribe(observer)
-        }
-
-        fun navigate(event: Event) {
-            relay.accept(event)
-        }
-    }
 }

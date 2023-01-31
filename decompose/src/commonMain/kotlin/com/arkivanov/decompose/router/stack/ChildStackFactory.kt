@@ -145,6 +145,12 @@ fun <C : Any, T : Any> ComponentContext.childStack(
                     .withCreateDepth(createDepth = backStackCreateDepth),
             )
         },
+        stateMapper = { _, children ->
+            ChildStack(
+                active = children.last() as Child.Created,
+                backStack = children.dropLast(1),
+            )
+        },
         onEventComplete = { event, newNavState, oldNavState ->
             event.onComplete(newNavState.configurations, oldNavState.configurations)
         },
@@ -159,12 +165,6 @@ fun <C : Any, T : Any> ComponentContext.childStack(
             } else {
                 null
             }
-        },
-        stateMapper = { _, children ->
-            ChildStack(
-                active = children.last() as Child.Created,
-                backStack = children.dropLast(1),
-            )
         },
         childFactory = childFactory,
     )

@@ -31,12 +31,13 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
     source: NavigationSource<E>,
     key: String,
     initialNavState: () -> N,
-    saveNavState: (navState: N) -> ParcelableContainer,
-    restoreNavState: (container: ParcelableContainer) -> N,
+    saveNavState: (navState: N) -> ParcelableContainer?,
+    restoreNavState: (container: ParcelableContainer) -> N?,
     navTransformer: (navState: N, event: E) -> N,
-    onEventComplete: (event: E, newNavState: N, oldNavState: N) -> Unit,
-    backTransformer: (navState: N) -> (() -> N)?,
     stateMapper: (navState: N, children: List<Child<C, T>>) -> S,
+    onNavStateChanged: (newNavState: N, oldNavState: N?) -> Unit = { _, _ -> },
+    onEventComplete: (event: E, newNavState: N, oldNavState: N) -> Unit = { _, _, _ -> },
+    backTransformer: (navState: N) -> (() -> N)? = { null },
     childFactory: (configuration: C, componentContext: ComponentContext) -> T,
 ): Value<S>
 ```
@@ -57,9 +58,10 @@ The `children` function accepts the following arguments:
 - `saveNavState: (navState: N) -> ParcelableContainer` - a function that saves the provided navigation state into `ParcelableContainer`, called when the hosting component goes to background.
 - `restoreNavState: (container: ParcelableContainer) -> N` - a function that restores the navigation state from the provided `ParcelableContainer`. The restored navigation state must have the same amount of child configurations and in the same order. The restored child `Statuses` can be any, e.g. a previously active child may become destroyed, etc.
 - `navTransformer: (navState: N, event: E) -> N` - a function that transforms the current navigation state to a new one using the provided navigation event. The implementation diffs both navigation states and manipulates child components as needed.
+- `stateMapper: (navState: N, children: List<Child<C, T>>) -> S` - combines the provided navigation state and list of child components to a resulting custom state.
+- `onNavStateChanged: (newNavState: N, oldNavState: N?) -> Unit` - called every time the navigation state changes, `oldNavState` is `null` when called first time during initialisation. 
 - `onEventComplete: (event: E, newNavState: N, oldNavState: N) -> Unit` - called when a navigation event is processed and the navigation completed.
 - `backTransformer: (navState: N) -> (() -> N)?` - a function that checks the provided navigation state, and either returns another function transforming the navigation state to a new one, or `null` if back button handling should be disabled. Called during the initialisation and after each navigation event.
-- `stateMapper: (navState: N, children: List<Child<C, T>>) -> S` - combines the provided navigation state and list of child components to a resulting custom state.
 - `childFactory: (configuration: C, componentContext: ComponentContext) -> T` - childFactory a factory function that creates new child component instances.
 
 The `children` function returns an observable `Value` of the resulting children state.

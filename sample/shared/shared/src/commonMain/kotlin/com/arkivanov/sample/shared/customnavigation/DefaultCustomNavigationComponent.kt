@@ -36,18 +36,17 @@ class DefaultCustomNavigationComponent(
                 )
             },
             navTransformer = { navState, transformer -> transformer(navState) },
-            onEventComplete = { _, _, _ -> },
-            backTransformer = {
-                it.takeIf { it.index > 0 }?.let { navState ->
-                    { navState.copy(index = navState.index - 1) }
-                }
-            },
             stateMapper = { navState, children ->
                 Children(
                     items = children.map { it as Child.Created },
                     index = navState.index,
                     mode = navState.mode,
                 )
+            },
+            backTransformer = {
+                it.takeIf { it.index > 0 }?.let { navState ->
+                    { navState.copy(index = navState.index - 1) }
+                }
             },
             childFactory = { config, componentContext ->
                 DefaultKittenComponent(

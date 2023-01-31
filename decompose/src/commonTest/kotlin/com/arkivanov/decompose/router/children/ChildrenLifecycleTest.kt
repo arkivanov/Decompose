@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.router.children
 
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.children.ChildNavState.Status.ACTIVE
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.INACTIVE
@@ -10,19 +11,20 @@ import com.arkivanov.essenty.lifecycle.stop
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Suppress("TestFunctionName")
 internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_created_THEN_initial_state() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
 
         children.assertChildren(1 to null, 2 to 2, 3 to 3)
     }
 
     @Test
     fun WHEN_created_THEN_lifecycles_correct() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
 
         assertEquals(Lifecycle.State.CREATED, children.getById(id = 2).requireInstance().lifecycle.state)
         assertEquals(Lifecycle.State.RESUMED, children.getById(id = 3).requireInstance().lifecycle.state)
@@ -53,7 +55,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_destroyed_child_removed_THEN_state_updated() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
 
         navigate { navState -> navState.filterNot { it.configuration.id == 1 } }
 
@@ -62,7 +64,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_inactive_child_removed_THEN_state_updated() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
 
         navigate { navState -> navState.filterNot { it.configuration.id == 2 } }
 
@@ -71,7 +73,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_inactive_child_removed_THEN_lifecycle_destroyed() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val component = children.getById(id = 2).requireInstance()
 
         navigate { navState -> navState.filterNot { it.configuration.id == 2 } }
@@ -81,7 +83,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_active_child_removed_THEN_state_updated() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
 
         navigate { navState -> navState.filterNot { it.configuration.id == 3 } }
 
@@ -90,7 +92,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_active_child_removed_THEN_lifecycle_destroyed() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val component = children.getById(id = 3).requireInstance()
 
         navigate { navState -> navState.filterNot { it.configuration.id == 3 } }
@@ -100,7 +102,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_all_children_removed_THEN_state_updated() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
 
         navigate { emptyList() }
 
@@ -109,7 +111,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_all_children_removed_THEN_lifecycles_destroyed() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val component2 = children.getById(id = 2).requireInstance()
         val component3 = children.getById(id = 3).requireInstance()
 
@@ -121,7 +123,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_child_switched_from_destroyed_to_inactive_THEN_lifecycle_created() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
 
         navigate { listOf(1 by INACTIVE, 2 by INACTIVE, 3 by ACTIVE) }
 
@@ -130,7 +132,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_child_switched_from_inactive_to_active_THEN_lifecycle_resumed() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
 
         navigate { listOf(1 by DESTROYED, 2 by ACTIVE, 3 by ACTIVE) }
 
@@ -139,7 +141,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_child_switched_from_inactive_to_destroyed_THEN_lifecycle_destroyed() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val component = children.getById(id = 2).requireInstance()
 
         navigate { listOf(1 by DESTROYED, 2 by DESTROYED, 3 by ACTIVE) }
@@ -149,7 +151,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_child_switched_from_active_to_inactive_THEN_lifecycle_stopped() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
 
         navigate { listOf(1 by DESTROYED, 2 by INACTIVE, 3 by INACTIVE) }
 
@@ -158,7 +160,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_child_switched_from_active_to_destroyed_THEN_lifecycle_destroyed() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val component = children.getById(id = 3).requireInstance()
 
         navigate { listOf(1 by DESTROYED, 2 by INACTIVE, 3 by DESTROYED) }
@@ -168,7 +170,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_context_lifecycle_stopped_THEN_all_component_lifecycles_stopped() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
 
         lifecycle.stop()
 
@@ -178,7 +180,7 @@ internal class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_context_lifecycle_destroyed_THEN_all_component_lifecycles_destroyed() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val component2 = children.getById(id = 2).requireInstance()
         val component3 = children.getById(id = 3).requireInstance()
 
