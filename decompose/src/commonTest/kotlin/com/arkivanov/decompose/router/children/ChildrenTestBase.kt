@@ -38,16 +38,16 @@ internal open class ChildrenTestBase {
     }
 
     protected fun ComponentContext.children(
-        initialNavState: TestNavState = TestNavState(),
-        saveNavState: (navState: TestNavState) -> ParcelableContainer? = { navState ->
+        initialState: TestNavState = TestNavState(),
+        saveState: (state: TestNavState) -> ParcelableContainer? = { state ->
             ParcelableContainer(
                 SavedNavState(
-                    configurations = navState.children.map { it.configuration },
-                    statuses = navState.children.map { it.status },
+                    configurations = state.children.map { it.configuration },
+                    statuses = state.children.map { it.status },
                 )
             )
         },
-        restoreNavState: (container: ParcelableContainer) -> TestNavState? = { container ->
+        restoreState: (container: ParcelableContainer) -> TestNavState? = { container ->
             val savedState = container.consumeRequired<SavedNavState>()
             TestNavState(
                 children = savedState.configurations.zip(savedState.statuses).map { (configuration, status) ->
@@ -58,23 +58,23 @@ internal open class ChildrenTestBase {
                 },
             )
         },
-        onNavStateChanged: (newNavState: TestNavState, oldNavState: TestNavState?) -> Unit = { _, _ -> },
+        onStateChanged: (newState: TestNavState, oldState: TestNavState?) -> Unit = { _, _ -> },
         onEventComplete: (
             event: (TestNavState) -> TestNavState,
-            newNavState: TestNavState,
-            oldNavState: TestNavState,
+            newState: TestNavState,
+            oldState: TestNavState,
         ) -> Unit = { _, _, _ -> },
-        backTransformer: (navState: TestNavState) -> (() -> TestNavState)? = { null },
+        backTransformer: (state: TestNavState) -> (() -> TestNavState)? = { null },
         childFactory: (Config, ComponentContext) -> Component = ::Component,
     ): Value<List<Child<Config, Component>>> =
         children(
             source = navigation,
             key = "Key",
-            initialNavState = { initialNavState },
-            saveNavState = saveNavState,
-            restoreNavState = restoreNavState,
-            navTransformer = { navState, event -> event(navState) },
-            onNavStateChanged = onNavStateChanged,
+            initialState = { initialState },
+            saveState = saveState,
+            restoreState = restoreState,
+            navTransformer = { state, event -> event(state) },
+            onStateChanged = onStateChanged,
             onEventComplete = onEventComplete,
             backTransformer = backTransformer,
             stateMapper = { _, children -> children },

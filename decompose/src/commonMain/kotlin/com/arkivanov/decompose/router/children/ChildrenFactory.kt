@@ -39,18 +39,18 @@ import com.arkivanov.essenty.statekeeper.consume
  * @param source a source of navigation events.
  * @param key a key of this `children` collection, must be unique if there are multiple
  * `children` used in the same component.
- * @param initialNavState an initial navigation state that should be used if there is no previously saved state.
- * @param saveNavState a function that saves the provided navigation state into [ParcelableContainer].
+ * @param initialState an initial navigation state that should be used if there is no previously saved state.
+ * @param saveState a function that saves the provided navigation state into [ParcelableContainer].
  * The navigation state is not saved if `null` is returned.
- * @param restoreNavState a function that restores the navigation state from the provided [ParcelableContainer].
- * If `null` is returned then [initialNavState] is used instead.
+ * @param restoreState a function that restores the navigation state from the provided [ParcelableContainer].
+ * If `null` is returned then [initialState] is used instead.
  * The restored navigation state must have the same amount of child configurations and in the same order.
  * The restored child [Statuses][ChildNavState.Status] can be any, e.g. a previously active child may become
  * destroyed, etc.
  * @param navTransformer a function that transforms the current navigation state to a new one using the provided
  * navigation event.
  * @param stateMapper combines the provided navigation state and list of child components to a resulting state.
- * @param onNavStateChanged called every time the navigation state changes, `oldNavState` is `null` when
+ * @param onStateChanged called every time the navigation state changes, `oldState` is `null` when
  * called first time during initialisation.
  * @param onEventComplete called when a navigation event is processed and the navigation completed.
  * @param backTransformer a function that checks the provided navigation state, and either returns another function
@@ -63,14 +63,14 @@ import com.arkivanov.essenty.statekeeper.consume
 fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.children(
     source: NavigationSource<E>,
     key: String,
-    initialNavState: () -> N,
-    saveNavState: (navState: N) -> ParcelableContainer?,
-    restoreNavState: (container: ParcelableContainer) -> N?,
-    navTransformer: (navState: N, event: E) -> N,
-    stateMapper: (navState: N, children: List<Child<C, T>>) -> S,
-    onNavStateChanged: (newNavState: N, oldNavState: N?) -> Unit = { _, _ -> },
-    onEventComplete: (event: E, newNavState: N, oldNavState: N) -> Unit = { _, _, _ -> },
-    backTransformer: (navState: N) -> (() -> N)? = { null },
+    initialState: () -> N,
+    saveState: (state: N) -> ParcelableContainer?,
+    restoreState: (container: ParcelableContainer) -> N?,
+    navTransformer: (state: N, event: E) -> N,
+    stateMapper: (state: N, children: List<Child<C, T>>) -> S,
+    onStateChanged: (newState: N, oldState: N?) -> Unit = { _, _ -> },
+    onEventComplete: (event: E, newState: N, oldState: N) -> Unit = { _, _, _ -> },
+    backTransformer: (state: N) -> (() -> N)? = { null },
     childFactory: (configuration: C, componentContext: ComponentContext) -> T,
 ): Value<S> {
     val mainBackHandler = backHandler.child()
@@ -85,15 +85,15 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
                     backHandler = backHandler.child(),
                     childFactory = childFactory,
                 ),
-                navState = savedState?.navState?.let(restoreNavState) ?: initialNavState(),
+                navState = savedState?.navState?.let(restoreState) ?: initialState(),
                 savedChildState = savedState?.childState,
             )
         }
 
     stateKeeper.register(key = key) {
-        saveNavState(navigator.navState)?.let { savedNavState ->
+        saveState(navigator.navState)?.let { savedState ->
             SavedState(
-                navState = savedNavState,
+                navState = savedState,
                 childState = navigator.saveChildState(),
             )
         }
@@ -105,20 +105,20 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
 
     lateinit var backCallback: BackCallback
 
-    fun onAfterNavigate(newNavState: N, oldNavState: N) {
-        bt = backTransformer(newNavState)
+    fun onAfterNavigate(newState: N, oldState: N) {
+        bt = backTransformer(newState)
         backCallback.isEnabled = bt != null
-        state.value = stateMapper(newNavState, navigator.children)
-        onNavStateChanged(newNavState, oldNavState)
+        state.value = stateMapper(newState, navigator.children)
+        onStateChanged(newState, oldState)
     }
 
     backCallback =
         BackCallback(isEnabled = bt != null) {
-            bt?.invoke()?.also { navState ->
-                val oldNavState = navigator.navState
-                navigator.navigate(navState = navState)
-                val newNavState = navigator.navState
-                onAfterNavigate(newNavState, oldNavState)
+            bt?.invoke()?.also { state ->
+                val oldState = navigator.navState
+                navigator.navigate(navState = state)
+                val newState = navigator.navState
+                onAfterNavigate(newState, oldState)
             }
         }
 
@@ -126,11 +126,11 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
 
     val eventObserver: (E) -> Unit =
         { event ->
-            val oldNavState = navigator.navState
+            val oldState = navigator.navState
             navigator.navigate(navState = navTransformer(navigator.navState, event))
-            val newNavState = navigator.navState
-            onAfterNavigate(newNavState, oldNavState)
-            onEventComplete(event, newNavState, oldNavState)
+            val newState = navigator.navState
+            onAfterNavigate(newState, oldState)
+            onEventComplete(event, newState, oldState)
         }
 
     source.subscribe(eventObserver)
@@ -141,7 +141,7 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
         mainBackHandler.unregister(backCallback)
     }
 
-    onNavStateChanged(navigator.navState, null)
+    onStateChanged(navigator.navState, null)
 
     return state
 }
@@ -155,23 +155,23 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
 inline fun <C : Parcelable, T : Any, E : Any, reified N, S : Any> ComponentContext.children(
     source: NavigationSource<E>,
     key: String,
-    noinline initialNavState: () -> N,
-    noinline navTransformer: (navState: N, event: E) -> N,
-    noinline stateMapper: (navState: N, children: List<Child<C, T>>) -> S,
-    noinline onNavStateChanged: (newNavState: N, oldNavState: N?) -> Unit = { _, _ -> },
-    noinline onEventComplete: (event: E, newNavState: N, oldNavState: N) -> Unit = { _, _, _ -> },
-    noinline backTransformer: (navState: N) -> (() -> N)? = { null },
+    noinline initialState: () -> N,
+    noinline navTransformer: (state: N, event: E) -> N,
+    noinline stateMapper: (state: N, children: List<Child<C, T>>) -> S,
+    noinline onStateChanged: (newState: N, oldState: N?) -> Unit = { _, _ -> },
+    noinline onEventComplete: (event: E, newState: N, oldState: N) -> Unit = { _, _, _ -> },
+    noinline backTransformer: (state: N) -> (() -> N)? = { null },
     noinline childFactory: (configuration: C, componentContext: ComponentContext) -> T,
 ): Value<S> where N : NavState<C>, N : Parcelable =
     children(
         source = source,
         key = key,
-        initialNavState = initialNavState,
-        saveNavState = { ParcelableContainer(it) },
-        restoreNavState = { it.consumeRequired(N::class) },
+        initialState = initialState,
+        saveState = { ParcelableContainer(it) },
+        restoreState = { it.consumeRequired(N::class) },
         navTransformer = navTransformer,
         stateMapper = stateMapper,
-        onNavStateChanged = onNavStateChanged,
+        onStateChanged = onStateChanged,
         onEventComplete = onEventComplete,
         backTransformer = backTransformer,
         childFactory = childFactory,

@@ -1,7 +1,9 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.router.children.ChildNavState.Status.*
+import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
+import com.arkivanov.decompose.router.children.ChildNavState.Status.INACTIVE
+import com.arkivanov.decompose.router.children.ChildNavState.Status.ACTIVE
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
@@ -13,8 +15,8 @@ internal class ChildrenBasicTest : ChildrenTestBase() {
     fun WHEN_navigate_THEN_onEventComplete_called() {
         val results = ArrayList<Pair<TestNavState, TestNavState>>()
         context.children(
-            initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE),
-            onEventComplete = { _, newNavState, oldNavState -> results += newNavState to oldNavState },
+            initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE),
+            onEventComplete = { _, newState, oldState -> results += newState to oldState },
         )
 
         navigate { emptyList() }
@@ -23,23 +25,23 @@ internal class ChildrenBasicTest : ChildrenTestBase() {
     }
 
     @Test
-    fun WHEN_created_THEN_onNavStateChanged_called() {
+    fun WHEN_created_THEN_onStateChanged_called() {
         val results = ArrayList<Pair<TestNavState, TestNavState?>>()
 
         context.children(
-            initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE),
-            onNavStateChanged = { newNavState, oldNavState -> results += newNavState to oldNavState },
+            initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE),
+            onStateChanged = { newState, oldState -> results += newState to oldState },
         )
 
         assertContentEquals(listOf(stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE) to null), results)
     }
 
     @Test
-    fun WHEN_navigate_THEN_onNavStateChanged_called() {
+    fun WHEN_navigate_THEN_onStateChanged_called() {
         val results = ArrayList<Pair<TestNavState, TestNavState?>>()
         context.children(
-            initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE),
-            onNavStateChanged = { newNavState, oldNavState -> results += newNavState to oldNavState },
+            initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE),
+            onStateChanged = { newState, oldState -> results += newState to oldState },
         )
         results.clear()
 
@@ -49,17 +51,17 @@ internal class ChildrenBasicTest : ChildrenTestBase() {
     }
 
     @Test
-    fun WHEN_navigate_THEN_onEventComplete_called_after_onNavStateChanged_called() {
+    fun WHEN_navigate_THEN_onEventComplete_called_after_onStateChanged_called() {
         val results = ArrayList<String>()
         context.children(
-            initialNavState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE),
+            initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE),
             onEventComplete = { _, _, _ -> results += "onEventComplete" },
-            onNavStateChanged = { _, _ -> results += "onNavStateChanged" },
+            onStateChanged = { _, _ -> results += "onStateChanged" },
         )
         results.clear()
 
         navigate { emptyList() }
 
-        assertContentEquals(listOf("onNavStateChanged", "onEventComplete"), results)
+        assertContentEquals(listOf("onStateChanged", "onEventComplete"), results)
     }
 }

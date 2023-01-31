@@ -74,14 +74,14 @@ fun <C : Any, T : Any> ComponentContext.childOverlay(
     children(
         source = source,
         key = key,
-        initialNavState = { OverlayNavState(configuration = initialConfiguration()) },
-        saveNavState = { saveConfiguration(it.configuration) },
-        restoreNavState = { OverlayNavState(restoreConfiguration(it)) },
-        navTransformer = { navState, event -> OverlayNavState(configuration = event.transformer(navState.configuration)) },
+        initialState = { OverlayNavState(configuration = initialConfiguration()) },
+        saveState = { saveConfiguration(it.configuration) },
+        restoreState = { OverlayNavState(restoreConfiguration(it)) },
+        navTransformer = { state, event -> OverlayNavState(configuration = event.transformer(state.configuration)) },
         stateMapper = { _, children -> ChildOverlay(overlay = children.firstOrNull() as? Child.Created?) },
-        onEventComplete = { event, newNavState, oldNavState -> event.onComplete(newNavState.configuration, oldNavState.configuration) },
-        backTransformer = { navState ->
-            if (handleBackButton && (navState.configuration != null)) {
+        onEventComplete = { event, newState, oldState -> event.onComplete(newState.configuration, oldState.configuration) },
+        backTransformer = { state ->
+            if (handleBackButton && (state.configuration != null)) {
                 { OverlayNavState(configuration = null) }
             } else {
                 null

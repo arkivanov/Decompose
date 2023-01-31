@@ -26,7 +26,7 @@ class DefaultCustomNavigationComponent(
         children(
             source = navigation,
             key = "carousel",
-            initialNavState = {
+            initialState = {
                 NavigationState(
                     configurations = ImageType.values().map { imageType ->
                         Config(imageType = imageType)
@@ -35,17 +35,17 @@ class DefaultCustomNavigationComponent(
                     mode = Mode.CAROUSEL,
                 )
             },
-            navTransformer = { navState, transformer -> transformer(navState) },
-            stateMapper = { navState, children ->
+            navTransformer = { state, transformer -> transformer(state) },
+            stateMapper = { state, children ->
                 Children(
                     items = children.map { it as Child.Created },
-                    index = navState.index,
-                    mode = navState.mode,
+                    index = state.index,
+                    mode = state.mode,
                 )
             },
             backTransformer = {
-                it.takeIf { it.index > 0 }?.let { navState ->
-                    { navState.copy(index = navState.index - 1) }
+                it.takeIf { it.index > 0 }?.let { state ->
+                    { state.copy(index = state.index - 1) }
                 }
             },
             childFactory = { config, componentContext ->
@@ -59,32 +59,32 @@ class DefaultCustomNavigationComponent(
     override val children: Value<Children<*, KittenComponent>> = _children
 
     override fun onSwitchToPagerClicked() {
-        navigation.navigate { navState ->
-            navState.copy(mode = Mode.PAGER)
+        navigation.navigate { state ->
+            state.copy(mode = Mode.PAGER)
         }
     }
 
     override fun onSwitchToCarouselClicked() {
-        navigation.navigate { navState ->
-            navState.copy(mode = Mode.CAROUSEL)
+        navigation.navigate { state ->
+            state.copy(mode = Mode.CAROUSEL)
         }
     }
 
     override fun onForwardClicked() {
-        navigation.navigate { navState ->
-            navState.copy(index = (navState.index + 1) % navState.configurations.size)
+        navigation.navigate { state ->
+            state.copy(index = (state.index + 1) % state.configurations.size)
         }
     }
 
     override fun onBackwardClicked() {
-        navigation.navigate { navState ->
-            navState.copy(index = (navState.index - 1) % navState.configurations.size)
+        navigation.navigate { state ->
+            state.copy(index = (state.index - 1) % state.configurations.size)
         }
     }
 
     override fun onShuffleClicked() {
-        navigation.navigate { navState ->
-            navState.copy(configurations = navState.configurations.shuffled())
+        navigation.navigate { state ->
+            state.copy(configurations = state.configurations.shuffled())
         }
     }
 

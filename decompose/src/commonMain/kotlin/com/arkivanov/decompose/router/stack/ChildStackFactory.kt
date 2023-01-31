@@ -108,24 +108,24 @@ fun <C : Any, T : Any> ComponentContext.childStack(
     children(
         source = source,
         key = key,
-        initialNavState = {
+        initialState = {
             StackNavState(
                 configurations = initialStack(),
                 backStackCreateDepth = backStackCreateDepth,
             )
         },
-        saveNavState = { saveStack(it.configurations) },
-        restoreNavState = { container ->
+        saveState = { saveStack(it.configurations) },
+        restoreState = { container ->
             StackNavState(
                 configurations = restoreStack(container) ?: initialStack(),
                 backStackCreateDepth = backStackCreateDepth,
             )
         },
-        navTransformer = { navState, event ->
-            val newStack = event.transformer(navState.configurations)
+        navTransformer = { state, event ->
+            val newStack = event.transformer(state.configurations)
             check(newStack.isNotEmpty()) { "Configuration stack must not be empty" }
 
-            val oldStatuses = navState.children.associateBy(keySelector = { it.configuration }, valueTransform = { it.status })
+            val oldStatuses = state.children.associateBy(keySelector = { it.configuration }, valueTransform = { it.status })
 
             StackNavState(
                 active = newStack.last(),
@@ -151,15 +151,15 @@ fun <C : Any, T : Any> ComponentContext.childStack(
                 backStack = children.dropLast(1),
             )
         },
-        onEventComplete = { event, newNavState, oldNavState ->
-            event.onComplete(newNavState.configurations, oldNavState.configurations)
+        onEventComplete = { event, newState, oldState ->
+            event.onComplete(newState.configurations, oldState.configurations)
         },
-        backTransformer = { navState ->
-            if (handleBackButton && navState.backStack.isNotEmpty()) {
+        backTransformer = { state ->
+            if (handleBackButton && state.backStack.isNotEmpty()) {
                 {
                     StackNavState(
-                        active = navState.backStack.last().configuration,
-                        backStack = navState.backStack.dropLast(1).withCreateDepth(createDepth = backStackCreateDepth),
+                        active = state.backStack.last().configuration,
+                        backStack = state.backStack.dropLast(1).withCreateDepth(createDepth = backStackCreateDepth),
                     )
                 }
             } else {
