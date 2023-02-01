@@ -2,7 +2,6 @@ package com.arkivanov.decompose.router.overlay
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
 import com.arkivanov.decompose.router.children.SimpleChildNavState
@@ -27,7 +26,6 @@ import kotlin.reflect.KClass
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildOverlay].
  */
-@OptIn(ExperimentalDecomposeApi::class)
 fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
     source: OverlayNavigationSource<C>,
     configurationClass: KClass<out C>,
@@ -61,7 +59,6 @@ fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildOverlay].
  */
-@ExperimentalDecomposeApi
 fun <C : Any, T : Any> ComponentContext.childOverlay(
     source: OverlayNavigationSource<C>,
     saveConfiguration: (C?) -> ParcelableContainer?,
@@ -74,19 +71,19 @@ fun <C : Any, T : Any> ComponentContext.childOverlay(
     children(
         source = source,
         key = key,
-        initialNavState = { OverlayNavState(configuration = initialConfiguration()) },
-        saveNavState = { saveConfiguration(it.configuration) },
-        restoreNavState = { OverlayNavState(restoreConfiguration(it)) },
-        navTransformer = { navState, event -> OverlayNavState(configuration = event.transformer(navState.configuration)) },
-        onEventComplete = { event, newNavState, oldNavState -> event.onComplete(newNavState.configuration, oldNavState.configuration) },
-        backTransformer = { navState ->
-            if (handleBackButton && (navState.configuration != null)) {
+        initialState = { OverlayNavState(configuration = initialConfiguration()) },
+        saveState = { saveConfiguration(it.configuration) },
+        restoreState = { OverlayNavState(restoreConfiguration(it)) },
+        navTransformer = { state, event -> OverlayNavState(configuration = event.transformer(state.configuration)) },
+        stateMapper = { _, children -> ChildOverlay(overlay = children.firstOrNull() as? Child.Created?) },
+        onEventComplete = { event, newState, oldState -> event.onComplete(newState.configuration, oldState.configuration) },
+        backTransformer = { state ->
+            if (handleBackButton && (state.configuration != null)) {
                 { OverlayNavState(configuration = null) }
             } else {
                 null
             }
         },
-        stateMapper = { _, children -> ChildOverlay(overlay = children.firstOrNull() as? Child.Created?) },
         childFactory = childFactory,
     )
 
@@ -111,7 +108,6 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childOverlay(
         childFactory = childFactory,
     )
 
-@OptIn(ExperimentalDecomposeApi::class)
 private data class OverlayNavState<out C : Any>(
     val configuration: C?,
 ) : NavState<C> {
