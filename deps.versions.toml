@@ -46,9 +46,7 @@ jetbrains-kotlinWrappers-kotlinWrappersBom = { group = "org.jetbrains.kotlin-wra
 jetbrains-kotlinx-binaryCompatibilityValidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version.ref = "jetbrainsBinaryCompatibilityValidator" }
 jetbrains-kotlinx-kotlinxCoroutinesSwing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "jetbrainsKotlinxCoroutines" }
 
-androidx-compose-foundation-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "jetpackCompose" }
-androidx-compose-ui-uiTestJunit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "jetpackCompose" }
-androidx-compose-ui-uiTestManifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "jetpackCompose" }
+androidx-compose-runtime-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "jetpackCompose" }
 
 android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradle" }
 android-material-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }

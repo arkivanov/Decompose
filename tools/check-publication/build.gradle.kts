@@ -37,7 +37,6 @@ kotlin {
         android.main.dependencies {
             implementation("com.arkivanov.decompose:extensions-android:$version")
             implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$version")
-            implementation("com.arkivanov.decompose:extensions-compose-jetpack:$version")
         }
 
         jvm.main.dependencies {
