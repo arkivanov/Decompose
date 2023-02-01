@@ -3,7 +3,6 @@ package com.arkivanov.sample.shared.dynamicfeatures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
@@ -13,7 +12,6 @@ import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeature
 import com.arkivanov.sample.shared.dynamicfeatures.feature1.feature1Content
 import com.arkivanov.sample.shared.dynamicfeatures.feature2.feature2Content
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 internal fun DynamicFeaturesContent(component: DynamicFeaturesComponent, modifier: Modifier = Modifier) {
     Children(

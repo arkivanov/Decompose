@@ -1,17 +1,13 @@
-@file:OptIn(ExperimentalDecomposeApi::class)
-
 package com.arkivanov.decompose.extensions.compose.jetpack.stack.animation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 
 /**
  * Tracks the [ChildStack] changes and animates between child widget.
  */
-@ExperimentalDecomposeApi
 fun interface StackAnimation<C : Any, T : Any> {
 
     @Composable
@@ -28,7 +24,6 @@ fun interface StackAnimation<C : Any, T : Any> {
  * @param disableInputDuringAnimation disables input and touch events while animating, default value is `true`.
  * @param selector provides a [StackAnimator] for current [Child], other [Child] and [Direction].
  */
-@ExperimentalDecomposeApi
 fun <C : Any, T : Any> stackAnimation(
     disableInputDuringAnimation: Boolean = true,
     selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator?,
@@ -44,7 +39,6 @@ fun <C : Any, T : Any> stackAnimation(
  * @param animator a [StackAnimator] to be used for animation, default is [fade].
  * @param disableInputDuringAnimation disables input and touch events while animating, default value is `true`.
  */
-@ExperimentalDecomposeApi
 fun <C : Any, T : Any> stackAnimation(
     animator: StackAnimator = fade(),
     disableInputDuringAnimation: Boolean = true,

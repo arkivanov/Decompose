@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
@@ -16,7 +15,6 @@ import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeature
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeatureComponent.Child.FeatureChild
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeatureComponent.Child.LoadingChild
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun <T : Any> DynamicFeatureContent(
     component: DynamicFeatureComponent<T>,
