@@ -1,3 +1,4 @@
+import com.arkivanov.gradle.iosCompat
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupSourceSets
 
@@ -11,6 +12,7 @@ plugins {
 setupMultiplatform {
     android()
     jvm()
+    iosCompat()
 }
 
 android {

@@ -30,7 +30,6 @@ pluginManagement {
 
 if (!startParameter.projectProperties.containsKey("check_publication")) {
     include(":decompose")
-    include(":extensions-compose-jetpack")
     include(":extensions-compose-jetbrains")
     include(":extensions-android")
     include(":sample:shared:shared")
@@ -41,6 +40,7 @@ if (!startParameter.projectProperties.containsKey("check_publication")) {
     include(":sample:shared:dynamic-features:feature2Impl")
     include(":sample:app-android")
     include(":sample:app-desktop")
+    include(":sample:app-darwin-compose")
     include(":sample:app-js")
 } else {
     include(":tools:check-publication")

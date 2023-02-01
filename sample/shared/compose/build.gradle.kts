@@ -1,4 +1,6 @@
 import com.arkivanov.gradle.bundle
+import com.arkivanov.gradle.dependsOn
+import com.arkivanov.gradle.iosCompat
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupSourceSets
 
@@ -12,6 +14,7 @@ plugins {
 setupMultiplatform {
     android()
     jvm()
+    iosCompat()
 }
 
 android {
@@ -21,6 +24,10 @@ android {
 kotlin {
     setupSourceSets {
         val jvm by bundle()
+        val ios by bundle()
+
+        ios dependsOn common
+        iosSet dependsOn ios
 
         common.main.dependencies {
             implementation(project(":decompose"))

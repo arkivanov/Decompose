@@ -18,9 +18,7 @@ setupMultiplatform {
     android()
     jvm()
     js(IR) { browser() }
-    iosCompat(
-        arm64 = null // Comment out to enable arm64 target
-    )
+    iosCompat()
 }
 
 android {
@@ -61,7 +59,6 @@ kotlin {
 }
 
 compose.web.targets()
-
 
 plugins.removeAll { it is ComposeCompilerKotlinSupportPlugin }
 
