@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.Direction
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation
@@ -40,7 +39,6 @@ import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChil
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
     val childStack by component.childStack.subscribeAsState()
@@ -112,7 +110,6 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
     }
 }
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 private fun tabAnimation(): StackAnimation<Any, Child> =
     stackAnimation { child, otherChild, direction ->
@@ -131,7 +128,6 @@ private val Child.index: Int
             is CustomNavigationChild -> 3
         }
 
-@OptIn(ExperimentalDecomposeApi::class)
 private fun StackAnimator.flipSide(): StackAnimator =
     StackAnimator { direction, onFinished, content ->
         invoke(

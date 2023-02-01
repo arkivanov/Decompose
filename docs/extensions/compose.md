@@ -140,9 +140,9 @@ fun DetailsContent(component: DetailsComponent) {
 }
 ```
 
-### Animations (experimental)
+### Animations
 
-Decompose provides the [Child Animation API](https://github.com/arkivanov/Decompose/tree/master/extensions-compose-jetpack/src/main/java/com/arkivanov/decompose/extensions/compose/jetpack/animation/child) for Compose, as well as some predefined animation specs. To enable child animations you need to pass the `animation` argument to the `Children` function. There are predefined animators provided by Decompose.
+Decompose provides [Child Animation API](https://github.com/arkivanov/Decompose/tree/master/extensions-compose-jetpack/src/main/java/com/arkivanov/decompose/extensions/compose/jetpack/animation/child) for Compose, as well as some predefined animation specs. To enable child animations you need to pass the `animation` argument to the `Children` function. There are predefined animators provided by Decompose.
 
 #### Fade animation
 
@@ -288,7 +288,7 @@ Please refer to the predefined animators (`fade`, `slide`, etc.) for implementat
 
 ## Compose for iOS and macOS
 
-Compose for iOS and macOS is still work in progress and was not oficially announced. However, Decompose already supports it. The support is also experimental and is not part of the main branch - see [#74](https://github.com/arkivanov/Decompose/issues/74) for more information.
+Compose for iOS and macOS is still work in progress and was not officially announced. However, Decompose already supports it. The support is also experimental and is not part of the main branch - see [#74](https://github.com/arkivanov/Decompose/issues/74) for more information.
 
 If you want to use Decompose with Compose for iOS/macOS, you have to use special versions of `extensions-compose-jetbrains` module.
 

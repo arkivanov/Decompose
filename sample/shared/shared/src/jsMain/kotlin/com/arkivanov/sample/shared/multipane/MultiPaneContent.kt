@@ -2,9 +2,9 @@ package com.arkivanov.sample.shared.multipane
 
 import com.arkivanov.sample.shared.RProps
 import com.arkivanov.sample.shared.componentContent
-import com.arkivanov.sample.shared.multipane.MultiPaneComponent.DetailsChild
-import com.arkivanov.sample.shared.multipane.MultiPaneComponent.ListChild
+import com.arkivanov.sample.shared.multipane.details.ArticleDetailsComponent
 import com.arkivanov.sample.shared.multipane.details.ArticleDetailsContent
+import com.arkivanov.sample.shared.multipane.list.ArticleListComponent
 import com.arkivanov.sample.shared.multipane.list.ArticleListContent
 import com.arkivanov.sample.shared.useAsState
 import csstype.Display
@@ -23,9 +23,9 @@ import react.useEffectOnce
 private const val MULTI_PANE_WIDTH_THRESHOLD = 960
 
 val MultiPaneContent: FC<RProps<MultiPaneComponent>> = FC { props ->
-    val model by props.component.models.useAsState()
-    val listChildStack by props.component.listChildStack.useAsState()
-    val detailsChildStack by props.component.detailsChildStack.useAsState()
+    val children by props.component.children.useAsState()
+    val listComponent = children.listChild.instance
+    val detailsComponent = children.detailsChild?.instance
 
     fun onWindowResized() {
         props.component.setMultiPane(window.innerWidth >= MULTI_PANE_WIDTH_THRESHOLD)
@@ -39,44 +39,44 @@ val MultiPaneContent: FC<RProps<MultiPaneComponent>> = FC { props ->
         cleanup { window.removeEventListener(type = "resize", callback = resizeCallback) }
     }
 
-    if (model.isMultiPane) {
+    if (children.isMultiPane) {
         DoublePane {
-            listChild = listChildStack.active.instance
-            detailsChild = detailsChildStack.active.instance
+            this.listComponent = listComponent
+            this.detailsComponent = detailsComponent
         }
     } else {
         SinglePane {
-            listChild = listChildStack.active.instance
-            detailsChild = detailsChildStack.active.instance
+            this.listComponent = listComponent
+            this.detailsComponent = detailsComponent
         }
     }
 }
 
 private external interface SinglePaneProps : Props {
-    var listChild: ListChild
-    var detailsChild: DetailsChild
+    var listComponent: ArticleListComponent
+    var detailsComponent: ArticleDetailsComponent?
 }
 
 private val SinglePane: FC<SinglePaneProps> = FC { props ->
+    val detailsComponent = props.detailsComponent
+
     Box {
         sx {
             width = 100.pct
             height = 100.pct
         }
 
-        ListPane {
-            child = props.listChild
-        }
-
-        DetailsPane {
-            child = props.detailsChild
+        if (detailsComponent != null) {
+            componentContent(component = detailsComponent, content = ArticleDetailsContent)
+        } else {
+            componentContent(component = props.listComponent, content = ArticleListContent)
         }
     }
 }
 
 private external interface MultiPaneProps : Props {
-    var listChild: ListChild
-    var detailsChild: DetailsChild
+    var listComponent: ArticleListComponent
+    var detailsComponent: ArticleDetailsComponent?
 }
 
 private val DoublePane: FC<MultiPaneProps> = FC { props ->
@@ -93,9 +93,7 @@ private val DoublePane: FC<MultiPaneProps> = FC { props ->
                 flex = Flex(grow = number(4.0), shrink = number(0.0), basis = 0.px)
             }
 
-            ListPane {
-                child = props.listChild
-            }
+            componentContent(component = props.listComponent, content = ArticleListContent)
         }
 
         Box {
@@ -104,31 +102,9 @@ private val DoublePane: FC<MultiPaneProps> = FC { props ->
                 flex = Flex(grow = number(6.0), shrink = number(0.0), basis = 0.px)
             }
 
-            DetailsPane {
-                child = props.detailsChild
+            props.detailsComponent?.also {
+                componentContent(component = it, content = ArticleDetailsContent)
             }
         }
     }
-}
-
-private external interface ListPaneProps : Props {
-    var child: ListChild
-}
-
-private val ListPane: FC<ListPaneProps> = FC { props ->
-    when (val child = props.child) {
-        is ListChild.List -> componentContent(component = child.component, content = ArticleListContent)
-        is ListChild.None -> Unit
-    }.let {}
-}
-
-private external interface DetailsPaneProps : Props {
-    var child: DetailsChild
-}
-
-private val DetailsPane: FC<DetailsPaneProps> = FC { props ->
-    when (val child = props.child) {
-        is DetailsChild.Details -> componentContent(component = child.component, content = ArticleDetailsContent)
-        is DetailsChild.None -> Unit
-    }.let {}
 }

@@ -2,7 +2,6 @@ package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.GettingList
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
@@ -94,7 +93,6 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildStack].
  */
-@OptIn(ExperimentalDecomposeApi::class)
 fun <C : Any, T : Any> ComponentContext.childStack(
     source: StackNavigationSource<C>,
     initialStack: () -> List<C>,
@@ -108,24 +106,24 @@ fun <C : Any, T : Any> ComponentContext.childStack(
     children(
         source = source,
         key = key,
-        initialNavState = {
+        initialState = {
             StackNavState(
                 configurations = initialStack(),
                 backStackCreateDepth = backStackCreateDepth,
             )
         },
-        saveNavState = { saveStack(it.configurations) },
-        restoreNavState = { container ->
+        saveState = { saveStack(it.configurations) },
+        restoreState = { container ->
             StackNavState(
                 configurations = restoreStack(container) ?: initialStack(),
                 backStackCreateDepth = backStackCreateDepth,
             )
         },
-        navTransformer = { navState, event ->
-            val newStack = event.transformer(navState.configurations)
+        navTransformer = { state, event ->
+            val newStack = event.transformer(state.configurations)
             check(newStack.isNotEmpty()) { "Configuration stack must not be empty" }
 
-            val oldStatuses = navState.children.associateBy(keySelector = { it.configuration }, valueTransform = { it.status })
+            val oldStatuses = state.children.associateBy(keySelector = { it.configuration }, valueTransform = { it.status })
 
             StackNavState(
                 active = newStack.last(),
@@ -145,26 +143,26 @@ fun <C : Any, T : Any> ComponentContext.childStack(
                     .withCreateDepth(createDepth = backStackCreateDepth),
             )
         },
-        onEventComplete = { event, newNavState, oldNavState ->
-            event.onComplete(newNavState.configurations, oldNavState.configurations)
-        },
-        backTransformer = { navState ->
-            if (handleBackButton && navState.backStack.isNotEmpty()) {
-                {
-                    StackNavState(
-                        active = navState.backStack.last().configuration,
-                        backStack = navState.backStack.dropLast(1).withCreateDepth(createDepth = backStackCreateDepth),
-                    )
-                }
-            } else {
-                null
-            }
-        },
         stateMapper = { _, children ->
             ChildStack(
                 active = children.last() as Child.Created,
                 backStack = children.dropLast(1),
             )
+        },
+        onEventComplete = { event, newState, oldState ->
+            event.onComplete(newState.configurations, oldState.configurations)
+        },
+        backTransformer = { state ->
+            if (handleBackButton && state.backStack.isNotEmpty()) {
+                {
+                    StackNavState(
+                        active = state.backStack.last().configuration,
+                        backStack = state.backStack.dropLast(1).withCreateDepth(createDepth = backStackCreateDepth),
+                    )
+                }
+            } else {
+                null
+            }
         },
         childFactory = childFactory,
     )
@@ -215,7 +213,6 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
         childFactory = childFactory,
     )
 
-@ExperimentalDecomposeApi
 private fun <C : Any> List<SimpleChildNavState<C>>.withCreateDepth(createDepth: Int): List<SimpleChildNavState<C>> =
     if (isCreateRequired(createDepth = createDepth)) {
         mapIndexed { index, item ->
@@ -229,7 +226,6 @@ private fun <C : Any> List<SimpleChildNavState<C>>.withCreateDepth(createDepth: 
         this
     }
 
-@ExperimentalDecomposeApi
 private fun List<SimpleChildNavState<*>>.isCreateRequired(createDepth: Int): Boolean {
     for (i in lastIndex downTo max(lastIndex - createDepth + 1, 0)) {
         if (get(i).status == Status.DESTROYED) {
@@ -240,7 +236,6 @@ private fun List<SimpleChildNavState<*>>.isCreateRequired(createDepth: Int): Boo
     return false
 }
 
-@OptIn(ExperimentalDecomposeApi::class)
 private data class StackNavState<out C : Any>(
     val active: C,
     val backStack: List<SimpleChildNavState<C>>,
@@ -259,7 +254,6 @@ private data class StackNavState<out C : Any>(
         }
 }
 
-@ExperimentalDecomposeApi
 private fun <C : Any> StackNavState(configurations: List<C>, backStackCreateDepth: Int): StackNavState<C> {
     require(configurations.isNotEmpty()) { "Configuration stack must not be empty" }
 

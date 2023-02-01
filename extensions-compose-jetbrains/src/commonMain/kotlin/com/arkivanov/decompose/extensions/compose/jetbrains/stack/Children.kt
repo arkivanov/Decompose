@@ -7,14 +7,12 @@ import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun <C : Any, T : Any> Children(
     stack: ChildStack<C, T>,
@@ -35,7 +33,6 @@ fun <C : Any, T : Any> Children(
     }
 }
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun <C : Any, T : Any> Children(
     stack: Value<ChildStack<C, T>>,

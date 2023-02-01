@@ -2,7 +2,6 @@ package com.arkivanov.sample.shared.customnavigation
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.children.ChildNavState
 import com.arkivanov.decompose.router.children.NavState
 import com.arkivanov.decompose.router.children.SimpleChildNavState
@@ -15,7 +14,6 @@ import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent.Ch
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent.Mode
 import com.arkivanov.sample.shared.customnavigation.KittenComponent.ImageType
 
-@OptIn(ExperimentalDecomposeApi::class)
 class DefaultCustomNavigationComponent(
     componentContext: ComponentContext,
 ) : CustomNavigationComponent, ComponentContext by componentContext {
@@ -26,7 +24,7 @@ class DefaultCustomNavigationComponent(
         children(
             source = navigation,
             key = "carousel",
-            initialNavState = {
+            initialState = {
                 NavigationState(
                     configurations = ImageType.values().map { imageType ->
                         Config(imageType = imageType)
@@ -35,19 +33,18 @@ class DefaultCustomNavigationComponent(
                     mode = Mode.CAROUSEL,
                 )
             },
-            navTransformer = { navState, transformer -> transformer(navState) },
-            onEventComplete = { _, _, _ -> },
-            backTransformer = {
-                it.takeIf { it.index > 0 }?.let { navState ->
-                    { navState.copy(index = navState.index - 1) }
-                }
-            },
-            stateMapper = { navState, children ->
+            navTransformer = { state, transformer -> transformer(state) },
+            stateMapper = { state, children ->
                 Children(
                     items = children.map { it as Child.Created },
-                    index = navState.index,
-                    mode = navState.mode,
+                    index = state.index,
+                    mode = state.mode,
                 )
+            },
+            backTransformer = {
+                it.takeIf { it.index > 0 }?.let { state ->
+                    { state.copy(index = state.index - 1) }
+                }
             },
             childFactory = { config, componentContext ->
                 DefaultKittenComponent(
@@ -60,32 +57,32 @@ class DefaultCustomNavigationComponent(
     override val children: Value<Children<*, KittenComponent>> = _children
 
     override fun onSwitchToPagerClicked() {
-        navigation.navigate { navState ->
-            navState.copy(mode = Mode.PAGER)
+        navigation.navigate { state ->
+            state.copy(mode = Mode.PAGER)
         }
     }
 
     override fun onSwitchToCarouselClicked() {
-        navigation.navigate { navState ->
-            navState.copy(mode = Mode.CAROUSEL)
+        navigation.navigate { state ->
+            state.copy(mode = Mode.CAROUSEL)
         }
     }
 
     override fun onForwardClicked() {
-        navigation.navigate { navState ->
-            navState.copy(index = (navState.index + 1) % navState.configurations.size)
+        navigation.navigate { state ->
+            state.copy(index = (state.index + 1) % state.configurations.size)
         }
     }
 
     override fun onBackwardClicked() {
-        navigation.navigate { navState ->
-            navState.copy(index = (navState.index - 1) % navState.configurations.size)
+        navigation.navigate { state ->
+            state.copy(index = (state.index - 1) % state.configurations.size)
         }
     }
 
     override fun onShuffleClicked() {
-        navigation.navigate { navState ->
-            navState.copy(configurations = navState.configurations.shuffled())
+        navigation.navigate { state ->
+            state.copy(configurations = state.configurations.shuffled())
         }
     }
 
