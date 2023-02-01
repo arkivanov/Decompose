@@ -1,4 +1,6 @@
 import com.arkivanov.gradle.bundle
+import com.arkivanov.gradle.iosCompat
+import com.arkivanov.gradle.macosCompat
 import com.arkivanov.gradle.setupBinaryCompatibilityValidator
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupPublication
@@ -14,6 +16,9 @@ plugins {
 setupMultiplatform {
     android()
     jvm()
+    macosCompat()
+    iosCompat()
+
     js(IR) {
         browser()
     }
