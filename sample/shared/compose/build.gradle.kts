@@ -15,6 +15,7 @@ setupMultiplatform {
     android()
     jvm()
     iosCompat()
+    js(IR) { browser() }
 }
 
 android {
@@ -38,6 +39,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
+            implementation(compose.ui)
         }
 
         jvm.main.dependencies {

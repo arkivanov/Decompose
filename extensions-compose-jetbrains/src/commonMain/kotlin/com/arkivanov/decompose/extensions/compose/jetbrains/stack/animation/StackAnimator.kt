@@ -46,10 +46,27 @@ fun stackAnimator(
  * Combines (merges) the receiver [StackAnimator] with the [other] [StackAnimator].
  */
 operator fun StackAnimator.plus(other: StackAnimator): StackAnimator =
-    StackAnimator { direction, onFinished, content ->
+    PlusStackAnimator(first = this, second = other)
+
+/*
+ * Can't be anonymous. See:
+ * https://github.com/JetBrains/compose-jb/issues/2688
+ * https://github.com/JetBrains/compose-jb/issues/2612
+ */
+private class PlusStackAnimator(
+    private val first: StackAnimator,
+    private val second: StackAnimator,
+) : StackAnimator {
+
+    @Composable
+    override fun invoke(
+        direction: Direction,
+        onFinished: () -> Unit,
+        content: @Composable (Modifier) -> Unit,
+    ) {
         val finished = remember(direction) { BooleanArray(2) }
 
-        this(
+        first(
             direction = direction,
             onFinished = {
                 finished[0] = true
@@ -58,7 +75,7 @@ operator fun StackAnimator.plus(other: StackAnimator): StackAnimator =
                 }
             },
         ) { thisModifier ->
-            other(
+            second(
                 direction = direction,
                 onFinished = {
                     finished[1] = true
@@ -71,3 +88,4 @@ operator fun StackAnimator.plus(other: StackAnimator): StackAnimator =
             }
         }
     }
+}

@@ -13,6 +13,7 @@ setupMultiplatform {
     android()
     jvm()
     iosCompat()
+    js(IR) { browser() }
 }
 
 android {

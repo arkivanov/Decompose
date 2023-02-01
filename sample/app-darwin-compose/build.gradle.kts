@@ -11,9 +11,7 @@ plugins {
     id("com.arkivanov.gradle.setup")
 }
 
-setupMultiplatform(targets = {})
-
-kotlin {
+setupMultiplatform {
     listOf(iosX64("uikitX64"), iosArm64("uikitArm64")).forEach {
         it.binaries {
             executable {
@@ -26,7 +24,9 @@ kotlin {
             }
         }
     }
+}
 
+kotlin {
     setupSourceSets {
         val uikit by bundle()
 
