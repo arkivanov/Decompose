@@ -129,13 +129,26 @@ private val Child.index: Int
         }
 
 private fun StackAnimator.flipSide(): StackAnimator =
-    StackAnimator { direction, onFinished, content ->
-        invoke(
+    FlipSideStackAnimator(animator = this)
+
+/*
+ * Can't be anonymous. See:
+ * https://github.com/JetBrains/compose-jb/issues/2688
+ * https://github.com/JetBrains/compose-jb/issues/2612
+ */
+private class FlipSideStackAnimator(
+    private val animator: StackAnimator,
+) : StackAnimator {
+
+    @Composable
+    override fun invoke(direction: Direction, onFinished: () -> Unit, content: @Composable (Modifier) -> Unit) {
+        animator(
             direction = direction.flipSide(),
             onFinished = onFinished,
             content = content,
         )
     }
+}
 
 @Suppress("OPT_IN_USAGE")
 private fun Direction.flipSide(): Direction =
