@@ -37,7 +37,7 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publish
+        run: ./gradlew kotlinUpgradeYarnLock publish
   close-staging-repository:
     name: Close staging repository
     runs-on: ubuntu-latest
