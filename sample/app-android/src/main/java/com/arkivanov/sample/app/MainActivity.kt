@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.android.DefaultViewContext
-import com.arkivanov.decompose.extensions.android.child
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DefaultFeatureInstaller
 import com.arkivanov.sample.shared.root.RootComponent
@@ -58,9 +57,7 @@ class MainActivity : AppCompatActivity() {
             )
 
         viewContext.apply {
-            child(parent) {
-                RootView(root)
-            }
+            parent.addView(RootView(root))
         }
     }
 
