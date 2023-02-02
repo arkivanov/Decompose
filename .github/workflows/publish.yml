@@ -37,7 +37,7 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew kotlinUpgradeYarnLock publish
+        run: ./gradlew publish
   close-staging-repository:
     name: Close staging repository
     runs-on: ubuntu-latest
@@ -63,4 +63,4 @@ jobs:
         with:
           java-version: 11
       - name: Check publication
-        run: ./gradlew :tools:check-publication:build -Pcheck_publication
+        run: ./gradlew kotlinUpgradeYarnLock :tools:check-publication:build -Pcheck_publication
