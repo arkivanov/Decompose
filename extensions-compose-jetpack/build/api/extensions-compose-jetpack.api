@@ -1,0 +1,75 @@
+public final class com/arkivanov/decompose/extensions/compose/jetpack/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetpack/SubscribeAsStateKt {
+	public static final fun subscribeAsState (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/ChildrenKt {
+	public static final fun Children (Lcom/arkivanov/decompose/router/stack/ChildStack;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Children (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/ComposableSingletons$SlideKt {
+	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/ComposableSingletons$SlideKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function5;
+	public fun <init> ()V
+	public final fun getLambda-1$extensions_compose_jetpack_release ()Lkotlin/jvm/functions/Function5;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/Direction : java/lang/Enum {
+	public static final field ENTER_BACK Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/Direction;
+	public static final field ENTER_FRONT Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/Direction;
+	public static final field EXIT_BACK Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/Direction;
+	public static final field EXIT_FRONT Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/Direction;
+	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/Direction;
+	public static fun values ()[Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/Direction;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/DirectionKt {
+	public static final fun isBack (Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/Direction;)Z
+	public static final fun isEnter (Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/Direction;)Z
+	public static final fun isExit (Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/Direction;)Z
+	public static final fun isFront (Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/Direction;)Z
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/FadeKt {
+	public static final fun fade (Landroidx/compose/animation/core/FiniteAnimationSpec;F)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
+	public static synthetic fun fade$default (Landroidx/compose/animation/core/FiniteAnimationSpec;FILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/ScaleKt {
+	public static final fun scale (Landroidx/compose/animation/core/FiniteAnimationSpec;FF)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
+	public static synthetic fun scale$default (Landroidx/compose/animation/core/FiniteAnimationSpec;FFILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/SlideKt {
+	public static final fun slide (Landroidx/compose/animation/core/FiniteAnimationSpec;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
+	public static synthetic fun slide$default (Landroidx/compose/animation/core/FiniteAnimationSpec;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
+}
+
+public abstract interface class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation {
+	public abstract fun invoke (Lcom/arkivanov/decompose/router/stack/ChildStack;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimationKt {
+	public static final fun stackAnimation (Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;Z)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation;
+	public static final fun stackAnimation (ZLkotlin/jvm/functions/Function3;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation;
+	public static synthetic fun stackAnimation$default (Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;ZILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation;
+	public static synthetic fun stackAnimation$default (ZLkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation;
+}
+
+public abstract interface class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator {
+	public abstract fun invoke (Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/Direction;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimatorKt {
+	public static final fun plus (Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
+	public static final fun stackAnimator (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function5;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
+	public static synthetic fun stackAnimator$default (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function5;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
+}
+
