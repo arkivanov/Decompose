@@ -11,8 +11,7 @@ public final class com/arkivanov/decompose/extensions/android/DefaultViewContext
 	public fun getParent ()Landroid/view/ViewGroup;
 }
 
-public abstract interface class com/arkivanov/decompose/extensions/android/ViewContext {
-	public abstract fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/Lifecycle;
+public abstract interface class com/arkivanov/decompose/extensions/android/ViewContext : com/arkivanov/essenty/lifecycle/LifecycleOwner {
 	public abstract fun getParent ()Landroid/view/ViewGroup;
 }
 

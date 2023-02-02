@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-33:/color/vector_tint_color.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-ui-1.2.1-2:/color/vector_tint_color.xml"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-33:/color/vector_tint_theme_color.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-ui-1.2.1-2:/color/vector_tint_theme_color.xml"
+    }
+]

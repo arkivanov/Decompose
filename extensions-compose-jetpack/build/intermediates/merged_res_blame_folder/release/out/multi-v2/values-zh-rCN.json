@@ -1,0 +1,82 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-33:/values-zh-rCN/values-zh-rCN.xml",
+            "map": [
+                {
+                    "source": "/home/arkivanov/.gradle/caches/transforms-3/17962c1fa83851b12de1b0d2171b4322/transformed/ui-1.2.1/res/values-zh-rCN/values-zh-rCN.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,182,258,343,434,511,585,670,748,823,888,953,1026,1101,1169,1235",
+                        "endColumns": "76,75,84,90,76,73,84,77,74,64,64,72,74,67,65,115",
+                        "endOffsets": "177,253,338,429,506,580,665,743,818,883,948,1021,1096,1164,1230,1346"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,182,258,343,434,511,585,670,748,823,888,953,1026,1101,1270,1336",
+                        "endColumns": "76,75,84,90,76,73,84,77,74,64,64,72,74,67,65,115",
+                        "endOffsets": "177,253,338,429,506,580,665,743,818,883,948,1021,1096,1164,1331,1447"
+                    }
+                },
+                {
+                    "source": "/home/arkivanov/.gradle/caches/transforms-3/4ff185137bcf84ecc1c026d122458d93/transformed/core-1.8.0/res/values-zh-rCN/values-zh-rCN.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "16",
+                        "startColumns": "4",
+                        "startOffsets": "1169",
+                        "endColumns": "100",
+                        "endOffsets": "1265"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-mergeReleaseResources-31:/values-zh-rCN/values-zh-rCN.xml",
+            "map": [
+                {
+                    "source": "/home/arkivanov/.gradle/caches/transforms-3/17962c1fa83851b12de1b0d2171b4322/transformed/ui-1.2.1/res/values-zh-rCN/values-zh-rCN.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,182,258,343,434,511,585,670,748,823,888,953,1026,1101,1169,1235",
+                        "endColumns": "76,75,84,90,76,73,84,77,74,64,64,72,74,67,65,115",
+                        "endOffsets": "177,253,338,429,506,580,665,743,818,883,948,1021,1096,1164,1230,1346"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,182,258,343,434,511,585,670,748,823,888,953,1026,1101,1270,1336",
+                        "endColumns": "76,75,84,90,76,73,84,77,74,64,64,72,74,67,65,115",
+                        "endOffsets": "177,253,338,429,506,580,665,743,818,883,948,1021,1096,1164,1331,1447"
+                    }
+                },
+                {
+                    "source": "/home/arkivanov/.gradle/caches/transforms-3/4ff185137bcf84ecc1c026d122458d93/transformed/core-1.8.0/res/values-zh-rCN/values-zh-rCN.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "16",
+                        "startColumns": "4",
+                        "startOffsets": "1169",
+                        "endColumns": "100",
+                        "endOffsets": "1265"
+                    }
+                }
+            ]
+        }
+    ]
+}
