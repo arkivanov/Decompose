@@ -51,7 +51,7 @@ Additional resources:
 * Decompose breaks the code down into small and independent components and organizes them into trees. Each parent component is only aware of its immediate children.
 * Decompose draws clear boundaries between UI and non-UI code, which gives the following benefits:
   * Better separation of concerns
-  * Plugable platform-specific UI (Compose, SwiftUI, React, etc.)
+  * Pluggable platform-specific UI (Compose, SwiftUI, React, etc.)
   * Business logic code is testable with pure multiplatform unit tests
 * Proper dependency injection (DI) and inversion of control (IoC) via constructor
 * Shared navigation logic
