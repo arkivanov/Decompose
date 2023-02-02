@@ -51,20 +51,22 @@ Decompose provides a few handy [helper functions](https://github.com/arkivanov/D
 
 For this case Decompose provides `defaultComponentContext()` extension function, which can be called in scope of an `Activity`.
 
+```kotlin
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val root = DefaultRootComponent(defaultComponentContext())
+    }
+}
+```
+
 #### Root ComponentContext in Fragment
 
-The `defaultComponentContext()` extension function can not be used in a Fragment. This is because the `Fragment` class does not implement the `OnBackPressedDispatcherOwner` interface, and so by default can't handle back button events. It is advised to use the Android-specific `DefaultComponentContext(AndroidLifecycle, SavedStateRegistry?, ViewModelStore?, OnBackPressedDispatcher?)` factory function, and supply all the arguments manually. The first three arguments (`AndroidLifecycle`, `SavedStateRegistry` and `ViewModelStore`) can be obtained directly from `Fragment`. However the last argument `OnBackPressedDispatcher` - can not. If you don't need to handle back button events in your Decompose components, then you can just ignore this argument. Otherwise, a manual solution is required.
-
-!!!warning
-    Don't take any argument values from the hosting `Activity` (e.g. `requireActivity().onBackPressedDispatcher`), as it may produce memory leaks.
-
-Here is an example with using Decompose in a `DialogFragment`.
+Use `defaultComponentContext(OnBackPressedDispatcher?)` extension function, which can be called in scope of `Fragment`.
 
 ```kotlin
-class MyFragment : DialogFragment() {
-    // Create custom OnBackPressedDispatcher
-    private val onBackPressedDispatcher = OnBackPressedDispatcher(::dismiss)
-
+class SomeFragment : Fragment() {
     private lateinit var root: RootComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,24 +74,11 @@ class MyFragment : DialogFragment() {
 
         root =
             DefaultRootComponent(
-                DefaultComponentContext(
-                    lifecycle = lifecycle,
-                    savedStateRegistry = savedStateRegistry,
-                    viewModelStore = viewModelStore,
-                    onBackPressedDispatcher = onBackPressedDispatcher,
+                componentContext = defaultComponentContext(
+                    onBackPressedDispatcher = requireActivity().onBackPressedDispatcher
                 )
             )
     }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-        object : Dialog(requireContext(), theme) {
-            override fun onBackPressed() {
-                onBackPressedDispatcher.onBackPressed()
-            }
-        }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
-        // Start Compose here
 }
 ```
 

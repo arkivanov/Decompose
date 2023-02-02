@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalDecomposeApi::class)
-
 package com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation
 
 import androidx.compose.foundation.layout.Box
@@ -15,10 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 
-@ExperimentalDecomposeApi
 internal class DefaultStackAnimation<C : Any, T : Any>(
     private val disableInputDuringAnimation: Boolean,
     private val selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator?,

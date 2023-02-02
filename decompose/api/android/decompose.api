@@ -57,6 +57,7 @@ public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivan
 public final class com/arkivanov/decompose/DefaultComponentContextBuilderKt {
 	public static final fun DefaultComponentContext (Landroidx/lifecycle/Lifecycle;Landroidx/savedstate/SavedStateRegistry;Landroidx/lifecycle/ViewModelStore;Landroidx/activity/OnBackPressedDispatcher;)Lcom/arkivanov/decompose/DefaultComponentContext;
 	public static synthetic fun DefaultComponentContext$default (Landroidx/lifecycle/Lifecycle;Landroidx/savedstate/SavedStateRegistry;Landroidx/lifecycle/ViewModelStore;Landroidx/activity/OnBackPressedDispatcher;ILjava/lang/Object;)Lcom/arkivanov/decompose/DefaultComponentContext;
+	public static final fun defaultComponentContext (Landroidx/fragment/app/Fragment;Landroidx/activity/OnBackPressedDispatcher;)Lcom/arkivanov/decompose/DefaultComponentContext;
 	public static final fun defaultComponentContext (Landroidx/savedstate/SavedStateRegistryOwner;)Lcom/arkivanov/decompose/DefaultComponentContext;
 }
 
@@ -87,7 +88,8 @@ public final class com/arkivanov/decompose/router/children/ChildNavState$Status 
 }
 
 public final class com/arkivanov/decompose/router/children/ChildrenFactoryKt {
-	public static final fun children (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun children (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun children$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
 }
 
 public abstract interface class com/arkivanov/decompose/router/children/NavState {

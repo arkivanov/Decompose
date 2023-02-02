@@ -20,7 +20,7 @@ internal class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_child_switched_from_inactive_to_destroyed_THEN_instance_destroyed() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val component = children.getById(id = 2).requireInstance()
         val instance = component.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
@@ -31,7 +31,7 @@ internal class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_child_switched_from_active_to_destroyed_THEN_instance_destroyed() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val component = children.getById(id = 3).requireInstance()
         val instance = component.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
@@ -42,7 +42,7 @@ internal class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_child_switched_from_active_to_inactive_THEN_instance_not_destroyed() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val instance = children.getById(id = 3).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
         navigate { listOf(1 by DESTROYED, 2 by INACTIVE, 3 by INACTIVE) }
@@ -52,7 +52,7 @@ internal class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_child_switched_from_inactive_to_destroyed_WHEN_child_switched_to_inactive_THEN_instance_not_retained() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val oldInstance = children.getById(id = 2).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
         navigate { listOf(1 by DESTROYED, 2 by DESTROYED, 3 by ACTIVE) }
 
@@ -64,7 +64,7 @@ internal class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_child_switched_from_active_to_destroyed_WHEN_child_switched_to_active_THEN_instance_not_retained() {
-        val children by context.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val oldInstance = children.getById(id = 3).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
         navigate { listOf(1 by DESTROYED, 2 by INACTIVE, 3 by DESTROYED) }
 
@@ -79,7 +79,7 @@ internal class ChildrenRetainedInstanceTest : ChildrenTestBase() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
-        val oldChildren by oldContext.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val oldInstance = oldChildren.getById(id = 2).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
         val savedState = oldStateKeeper.save()
@@ -96,7 +96,7 @@ internal class ChildrenRetainedInstanceTest : ChildrenTestBase() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
-        val oldChildren by oldContext.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val instance = oldChildren.getById(id = 2).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
         val savedState = oldStateKeeper.save()
@@ -112,7 +112,7 @@ internal class ChildrenRetainedInstanceTest : ChildrenTestBase() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
-        val oldChildren by oldContext.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val oldInstance = oldChildren.getById(id = 3).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
         val savedState = oldStateKeeper.save()
@@ -129,7 +129,7 @@ internal class ChildrenRetainedInstanceTest : ChildrenTestBase() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
-        val oldChildren by oldContext.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val instance = oldChildren.getById(id = 3).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
         val savedState = oldStateKeeper.save()
@@ -145,13 +145,13 @@ internal class ChildrenRetainedInstanceTest : ChildrenTestBase() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
-        val oldChildren by oldContext.children(initialNavState = listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         val instance = oldChildren.getById(id = 3).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
-        newContext.children(restoreNavState = { listOf(1 by DESTROYED, 2 by INACTIVE, 3 by DESTROYED) })
+        newContext.children(restoreState = { stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by DESTROYED) })
 
         assertTrue(instance.isDestroyed)
     }

@@ -15,75 +15,70 @@ struct MultiPaneView: View {
     private let component: MultiPaneComponent
     
     @ObservedObject
-    private var observableModel: ObservableValue<MultiPaneComponentModel>
+    private var children: ObservableValue<MultiPaneComponentChildren>
     
-    @ObservedObject
-    private var listChildStack: ObservableValue<ChildStack<AnyObject, MultiPaneComponentListChild>>
-    
-    @ObservedObject
-    private var detailsChildStack: ObservableValue<ChildStack<AnyObject, MultiPaneComponentDetailsChild>>
-    
-    private var model: MultiPaneComponentModel { observableModel.value }
-    private var activeListChild: MultiPaneComponentListChild { listChildStack.value.active.instance }
-    private var activeDetailsChild: MultiPaneComponentDetailsChild { detailsChildStack.value.active.instance }
+    private var isMultiPane: Bool { children.value.isMultiPane }
+    private var listComponent: ArticleListComponent { children.value.listChild.instance }
+    private var detailsComponent: ArticleDetailsComponent? { children.value.detailsChild?.instance }
     
     init(_ component: MultiPaneComponent) {
         self.component = component
-        observableModel = ObservableValue(component.models)
-        listChildStack = ObservableValue(component.listChildStack)
-        detailsChildStack = ObservableValue(component.detailsChildStack)
+        children = ObservableValue(component.children)
     }
     
     var body: some View {
         ZStack(alignment: .top) {
-            ListPane(listChild: activeListChild, isMultiPane: model.isMultiPane)
-            DetailsPane(detailsChild: activeDetailsChild, isMultiPane: model.isMultiPane)
+            ListPane(
+                listComponent: listComponent,
+                isMultiPane: isMultiPane,
+                isVisible: isMultiPane || (detailsComponent == nil)
+            )
+            
+            DetailsPane(
+                detailsComponent: detailsComponent,
+                isMultiPane: isMultiPane
+            )
         }.onAppear { component.setMultiPane(isMultiPane: deviceRequiresMultiPane()) }
     }
 }
 
 struct ListPane: View {
-    let listChild: MultiPaneComponentListChild
+    let listComponent: ArticleListComponent
     let isMultiPane: Bool
+    let isVisible: Bool
     
     var body: some View {
-        switch listChild {
-        case let list as MultiPaneComponentListChild.List:
-            GeometryReader { metrics in
-                HStack {
-                    ArticleListView(list.component)
-                        .frame(width: isMultiPane ? metrics.size.width * listPaneWeight : metrics.size.width)
-                    
-                    if isMultiPane {
-                        Spacer().frame(width: metrics.size.width * detailsPaneWeight)
-                    }
+        GeometryReader { metrics in
+            HStack {
+                ArticleListView(listComponent)
+                    .frame(width: isMultiPane ? metrics.size.width * listPaneWeight : metrics.size.width)
+                
+                if isMultiPane {
+                    Spacer().frame(width: metrics.size.width * detailsPaneWeight)
                 }
             }
-            
-        default: EmptyView()
-        }
+        }.opacity(isVisible ? 1 : 0)
     }
 }
 
 struct DetailsPane: View {
-    let detailsChild: MultiPaneComponentDetailsChild
+    let detailsComponent: ArticleDetailsComponent?
     let isMultiPane: Bool
     
     var body: some View {
-        switch detailsChild {
-        case let details as MultiPaneComponentDetailsChild.Details:
+        if (detailsComponent != nil) {
             GeometryReader { metrics in
                 HStack {
                     if isMultiPane {
                         Spacer().frame(width: metrics.size.width * listPaneWeight)
                     }
                     
-                    ArticleDetailsView(details.component)
+                    ArticleDetailsView(detailsComponent!)
                         .frame(width: isMultiPane ? metrics.size.width * detailsPaneWeight : metrics.size.width)
                 }
             }
-            
-        default: EmptyView()
+        } else {
+            EmptyView()
         }
     }
 }
@@ -99,13 +94,15 @@ struct MultiPaneView_Previews: PreviewProvider {
 }
 
 class PreviewMultiPaneComponent: MultiPaneComponent {
-    var listChildStack: Value<ChildStack<AnyObject, MultiPaneComponentListChild>> =
-        simpleChildStack(.List(component: PreviewArticleListComponent()))
-
-    var detailsChildStack: Value<ChildStack<AnyObject, MultiPaneComponentDetailsChild>> =
-        simpleChildStack(.Details(component: PreviewArticleDetailsComponent()))
-
-    var models: Value<MultiPaneComponentModel> = mutableValue(MultiPaneComponentModel(isMultiPane: true))
-
+    var listComponent: ArticleListComponent = PreviewArticleListComponent()
+    
+    var children: Value<MultiPaneComponentChildren> = mutableValue(
+        MultiPaneComponentChildren(
+            isMultiPane: false,
+            listChild: ChildCreated(configuration: "list" as AnyObject, instance: PreviewArticleListComponent()),
+            detailsChild: nil
+        )
+    )
+    
     func setMultiPane(isMultiPane: Bool) {}
 }
