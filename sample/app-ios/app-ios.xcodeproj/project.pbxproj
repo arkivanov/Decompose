@@ -21,6 +21,8 @@
 		798DB858282F0EDF0072CCBD /* ArticleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB857282F0EDF0072CCBD /* ArticleListView.swift */; };
 		798DB85A282F11800072CCBD /* ArticleDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB859282F11800072CCBD /* ArticleDetailsView.swift */; };
 		B308A81878CCE92C321B927F /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308A300355A5948E5DC6CB8 /* StackView.swift */; };
+		B308A1B4FFA434881C6DF1E4 /* KittenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308ADB617C2FED044531853 /* KittenView.swift */; };
+		B308A68175BF2D307474DCCC /* CustomNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B308A848D511CF1748757FD1 /* CustomNavigationView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +41,8 @@
 		798DB857282F0EDF0072CCBD /* ArticleListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleListView.swift; sourceTree = "<group>"; };
 		798DB859282F11800072CCBD /* ArticleDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleDetailsView.swift; sourceTree = "<group>"; };
 		B308A300355A5948E5DC6CB8 /* StackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackView.swift; sourceTree = "<group>"; };
+		B308A848D511CF1748757FD1 /* CustomNavigationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavigationView.swift; sourceTree = "<group>"; };
+		B308ADB617C2FED044531853 /* KittenView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KittenView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +89,8 @@
 				798DB857282F0EDF0072CCBD /* ArticleListView.swift */,
 				798DB859282F11800072CCBD /* ArticleDetailsView.swift */,
 				B308A300355A5948E5DC6CB8 /* StackView.swift */,
+				B308A848D511CF1748757FD1 /* CustomNavigationView.swift */,
+				B308ADB617C2FED044531853 /* KittenView.swift */,
 			);
 			path = "app-ios";
 			sourceTree = "<group>";
@@ -200,6 +206,8 @@
 				798DB85A282F11800072CCBD /* ArticleDetailsView.swift in Sources */,
 				798DB84A282F08670072CCBD /* CounterView.swift in Sources */,
 				B308A81878CCE92C321B927F /* StackView.swift in Sources */,
+				B308A68175BF2D307474DCCC /* CustomNavigationView.swift in Sources */,
+				B308A1B4FFA434881C6DF1E4 /* KittenView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
