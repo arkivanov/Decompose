@@ -38,9 +38,14 @@ extension CustomNavigationView {
         private var mode: CustomNavigationComponentMode {
             children.mode
         }
-
+        private var childCount: Int {
+            children.items.count
+        }
         private var centerIndex: Int {
-            children.items.count / 2
+            childCount / 2
+        }
+        private var activeIndex: Int {
+            Int(children.index)
         }
 
         init(_ component: CustomNavigationComponent, _ children: Children) {
@@ -48,28 +53,39 @@ extension CustomNavigationView {
             self.children = children
         }
 
+        @ViewBuilder
         var body: some View {
             GeometryReader { proxy in
                 switch (mode) {
                 case .pager:
-                    ZStack {
-                        ForEach(0..<children.items.count) { index in
-                            let virtualIndex = getVirtualIndex(childIndex: index)
-                            let offsetX = virtualIndex > centerIndex
-                                    ? proxy.size.width
-                                    : (virtualIndex < centerIndex ? -proxy.size.width : 0)
-                            let opacity = (centerIndex - 1)...(centerIndex + 1) ~= virtualIndex ? 1.0 : 0.0
-                            KittenView(children.items[index].instance)
-                                    .frame(width: proxy.size.width, height: proxy.size.height)
-                                    .clipped()
-                                    .opacity(opacity)
-                                    .animation(nil, value: opacity)
-                                    .offset(x: offsetX)
-                                    .animation(.easeInOut, value: virtualIndex)
-                        }
+                    ForEach(0..<children.items.count) { index in
+                        let virtualIndex = getVirtualIndex(childIndex: index)
+                        let offsetX = virtualIndex > centerIndex
+                                ? proxy.size.width
+                                : (virtualIndex < centerIndex ? -proxy.size.width : 0)
+                        let opacity = (centerIndex - 1)...(centerIndex + 1) ~= virtualIndex ? 1.0 : 0.0
+                        KittenView(children.items[index].instance)
+                                .frame(width: proxy.size.width, height: proxy.size.height)
+                                .clipped()
+                                .opacity(opacity)
+                                .animation(nil, value: opacity)
+                                .offset(x: offsetX)
+                                .animation(.easeInOut, value: virtualIndex)
                     }
                 case .carousel:
-                    EmptyView()
+                    ForEach(0..<children.items.count) { index in
+                        let virtualIndex = getVirtualIndex(childIndex: index)
+                        let angle = Angle.degrees(360.0 * Double(index - activeIndex) / Double(childCount))
+                        let constraintSize = min(proxy.size.width, proxy.size.height)
+                        let tileSize = 70.0
+                        let x = sin(angle.radians) * constraintSize / 3.0
+                        let y = -cos(angle.radians) * constraintSize / 3.0
+                        KittenView(children.items[index].instance)
+                                .frame(width: tileSize, height: tileSize)
+                                .clipped()
+                                .offset(x: proxy.size.width / 2 - tileSize / 2 + x, y: proxy.size.height / 2 - tileSize / 2 + y)
+                                .animation(.easeInOut, value: virtualIndex)
+                    }
                 default:
                     EmptyView()
                 }
@@ -77,12 +93,11 @@ extension CustomNavigationView {
         }
 
         private func getVirtualIndex(childIndex: Int) -> Int {
-            let childCount = children.items.count
             if children.index < centerIndex {
-                return (childIndex + centerIndex - Int(children.index)) % childCount
+                return (childIndex + centerIndex - activeIndex) % childCount
             }
             if children.index > centerIndex {
-                return (childIndex - (Int(children.index) - centerIndex) + childCount) % childCount
+                return (childIndex - (activeIndex - centerIndex) + childCount) % childCount
             }
             return childIndex
         }
@@ -103,23 +118,28 @@ extension CustomNavigationView {
                 if mode == .carousel {
                     Button(action: component.onSwitchToPagerClicked) {
                         Text("Pager")
-                    }.buttonStyle(.borderedProminent)
+                    }
+                            .buttonStyle(.borderedProminent)
                 }
                 if mode == .pager {
                     Button(action: component.onSwitchToCarouselClicked) {
                         Text("Carousel")
-                    }.buttonStyle(.borderedProminent)
+                    }
+                            .buttonStyle(.borderedProminent)
                 }
                 Button(action: component.onBackwardClicked) {
                     Text("Back")
-                }.buttonStyle(.borderedProminent)
+                }
+                        .buttonStyle(.borderedProminent)
                 Button(action: component.onForwardClicked) {
                     Text("Fwd")
-                }.buttonStyle(.borderedProminent)
+                }
+                        .buttonStyle(.borderedProminent)
                 if mode == .carousel {
                     Button(action: component.onShuffleClicked) {
                         Text("Shuffle")
-                    }.buttonStyle(.borderedProminent)
+                    }
+                            .buttonStyle(.borderedProminent)
                 }
                 Spacer()
             }
