@@ -55,22 +55,20 @@ struct KittenView: View {
     }
 }
 
-extension KittenView {
-    enum KittenSize {
-        case large, small
+enum KittenSize {
+    case large, small
+}
+
+private struct AnimatableFontModifier: AnimatableModifier {
+    var size: CGFloat
+
+    var animatableData: CGFloat {
+        get { size }
+        set { size = newValue }
     }
 
-    struct AnimatableFontModifier: AnimatableModifier {
-        var size: CGFloat
-
-        var animatableData: CGFloat {
-            get { size }
-            set { size = newValue }
-        }
-
-        func body(content: Content) -> some View {
-            content.font(.system(size: size))
-        }
+    func body(content: Content) -> some View {
+        content.font(.system(size: size))
     }
 }
 
