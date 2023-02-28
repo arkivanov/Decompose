@@ -35,18 +35,6 @@ extension CustomNavigationView {
     struct ChildItems: View {
         private let component: CustomNavigationComponent
         private let children: Children
-        private var mode: CustomNavigationComponentMode {
-            children.mode
-        }
-        private var childCount: Int {
-            children.items.count
-        }
-        private var centerIndex: Int {
-            childCount / 2
-        }
-        private var activeIndex: Int {
-            Int(children.index)
-        }
 
         init(_ component: CustomNavigationComponent, _ children: Children) {
             self.component = component
@@ -56,50 +44,17 @@ extension CustomNavigationView {
         @ViewBuilder
         var body: some View {
             GeometryReader { proxy in
-                switch (mode) {
-                case .pager:
-                    ForEach(0..<children.items.count) { index in
-                        let virtualIndex = getVirtualIndex(childIndex: index)
-                        let offsetX = virtualIndex > centerIndex
-                                ? proxy.size.width
-                                : (virtualIndex < centerIndex ? -proxy.size.width : 0)
-                        let opacity = (centerIndex - 1)...(centerIndex + 1) ~= virtualIndex ? 1.0 : 0.0
-                        KittenView(children.items[index].instance)
-                                .frame(width: proxy.size.width, height: proxy.size.height)
-                                .clipped()
-                                .opacity(opacity)
-                                .animation(nil, value: opacity)
-                                .offset(x: offsetX)
-                                .animation(.easeInOut, value: virtualIndex)
-                    }
-                case .carousel:
-                    ForEach(0..<children.items.count) { index in
-                        let virtualIndex = getVirtualIndex(childIndex: index)
-                        let angle = Angle.degrees(360.0 * Double(index - activeIndex) / Double(childCount))
-                        let constraintSize = min(proxy.size.width, proxy.size.height)
-                        let tileSize = 70.0
-                        let x = sin(angle.radians) * constraintSize / 3.0
-                        let y = -cos(angle.radians) * constraintSize / 3.0
-                        KittenView(children.items[index].instance)
-                                .frame(width: tileSize, height: tileSize)
-                                .clipped()
-                                .offset(x: proxy.size.width / 2 - tileSize / 2 + x, y: proxy.size.height / 2 - tileSize / 2 + y)
-                                .animation(.easeInOut, value: virtualIndex)
-                    }
-                default:
-                    EmptyView()
+                ForEach(Array(children.items.enumerated()), id: \.element) { (index, item) in
+                    KittenView(item.instance, children.mode == .carousel ? .small : .large)
+                            .modifier(KittenModifier(
+                                    mode: children.mode,
+                                    childCount: children.items.count,
+                                    activeIndex: Int(children.index),
+                                    childIndex: index,
+                                    screenSize: proxy.size
+                            ))
                 }
             }
-        }
-
-        private func getVirtualIndex(childIndex: Int) -> Int {
-            if children.index < centerIndex {
-                return (childIndex + centerIndex - activeIndex) % childCount
-            }
-            if children.index > centerIndex {
-                return (childIndex - (activeIndex - centerIndex) + childCount) % childCount
-            }
-            return childIndex
         }
     }
 
@@ -143,6 +98,70 @@ extension CustomNavigationView {
                 }
                 Spacer()
             }
+        }
+    }
+
+    struct KittenModifier: ViewModifier {
+        let mode: CustomNavigationComponentMode
+        let childCount: Int
+        let activeIndex: Int
+        let childIndex: Int
+        let screenSize: CGSize
+
+        private var centerIndex: Int {
+            childCount / 2
+        }
+
+        private var tileSize: CGFloat {
+            activeIndex == childIndex ? 80 : 70
+        }
+
+        private var frameSize: CGSize {
+            mode == .carousel ? CGSize(width: tileSize, height: tileSize) : screenSize
+        }
+
+        private var virtualIndex: Int {
+            if activeIndex < centerIndex {
+                return (childIndex + centerIndex - activeIndex) % childCount
+            }
+            if activeIndex > centerIndex {
+                return (childIndex - (activeIndex - centerIndex) + childCount) % childCount
+            }
+            return childIndex
+        }
+
+        private var offsetSize: CGSize {
+            switch mode {
+            case .carousel:
+                let angle = Angle.degrees(360.0 * Double(childIndex - activeIndex) / Double(childCount))
+                let constraintSize = min(screenSize.width, screenSize.height)
+                let x = sin(angle.radians) * constraintSize / 3.0
+                let y = -cos(angle.radians) * constraintSize / 3.0
+                return CGSize(width: screenSize.width / 2 - tileSize / 2 + x, height: screenSize.height / 2 - tileSize / 2 + y)
+            case .pager:
+                let offsetX = virtualIndex > centerIndex
+                        ? screenSize.width
+                        : (virtualIndex < centerIndex ? -screenSize.width : 0)
+                return CGSize(width: offsetX, height: 0)
+            default:
+                return CGSize(width: 0, height: 0)
+            }
+        }
+
+        private var opacity: CGFloat {
+            (centerIndex - 1)...(centerIndex + 1) ~= virtualIndex || mode == .carousel ? 1.0 : 0.0
+        }
+
+        func body(content: Content) -> some View {
+            content
+                    .frame(width: frameSize.width, height: frameSize.height)
+                    .clipped()
+                    .cornerRadius(mode == .carousel ? 16 : 0)
+                    .opacity(opacity)
+                    .animation(nil, value: opacity)
+                    .offset(offsetSize)
+                    .animation(.easeInOut, value: mode)
+                    .animation(.easeInOut, value: virtualIndex)
         }
     }
 }
