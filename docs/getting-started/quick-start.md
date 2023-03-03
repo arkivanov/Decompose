@@ -6,7 +6,7 @@
 class RootComponent
 ```
 
-Yes, a simples component is just a normal class. No need to extend a class from the library, or implement an interface.
+Yes, a simplest component is just a normal class. No need to extend a class from the library, or implement an interface.
 
 ## Extracting an interface
 
