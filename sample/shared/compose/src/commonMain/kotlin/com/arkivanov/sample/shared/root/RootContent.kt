@@ -129,9 +129,10 @@ private val Child.index: Int
         }
 
 private fun StackAnimator.flipSide(): StackAnimator =
-    StackAnimator { direction, onFinished, content ->
+    StackAnimator { direction, isInitial, onFinished, content ->
         invoke(
             direction = direction.flipSide(),
+            isInitial = isInitial,
             onFinished = onFinished,
             content = content,
         )
