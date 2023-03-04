@@ -55,13 +55,15 @@ public abstract interface class com/arkivanov/decompose/extensions/compose/jetbr
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimationKt {
 	public static final fun stackAnimation (Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;Z)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
+	public static final fun stackAnimation (ZLkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
 	public static final fun stackAnimation (ZLkotlin/jvm/functions/Function3;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
 	public static synthetic fun stackAnimation$default (Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;ZILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
+	public static synthetic fun stackAnimation$default (ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
 	public static synthetic fun stackAnimation$default (ZLkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
 }
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator {
-	public abstract fun invoke (Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/Direction;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
+	public abstract fun invoke (Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/Direction;ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimatorKt {
