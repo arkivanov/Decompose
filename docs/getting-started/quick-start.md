@@ -222,7 +222,7 @@ Use `LifecycleController` to bind the root lifecycle with the main window state.
 fun main() {
     val lifecycle = LifecycleRegistry()
 
-    // Always create the root component outside Compose on the main thread
+    // Always create the root component outside Compose on the UI thread
     val root =
         runOnUiThread {
             DefaultRootComponent(
