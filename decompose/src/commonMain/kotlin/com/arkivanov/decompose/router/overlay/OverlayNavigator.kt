@@ -17,6 +17,8 @@ interface OverlayNavigator<C : Any> {
      * component being shown. All recursive invocations are queued and performed one by one once
      * the current navigation is finished.
      *
+     * Should be called on the main thread.
+     *
      * @param transformer transforms the current configuration to a new one, `null` means that the
      * component is not shown.
      * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
