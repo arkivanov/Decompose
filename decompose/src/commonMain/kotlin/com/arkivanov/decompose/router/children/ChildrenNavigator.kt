@@ -48,7 +48,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         }
 
         lifecycle.doOnDestroy {
-            items.forEach { item ->
+            items.asReversed().forEach { item ->
                 when (item) {
                     is Created -> {
                         item.backHandler.stop()
