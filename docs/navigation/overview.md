@@ -38,3 +38,12 @@ If you support the `android` target, make sure you have applied [kotlin-parceliz
 
 !!!warning
     On Android the amount of data that can be preserved is [limited](https://developer.android.com/guide/components/activities/parcelables-and-bundles). Please mind the size of configurations.
+
+## Navigation and the main thread
+
+The navigation API is thread-safe, technically the navigation can be performed on any thread. However, it's strongly recommended to perform the navigation on the Main thread. Since the navigation is performed synchronously, Decompose instantiates components and calls lifecycle callbacks on the current thread. Navigating on a background thread may cause unexpected behaviour.
+
+!!!warning
+    Always perform the navigation on the Main thread.
+
+Decompose tries its best to detect when the navigation is performed on a non-main thread. When it happens, Decompose calls the special error handler - `onDecomposeError`. By default, it prints the exception to logs,  however you can override the default behaviour by providing your own handler.

@@ -53,11 +53,9 @@ public abstract interface annotation class com/arkivanov/decompose/ExperimentalD
 public abstract interface annotation class com/arkivanov/decompose/InternalDecomposeApi : java/lang/annotation/Annotation {
 }
 
-public final class com/arkivanov/decompose/lifecycle/MergedLifecycle : com/arkivanov/essenty/lifecycle/Lifecycle {
-	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/lifecycle/Lifecycle;)V
-	public fun getState ()Lcom/arkivanov/essenty/lifecycle/Lifecycle$State;
-	public fun subscribe (Lcom/arkivanov/essenty/lifecycle/Lifecycle$Callbacks;)V
-	public fun unsubscribe (Lcom/arkivanov/essenty/lifecycle/Lifecycle$Callbacks;)V
+public final class com/arkivanov/decompose/errorhandler/ErrorHandlersKt {
+	public static final fun getOnDecomposeError ()Lkotlin/jvm/functions/Function1;
+	public static final fun setOnDecomposeError (Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface class com/arkivanov/decompose/router/children/ChildNavState {
