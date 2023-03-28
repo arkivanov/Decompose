@@ -74,7 +74,7 @@ class ChildStackIntegrationTest {
 
         navigation.pop()
 
-        stack.assertStack(1 to null, 2 to 2)
+        stack.assertStack(1 to 1, 2 to 2)
     }
 
     @Test
@@ -94,7 +94,7 @@ class ChildStackIntegrationTest {
 
         backDispatcher.back()
 
-        stack.assertStack(1 to null, 2 to 2)
+        stack.assertStack(1 to 1, 2 to 2)
     }
 
     @Test
@@ -103,7 +103,7 @@ class ChildStackIntegrationTest {
 
         navigation.replaceCurrent(Config(3))
 
-        stack.assertStack(1 to null, 3 to 3)
+        stack.assertStack(1 to 1, 3 to 3)
     }
 
     @Test
@@ -112,7 +112,7 @@ class ChildStackIntegrationTest {
 
         navigation.navigate { it.reversed() }
 
-        stack.assertStack(3 to 3, 2 to null, 1 to 1)
+        stack.assertStack(3 to 3, 2 to 2, 1 to 1)
     }
 
     @Test
@@ -188,7 +188,7 @@ class ChildStackIntegrationTest {
 
         backDispatcher.back()
 
-        stack.assertStack(1 to null, 2 to 2)
+        stack.assertStack(1 to 1, 2 to 2)
     }
 
     @Test
@@ -223,7 +223,7 @@ class ChildStackIntegrationTest {
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
         val newStack by newContext.childStack(initialStack = emptyList())
 
-        newStack.assertStack(1 to null, 2 to 2)
+        newStack.assertStack(1 to 1, 2 to 2)
     }
 
     @Test
@@ -381,7 +381,7 @@ class ChildStackIntegrationTest {
     }
 
     @Test
-    fun GIVEN_another_child_pushed_WHEN_recreated_THEN_instance_destroyed_for_previous_child() {
+    fun GIVEN_another_child_pushed_WHEN_recreated_THEN_instance_not_destroyed_for_previous_child() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
@@ -394,164 +394,31 @@ class ChildStackIntegrationTest {
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
         newContext.childStack(initialStack = emptyList())
 
-        assertTrue(instance.isDestroyed)
-    }
-
-    @Test
-    fun GIVEN_back_stack_not_empty_WHEN_recreated_THEN_only_active_child_recreated() {
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
-        oldContext.childStack(initialStack = listOf(Config(1), Config(2)))
-
-        val savedState = oldStateKeeper.save()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
-        val newStack by newContext.childStack(initialStack = emptyList())
-
-        newStack.assertStack(1 to null, 2 to 2)
-    }
-
-    @Test
-    fun GIVEN_backStackCreateDepth_WHEN_created_THEN_back_stack_created() {
-        val context = DefaultComponentContext(lifecycle = lifecycle)
-
-        val stack by context.childStack(
-            initialStack = listOf(Config(1), Config(2), Config(3), Config(4)),
-            backStackCreateDepth = 2,
-        )
-
-        stack.assertStack(1 to null, 2 to 2, 3 to 3, 4 to 4)
-    }
-
-    @Test
-    fun GIVEN_back_stack_not_empty_and_backStackCreateDepth_is_1_WHEN_recreated_THEN_last_to_children_recreated() {
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
-        oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)))
-
-        val savedState = oldStateKeeper.save()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
-        val newStack by newContext.childStack(initialStack = emptyList(), backStackCreateDepth = 1)
-
-        newStack.assertStack(1 to null, 2 to 2, 3 to 3)
-    }
-
-    @Test
-    fun GIVEN_back_stack_not_empty_and_backStackCreateDepth_is_max_WHEN_recreated_THEN_all_children_recreated() {
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
-        oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)))
-
-        val savedState = oldStateKeeper.save()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
-        val newStack by newContext.childStack(initialStack = emptyList(), backStackCreateDepth = Int.MAX_VALUE)
-
-        newStack.assertStack(1 to 1, 2 to 2, 3 to 3)
-    }
-
-    @Test
-    fun GIVEN_back_stack_not_empty_and_backStackCreateDepth_is_1_and_recreated_WHEN_pop_THEN_last_two_children_recreated() {
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
-        oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3), Config(4)))
-        val savedState = oldStateKeeper.save()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
-        val newStack by newContext.childStack(initialStack = emptyList(), backStackCreateDepth = 1)
-
-        navigation.pop()
-
-        newStack.assertStack(1 to null, 2 to 2, 3 to 3)
-    }
-
-    @Test
-    fun GIVEN_back_stack_not_empty_and_backStackCreateDepth_is_1_and_recreated_WHEN_back_pressed_THEN_last_two_children_recreated() {
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
-        oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3), Config(4)))
-        val savedState = oldStateKeeper.save()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, backHandler = backDispatcher)
-        val newStack by newContext.childStack(initialStack = emptyList(), backStackCreateDepth = 1)
-
-        backDispatcher.back()
-
-        newStack.assertStack(1 to null, 2 to 2, 3 to 3)
-    }
-
-    @Test
-    fun GIVEN_one_child_in_back_stack_and_backStackCreateDepth_is_1_WHEN_pop_THEN_child_popped() {
-        val context = DefaultComponentContext(lifecycle = lifecycle)
-        val stack by context.childStack(initialStack = listOf(Config(1), Config(2)), backStackCreateDepth = 1)
-
-        navigation.pop()
-
-        stack.assertStack(1 to 1)
-    }
-
-    @Test
-    fun GIVEN_one_child_in_back_stack_and_backStackCreateDepth_is_2_WHEN_pop_THEN_child_popped() {
-        val context = DefaultComponentContext(lifecycle = lifecycle)
-        val stack by context.childStack(initialStack = listOf(Config(1), Config(2)), backStackCreateDepth = 2)
-
-        navigation.pop()
-
-        stack.assertStack(1 to 1)
-    }
-
-    @Test
-    fun GIVEN_two_children_in_back_stack_and_backStackCreateDepth_is_1_WHEN_pop_THEN_child_popped() {
-        val context = DefaultComponentContext(lifecycle = lifecycle)
-        val stack by context.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), backStackCreateDepth = 1)
-
-        navigation.pop()
-
-        stack.assertStack(1 to 1, 2 to 2)
-    }
-
-    @Test
-    fun GIVEN_two_children_in_back_stack_and_backStackCreateDepth_is_2_WHEN_pop_THEN_child_popped() {
-        val context = DefaultComponentContext(lifecycle = lifecycle)
-        val stack by context.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), backStackCreateDepth = 2)
-
-        navigation.pop()
-
-        stack.assertStack(1 to 1, 2 to 2)
+        assertFalse(instance.isDestroyed)
     }
 
     private fun ComponentContext.childStack(
         initialStack: List<Config>,
         persistent: Boolean = true,
-        backStackCreateDepth: Int = 0,
     ): Value<ChildStack<Config, Component>> =
         childStack(
             source = navigation,
             initialStack = { initialStack },
             persistent = persistent,
-            backStackCreateDepth = backStackCreateDepth,
             handleBackButton = true,
             childFactory = ::Component,
         )
 
-    private val ChildStack<Config, Component>.children: List<Pair<Int, Int?>>
-        get() = items.map { child ->
-            when (child) {
-                is Child.Created -> child.configuration.id to child.instance.id
-                is Child.Destroyed -> child.configuration.id to null
-            }
-        }
+    private val ChildStack<Config, Component>.children: List<Pair<Int, Int>>
+        get() = items.map { child -> child.configuration.id to child.instance.id }
 
-    private fun ChildStack<Config, Component>.assertStack(vararg children: Pair<Int, Int?>) {
+    private fun ChildStack<Config, Component>.assertStack(vararg children: Pair<Int, Int>) {
         assertEquals(children.toList(), this.children)
         assertEquals(Lifecycle.State.RESUMED, active.instance.lifecycle.state)
 
         assertEquals(
-            children
-                .dropLast(1)
-                .map { (_, instanceId) -> if (instanceId == null) Lifecycle.State.DESTROYED else Lifecycle.State.CREATED },
-            backStack.map { it.instance?.lifecycle?.state ?: Lifecycle.State.DESTROYED },
+            List(children.size - 1) { Lifecycle.State.CREATED },
+            backStack.map { it.instance.lifecycle.state },
         )
     }
 

@@ -128,7 +128,7 @@ class ChildrenTest(
     private fun routerState(activeConfig: Config, backstack: List<Config> = emptyList()): ChildStack<Config, Config> =
         ChildStack(
             active = Child.Created(configuration = activeConfig, instance = activeConfig),
-            backStack = backstack.map { Child.Destroyed(configuration = it) }
+            backStack = backstack.map { Child.Created(configuration = it, instance = it) }
         )
 
     @Composable
