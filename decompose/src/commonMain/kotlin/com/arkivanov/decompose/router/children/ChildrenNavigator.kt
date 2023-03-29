@@ -100,7 +100,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     fun saveChildState(): List<ParcelableContainer?> =
         items.map { item ->
             when (item) {
-                is Created -> item.saveStateIfNeeded()
+                is Created -> item.stateKeeperDispatcher.save()
                 is ChildItem.Destroyed -> item.savedState
             }
         }
@@ -192,13 +192,6 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         }
     }
 
-    private fun Created<*, *>.saveStateIfNeeded(): ParcelableContainer? =
-        if (lifecycleRegistry.state > Lifecycle.State.CREATED) {
-            stateKeeperDispatcher.save()
-        } else {
-            savedState
-        }
-
     private fun processNewItems(newItems: List<Pair<ChildItem<C, T>, Status>>) {
         items.clear()
         retainedInstance.items.clear()
@@ -209,7 +202,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
                     is Created -> {
                         when (status) {
                             Status.DESTROYED -> {
-                                val savedState = item.saveStateIfNeeded()
+                                val savedState = item.stateKeeperDispatcher.save()
                                 item.backHandler.stop()
                                 item.instanceKeeperDispatcher.destroy()
                                 item.lifecycleRegistry.destroy()
@@ -222,7 +215,6 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
                                 item
                                     .takeIf { it.lifecycleRegistry.state != Lifecycle.State.CREATED }
-                                    ?.copy(savedState = item.saveStateIfNeeded())
                                     ?.apply {
                                         backHandler.stop()
                                         lifecycleRegistry.stop()
@@ -235,7 +227,6 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
                                 item
                                     .takeIf { it.lifecycleRegistry.state != Lifecycle.State.RESUMED }
-                                    ?.copy(savedState = null)
                                     ?.apply {
                                         backHandler.start()
                                         lifecycleRegistry.resume()
