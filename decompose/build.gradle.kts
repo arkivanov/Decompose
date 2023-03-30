@@ -42,6 +42,7 @@ kotlin {
         all {
             languageSettings {
                 optIn("com.arkivanov.decompose.InternalDecomposeApi")
+                optIn("com.arkivanov.decompose.ExperimentalDecomposeApi")
             }
         }
 

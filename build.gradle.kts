@@ -1,4 +1,5 @@
 import com.arkivanov.gradle.AndroidConfig
+import com.arkivanov.gradle.BinaryCompatibilityValidatorConfig
 import com.arkivanov.gradle.PublicationConfig
 import com.arkivanov.gradle.ensureUnreachableTasksDisabled
 import com.arkivanov.gradle.iosCompat
@@ -41,6 +42,9 @@ setupDefaults(
         minSdkVersion = 21,
         compileSdkVersion = 33,
         targetSdkVersion = 33,
+    ),
+    binaryCompatibilityValidatorConfig = BinaryCompatibilityValidatorConfig(
+        nonPublicMarkers = listOf("com.arkivanov.decompose.InternalDecomposeApi"),
     ),
     publicationConfig = PublicationConfig(
         group = "com.arkivanov.decompose",

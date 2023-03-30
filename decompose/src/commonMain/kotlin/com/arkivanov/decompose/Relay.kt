@@ -1,6 +1,10 @@
 package com.arkivanov.decompose
 
-internal class Relay<T> {
+import com.arkivanov.decompose.mainthread.checkMainThread
+
+internal class Relay<T>(
+    private val isMainThreadCheckEnabled: Boolean = false,
+) {
 
     init {
         ensureNeverFrozen()
@@ -12,6 +16,10 @@ internal class Relay<T> {
     private var observers = emptySet<(T) -> Unit>()
 
     fun accept(value: T) {
+        if (isMainThreadCheckEnabled) {
+            checkMainThread()
+        }
+
         lock.synchronized {
             queue.addLast(value)
 

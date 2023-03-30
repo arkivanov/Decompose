@@ -1,9 +1,7 @@
 package com.arkivanov.decompose.router.stack.webhistory
 
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import org.w3c.dom.PopStateEvent
 
-@OptIn(ExperimentalDecomposeApi::class)
 class TestWindow : DefaultWebHistoryController.Window {
 
     private val pendingOperations = ArrayList<() -> Unit>()
