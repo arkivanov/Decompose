@@ -76,7 +76,8 @@ class DefaultCustomNavigationComponent(
 
     override fun onBackwardClicked() {
         navigation.navigate { state ->
-            state.copy(index = (state.index - 1) % state.configurations.size)
+            val size = state.configurations.size
+            state.copy(index = (size + state.index - 1) % size)
         }
     }
 

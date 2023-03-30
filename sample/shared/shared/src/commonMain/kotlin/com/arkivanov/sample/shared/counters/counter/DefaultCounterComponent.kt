@@ -9,7 +9,7 @@ import com.arkivanov.decompose.router.overlay.dismiss
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
-import com.arkivanov.decompose.value.reduce
+import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.parcelable.Parcelable
@@ -108,7 +108,7 @@ internal class DefaultCounterComponent(
 
         init {
             observableInterval(periodMillis = 250L, scheduler = tickScheduler).subscribeScoped {
-                state.reduce { it.copy(count = it.count + 1) }
+                state.update { it.copy(count = it.count + 1) }
             }
         }
 

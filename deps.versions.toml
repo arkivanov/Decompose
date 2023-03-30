@@ -44,6 +44,7 @@ jetbrains-compose-composeGradlePlug = { group = "org.jetbrains.compose", name = 
 jetbrains-compose-ui-uiTestJunit4 = { group = "org.jetbrains.compose.ui", name = "ui-test-junit4", version.ref = "jetbrainsCompose" }
 jetbrains-kotlinWrappers-kotlinWrappersBom = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-wrappers-bom", version.ref = "jetbrainsKotlinWrappers" }
 jetbrains-kotlinx-binaryCompatibilityValidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version.ref = "jetbrainsBinaryCompatibilityValidator" }
+jetbrains-kotlinx-kotlinxCoroutinesCore = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "jetbrainsKotlinxCoroutines" }
 jetbrains-kotlinx-kotlinxCoroutinesSwing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "jetbrainsKotlinxCoroutines" }
 
 androidx-compose-runtime-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "jetpackCompose" }

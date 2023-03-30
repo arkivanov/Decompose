@@ -74,4 +74,4 @@ Both [Child Stack](https://github.com/arkivanov/Decompose/blob/master/decompose/
 
 See the sample project has the [CustomNavigationComponent](https://github.com/arkivanov/Decompose/blob/master/sample/shared/shared/src/commonMain/kotlin/com/arkivanov/sample/shared/customnavigation/DefaultCustomNavigationComponent.kt), which demonstrates how to use the `Generic Navigation`.
 
-<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCustomNavigationDesktop.gif" width="392">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCustomNavigationDesktop.gif" width="300"><video width="192" autoplay loop muted><source src="/Decompose/media/SampleCustomNavigationIos.mp4" type="video/mp4"></video>

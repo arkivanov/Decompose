@@ -141,9 +141,10 @@ private class FlipSideStackAnimator(
 ) : StackAnimator {
 
     @Composable
-    override fun invoke(direction: Direction, onFinished: () -> Unit, content: @Composable (Modifier) -> Unit) {
+    override fun invoke(direction: Direction, isInitial: Boolean, onFinished: () -> Unit, content: @Composable (Modifier) -> Unit) {
         animator(
             direction = direction.flipSide(),
+            isInitial = isInitial,
             onFinished = onFinished,
             content = content,
         )

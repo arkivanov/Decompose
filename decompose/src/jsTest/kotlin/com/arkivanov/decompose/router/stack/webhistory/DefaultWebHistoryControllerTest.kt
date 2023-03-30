@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.router.stack.webhistory
 
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.TestStackRouter
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
@@ -10,7 +9,6 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Suppress("TestFunctionName")
 class DefaultWebHistoryControllerTest {
 
