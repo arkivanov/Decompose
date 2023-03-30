@@ -29,6 +29,7 @@ kotlin {
         val native by bundle()
         val nonNative by bundle()
         val darwin by bundle()
+        val linux by bundle()
         val js by bundle()
         val nonJs by bundle()
 
@@ -36,8 +37,9 @@ kotlin {
         (allSet - android) dependsOn nonAndroid
         (allSet - nativeSet) dependsOn nonNative
         (allSet - js) dependsOn nonJs
-        (nativeSet + darwin) dependsOn native
+        (nativeSet + darwin + linux) dependsOn native
         darwinSet dependsOn darwin
+        linuxSet dependsOn linux
 
         all {
             languageSettings {

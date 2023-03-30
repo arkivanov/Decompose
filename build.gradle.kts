@@ -37,6 +37,7 @@ setupDefaults(
         watchosCompat()
         tvosCompat()
         macosCompat()
+        linuxX64()
     },
     androidConfig = AndroidConfig(
         minSdkVersion = 21,
