@@ -5,7 +5,7 @@ import com.arkivanov.decompose.router.stack.StackNavigationSource.Event
 
 internal class DefaultStackNavigation<C : Any> : StackNavigation<C> {
 
-    private val relay = Relay<Event<C>>()
+    private val relay = Relay<Event<C>>(isMainThreadCheckEnabled = true)
 
     override fun navigate(transformer: (stack: List<C>) -> List<C>, onComplete: (newStack: List<C>, oldStack: List<C>) -> Unit) {
         relay.accept(Event(transformer, onComplete))

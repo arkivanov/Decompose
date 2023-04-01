@@ -15,7 +15,8 @@ struct StackView<T: AnyObject, Content: View>: View {
     var stack: [Child<AnyObject, T>] { stackValue.value.items }
 
     var body: some View {
-        if #available(iOS 16, *) {
+        // iOS 16.0 has an issue with swipe back see https://stackoverflow.com/questions/73978107/incomplete-swipe-back-gesture-causes-navigationpath-mismanagement
+        if #available(iOS 16.1, *) {
             NavigationStack(path: Binding(get: { stack.dropFirst() }, set: { _ in onBack() })) {
                 childContent(stack.first!.instance!)
                     .navigationDestination(for: Child<AnyObject, T>.self) {

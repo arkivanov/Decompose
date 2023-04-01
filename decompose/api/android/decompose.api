@@ -67,11 +67,9 @@ public abstract interface annotation class com/arkivanov/decompose/ExperimentalD
 public abstract interface annotation class com/arkivanov/decompose/InternalDecomposeApi : java/lang/annotation/Annotation {
 }
 
-public final class com/arkivanov/decompose/lifecycle/MergedLifecycle : com/arkivanov/essenty/lifecycle/Lifecycle {
-	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/lifecycle/Lifecycle;)V
-	public fun getState ()Lcom/arkivanov/essenty/lifecycle/Lifecycle$State;
-	public fun subscribe (Lcom/arkivanov/essenty/lifecycle/Lifecycle$Callbacks;)V
-	public fun unsubscribe (Lcom/arkivanov/essenty/lifecycle/Lifecycle$Callbacks;)V
+public final class com/arkivanov/decompose/errorhandler/ErrorHandlersKt {
+	public static final fun getOnDecomposeError ()Lkotlin/jvm/functions/Function1;
+	public static final fun setOnDecomposeError (Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface class com/arkivanov/decompose/router/children/ChildNavState {
@@ -199,10 +197,10 @@ public final class com/arkivanov/decompose/router/stack/ChildStack {
 }
 
 public final class com/arkivanov/decompose/router/stack/ChildStackFactoryKt {
-	public static final fun childStack (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;IZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
-	public static final fun childStack (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZIZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
-	public static synthetic fun childStack$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;IZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
-	public static synthetic fun childStack$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZIZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun childStack (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun childStack (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childStack$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childStack$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
 }
 
 public abstract interface class com/arkivanov/decompose/router/stack/StackNavigation : com/arkivanov/decompose/router/stack/StackNavigationSource, com/arkivanov/decompose/router/stack/StackNavigator {
@@ -262,6 +260,7 @@ public abstract interface class com/arkivanov/decompose/router/stack/webhistory/
 
 public abstract class com/arkivanov/decompose/value/MutableValue : com/arkivanov/decompose/value/Value {
 	public fun <init> ()V
+	public abstract fun compareAndSet (Ljava/lang/Object;Ljava/lang/Object;)Z
 	public abstract fun getValue ()Ljava/lang/Object;
 	public abstract fun setValue (Ljava/lang/Object;)V
 }
@@ -271,7 +270,9 @@ public final class com/arkivanov/decompose/value/MutableValueBuilderKt {
 }
 
 public final class com/arkivanov/decompose/value/MutableValueExtKt {
-	public static final fun reduce (Lcom/arkivanov/decompose/value/MutableValue;Lkotlin/jvm/functions/Function1;)V
+	public static final fun getAndUpdate (Lcom/arkivanov/decompose/value/MutableValue;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun update (Lcom/arkivanov/decompose/value/MutableValue;Lkotlin/jvm/functions/Function1;)V
+	public static final fun updateAndGet (Lcom/arkivanov/decompose/value/MutableValue;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
 public final class com/arkivanov/decompose/value/ObserveLifecycleMode : java/lang/Enum {

@@ -6,7 +6,7 @@
 class RootComponent
 ```
 
-Yes, a simples component is just a normal class. No need to extend a class from the library, or implement an interface.
+Yes, a simplest component is just a normal class. No need to extend a class from the library, or implement an interface.
 
 ## Extracting an interface
 
@@ -222,7 +222,7 @@ Use `LifecycleController` to bind the root lifecycle with the main window state.
 fun main() {
     val lifecycle = LifecycleRegistry()
 
-    // Always create the root component outside Compose on the main thread
+    // Always create the root component outside Compose on the UI thread
     val root =
         runOnUiThread {
             DefaultRootComponent(

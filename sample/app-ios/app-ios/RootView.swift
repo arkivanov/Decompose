@@ -26,7 +26,7 @@ struct RootView: View {
             ChildView(child: activeChild)
                 .frame(maxHeight: .infinity)
             
-            HStack(spacing: 16) {
+            HStack(alignment: .bottom, spacing: 16) {
                 Button(action: root.onCountersTabClicked) {
                     Label("Counters", systemImage: "123.rectangle")
                         .labelStyle(VerticalLabelStyle())
@@ -37,6 +37,12 @@ struct RootView: View {
                     Label("Multi-Pane", systemImage: "list.bullet")
                         .labelStyle(VerticalLabelStyle())
                         .opacity(activeChild is RootComponentChild.MultiPaneChild ? 1 : 0.5)
+                }
+
+                Button(action: root.onCustomNavigationTabClicked) {
+                    Label("Custom Nav", systemImage: "location.north")
+                            .labelStyle(VerticalLabelStyle())
+                            .opacity(activeChild is RootComponentChild.CustomNavigationChild ? 1 : 0.5)
                 }
             }
         }
@@ -50,6 +56,7 @@ private struct ChildView: View {
         switch child {
         case let child as RootComponentChild.CountersChild: CountersView(child.component)
         case let child as RootComponentChild.MultiPaneChild: MultiPaneView(child.component)
+        case let child as RootComponentChild.CustomNavigationChild: CustomNavigationView(child.component)
         default: EmptyView()
         }
     }

@@ -19,7 +19,7 @@ import kotlin.test.assertTrue
 internal class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
-    fun WHEN_child_switched_from_active_to_inactive_THEN_state_saved() {
+    fun WHEN_child_switched_from_active_to_inactive_THEN_state_not_saved() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         var isCalled = false
         children.getById(id = 3).requireInstance().stateKeeper.register(key = "key") {
@@ -29,7 +29,7 @@ internal class ChildrenSavedStateTest : ChildrenTestBase() {
 
         navigate { listOf(1 by DESTROYED, 2 by INACTIVE, 3 by INACTIVE) }
 
-        assertTrue(isCalled)
+        assertFalse(isCalled)
     }
 
     @Test
@@ -47,7 +47,7 @@ internal class ChildrenSavedStateTest : ChildrenTestBase() {
     }
 
     @Test
-    fun WHEN_child_switched_from_inactive_to_destroyed_THEN_state_not_saved() {
+    fun WHEN_child_switched_from_inactive_to_destroyed_THEN_state_saved() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         var isCalled = false
         children.getById(id = 2).requireInstance().stateKeeper.register(key = "key") {
@@ -57,7 +57,7 @@ internal class ChildrenSavedStateTest : ChildrenTestBase() {
 
         navigate { listOf(1 by DESTROYED, 2 by DESTROYED, 3 by ACTIVE) }
 
-        assertFalse(isCalled)
+        assertTrue(isCalled)
     }
 
     @Test
@@ -183,14 +183,17 @@ internal class ChildrenSavedStateTest : ChildrenTestBase() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        oldChildren.getById(id = 2).requireInstance().stateKeeper.register(key = "key") { Config(id = 20) }
         oldChildren.getById(id = 3).requireInstance().stateKeeper.register(key = "key") { Config(id = 30) }
 
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
         val newChildren by newContext.children()
+        val restoredState2 = newChildren.getById(id = 2).requireInstance().stateKeeper.consume<Config>(key = "key")
         val restoredState3 = newChildren.getById(id = 3).requireInstance().stateKeeper.consume<Config>(key = "key")
 
+        assertEquals(Config(id = 20), restoredState2)
         assertEquals(Config(id = 30), restoredState3)
     }
 
@@ -198,15 +201,18 @@ internal class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_not_saving_state_WHEN_recreated_THEN_child_states_not_restored() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
-        val oldChildren by oldContext.children(initialState = stateOf(1 by ACTIVE), saveState = { null })
-        oldChildren.getById(id = 1).requireInstance().stateKeeper.register(key = "key") { Config(id = 30) }
+        val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE), saveState = { null })
+        oldChildren.getById(id = 2).requireInstance().stateKeeper.register(key = "key") { Config(id = 20) }
+        oldChildren.getById(id = 3).requireInstance().stateKeeper.register(key = "key") { Config(id = 30) }
 
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
-        val newChildren by newContext.children(initialState = stateOf(1 by ACTIVE))
-        val restoredState3 = newChildren.getById(id = 1).requireInstance().stateKeeper.consume<Config>(key = "key")
+        val newChildren by newContext.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        val restoredState2 = newChildren.getById(id = 2).requireInstance().stateKeeper.consume<Config>(key = "key")
+        val restoredState3 = newChildren.getById(id = 3).requireInstance().stateKeeper.consume<Config>(key = "key")
 
+        assertNull(restoredState2)
         assertNull(restoredState3)
     }
 
@@ -214,15 +220,18 @@ internal class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_not_restoring_state_WHEN_recreated_THEN_child_states_not_restored() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
-        val oldChildren by oldContext.children(initialState = stateOf(1 by ACTIVE), saveState = { null })
-        oldChildren.getById(id = 1).requireInstance().stateKeeper.register(key = "key") { Config(id = 30) }
+        val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
+        oldChildren.getById(id = 2).requireInstance().stateKeeper.register(key = "key") { Config(id = 20) }
+        oldChildren.getById(id = 3).requireInstance().stateKeeper.register(key = "key") { Config(id = 30) }
 
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
-        val newChildren by newContext.children(initialState = stateOf(1 by ACTIVE), restoreState = { null })
-        val restoredState3 = newChildren.getById(id = 1).requireInstance().stateKeeper.consume<Config>(key = "key")
+        val newChildren by newContext.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE), restoreState = { null })
+        val restoredState2 = newChildren.getById(id = 2).requireInstance().stateKeeper.consume<Config>(key = "key")
+        val restoredState3 = newChildren.getById(id = 3).requireInstance().stateKeeper.consume<Config>(key = "key")
 
+        assertNull(restoredState2)
         assertNull(restoredState3)
     }
 
@@ -258,5 +267,29 @@ internal class ChildrenSavedStateTest : ChildrenTestBase() {
         val restoredState3 = newChildren.getById(id = 3).requireInstance().stateKeeper.consume<Config>(key = "key")
 
         assertEquals(Config(id = 30), restoredState3)
+    }
+
+    @Test
+    fun GIVEN_child_switched_to_inactive_and_recreated_twice_WHEN_child_switched_to_active_THEN_state_restored() {
+        val oldStateKeeper = TestStateKeeperDispatcher()
+        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
+        val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by ACTIVE, 3 by ACTIVE))
+        oldChildren.getById(id = 2).requireInstance().stateKeeper.register(key = "key") { Config(id = 30) }
+        navigate { listOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE) }
+
+        val savedState1 = oldStateKeeper.save()
+        val newStateKeeper1 = TestStateKeeperDispatcher(savedState1)
+        val newContext1 = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper1)
+        val newChildren1 by newContext1.children(restoreState = { stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE) })
+        newChildren1.getById(id = 2).requireInstance().stateKeeper.register(key = "key") { Config(id = 31) }
+
+        val savedState2 = newStateKeeper1.save()
+        val newStateKeeper2 = TestStateKeeperDispatcher(savedState2)
+        val newContext2 = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper2)
+        val newChildren2 by newContext2.children(restoreState = { stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE) })
+
+        val restoredState2 = newChildren2.getById(id = 2).requireInstance().stateKeeper.consume<Config>(key = "key")
+
+        assertEquals(Config(id = 31), restoredState2)
     }
 }

@@ -3,6 +3,7 @@ package com.arkivanov.sample.shared.root
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.stack.active
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.TestFeatureInstaller
 import com.arkivanov.sample.shared.root.DefaultRootComponent.*
 import com.arkivanov.sample.shared.root.RootComponent.Child.CountersChild
@@ -95,11 +96,15 @@ class RootComponentIntegrationTest {
     private fun createComponent(
         deepLink: DeepLink = DeepLink.None,
     ) {
+        val lifecycle = LifecycleRegistry()
+
         component =
             DefaultRootComponent(
-                componentContext = DefaultComponentContext(lifecycle = LifecycleRegistry()),
+                componentContext = DefaultComponentContext(lifecycle = lifecycle),
                 featureInstaller = TestFeatureInstaller(),
                 deepLink = deepLink,
             )
+
+        lifecycle.resume()
     }
 }

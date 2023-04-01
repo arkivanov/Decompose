@@ -1,27 +1,64 @@
 package com.arkivanov.decompose
 
-internal class Relay<T> {
+import com.arkivanov.decompose.mainthread.checkMainThread
+
+internal class Relay<T>(
+    private val isMainThreadCheckEnabled: Boolean = false,
+) {
 
     init {
         ensureNeverFrozen()
     }
 
+    private val lock = Lock()
+    private val queue = ArrayDeque<T>()
+    private var isDraining = false
     private var observers = emptySet<(T) -> Unit>()
 
-    private val queue =
-        SerializedQueue<T> { value ->
-            observers.forEach { it(value) }
+    fun accept(value: T) {
+        if (isMainThreadCheckEnabled) {
+            checkMainThread()
         }
 
+        lock.synchronized {
+            queue.addLast(value)
+
+            if (isDraining) {
+                return
+            }
+
+            isDraining = true
+        }
+
+        drainLoop()
+    }
+
+    private fun drainLoop() {
+        while (true) {
+            val value: T
+            val observersCopy: Set<(T) -> Unit>
+
+            lock.synchronized {
+                if (queue.isEmpty()) {
+                    isDraining = false
+                    return
+                }
+
+                value = queue.removeFirst()
+                observersCopy = observers
+            }
+
+            observersCopy.forEach { observer ->
+                observer(value)
+            }
+        }
+    }
+
     fun subscribe(observer: (T) -> Unit) {
-        this.observers += observer
+        lock.synchronized { observers += observer }
     }
 
     fun unsubscribe(observer: (T) -> Unit) {
-        this.observers -= observer
-    }
-
-    fun accept(value: T) {
-        queue.offer(value)
+        lock.synchronized { observers -= observer }
     }
 }

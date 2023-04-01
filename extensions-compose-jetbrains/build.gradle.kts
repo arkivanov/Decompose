@@ -36,6 +36,12 @@ kotlin {
         val android by bundle()
         val jvm by bundle()
 
+        all {
+            languageSettings {
+                optIn("com.arkivanov.decompose.InternalDecomposeApi")
+            }
+        }
+
         common.main.dependencies {
             implementation(project(":decompose"))
             implementation(compose.foundation)

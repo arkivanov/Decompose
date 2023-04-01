@@ -144,7 +144,7 @@ class ChildrenTest(
     private fun routerState(activeConfig: Config, backstack: List<Config> = emptyList()): ChildStack<Config, Config> =
         ChildStack(
             active = Child.Created(configuration = activeConfig, instance = activeConfig),
-            backStack = backstack.map { Child.Destroyed(configuration = it) },
+            backStack = backstack.map { Child.Created(configuration = it, instance = it) },
         )
 
     @Composable
@@ -177,10 +177,15 @@ class ChildrenTest(
             listOf(
                 null,
                 stackAnimation { _, _, _ -> null },
-                stackAnimation(scale()),
-                stackAnimation(fade()),
-                stackAnimation(slide()),
-                stackAnimation(scale() + fade() + slide()),
+                stackAnimation { _, _, _ -> scale() },
+                stackAnimation { _, _, _ -> fade() },
+                stackAnimation { _, _, _ -> slide() },
+                stackAnimation { _, _, _ -> scale() + fade() + slide() },
+                stackAnimation { _ -> null },
+                stackAnimation { _ -> scale() },
+                stackAnimation { _ -> fade() },
+                stackAnimation { _ -> slide() },
+                stackAnimation { _ -> scale() + fade() + slide() },
             )
     }
 

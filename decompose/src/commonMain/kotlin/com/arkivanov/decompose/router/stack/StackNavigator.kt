@@ -19,6 +19,8 @@ interface StackNavigator<C : Any> {
      * component being pushed. All recursive invocations are queued and performed one by one once
      * the current navigation is finished.
      *
+     * Should be called on the main thread.
+     *
      * @param transformer transforms the current configuration stack to a new one.
      * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
      */
