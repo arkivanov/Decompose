@@ -1,6 +1,6 @@
 # Generic Navigation
 
-The `Generic Navigation` can be used to create custom navigation models, when none of the predefined models fit your needs. It offers a flexible API and allows you to create almost any kind of navigation. Please check out [Child Stack](../stack/overview.md) and [Child Overlay](../overlay/overview.md) before using the `Generic Navigation`.
+The `Generic Navigation` can be used to create custom navigation models, when none of the predefined models fit your needs. It offers a flexible API and allows you to create almost any kind of navigation. Please check out [Child Stack](../stack/overview.md) and [Child Slot](../slot/overview.md) before using the `Generic Navigation`.
 
 The API is based around [NavState](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/children/NavState.kt) and [ChildNavState](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/children/ChildNavState.kt) interfaces that should be implemented by clients. `NavState` represents a persistent state of the navigation. It also holds a navigation state for each child - `ChildNavState`. Both `NavState` and `ChildNavState` must be immutable, and correctly implement `equals` and `hashCode` methods (or just be data classes). There must be no duplicated (by equality) `ChildNavState.configuration` within a `NavState`.
 
@@ -68,7 +68,7 @@ The `children` function returns an observable `Value` of the resulting children 
 
 ## Examples
 
-Both [Child Stack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStackFactory.kt) and [Child Overlay](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/overlay/ChildOverlayFactory.kt) are implemented using the `Generic Navigation`. Please refer to their source code for implementation details.
+Both [Child Stack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStackFactory.kt) and [Child Slot](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/slot/ChildSlotFactory.kt) are implemented using the `Generic Navigation`. Please refer to their source code for implementation details.
 
 ### Sample project
 

@@ -5,10 +5,12 @@ Decompose provides the ability to create [permanent child components](/Decompose
 Currently, Decompose provides two predefined navigation models:
 
 - [Child Stack](/Decompose/navigation/stack/overview/) - prefer this way if you need to organize child components in a stack and navigate between them.
-- [Child Overlay](/Decompose/navigation/overlay/overview/) - prefer this way if you need to activate-dismiss a child component.
+- [Child Slot](/Decompose/navigation/slot/overview/) - prefer this way if you need to activate-dismiss one child component at a time.
 
 If none of this fit your needs, Decompose introduces [Generic Navigation](https://arkivanov.github.io/Decompose/navigation/children/overview/) that can be used to create your own custom navigation models.
 It offers a flexible API and allows you to create almost any kind of navigation.
+
+It is possible to have more than one navigation model in a parent component. Make sure that you supplied different keys (the `key` argument) if you have two or more navigation models of the same kind (e.g. you have two `Child Stacks` in one parent component).
 
 ## Component configurations and child factories
 

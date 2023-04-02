@@ -23,8 +23,8 @@ import kotlin.reflect.KClass
  * @param key a key of the stack, must be unique if there are multiple stacks in the same component.
  * @param persistent determines whether the navigation state should pre preserved or not,
  * default is `true`.
- * @param handleBackButton determines whether the overlay should be automatically dismissed
- * on back button press or not, default is `false`.
+ * @param handleBackButton determines whether the stack should be automatically popped on back button press or not,
+ * default is `false`.
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildStack].
  */
@@ -74,8 +74,8 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
  * If `null` is returned then [initialStack] is used instead.
  * The restored stack must have the same amount of configurations and in the same order.
  * @param key a key of the stack, must be unique if there are multiple stacks in the same component.
- * @param handleBackButton determines whether the overlay should be automatically dismissed
- * on back button press or not, default is `false`.
+ * @param handleBackButton determines whether the stack should be automatically popped on back button press or not,
+ * default is `false`.
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildStack].
  */

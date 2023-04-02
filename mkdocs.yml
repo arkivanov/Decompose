@@ -39,10 +39,10 @@ nav:
       - Deep linking: navigation/stack/deeplinking.md
       - Web browser history: navigation/stack/browser-history.md
       - Custom ComponentContext: navigation/stack/component-context.md
-    - Child Overlay:
-      - Overview: navigation/overlay/overview.md
-      - Navigation: navigation/overlay/navigation.md
-      - Custom ComponentContext: navigation/overlay/component-context.md
+    - Child Slot:
+      - Overview: navigation/slot/overview.md
+      - Navigation: navigation/slot/navigation.md
+      - Custom ComponentContext: navigation/slot/component-context.md
     - Generic Navigation:
         - Overview: navigation/children/overview.md
 

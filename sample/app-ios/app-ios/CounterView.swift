@@ -15,14 +15,14 @@ struct CounterView: View {
     private var observableModel: ObservableValue<CounterComponentModel>
     
     @ObservedObject
-    private var dialogOverlay: ObservableValue<ChildOverlay<AnyObject, DialogComponent>>
+    private var dialogSlot: ObservableValue<ChildSlot<AnyObject, DialogComponent>>
     
     private var model: CounterComponentModel { observableModel.value }
     
     init(_ counter: CounterComponent) {
         self.counter = counter
         observableModel = ObservableValue(counter.model)
-        dialogOverlay = ObservableValue(counter.dialogOverlay)
+        dialogSlot = ObservableValue(counter.dialogSlot)
     }
     
     var body: some View {
@@ -38,7 +38,7 @@ struct CounterView: View {
         }
         .navigationBarTitle(model.title, displayMode: .inline)
         .alert(
-            item: dialogOverlay.value.overlay?.instance,
+            item: dialogSlot.value.child?.instance,
             onDismiss: { $0.onDismissClicked() },
             title: { Text($0.title) },
             message: { Text($0.message) },
@@ -83,8 +83,8 @@ class PreviewCounterComponent : CounterComponent {
         )
     )
     
-    let dialogOverlay: Value<ChildOverlay<AnyObject, DialogComponent>> =
-    mutableValue(ChildOverlay(overlay: nil))
+    let dialogSlot: Value<ChildSlot<AnyObject, DialogComponent>> =
+    mutableValue(ChildSlot(child: nil))
     
     func onInfoClicked() {}
     func onNextClicked() {}

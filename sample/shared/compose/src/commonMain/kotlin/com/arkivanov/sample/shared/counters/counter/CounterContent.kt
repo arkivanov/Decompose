@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.router.overlay.ChildOverlay
+import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.counters.counter.CounterComponent.Model
@@ -83,8 +83,8 @@ internal fun CounterContent(component: CounterComponent, modifier: Modifier = Mo
         Spacer(modifier = Modifier.weight(1F))
     }
 
-    val dialogOverlay by component.dialogOverlay.subscribeAsState()
-    dialogOverlay.overlay?.instance?.also {
+    val dialogSlot by component.dialogSlot.subscribeAsState()
+    dialogSlot.child?.instance?.also {
         DialogContent(dialogComponent = it)
     }
 }
@@ -105,8 +105,8 @@ internal class PreviewCounterComponent : CounterComponent {
             )
         )
 
-    override val dialogOverlay: Value<ChildOverlay<*, DialogComponent>> =
-        MutableValue(ChildOverlay<Unit, DialogComponent>())
+    override val dialogSlot: Value<ChildSlot<Unit, DialogComponent>> =
+        MutableValue(ChildSlot())
 
     override fun onNextClicked() {}
     override fun onPrevClicked() {}

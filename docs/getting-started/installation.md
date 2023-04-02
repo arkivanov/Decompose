@@ -4,7 +4,7 @@ Decompose provides a number of modules, they are all published to Maven Central 
 
 ## The main Decompose module
 
-The main functionality is provided by the `decompose` module. It contains some core features like [ComponentContext](/Decompose/component/overview/#componentcontext), [Child Stack](/Decompose/navigation/stack/overview/), [Child Overlay](/Decompose/navigation/overlay/overview/), etc.
+The main functionality is provided by the `decompose` module. It contains some core features like [ComponentContext](/Decompose/component/overview/#componentcontext), [Child Stack](/Decompose/navigation/stack/overview/), [Child Slot](/Decompose/navigation/slot/overview/), etc.
 
 ### Gradle setup
 

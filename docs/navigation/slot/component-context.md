@@ -1,22 +1,20 @@
-# Child Overlay with custom `ComponentContext`
+# Child Slot with custom `ComponentContext`
 
 Custom `ComponentContext` allows passing extra data and functionality to every child component. See [Custom ComponentContext](../../component/custom-component-context.md) page for more information about creating custom `AppComponentContext`.
 
-In order to pass custom component context like `AppComponentContext` to child overlay components, make an extension function on your `AppComponentContext` interface. This custom extension function will initialize the `Child Overlay` and provide every child an `AppComponentContext`.
+In order to pass custom component context (like `AppComponentContext`) to child slot components, make an extension function on your `AppComponentContext` interface. This custom extension function will initialize the `Child Slot` and provide every child an `AppComponentContext`.
 
 ```kotlin
-fun <C : Parcelable, T : Any> AppComponentContext.appChildOverlay(
-    source: OverlayNavigationSource<C>,
-    initialConfiguration: () -> C?,
-    configurationClass: KClass<out C>,
-    key: String = "DefaultOverlay",
+inline fun <reified C : Parcelable, T : Any> AppComponentContext.appChildOverlay(
+    source: SlotNavigationSource<C>,
+    noinline initialConfiguration: () -> C? = { null },
+    key: String = "DefaultSlot",
     handleBackButton: Boolean = false,
     persistent: Boolean = false,
-    childFactory: (configuration: C, AppComponentContext) -> T
-): Value<ChildOverlay<C, T>> =
-    childOverlay(
+    noinline childFactory: (configuration: C, AppComponentContext) -> T
+): Value<ChildSlot<C, T>> =
+    childSlot(
         source = source,
-        configurationClass = configurationClass,
         key = key,
         handleBackButton = handleBackButton,
         initialConfiguration = initialConfiguration,
@@ -26,47 +24,27 @@ fun <C : Parcelable, T : Any> AppComponentContext.appChildOverlay(
             configuration,
             DefaultAppComponentContext(
                 componentContext = componentContext,
-                bundleId,
-                settings,
-                boarding
+                // Additional dependencies here
             )
         )
     }
-
-inline fun <reified C : Parcelable, T : Any> AppComponentContext.appChildStack(
-    source: OverlayNavigationSource<C>,
-    noinline  initialConfiguration: () -> C?,
-    key: String = "DefaultOverlay",
-    handleBackButton: Boolean = false,
-    persistent: Boolean = false,
-    noinline childFactory: (configuration: C, AppComponentContext) -> T
-): Value<ChildOverlay<C, T>> =
-    appChildOverlay(
-        source = source,
-        initialConfiguration = initialConfiguration,
-        configurationClass = C::class,
-        key = key,
-        handleBackButton = handleBackButton,
-        persistent = persistent,
-        childFactory = childFactory,
-    )
 ```
 
 Finally, in your components you can use the new extension function that will utilize the custom `AppComponentContext`.
 
 ```kotlin
 interface RootComponent {
-    val dialog: Value<ChildOverlay<*, DialogComponent>>
+    val dialog: Value<ChildSlot<*, DialogComponent>>
 }
 
 class DefaultRootComponent(
     componentContext: AppComponentContext,
 ) : RootComponent, AppComponentContext by componentContext {
 
-    private val dialogNavigation = OverlayNavigation<DialogConfig>()
+    private val dialogNavigation = SlotNavigation<DialogConfig>()
 
     private val _dialog =
-        appChildOverlay(
+        appChildSlot(
             source = dialogNavigation,
             // persistent = false, // Disable navigation state saving, if needed
             handleBackButton = true, // Close the dialog on back button press
@@ -78,7 +56,7 @@ class DefaultRootComponent(
             )
         }
 
-    override val dialog: Value<ChildOverlay<*, DialogComponent>> = _dialog
+    override val dialog: Value<ChildSlot<*, DialogComponent>> = _dialog
 
     private fun showDialog(message: String) {
         dialogNavigation.activate(DialogConfig(message = message))
