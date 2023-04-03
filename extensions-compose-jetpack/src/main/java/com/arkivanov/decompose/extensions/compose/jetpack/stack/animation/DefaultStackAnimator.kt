@@ -1,7 +1,6 @@
 package com.arkivanov.decompose.extensions.compose.jetpack.stack.animation
 
 import androidx.compose.animation.core.AnimationState
-import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.animateTo
 import androidx.compose.animation.core.isFinished
@@ -23,7 +22,7 @@ internal class DefaultStackAnimator(
         onFinished: () -> Unit,
         content: @Composable (Modifier) -> Unit,
     ) {
-        val animationState = rememberAnimationState(direction = direction, isInitial = isInitial)
+        val animationState = remember(direction, isInitial) { AnimationState(initialValue = if (isInitial) 0F else 1F) }
 
         LaunchedEffect(animationState) {
             animationState.animateTo(
@@ -45,9 +44,4 @@ internal class DefaultStackAnimator(
 
         frame(factor, direction, content)
     }
-
-    // Extracted as a workaround due to https://issuetracker.google.com/issues/276489159
-    @Composable
-    private fun rememberAnimationState(direction: Direction, isInitial: Boolean): AnimationState<Float, AnimationVector1D> =
-        remember(direction, isInitial) { AnimationState(initialValue = if (isInitial) 0F else 1F) }
 }
