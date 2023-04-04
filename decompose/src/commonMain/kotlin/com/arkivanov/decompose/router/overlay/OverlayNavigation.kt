@@ -9,6 +9,13 @@ interface OverlayNavigation<C : Any> : OverlayNavigator<C>, OverlayNavigationSou
  * Returns a default implementation of [OverlayNavigation].
  * Broadcasts navigation events to all subscribed observers.
  */
+@Deprecated(
+    message = "Please use Child Slot API",
+    replaceWith = ReplaceWith(
+        expression = "SlotNavigation<C>()",
+        "com.arkivanov.decompose.router.slot.SlotNavigation",
+    ),
+)
 @Suppress("FunctionName") // Factory function
 fun <C : Any> OverlayNavigation(): OverlayNavigation<C> =
     DefaultOverlayNavigation()

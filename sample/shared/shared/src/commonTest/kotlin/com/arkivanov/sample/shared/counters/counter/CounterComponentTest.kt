@@ -1,7 +1,7 @@
 package com.arkivanov.sample.shared.counters.counter
 
 import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.router.overlay.overlay
+import com.arkivanov.decompose.router.slot.child
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
@@ -109,8 +109,8 @@ class CounterComponentTest {
 
         component.onInfoClicked()
 
-        assertEquals("Counter", component.dialogOverlay.overlay?.instance?.title)
-        assertEquals("Value: 001", component.dialogOverlay.overlay?.instance?.message)
+        assertEquals("Counter", component.dialogSlot.child?.instance?.title)
+        assertEquals("Value: 001", component.dialogSlot.child?.instance?.message)
     }
 
     @Test
@@ -118,9 +118,9 @@ class CounterComponentTest {
         createComponent()
         component.onInfoClicked()
 
-        component.dialogOverlay.overlay?.instance?.onDismissClicked()
+        component.dialogSlot.child?.instance?.onDismissClicked()
 
-        assertNull(component.dialogOverlay.overlay)
+        assertNull(component.dialogSlot.child)
     }
 
     @Test

@@ -91,8 +91,8 @@ internal val CounterContent: FC<RProps<CounterComponent>> = FC { props ->
         }
     }
 
-    val dialogOverlay by props.component.dialogOverlay.useAsState()
-    dialogOverlay.overlay?.instance?.also { dialog ->
+    val dialogSlot by props.component.dialogSlot.useAsState()
+    dialogSlot.child?.instance?.also { dialog ->
         componentContent(component = dialog, content = DialogComponentContent)
     }
 }

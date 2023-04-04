@@ -1,11 +1,11 @@
 package com.arkivanov.sample.shared.counters.counter
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.overlay.ChildOverlay
-import com.arkivanov.decompose.router.overlay.OverlayNavigation
-import com.arkivanov.decompose.router.overlay.activate
-import com.arkivanov.decompose.router.overlay.childOverlay
-import com.arkivanov.decompose.router.overlay.dismiss
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
+import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
@@ -42,10 +42,10 @@ internal class DefaultCounterComponent(
 
     override val model: Value<Model> = handler.state.map { it.toModel() }
 
-    private val dialogNavigation = OverlayNavigation<DialogConfig>()
+    private val dialogNavigation = SlotNavigation<DialogConfig>()
 
-    private val _dialogOverlay =
-        childOverlay<DialogConfig, DialogComponent>(
+    private val _dialogSlot =
+        childSlot<DialogConfig, DialogComponent>(
             source = dialogNavigation,
             persistent = false,
             handleBackButton = true,
@@ -58,7 +58,7 @@ internal class DefaultCounterComponent(
             }
         )
 
-    override val dialogOverlay: Value<ChildOverlay<*, DialogComponent>> = _dialogOverlay
+    override val dialogSlot: Value<ChildSlot<*, DialogComponent>> = _dialogSlot
 
     override fun onInfoClicked() {
         dialogNavigation.activate(DialogConfig(count = handler.state.value.count))

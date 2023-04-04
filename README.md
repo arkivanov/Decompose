@@ -71,7 +71,7 @@ Here are some key concepts of the library, more details can be found in the docu
 * [Component](https://arkivanov.github.io/Decompose/component/overview/) - every component represents a piece of logic with its own lifecycle, the UI is optional and is plugged externally
 * [ComponentContext](https://arkivanov.github.io/Decompose/component/overview/#componentcontext) - every component has its own [ComponentContext], which makes components lifecycle-aware and allows state preservation, instances retaining (aka AndroidX `ViewModel`) and back button handling
 * [Child Stack](https://arkivanov.github.io/Decompose/navigation/stack/overview/) - enables navigation between child components, nested navigation is also supported
-* [Child Overlay](https://arkivanov.github.io/Decompose/navigation/overlay/overview/) - provides navigation for the case when either one active component presented at a time, or none
+* [Child Slot](https://arkivanov.github.io/Decompose/navigation/slot/overview/) - allows only one child component at a time, or none
 * [Generic Navigation](https://arkivanov.github.io/Decompose/navigation/children/overview/) - provides a way to create your own custom navigation model, when none of the predefined models fit your needs
 * [Lifecycle](https://arkivanov.github.io/Decompose/component/lifecycle/) - provides a way to listen for lifecycle events in components
 * [StateKeeper](https://arkivanov.github.io/Decompose/component/state-preservation/) - makes it possible to preserve state or data in a component when it gets destroyed
