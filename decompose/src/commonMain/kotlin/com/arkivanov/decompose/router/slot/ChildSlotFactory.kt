@@ -1,4 +1,4 @@
-package com.arkivanov.decompose.router.overlay
+package com.arkivanov.decompose.router.slot
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
@@ -12,37 +12,31 @@ import com.arkivanov.essenty.parcelable.ParcelableContainer
 import kotlin.reflect.KClass
 
 /**
- * Initializes and manages component overlay. An overlay component can be either active or dismissed (destroyed).
+ * Initializes and manages a slot for one child component.
+ * The child component can be either active or dismissed (destroyed).
  *
  * @param source a source of navigation events.
  * @param configurationClass a [KClass] of the component configurations.
- * @param key a key of the overlay, must be unique within the parent (hosting) component.
+ * @param key a key of the slot, must be unique within the parent (hosting) component.
  * @param initialConfiguration a component configuration that should be shown if there is
  * no saved state, return `null` to show nothing.
  * @param persistent determines whether the navigation state should pre preserved or not,
  * default is `true`.
- * @param handleBackButton determines whether the overlay should be automatically dismissed
+ * @param handleBackButton determines whether the child component should be automatically dismissed
  * on back button press or not, default is `false`.
  * @param childFactory a factory function that creates new child instances.
- * @return an observable [Value] of [ChildOverlay].
+ * @return an observable [Value] of [ChildSlot].
  */
-@Deprecated(
-    message = "Please use Child Slot API",
-    replaceWith = ReplaceWith(
-        expression = "childSlot",
-        "com.arkivanov.decompose.router.slot.childSlot",
-    ),
-)
-fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
-    source: OverlayNavigationSource<C>,
+fun <C : Parcelable, T : Any> ComponentContext.childSlot(
+    source: SlotNavigationSource<C>,
     configurationClass: KClass<out C>,
-    key: String = "DefaultChildOverlay",
+    key: String = "DefaultChildSlot",
     initialConfiguration: () -> C? = { null },
     persistent: Boolean = true,
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, ComponentContext) -> T,
-): Value<ChildOverlay<C, T>> =
-    childOverlay(
+): Value<ChildSlot<C, T>> =
+    childSlot(
         source = source,
         saveConfiguration = { if (persistent) ParcelableContainer(it) else null },
         restoreConfiguration = { it.consume(configurationClass) },
@@ -53,47 +47,41 @@ fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
     )
 
 /**
- * Initializes and manages component overlay. An overlay component can be either active or dismissed (destroyed).
+ * Initializes and manages a slot for one child component.
+ * The child component can be either active or dismissed (destroyed).
  *
  * @param source a source of navigation events.
- * @param key a key of the overlay, must be unique within the parent (hosting) component.
+ * @param key a key of the slot, must be unique within the parent (hosting) component.
  * @param saveConfiguration a function that saves the provided configuration into [ParcelableContainer].
  * @param restoreConfiguration a function that restores the configuration from the provided [ParcelableContainer].
  * @param initialConfiguration a component configuration that should be shown if there is
  * no saved state, return `null` to show nothing.
- * @param handleBackButton determines whether the overlay should be automatically dismissed
+ * @param handleBackButton determines whether the child component should be automatically dismissed
  * on back button press or not, default is `false`.
  * @param childFactory a factory function that creates new child instances.
- * @return an observable [Value] of [ChildOverlay].
+ * @return an observable [Value] of [ChildSlot].
  */
-@Deprecated(
-    message = "Please use Child Slot API",
-    replaceWith = ReplaceWith(
-        expression = "childSlot",
-        "com.arkivanov.decompose.router.slot.childSlot",
-    ),
-)
-fun <C : Any, T : Any> ComponentContext.childOverlay(
-    source: OverlayNavigationSource<C>,
+fun <C : Any, T : Any> ComponentContext.childSlot(
+    source: SlotNavigationSource<C>,
     saveConfiguration: (C?) -> ParcelableContainer?,
     restoreConfiguration: (ParcelableContainer) -> C?,
-    key: String = "DefaultChildOverlay",
+    key: String = "DefaultChildSlot",
     initialConfiguration: () -> C? = { null },
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, ComponentContext) -> T,
-): Value<ChildOverlay<C, T>> =
+): Value<ChildSlot<C, T>> =
     children(
         source = source,
         key = key,
-        initialState = { OverlayNavState(configuration = initialConfiguration()) },
+        initialState = { SlotNavState(configuration = initialConfiguration()) },
         saveState = { saveConfiguration(it.configuration) },
-        restoreState = { OverlayNavState(restoreConfiguration(it)) },
-        navTransformer = { state, event -> OverlayNavState(configuration = event.transformer(state.configuration)) },
-        stateMapper = { _, children -> ChildOverlay(overlay = children.firstOrNull() as? Child.Created?) },
+        restoreState = { SlotNavState(restoreConfiguration(it)) },
+        navTransformer = { state, event -> SlotNavState(configuration = event.transformer(state.configuration)) },
+        stateMapper = { _, children -> ChildSlot(child = children.firstOrNull() as? Child.Created?) },
         onEventComplete = { event, newState, oldState -> event.onComplete(newState.configuration, oldState.configuration) },
         backTransformer = { state ->
             if (handleBackButton && (state.configuration != null)) {
-                { OverlayNavState(configuration = null) }
+                { SlotNavState(configuration = null) }
             } else {
                 null
             }
@@ -102,24 +90,17 @@ fun <C : Any, T : Any> ComponentContext.childOverlay(
     )
 
 /**
- * A convenience extension function for [ComponentContext.childOverlay].
+ * A convenience extension function for [ComponentContext.childSlot].
  */
-@Deprecated(
-    message = "Please use Child Slot API",
-    replaceWith = ReplaceWith(
-        expression = "this.childSlot(source, key, initialConfiguration, persistent, handleBackButton, childFactory)",
-        "com.arkivanov.decompose.router.slot.childSlot",
-    ),
-)
-inline fun <reified C : Parcelable, T : Any> ComponentContext.childOverlay(
-    source: OverlayNavigationSource<C>,
-    key: String = "DefaultChildOverlay",
+inline fun <reified C : Parcelable, T : Any> ComponentContext.childSlot(
+    source: SlotNavigationSource<C>,
+    key: String = "DefaultChildSlot",
     noinline initialConfiguration: () -> C? = { null },
     persistent: Boolean = true,
     handleBackButton: Boolean = false,
     noinline childFactory: (configuration: C, ComponentContext) -> T,
-): Value<ChildOverlay<C, T>> =
-    childOverlay(
+): Value<ChildSlot<C, T>> =
+    childSlot(
         source = source,
         key = key,
         configurationClass = C::class,
@@ -129,7 +110,7 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childOverlay(
         childFactory = childFactory,
     )
 
-private data class OverlayNavState<out C : Any>(
+private data class SlotNavState<out C : Any>(
     val configuration: C?,
 ) : NavState<C> {
 

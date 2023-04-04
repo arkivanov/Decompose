@@ -25,4 +25,4 @@ class DefaultAppComponentContext(
 ## Navigation with custom ComponentContext
 
 - [Using Child Stack](../navigation/stack/component-context.md)
-- [Using Child Overlay](../navigation/overlay/component-context.md)
+- [Using Child Slot](../navigation/slot/component-context.md)

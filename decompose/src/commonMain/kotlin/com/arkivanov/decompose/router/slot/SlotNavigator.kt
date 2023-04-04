@@ -1,23 +1,16 @@
-package com.arkivanov.decompose.router.overlay
+package com.arkivanov.decompose.router.slot
 
-@Deprecated(
-    message = "Please use Child Slot API",
-    replaceWith = ReplaceWith(
-        expression = "OverlayNavigator",
-        "com.arkivanov.decompose.router.slot.OverlayNavigator",
-    ),
-)
-interface OverlayNavigator<C : Any> {
+interface SlotNavigator<C : Any> {
 
     /**
      * Transforms the current configuration into a new one. Configuration `null` means that the
      * component is not shown.
      *
-     * During the navigation process, the `Child Overlay` compares the new configuration with
-     * the previous one. The `Child Overlay` ensures that the current component is resumed, and a
+     * During the navigation process, the `Child Slot` compares the new configuration with
+     * the previous one. The `Child Slot` ensures that the current component is resumed, and a
      * dismissed component is destroyed.
      *
-     * The `Child Overlay` usually performs the navigation synchronously, which means that by the time
+     * The `Child Slot` usually performs the navigation synchronously, which means that by the time
      * the `navigate` method returns, the navigation is finished and all component lifecycles are
      * moved into required states. However, the navigation is performed asynchronously in case of
      * recursive invocations - e.g. `dismiss` is called from `onResume` lifecycle callback of a

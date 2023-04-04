@@ -1,13 +1,13 @@
 package com.arkivanov.sample.shared.counters.counter
 
-import com.arkivanov.decompose.router.overlay.ChildOverlay
+import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.dialog.DialogComponent
 
 interface CounterComponent {
 
     val model: Value<Model>
-    val dialogOverlay: Value<ChildOverlay<*, DialogComponent>>
+    val dialogSlot: Value<ChildSlot<*, DialogComponent>>
 
     fun onInfoClicked()
 
