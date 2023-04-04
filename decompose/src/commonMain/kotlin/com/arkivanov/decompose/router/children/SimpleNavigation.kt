@@ -8,7 +8,7 @@ import com.arkivanov.decompose.Relay
  */
 class SimpleNavigation<T : Any> : NavigationSource<T> {
 
-    private val relay = Relay<T>()
+    private val relay = Relay<T>(isMainThreadCheckEnabled = true)
 
     override fun subscribe(observer: (T) -> Unit) {
         relay.subscribe(observer)
@@ -18,6 +18,11 @@ class SimpleNavigation<T : Any> : NavigationSource<T> {
         relay.unsubscribe(observer)
     }
 
+    /**
+     * Broadcasts the navigation event to every subscribed observer.
+     *
+     * Should be called on the main thread.
+     */
     fun navigate(event: T) {
         relay.accept(event)
     }

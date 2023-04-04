@@ -1,51 +1,49 @@
 package com.arkivanov.decompose.value.operator
 
+import com.arkivanov.decompose.Lock
+import com.arkivanov.decompose.synchronized
 import com.arkivanov.decompose.value.Value
 
-fun <T : Any, R : Any> Value<T>.map(mapper: (T) -> R): Value<R> = MappedValue(this, mapper)
+fun <T : Any, R : Any> Value<T>.map(mapper: (T) -> R): Value<R> =
+    MappedValue(this, mapper)
 
 private class MappedValue<T : Any, out R : Any>(
     private val upstream: Value<T>,
-    private val mapper: (T) -> R
+    private val mapper: (T) -> R,
 ) : Value<R>() {
+    private val lock = Lock()
     private var lastUpstreamValue: T = upstream.value
-    private var lastDownstreamValue: R = mapper(lastUpstreamValue)
+    private var lastMappedValue: R = mapper(lastUpstreamValue)
+    private var observers = HashMap<(R) -> Unit, (T) -> Unit>()
 
-    override val value: R
-        get() {
-            val upstreamValue = upstream.value
-            if (upstreamValue !== lastUpstreamValue) {
-                lastUpstreamValue = upstreamValue
-                lastDownstreamValue = mapper(upstreamValue)
+    override val value: R get() = mapCached(upstream.value)
+
+    private fun mapCached(value: T): R =
+        lock.synchronized {
+            if (value !== lastUpstreamValue) {
+                lastUpstreamValue = value
+                lastMappedValue = mapper(value)
             }
 
-            return lastDownstreamValue
+            lastMappedValue
         }
-
-    private var observers = emptySet<(R) -> Unit>()
-    private val upstreamObserver: (T) -> Unit = ::onUpstreamValue
-
-    private fun onUpstreamValue(value: T) {
-        lastUpstreamValue = value
-        val mappedValue = mapper(value)
-        lastDownstreamValue = mappedValue
-        observers.forEach { it(mappedValue) }
-    }
 
     override fun subscribe(observer: (R) -> Unit) {
-        if (observers.isEmpty()) {
-            upstream.subscribe(upstreamObserver)
+        val upstreamObserver: (T) -> Unit = { value -> observer(mapCached(value)) }
+
+        lock.synchronized {
+            if (observer in observers) {
+                return
+            }
+
+            observers[observer] = upstreamObserver
         }
 
-        this.observers += observer
-        observer(value)
+        upstream.subscribe(upstreamObserver)
     }
 
     override fun unsubscribe(observer: (R) -> Unit) {
-        this.observers -= observer
-
-        if (observers.isEmpty()) {
-            upstream.unsubscribe(upstreamObserver)
-        }
+        val upstreamObserver = lock.synchronized { observers.remove(observer) } ?: return
+        upstream.unsubscribe(upstreamObserver)
     }
 }

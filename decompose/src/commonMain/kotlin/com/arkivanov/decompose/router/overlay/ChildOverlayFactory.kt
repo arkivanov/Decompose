@@ -26,6 +26,13 @@ import kotlin.reflect.KClass
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildOverlay].
  */
+@Deprecated(
+    message = "Please use Child Slot API",
+    replaceWith = ReplaceWith(
+        expression = "childSlot",
+        "com.arkivanov.decompose.router.slot.childSlot",
+    ),
+)
 fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
     source: OverlayNavigationSource<C>,
     configurationClass: KClass<out C>,
@@ -59,6 +66,13 @@ fun <C : Parcelable, T : Any> ComponentContext.childOverlay(
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildOverlay].
  */
+@Deprecated(
+    message = "Please use Child Slot API",
+    replaceWith = ReplaceWith(
+        expression = "childSlot",
+        "com.arkivanov.decompose.router.slot.childSlot",
+    ),
+)
 fun <C : Any, T : Any> ComponentContext.childOverlay(
     source: OverlayNavigationSource<C>,
     saveConfiguration: (C?) -> ParcelableContainer?,
@@ -90,6 +104,13 @@ fun <C : Any, T : Any> ComponentContext.childOverlay(
 /**
  * A convenience extension function for [ComponentContext.childOverlay].
  */
+@Deprecated(
+    message = "Please use Child Slot API",
+    replaceWith = ReplaceWith(
+        expression = "this.childSlot(source, key, initialConfiguration, persistent, handleBackButton, childFactory)",
+        "com.arkivanov.decompose.router.slot.childSlot",
+    ),
+)
 inline fun <reified C : Parcelable, T : Any> ComponentContext.childOverlay(
     source: OverlayNavigationSource<C>,
     key: String = "DefaultChildOverlay",

@@ -29,16 +29,20 @@ kotlin {
         val native by bundle()
         val nonNative by bundle()
         val darwin by bundle()
+        val js by bundle()
+        val nonJs by bundle()
 
-        (nonAndroid + native + nonNative) dependsOn common
+        (nonAndroid + native + nonNative + nonJs) dependsOn common
         (allSet - android) dependsOn nonAndroid
         (allSet - nativeSet) dependsOn nonNative
+        (allSet - js) dependsOn nonJs
         (nativeSet + darwin) dependsOn native
         darwinSet dependsOn darwin
 
         all {
             languageSettings {
                 optIn("com.arkivanov.decompose.InternalDecomposeApi")
+                optIn("com.arkivanov.decompose.ExperimentalDecomposeApi")
             }
         }
 
@@ -47,6 +51,10 @@ kotlin {
             api(deps.essenty.stateKeeper)
             api(deps.essenty.instanceKeeper)
             api(deps.essenty.backHandler)
+        }
+
+        common.test.dependencies {
+            implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesCore)
         }
 
         android.main.dependencies {

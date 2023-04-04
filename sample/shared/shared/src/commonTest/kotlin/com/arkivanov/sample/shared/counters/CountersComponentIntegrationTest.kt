@@ -3,19 +3,28 @@ package com.arkivanov.sample.shared.counters
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.stack.active
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.lifecycle.resume
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @Suppress("TestFunctionName")
 class CountersComponentIntegrationTest {
 
+    private val lifecycle = LifecycleRegistry()
+
     private val component =
         DefaultCountersComponent(
-            componentContext = DefaultComponentContext(lifecycle = LifecycleRegistry()),
+            componentContext = DefaultComponentContext(lifecycle = lifecycle),
         )
 
     private val activeCounter get() = component.childStack.active.instance
     private val activeCounterModel get() = activeCounter.model.value
+
+    @BeforeTest
+    fun before() {
+        lifecycle.resume()
+    }
 
     @Test
     fun WHEN_created_THEN_first_counter_active() {

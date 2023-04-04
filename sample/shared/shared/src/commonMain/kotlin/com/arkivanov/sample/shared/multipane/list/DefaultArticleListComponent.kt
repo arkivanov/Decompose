@@ -3,7 +3,7 @@ package com.arkivanov.sample.shared.multipane.list
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.reduce
+import com.arkivanov.decompose.value.update
 import com.arkivanov.sample.shared.multipane.database.ArticleDatabase
 import com.arkivanov.sample.shared.multipane.database.ArticleEntity
 import com.arkivanov.sample.shared.multipane.list.ArticleListComponent.Article
@@ -31,7 +31,7 @@ internal class DefaultArticleListComponent(
 
     init {
         selectedArticleId.subscribeScoped { id ->
-            _models.reduce { it.copy(selectedArticleId = id) }
+            _models.update { it.copy(selectedArticleId = id) }
         }
     }
 

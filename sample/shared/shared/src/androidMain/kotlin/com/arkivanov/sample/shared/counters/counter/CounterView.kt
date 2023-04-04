@@ -8,7 +8,7 @@ import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.context
 import com.arkivanov.decompose.extensions.android.layoutInflater
 import com.arkivanov.decompose.value.observe
-import com.arkivanov.essenty.lifecycle.doOnDestroy
+import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.sample.shared.R
 import com.arkivanov.sample.shared.dialog.DialogComponent
 import com.google.android.material.appbar.MaterialToolbar
@@ -42,8 +42,8 @@ internal fun ViewContext.CounterView(component: CounterComponent): View {
     }
 
     var dialog: AlertDialog? = null
-    component.dialogOverlay.observe(lifecycle) { model ->
-        val dialogComponent: DialogComponent? = model.overlay?.instance
+    component.dialogSlot.observe(lifecycle) { model ->
+        val dialogComponent: DialogComponent? = model.child?.instance
         if ((dialogComponent != null) && (dialog == null)) {
             dialog = showDialog(component = dialogComponent)
         } else if ((dialogComponent == null) && (dialog != null)) {
@@ -60,6 +60,12 @@ private fun ViewContext.showDialog(component: DialogComponent): AlertDialog =
     AlertDialog.Builder(context)
         .setTitle(component.title)
         .setMessage(component.message)
-        .setNegativeButton("OK") { _, _ -> component.onDismissClicked() }
+        .setNegativeButton(android.R.string.ok, null)
         .show()
-        .also { dialog -> lifecycle.doOnDestroy(dialog::dismiss) }
+        .also { dialog ->
+            val observer = lifecycle.subscribe(onDestroy = dialog::dismiss)
+            dialog.setOnDismissListener {
+                lifecycle.unsubscribe(observer)
+                component.onDismissClicked()
+            }
+        }

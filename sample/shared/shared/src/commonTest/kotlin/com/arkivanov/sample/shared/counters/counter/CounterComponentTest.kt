@@ -1,10 +1,11 @@
 package com.arkivanov.sample.shared.counters.counter
 
 import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.router.overlay.overlay
+import com.arkivanov.decompose.router.slot.child
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import com.badoo.reaktive.test.scheduler.TestScheduler
@@ -108,8 +109,8 @@ class CounterComponentTest {
 
         component.onInfoClicked()
 
-        assertEquals("Counter", component.dialogOverlay.overlay?.instance?.title)
-        assertEquals("Value: 001", component.dialogOverlay.overlay?.instance?.message)
+        assertEquals("Counter", component.dialogSlot.child?.instance?.title)
+        assertEquals("Value: 001", component.dialogSlot.child?.instance?.message)
     }
 
     @Test
@@ -117,9 +118,9 @@ class CounterComponentTest {
         createComponent()
         component.onInfoClicked()
 
-        component.dialogOverlay.overlay?.instance?.onDismissClicked()
+        component.dialogSlot.child?.instance?.onDismissClicked()
 
-        assertNull(component.dialogOverlay.overlay)
+        assertNull(component.dialogSlot.child)
     }
 
     @Test
@@ -154,10 +155,12 @@ class CounterComponentTest {
         onNext: () -> Unit = {},
         onPrev: () -> Unit = {},
     ) {
+        val lifecycle = LifecycleRegistry()
+
         component =
             DefaultCounterComponent(
                 componentContext = DefaultComponentContext(
-                    lifecycle = LifecycleRegistry(),
+                    lifecycle = lifecycle,
                     stateKeeper = stateKeeper,
                     instanceKeeper = instanceKeeper,
                 ),
@@ -167,5 +170,7 @@ class CounterComponentTest {
                 onNext = onNext,
                 onPrev = onPrev,
             )
+
+        lifecycle.resume()
     }
 }

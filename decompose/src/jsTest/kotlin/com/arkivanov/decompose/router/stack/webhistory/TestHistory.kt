@@ -1,11 +1,9 @@
 package com.arkivanov.decompose.router.stack.webhistory
 
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import org.w3c.dom.PopStateEvent
 import org.w3c.dom.PopStateEventInit
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalDecomposeApi::class)
 class TestHistory(
     private val scheduleOperation: (() -> Unit) -> Unit,
     private val onPopState: (PopStateEvent) -> Unit,

@@ -2,7 +2,6 @@ package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.GettingList
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
 import com.arkivanov.decompose.router.children.SimpleChildNavState
@@ -12,7 +11,6 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.essenty.parcelable.consumeRequired
-import kotlin.math.max
 import kotlin.reflect.KClass
 
 /**
@@ -25,13 +23,8 @@ import kotlin.reflect.KClass
  * @param key a key of the stack, must be unique if there are multiple stacks in the same component.
  * @param persistent determines whether the navigation state should pre preserved or not,
  * default is `true`.
- * @param backStackCreateDepth automatically creates the specified amount of components
- * in the back stack, e.g. when initialized, during navigation or after process death.
- * Default value is `0`, which means that a component is only created when it becomes active.
- * Use `1` to always create the previous component in the stack. Use [Int.MAX_VALUE] to
- * create all components in the stack.
- * @param handleBackButton determines whether the overlay should be automatically dismissed
- * on back button press or not, default is `false`.
+ * @param handleBackButton determines whether the stack should be automatically popped on back button press or not,
+ * default is `false`.
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildStack].
  */
@@ -41,7 +34,6 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
     configurationClass: KClass<out C>,
     key: String = "DefaultChildStack",
     persistent: Boolean = true,
-    backStackCreateDepth: Int = 0,
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, ComponentContext) -> T,
 ): Value<ChildStack<C, T>> =
@@ -66,7 +58,6 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
                 .map { it.consumeRequired(configurationClass) }
         },
         key = key,
-        backStackCreateDepth = backStackCreateDepth,
         handleBackButton = handleBackButton,
         childFactory = childFactory,
     )
@@ -83,13 +74,8 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
  * If `null` is returned then [initialStack] is used instead.
  * The restored stack must have the same amount of configurations and in the same order.
  * @param key a key of the stack, must be unique if there are multiple stacks in the same component.
- * @param backStackCreateDepth automatically creates the specified amount of components
- * in the back stack, e.g. when initialized, during navigation or after process death.
- * Default value is `0`, which means that a component is only created when it becomes active.
- * Use `1` to always create the previous component in the stack. Use [Int.MAX_VALUE] to
- * create all components in the stack.
- * @param handleBackButton determines whether the overlay should be automatically dismissed
- * on back button press or not, default is `false`.
+ * @param handleBackButton determines whether the stack should be automatically popped on back button press or not,
+ * default is `false`.
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildStack].
  */
@@ -99,67 +85,31 @@ fun <C : Any, T : Any> ComponentContext.childStack(
     saveStack: (List<C>) -> ParcelableContainer?,
     restoreStack: (ParcelableContainer) -> List<C>?,
     key: String = "DefaultChildStack",
-    backStackCreateDepth: Int = 0,
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, ComponentContext) -> T,
 ): Value<ChildStack<C, T>> =
     children(
         source = source,
         key = key,
-        initialState = {
-            StackNavState(
-                configurations = initialStack(),
-                backStackCreateDepth = backStackCreateDepth,
-            )
-        },
+        initialState = { StackNavState(configurations = initialStack()) },
         saveState = { saveStack(it.configurations) },
-        restoreState = { container ->
-            StackNavState(
-                configurations = restoreStack(container) ?: initialStack(),
-                backStackCreateDepth = backStackCreateDepth,
-            )
-        },
-        navTransformer = { state, event ->
-            val newStack = event.transformer(state.configurations)
-            check(newStack.isNotEmpty()) { "Configuration stack must not be empty" }
-
-            val oldStatuses = state.children.associateBy(keySelector = { it.configuration }, valueTransform = { it.status })
-
-            StackNavState(
-                active = newStack.last(),
-                backStack = newStack
-                    .dropLast(1)
-                    .map { configuration ->
-                        SimpleChildNavState(
-                            configuration = configuration,
-                            status = when (oldStatuses[configuration]) {
-                                Status.DESTROYED -> Status.DESTROYED
-                                Status.INACTIVE -> Status.INACTIVE
-                                Status.ACTIVE -> Status.INACTIVE
-                                null -> Status.DESTROYED
-                            },
-                        )
-                    }
-                    .withCreateDepth(createDepth = backStackCreateDepth),
-            )
-        },
+        restoreState = { container -> StackNavState(configurations = restoreStack(container) ?: initialStack()) },
+        navTransformer = { state, event -> StackNavState(configurations = event.transformer(state.configurations)) },
         stateMapper = { _, children ->
+            @Suppress("UNCHECKED_CAST")
+            val createdChildren = children as List<Child.Created<C, T>>
+
             ChildStack(
-                active = children.last() as Child.Created,
-                backStack = children.dropLast(1),
+                active = createdChildren.last(),
+                backStack = createdChildren.dropLast(1),
             )
         },
         onEventComplete = { event, newState, oldState ->
             event.onComplete(newState.configurations, oldState.configurations)
         },
         backTransformer = { state ->
-            if (handleBackButton && state.backStack.isNotEmpty()) {
-                {
-                    StackNavState(
-                        active = state.backStack.last().configuration,
-                        backStack = state.backStack.dropLast(1).withCreateDepth(createDepth = backStackCreateDepth),
-                    )
-                }
+            if (handleBackButton && (state.configurations.size > 1)) {
+                { StackNavState(configurations = state.configurations.dropLast(1)) }
             } else {
                 null
             }
@@ -175,7 +125,6 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
     noinline initialStack: () -> List<C>,
     key: String = "DefaultChildStack",
     persistent: Boolean = true,
-    backStackCreateDepth: Int = 0,
     handleBackButton: Boolean = false,
     noinline childFactory: (configuration: C, ComponentContext) -> T
 ): Value<ChildStack<C, T>> =
@@ -186,7 +135,6 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
         key = key,
         persistent = persistent,
         handleBackButton = handleBackButton,
-        backStackCreateDepth = backStackCreateDepth,
         childFactory = childFactory,
     )
 
@@ -198,7 +146,6 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
     initialConfiguration: C,
     key: String = "DefaultChildStack",
     persistent: Boolean = true,
-    backStackCreateDepth: Int = 0,
     handleBackButton: Boolean = false,
     noinline childFactory: (configuration: C, ComponentContext) -> T
 ): Value<ChildStack<C, T>> =
@@ -209,61 +156,24 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
         key = key,
         persistent = persistent,
         handleBackButton = handleBackButton,
-        backStackCreateDepth = backStackCreateDepth,
         childFactory = childFactory,
     )
 
-private fun <C : Any> List<SimpleChildNavState<C>>.withCreateDepth(createDepth: Int): List<SimpleChildNavState<C>> =
-    if (isCreateRequired(createDepth = createDepth)) {
-        mapIndexed { index, item ->
-            when (item.status) {
-                Status.DESTROYED -> if (lastIndex - index < createDepth) item.copy(status = Status.INACTIVE) else item
-                Status.INACTIVE,
-                Status.ACTIVE -> item
-            }
-        }
-    } else {
-        this
-    }
-
-private fun List<SimpleChildNavState<*>>.isCreateRequired(createDepth: Int): Boolean {
-    for (i in lastIndex downTo max(lastIndex - createDepth + 1, 0)) {
-        if (get(i).status == Status.DESTROYED) {
-            return true
-        }
-    }
-
-    return false
-}
-
 private data class StackNavState<out C : Any>(
-    val active: C,
-    val backStack: List<SimpleChildNavState<C>>,
+    val configurations: List<C>,
 ) : NavState<C> {
 
-    private val activeChildNavState = SimpleChildNavState(configuration = active, status = Status.ACTIVE)
+    init {
+        require(configurations.isNotEmpty()) { "Configuration stack must not be empty" }
+    }
 
     override val children: List<SimpleChildNavState<C>> =
-        GettingList(size = backStack.size + 1) { index ->
-            backStack.getOrNull(index) ?: activeChildNavState
+        configurations.mapIndexed { index, configuration ->
+            SimpleChildNavState(
+                configuration = configuration,
+                status = if (index == configurations.lastIndex) Status.ACTIVE else Status.INACTIVE,
+            )
         }
-
-    val configurations: List<C> =
-        GettingList(size = children.size) { index ->
-            children[index].configuration
-        }
-}
-
-private fun <C : Any> StackNavState(configurations: List<C>, backStackCreateDepth: Int): StackNavState<C> {
-    require(configurations.isNotEmpty()) { "Configuration stack must not be empty" }
-
-    return StackNavState(
-        active = configurations.last(),
-        backStack = configurations
-            .dropLast(1)
-            .map { SimpleChildNavState(configuration = it, status = Status.DESTROYED) }
-            .withCreateDepth(createDepth = backStackCreateDepth),
-    )
 }
 
 @Parcelize

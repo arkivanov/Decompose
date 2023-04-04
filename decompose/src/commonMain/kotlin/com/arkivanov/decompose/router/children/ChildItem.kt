@@ -10,11 +10,9 @@ internal sealed interface ChildItem<out C : Any, out T : Any> {
 
     val configuration: C
     val instance: T?
-    val savedState: ParcelableContainer?
 
     data class Created<out C : Any, out T : Any>(
         override val configuration: C,
-        override val savedState: ParcelableContainer? = null,
         override val instance: T,
         val lifecycleRegistry: LifecycleRegistry,
         val stateKeeperDispatcher: StateKeeperDispatcher,
@@ -24,7 +22,7 @@ internal sealed interface ChildItem<out C : Any, out T : Any> {
 
     data class Destroyed<out C : Any>(
         override val configuration: C,
-        override val savedState: ParcelableContainer? = null
+        val savedState: ParcelableContainer? = null
     ) : ChildItem<C, Nothing> {
         override val instance: Nothing? = null
     }

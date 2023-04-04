@@ -1,8 +1,12 @@
 package com.arkivanov.decompose.router.children
 
+import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState.Status.ACTIVE
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.INACTIVE
+import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.essenty.lifecycle.destroy
+import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
@@ -61,5 +65,50 @@ internal class ChildrenBasicTest : ChildrenTestBase() {
         navigate { emptyList() }
 
         assertContentEquals(listOf("onStateChanged", "onEventComplete"), results)
+    }
+
+    @Test
+    fun WHEN_destroyed_THEN_components_destroyed_in_reversed_order() {
+        val destroyEvents = ArrayList<Int>()
+
+        context.children(initialState = stateOf(1 by INACTIVE, 2 by INACTIVE, 3 by ACTIVE)) { config, componentContext ->
+            componentContext.lifecycle.doOnDestroy { destroyEvents += config.id }
+            Component(config = config, componentContext = componentContext)
+        }
+
+        lifecycle.destroy()
+
+        assertContentEquals(listOf(3, 2, 1), destroyEvents)
+    }
+
+    @Test
+    fun WHEN_created_THEN_components_created_in_order() {
+        val createEvents = ArrayList<Int>()
+
+        context.children(initialState = stateOf(1 by INACTIVE, 2 by INACTIVE, 3 by ACTIVE)) { config, componentContext ->
+            createEvents += config.id
+            Component(config = config, componentContext = componentContext)
+        }
+
+        assertContentEquals(listOf(1, 2, 3), createEvents)
+    }
+
+    @Test
+    fun WHEN_recreated_THEN_components_created_in_original_order() {
+        val createEvents = ArrayList<Int>()
+
+        val oldStateKeeper = TestStateKeeperDispatcher()
+        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
+        oldContext.children(initialState = stateOf(1 by INACTIVE, 2 by INACTIVE, 3 by ACTIVE))
+
+        val savedState = oldStateKeeper.save()
+        val newStateKeeper = TestStateKeeperDispatcher(savedState)
+        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
+        newContext.children { config, componentContext ->
+            createEvents += config.id
+            Component(config = config, componentContext = componentContext)
+        }
+
+        assertContentEquals(listOf(1, 2, 3), createEvents)
     }
 }

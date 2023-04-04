@@ -7,6 +7,13 @@ import com.arkivanov.decompose.router.children.NavigationSource
  *
  * @see OverlayNavigator
  */
+@Deprecated(
+    message = "Please use Child Slot API",
+    replaceWith = ReplaceWith(
+        expression = "SlotNavigationSource",
+        "com.arkivanov.decompose.router.slot.SlotNavigationSource",
+    ),
+)
 interface OverlayNavigationSource<C : Any> : NavigationSource<OverlayNavigationSource.Event<C>> {
 
     class Event<C : Any>(

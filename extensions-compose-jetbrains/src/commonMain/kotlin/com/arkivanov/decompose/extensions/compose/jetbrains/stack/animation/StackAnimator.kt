@@ -12,11 +12,17 @@ import androidx.compose.ui.Modifier
 fun interface StackAnimator {
 
     /**
-     * Animates the [content] in the given [Direction], and calls [onFinished] at the end.
+     * Animates child [content] in the given [Direction], and calls [onFinished] at the end.
+     *
+     * @param direction the [Direction] in which the animation should run.
+     * @param isInitial `true` if the child is the initial one (and so the animation may be skipped), `false` otherwise.
+     * @param onFinished must be called at the end of the animation.
+     * @content the composable content of the child being animated.
      */
     @Composable
     operator fun invoke(
         direction: Direction,
+        isInitial: Boolean,
         onFinished: () -> Unit,
         content: @Composable (Modifier) -> Unit,
     )
@@ -61,6 +67,7 @@ private class PlusStackAnimator(
     @Composable
     override fun invoke(
         direction: Direction,
+        isInitial: Boolean,
         onFinished: () -> Unit,
         content: @Composable (Modifier) -> Unit,
     ) {
@@ -68,6 +75,7 @@ private class PlusStackAnimator(
 
         first(
             direction = direction,
+            isInitial = isInitial,
             onFinished = {
                 finished[0] = true
                 if (finished.all { it }) {
@@ -77,6 +85,7 @@ private class PlusStackAnimator(
         ) { thisModifier ->
             second(
                 direction = direction,
+                isInitial = isInitial,
                 onFinished = {
                     finished[1] = true
                     if (finished.all { it }) {
