@@ -22,13 +22,28 @@ fun interface StackAnimation<C : Any, T : Any> {
  * Creates an implementation of [StackAnimation] that allows different [StackAnimator]s.
  *
  * @param disableInputDuringAnimation disables input and touch events while animating, default value is `true`.
- * @param selector provides a [StackAnimator] for current [Child], other [Child] and [Direction].
+ * @param selector provides a [StackAnimator] for the current [Child], other [Child] and [Direction].
  */
 fun <C : Any, T : Any> stackAnimation(
     disableInputDuringAnimation: Boolean = true,
     selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator?,
 ): StackAnimation<C, T> =
-    DefaultStackAnimation(
+    MovableStackAnimation(
+        disableInputDuringAnimation = disableInputDuringAnimation,
+        selector = selector,
+    )
+
+/**
+ * Creates an implementation of [StackAnimation] that allows different [StackAnimator]s.
+ *
+ * @param disableInputDuringAnimation disables input and touch events while animating, default value is `true`.
+ * @param selector provides a [StackAnimator] for the current [Child].
+ */
+fun <C : Any, T : Any> stackAnimation(
+    disableInputDuringAnimation: Boolean = true,
+    selector: (child: Child.Created<C, T>) -> StackAnimator?,
+): StackAnimation<C, T> =
+    SimpleStackAnimation(
         disableInputDuringAnimation = disableInputDuringAnimation,
         selector = selector,
     )
@@ -43,4 +58,7 @@ fun <C : Any, T : Any> stackAnimation(
     animator: StackAnimator = fade(),
     disableInputDuringAnimation: Boolean = true,
 ): StackAnimation<C, T> =
-    stackAnimation(disableInputDuringAnimation = disableInputDuringAnimation) { _, _, _ -> animator }
+    SimpleStackAnimation(
+        disableInputDuringAnimation = disableInputDuringAnimation,
+        selector = { animator },
+    )

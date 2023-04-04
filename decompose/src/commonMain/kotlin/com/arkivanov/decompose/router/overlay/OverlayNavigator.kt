@@ -1,5 +1,12 @@
 package com.arkivanov.decompose.router.overlay
 
+@Deprecated(
+    message = "Please use Child Slot API",
+    replaceWith = ReplaceWith(
+        expression = "OverlayNavigator",
+        "com.arkivanov.decompose.router.slot.OverlayNavigator",
+    ),
+)
 interface OverlayNavigator<C : Any> {
 
     /**
@@ -16,6 +23,8 @@ interface OverlayNavigator<C : Any> {
      * recursive invocations - e.g. `dismiss` is called from `onResume` lifecycle callback of a
      * component being shown. All recursive invocations are queued and performed one by one once
      * the current navigation is finished.
+     *
+     * Should be called on the main thread.
      *
      * @param transformer transforms the current configuration to a new one, `null` means that the
      * component is not shown.

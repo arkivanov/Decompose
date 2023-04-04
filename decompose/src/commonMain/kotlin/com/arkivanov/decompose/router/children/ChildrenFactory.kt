@@ -17,8 +17,8 @@ import com.arkivanov.essenty.statekeeper.consume
 /**
  * Initialised and manages a generic list of components. This is an API for custom navigation models.
  * Please consider the existing navigation models first:
- * [childStack][com.arkivanov.decompose.router.stack.childStack],
- * [childOverlay][com.arkivanov.decompose.router.overlay.childOverlay].
+ * [Child Stack][com.arkivanov.decompose.router.stack.childStack],
+ * [Child Slot][com.arkivanov.decompose.router.overlay.childSlot].
  *
  * The API is based around [NavState] and [ChildNavState] interfaces that should be implemented by
  * clients. [NavState] represents a persistent state of the navigation. It also holds a navigation
@@ -75,6 +75,8 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
 
     val navigator =
         stateKeeper.consume<SavedState>(key = key).let { savedState ->
+            val restoredNavState: N? = savedState?.navState?.let(restoreState)
+
             ChildrenNavigator(
                 lifecycle = lifecycle,
                 retainedInstanceSupplier = { factory -> instanceKeeper.getOrCreate(key = key, factory = factory) },
@@ -83,8 +85,8 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
                     backHandler = backHandler.child(),
                     childFactory = childFactory,
                 ),
-                navState = savedState?.navState?.let(restoreState) ?: initialState(),
-                savedChildState = savedState?.childState,
+                navState = restoredNavState ?: initialState(),
+                savedChildState = savedState?.childState?.takeUnless { restoredNavState == null },
             )
         }
 

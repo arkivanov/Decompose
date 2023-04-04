@@ -12,11 +12,17 @@ import androidx.compose.ui.Modifier
 fun interface StackAnimator {
 
     /**
-     * Animates the [content] in the given [Direction], and calls [onFinished] at the end.
+     * Animates child [content] in the given [Direction], and calls [onFinished] at the end.
+     *
+     * @param direction the [Direction] in which the animation should run.
+     * @param isInitial `true` if the child is the initial one (and so the animation may be skipped), `false` otherwise.
+     * @param onFinished must be called at the end of the animation.
+     * @content the composable content of the child being animated.
      */
     @Composable
     operator fun invoke(
         direction: Direction,
+        isInitial: Boolean,
         onFinished: () -> Unit,
         content: @Composable (Modifier) -> Unit,
     )
@@ -28,7 +34,6 @@ fun interface StackAnimator {
  * @param animationSpec a [FiniteAnimationSpec] to configure the animation.
  * @param frame renders the `content` using the provided `factor` and [Direction]. Called for every animation frame.
  * The `factor` argument changes as follows:
- * - Always 0F for [Direction.IDLE]
  * - From 1F to 0F for [Direction.ENTER_FRONT]
  * - From 0F to 1F for [Direction.EXIT_FRONT]
  * - From -1F to 0F for [Direction.ENTER_BACK]
@@ -47,11 +52,12 @@ fun stackAnimator(
  * Combines (merges) the receiver [StackAnimator] with the [other] [StackAnimator].
  */
 operator fun StackAnimator.plus(other: StackAnimator): StackAnimator =
-    StackAnimator { direction, onFinished, content ->
+    StackAnimator { direction, isInitial, onFinished, content ->
         val finished = remember(direction) { BooleanArray(2) }
 
         this(
             direction = direction,
+            isInitial = isInitial,
             onFinished = {
                 finished[0] = true
                 if (finished.all { it }) {
@@ -61,6 +67,7 @@ operator fun StackAnimator.plus(other: StackAnimator): StackAnimator =
         ) { thisModifier ->
             other(
                 direction = direction,
+                isInitial = isInitial,
                 onFinished = {
                     finished[1] = true
                     if (finished.all { it }) {

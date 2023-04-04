@@ -203,7 +203,7 @@ Previous examples demonstrate simple cases, when all children have the same anim
 fun RootContent(component: RootComponent) {
     Children(
         stack = component.childStack,
-        animation = stackAnimation { child, otherChild, direction ->
+        animation = stackAnimation { child ->
             when (child.instance) {
                 is MainChild -> fade() + scale()
                 is DetailsChild -> fade() + slide()
@@ -216,6 +216,22 @@ fun RootContent(component: RootComponent) {
 ```
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationSeparate.gif" width="512">
+
+It is also possible to take into account the other child and the animation direction when selecting the animation. 
+
+```kotlin
+@Composable
+fun RootContent(component: RootComponent) {
+    Children(
+        stack = component.childStack,
+        animation = stackAnimation { child, otherChild, direction ->
+            // Select and return an animator here
+        }
+    ) {
+        // Omitted code
+    }
+}
+```
 
 #### Custom animations
 
@@ -257,6 +273,7 @@ fun RootContent(component: RootComponent) {
 
 fun someAnimator(): StackAnimator =
     StackAnimator { direction: Direction,
+                    isInitial: Boolean,
                     onFinished: () -> Unit,
                     content: @Composable (Modifier) -> Unit ->
         // Manipulate the Modifier in the given direction and call onFinished at the end
