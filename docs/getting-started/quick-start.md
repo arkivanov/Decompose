@@ -278,7 +278,7 @@ fun main() {
 
 ### IOS with SwiftUI
 
-1. Create `RootHolder` class that holds the root component and its lifecycle. Use `@ObservedObject` property wrapper to observe the root component state.
+1. Create `RootHolder` class that holds the root component and its lifecycle.
 
 ```swift
 class RootHolder : ObservableObject {
@@ -336,9 +336,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
     }
     
-    fileprivate func getRootHolder() -> RootHolder {
+    func getRootHolder() -> RootHolder {
         if (rootHolder == nil) {
-            // Create the root component if it was not restored from the saved state
+            // Create new root holder instance if it was not restored from the saved state
             rootHolder = RootHolder(savedState: nil)
         }
         
