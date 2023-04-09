@@ -1,8 +1,8 @@
 package com.arkivanov.decompose
 
-import platform.Foundation.NSLock
+import platform.Foundation.NSRecursiveLock
 
-internal actual class Lock actual constructor() : NSLock() {
+internal actual class Lock actual constructor() : NSRecursiveLock() {
 
     actual inline fun <T> synchronizedImpl(block: () -> T): T {
         lock()
