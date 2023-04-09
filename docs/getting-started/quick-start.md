@@ -212,7 +212,7 @@ struct RootView: View {
 
 Please refer to [samples](/Decompose/samples/) for integrations with other UI frameworks.
 
-## Initialising a root component
+## Initializing a root component
 
 ### Android with Jetpack Compose
 
