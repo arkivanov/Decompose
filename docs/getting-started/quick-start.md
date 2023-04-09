@@ -184,6 +184,32 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
 }
 ```
 
+### Child Stack with SwiftUI
+
+```swift
+struct RootView: View {
+    private let root: RootComponent
+    
+    @ObservedObject
+    private var childStack: ObservableValue<ChildStack<AnyObject, RootComponentChild>>
+    
+    private var activeChild: RootComponentChild { childStack.value.active.instance }
+    
+    init(_ root: RootComponent) {
+        self.root = root
+        childStack = ObservableValue(root.childStack)
+    }
+    
+    var body: some View {
+        switch activeChild {
+        case let child as RootComponentChild.ListChild: ListView(child.component)
+        case let child as RootComponentChild.DetailsChild: DetailsView(child.component)
+        default: EmptyView()
+        }
+    }
+}
+```
+
 Please refer to [samples](/Decompose/samples/) for integrations with other UI frameworks.
 
 ## Initialising a root component
@@ -245,6 +271,100 @@ fun main() {
                     RootContent(component = root, modifier = Modifier.fillMaxSize())
                 }
             }
+        }
+    }
+}
+```
+
+### IOS with SwiftUI
+
+1. Create `RootHolder` class that holds the root component and its lifecycle. Use `@ObservedObject` property wrapper to observe the root component state.
+
+```swift
+class RootHolder : ObservableObject {
+    let lifecycle: LifecycleRegistry
+    let stateKeeper: StateKeeperDispatcher
+    let root: RootComponent
+
+    init(savedState: ParcelableParcelableContainer?) {
+        lifecycle = LifecycleRegistryKt.LifecycleRegistry()
+        stateKeeper = StateKeeperDispatcherKt.StateKeeperDispatcher(savedState: savedState)
+
+        root = DefaultRootComponent(
+            componentContext: DefaultComponentContext(
+                    lifecycle: lifecycle,
+            stateKeeper: stateKeeper,
+            instanceKeeper: nil,
+            backHandler: nil
+        ),
+        featureInstaller: DefaultFeatureInstaller.shared,
+        deepLink: DefaultRootComponentDeepLinkNone.shared,
+        webHistoryController: nil
+        )
+
+        lifecycle.onCreate()
+    }
+
+    deinit {
+        // Destroy the root component before it is deallocated
+        lifecycle.onDestroy()
+    }
+}
+```
+
+2. Create `AppDelegate` class that holds the `RootHolder` instance and implements `UIApplicationDelegate` protocol to save and restore the root component state.
+
+```swift
+class AppDelegate: NSObject, UIApplicationDelegate {
+    private var rootHolder: RootHolder?
+    
+    // Save the root component state
+    func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
+        let savedState = rootHolder!.stateKeeper.save()
+        CodingKt.encodeParcelable(coder, value: savedState, key: "savedState")
+        return true
+    }
+    
+    // Restore the root component state
+    func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
+        do {
+            let savedState = try CodingKt.decodeParcelable(coder, key: "savedState") as! ParcelableParcelableContainer
+            rootHolder = RootHolder(savedState: savedState)
+            return true
+        } catch {
+            return false
+        }
+    }
+    
+    fileprivate func getRootHolder() -> RootHolder {
+        if (rootHolder == nil) {
+            // Create the root component if it was not restored from the saved state
+            rootHolder = RootHolder(savedState: nil)
+        }
+        
+        return rootHolder!
+    }
+}
+```
+
+> **Note**: This step is not required if you don't need to save the root component state.
+
+3. Use `@UIApplicationDelegateAdaptor` property wrapper to inject the `AppDelegate` instance into the `App` struct. 
+
+```swift
+@main
+struct app_iosApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self)
+    var appDelegate
+    
+    // Use `getRootHolder` function to get the `RootHolder` instance
+    private var rootHolder: RootHolder { appDelegate.getRootHolder() }
+    
+    var body: some Scene {
+        WindowGroup {
+            RootView(rootHolder.root)
+                .onAppear { LifecycleRegistryExtKt.resume(self.rootHolder.lifecycle) }
+                .onDisappear { LifecycleRegistryExtKt.stop(self.rootHolder.lifecycle) }
         }
     }
 }
