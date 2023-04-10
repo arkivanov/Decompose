@@ -210,6 +210,10 @@ struct RootView: View {
 }
 ```
 
+#### What is ObservableValue?
+
+[ObservableValue](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/ObservableValue.swift) is a wrapper around `Value` that makes it compatible with SwiftUI. It is a simple class that conforms to `ObservableObject` protocol. Unfortunately it [does not look possible](https://github.com/arkivanov/Decompose/issues/206) to publish utils for SwiftUI as a library or framework, so it has to be copied to your project.
+
 Please refer to [samples](/Decompose/samples/) for integrations with other UI frameworks.
 
 ## Initializing a root component
@@ -283,23 +287,15 @@ fun main() {
 ```swift
 class RootHolder : ObservableObject {
     let lifecycle: LifecycleRegistry
-    let stateKeeper: StateKeeperDispatcher
     let root: RootComponent
 
-    init(savedState: ParcelableParcelableContainer?) {
+    init() {
         lifecycle = LifecycleRegistryKt.LifecycleRegistry()
-        stateKeeper = StateKeeperDispatcherKt.StateKeeperDispatcher(savedState: savedState)
 
         root = DefaultRootComponent(
             componentContext: DefaultComponentContext(
-                    lifecycle: lifecycle,
-            stateKeeper: stateKeeper,
-            instanceKeeper: nil,
-            backHandler: nil
-        ),
-        featureInstaller: DefaultFeatureInstaller.shared,
-        deepLink: DefaultRootComponentDeepLinkNone.shared,
-        webHistoryController: nil
+                lifecycle: lifecycle,
+            ),
         )
 
         lifecycle.onCreate()
@@ -312,54 +308,13 @@ class RootHolder : ObservableObject {
 }
 ```
 
-2. Create `AppDelegate` class that holds the `RootHolder` instance and implements `UIApplicationDelegate` protocol to save and restore the root component state.
-
-```swift
-class AppDelegate: NSObject, UIApplicationDelegate {
-    private var rootHolder: RootHolder?
-    
-    // Save the root component state
-    func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
-        let savedState = rootHolder!.stateKeeper.save()
-        CodingKt.encodeParcelable(coder, value: savedState, key: "savedState")
-        return true
-    }
-    
-    // Restore the root component state
-    func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
-        do {
-            let savedState = try CodingKt.decodeParcelable(coder, key: "savedState") as! ParcelableParcelableContainer
-            rootHolder = RootHolder(savedState: savedState)
-            return true
-        } catch {
-            return false
-        }
-    }
-    
-    func getRootHolder() -> RootHolder {
-        if (rootHolder == nil) {
-            // Create new root holder instance if it was not restored from the saved state
-            rootHolder = RootHolder(savedState: nil)
-        }
-        
-        return rootHolder!
-    }
-}
-```
-
-> **Note**: This step is not required if you don't need to save the root component state.
-
-3. Use `@UIApplicationDelegateAdaptor` property wrapper to inject the `AppDelegate` instance into the `App` struct. 
+2. Create `RootHolder` instance and pass it to the `RootView` constructor.
 
 ```swift
 @main
 struct app_iosApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self)
-    var appDelegate
-    
-    // Use `getRootHolder` function to get the `RootHolder` instance
-    private var rootHolder: RootHolder { appDelegate.getRootHolder() }
-    
+    private var rootHolder: RootHolder { RootHolder() }
+        
     var body: some Scene {
         WindowGroup {
             RootView(rootHolder.root)
