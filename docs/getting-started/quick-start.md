@@ -293,36 +293,105 @@ class RootHolder : ObservableObject {
         lifecycle = LifecycleRegistryKt.LifecycleRegistry()
 
         root = DefaultRootComponent(
-            componentContext: DefaultComponentContext(
-                lifecycle: lifecycle,
-            ),
+            componentContext: DefaultComponentContext(lifecycle: lifecycle)
         )
 
-        lifecycle.onCreate()
+        LifecycleRegistryExtKt.create(lifecycle)
     }
 
     deinit {
         // Destroy the root component before it is deallocated
-        lifecycle.onDestroy()
+        LifecycleRegistryExtKt.destroy(lifecycle)
     }
 }
 ```
 
-2. Create `RootHolder` instance and pass it to the `RootView` constructor.
+2. Declare a simple `AppDelegate` containing `RootHolder`
+
+```swift
+class AppDelegate: NSObject, UIApplicationDelegate {
+    let rootHolder: RootHolder = RootHolder()
+}
+```
+
+3. Create `RootHolder` instance and pass it to `RootView`.
 
 ```swift
 @main
 struct app_iosApp: App {
-    private var rootHolder: RootHolder { RootHolder() }
-        
+    @UIApplicationDelegateAdaptor(AppDelegate.self)
+    var appDelegate: AppDelegate
+
+    @Environment(\.scenePhase)
+    var scenePhase: ScenePhase
+
+    var rootHolder: RootHolder { appDelegate.rootHolder }
+    
     var body: some Scene {
         WindowGroup {
             RootView(rootHolder.root)
-                .onAppear { LifecycleRegistryExtKt.resume(self.rootHolder.lifecycle) }
-                .onDisappear { LifecycleRegistryExtKt.stop(self.rootHolder.lifecycle) }
+                .onChange(of: scenePhase) { newPhase in
+                    switch newPhase {
+                    case .background: LifecycleRegistryExtKt.stop(rootHolder.lifecycle)
+                    case .inactive: LifecycleRegistryExtKt.pause(rootHolder.lifecycle)
+                    case .active: LifecycleRegistryExtKt.resume(rootHolder.lifecycle)
+                    @unknown default: break
+                    }
+                }
         }
     }
 }
+```
+
+### JavaScript (Web)
+
+In the place where you create your `RootComponent`:
+
+1. Initialize a `LifecycleRegistry`.
+2. Pass it into the root `ComponentContext`.
+3. Attach the `LifecycleRegistry` to the `document` via an extension function.
+
+```kotlin
+@OptIn(ExperimentalDecomposeApi::class)
+fun main() {
+    // Initialize a `LifecycleRegistry`
+    val lifecycle = LifecycleRegistry()
+
+    val root =
+        RootComponent(
+            // Pass the LifecycleRegistry to the context
+            componentContext = DefaultComponentContext(lifecycle = lifecycle),
+            ... // Other dependencies here
+        )
+
+    // Attach the LifecycleRegistry to document
+    lifecycle.attachToDocument()
+
+    // Render the UI
+    createRoot(document.getElementById("app")!!).render(
+        RootContent.create {
+            component = root
+        }
+    )
+}
+
+// Attaches the LifecycleRegistry to the document
+private fun LifecycleRegistry.attachToDocument() {
+    fun onVisibilityChanged() {
+        if (document.visibilityState == "visible") {
+            resume()
+        } else {
+            stop()
+        }
+    }
+
+    onVisibilityChanged()
+
+    document.addEventListener(type = "visibilitychange", callback = { onVisibilityChanged() })
+}
+
+private val Document.visibilityState: String
+    get() = asDynamic().visibilityState.unsafeCast<String>()
 ```
 
 ### Other platforms and UI frameworks
