@@ -11,15 +11,24 @@ import Shared
 @main
 struct app_iosApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self)
-    var appDelegate
-    
+    var appDelegate: AppDelegate
+
+    @Environment(\.scenePhase)
+    var scenePhase: ScenePhase
+
     private var rootHolder: RootHolder { appDelegate.getRootHolder() }
     
     var body: some Scene {
         WindowGroup {
             RootView(rootHolder.root)
-                .onAppear { LifecycleRegistryExtKt.resume(self.rootHolder.lifecycle) }
-                .onDisappear { LifecycleRegistryExtKt.stop(self.rootHolder.lifecycle) }
+                .onChange(of: scenePhase) { newPhase in
+                    switch newPhase {
+                    case .background: LifecycleRegistryExtKt.stop(rootHolder.lifecycle)
+                    case .inactive: LifecycleRegistryExtKt.pause(rootHolder.lifecycle)
+                    case .active: LifecycleRegistryExtKt.resume(rootHolder.lifecycle)
+                    @unknown default: break
+                    }
+                }
         }
     }
 }
@@ -52,7 +61,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 }
 
-private class RootHolder : ObservableObject {
+private class RootHolder {
     let lifecycle: LifecycleRegistry
     let stateKeeper: StateKeeperDispatcher
     let root: RootComponent
@@ -73,10 +82,10 @@ private class RootHolder : ObservableObject {
             webHistoryController: nil
         )
         
-        lifecycle.onCreate()
+        LifecycleRegistryExtKt.create(lifecycle)
     }
     
     deinit {
-        lifecycle.onDestroy()
+        LifecycleRegistryExtKt.destroy(lifecycle)
     }
 }
