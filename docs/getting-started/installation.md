@@ -76,3 +76,62 @@ The `extensions-android` module provides extensions to connect Android views bas
     implementation("com.arkivanov.decompose:extensions-android:<version>")
     ```
 
+## Exporting Decompose to iOS Framework
+
+For using Decompose on your iOS project you need to export it to the iOS Framework.
+
+### Regular Framework
+
+
+``` kotlin
+...
+kotlin {
+    ...
+    targets
+        .filterIsInstance<KotlinNativeTarget>()
+        .filter { it.konanTarget.family == Family.IOS }
+        .forEach {
+            it.binaries.framework {
+                ...
+                
+                export("com.arkivanov.decompose:decompose:<version>")
+                export("com.arkivanov.essenty:lifecycle:<essenty_version>")
+    
+                // Optional, only if you need state preservation on Darwin (Apple) targets
+                export("com.arkivanov.essenty:state-keeper:<essenty_version>")
+    
+                // Optional, only if you need state preservation on Darwin (Apple) targets
+                export("com.arkivanov.parcelize.darwin:runtime:<parcelize_darwin_version>")
+            }
+        }
+    ...
+}
+...
+```
+
+### CocoaPods
+
+``` kotlin
+...
+kotlin {
+    ...
+    cocoapods {
+        ...
+        framework {
+            ...
+
+            export("com.arkivanov.decompose:decompose:<version>")
+            export("com.arkivanov.essenty:lifecycle:<essenty_version>")
+
+            // Optional, only if you need state preservation on Darwin (Apple) targets
+            export("com.arkivanov.essenty:state-keeper:<essenty_version>")
+
+            // Optional, only if you need state preservation on Darwin (Apple) targets
+            export("com.arkivanov.parcelize.darwin:runtime:<parcelize_darwin_version>")
+        }
+    }
+    ...
+}
+...
+```
+
