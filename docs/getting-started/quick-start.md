@@ -184,9 +184,39 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
 }
 ```
 
+### Child Stack with SwiftUI
+
+```swift
+struct RootView: View {
+    private let root: RootComponent
+    
+    @ObservedObject
+    private var childStack: ObservableValue<ChildStack<AnyObject, RootComponentChild>>
+    
+    private var activeChild: RootComponentChild { childStack.value.active.instance }
+    
+    init(_ root: RootComponent) {
+        self.root = root
+        childStack = ObservableValue(root.childStack)
+    }
+    
+    var body: some View {
+        switch activeChild {
+        case let child as RootComponentChild.ListChild: ListView(child.component)
+        case let child as RootComponentChild.DetailsChild: DetailsView(child.component)
+        default: EmptyView()
+        }
+    }
+}
+```
+
+#### What is ObservableValue?
+
+[ObservableValue](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/ObservableValue.swift) is a wrapper around `Value` that makes it compatible with SwiftUI. It is a simple class that conforms to `ObservableObject` protocol. Unfortunately it [does not look possible](https://github.com/arkivanov/Decompose/issues/206) to publish utils for SwiftUI as a library or framework, so it has to be copied to your project.
+
 Please refer to [samples](/Decompose/samples/) for integrations with other UI frameworks.
 
-## Initialising a root component
+## Initializing a root component
 
 ### Android with Jetpack Compose
 
@@ -248,6 +278,120 @@ fun main() {
         }
     }
 }
+```
+
+### IOS with SwiftUI
+
+1. Create `RootHolder` class that holds the root component and its lifecycle.
+
+```swift
+class RootHolder : ObservableObject {
+    let lifecycle: LifecycleRegistry
+    let root: RootComponent
+
+    init() {
+        lifecycle = LifecycleRegistryKt.LifecycleRegistry()
+
+        root = DefaultRootComponent(
+            componentContext: DefaultComponentContext(lifecycle: lifecycle)
+        )
+
+        LifecycleRegistryExtKt.create(lifecycle)
+    }
+
+    deinit {
+        // Destroy the root component before it is deallocated
+        LifecycleRegistryExtKt.destroy(lifecycle)
+    }
+}
+```
+
+2. Declare a simple `AppDelegate` containing `RootHolder`
+
+```swift
+class AppDelegate: NSObject, UIApplicationDelegate {
+    let rootHolder: RootHolder = RootHolder()
+}
+```
+
+3. Create `RootHolder` instance and pass it to `RootView`.
+
+```swift
+@main
+struct app_iosApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self)
+    var appDelegate: AppDelegate
+
+    @Environment(\.scenePhase)
+    var scenePhase: ScenePhase
+
+    var rootHolder: RootHolder { appDelegate.rootHolder }
+    
+    var body: some Scene {
+        WindowGroup {
+            RootView(rootHolder.root)
+                .onChange(of: scenePhase) { newPhase in
+                    switch newPhase {
+                    case .background: LifecycleRegistryExtKt.stop(rootHolder.lifecycle)
+                    case .inactive: LifecycleRegistryExtKt.pause(rootHolder.lifecycle)
+                    case .active: LifecycleRegistryExtKt.resume(rootHolder.lifecycle)
+                    @unknown default: break
+                    }
+                }
+        }
+    }
+}
+```
+
+### JavaScript (Web)
+
+In the place where you create your `RootComponent`:
+
+1. Initialize a `LifecycleRegistry`.
+2. Pass it into the root `ComponentContext`.
+3. Attach the `LifecycleRegistry` to the `document` via an extension function.
+
+```kotlin
+@OptIn(ExperimentalDecomposeApi::class)
+fun main() {
+    // Initialize a `LifecycleRegistry`
+    val lifecycle = LifecycleRegistry()
+
+    val root =
+        RootComponent(
+            // Pass the LifecycleRegistry to the context
+            componentContext = DefaultComponentContext(lifecycle = lifecycle),
+            ... // Other dependencies here
+        )
+
+    // Attach the LifecycleRegistry to document
+    lifecycle.attachToDocument()
+
+    // Render the UI
+    createRoot(document.getElementById("app")!!).render(
+        RootContent.create {
+            component = root
+        }
+    )
+}
+
+// Attaches the LifecycleRegistry to the document
+private fun LifecycleRegistry.attachToDocument() {
+    fun onVisibilityChanged() {
+        if (document.visibilityState == "visible") {
+            resume()
+        } else {
+            stop()
+        }
+    }
+
+    onVisibilityChanged()
+
+    document.addEventListener(type = "visibilitychange", callback = { onVisibilityChanged() })
+}
+
+private val Document.visibilityState: String
+    get() = asDynamic().visibilityState.unsafeCast<String>()
 ```
 
 ### Other platforms and UI frameworks
