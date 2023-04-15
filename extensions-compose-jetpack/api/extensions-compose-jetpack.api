@@ -6,7 +6,7 @@ public final class com/arkivanov/decompose/extensions/compose/jetpack/BuildConfi
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetpack/SubscribeAsStateKt {
-	public static final fun subscribeAsState (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/runtime/Composer;I)Landroidx/compose/runtime/State;
+	public static final fun subscribeAsState (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/runtime/SnapshotMutationPolicy;Landroidx/compose/runtime/Composer;II)Landroidx/compose/runtime/State;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/ChildrenKt {
