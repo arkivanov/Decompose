@@ -217,4 +217,12 @@ struct CounterView: View {
 
 #### What is ObservableValue?
 
-[ObservableValue](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/ObservableValue.swift) is a wrapper around `Value` that makes it compatible with SwiftUI. It is a simple class that conforms to `ObservableObject` protocol. Unfortunately it [does not look possible](https://github.com/arkivanov/Decompose/issues/206) to publish utils for SwiftUI as a library or framework, so it has to be copied to your project.
+[ObservableValue](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/DecomposeHelpers/ObservableValue.swift) is a wrapper around `Value` that makes it compatible with SwiftUI. It is a simple class that conforms to `ObservableObject` protocol. Unfortunately it [does not look possible](https://github.com/arkivanov/Decompose/issues/206) to publish utils for SwiftUI as a library or framework, so it has to be copied to your project.
+
+#### More Swift utilities
+
+You can find more useful utilities for SwiftUI in the [DecomposeHelpers/](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/DecomposeHelpers) folder:
+
+* [StackView](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/DecomposeHelpers/StackView.swift) - an adapter for SwiftUI's `NavigationStack` with fallback to `UINavigationView` that works with Decompose's `ChildStack`. See [CountersView.swift](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/CountersView.swift).
+* [MutableValue](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/DecomposeHelpers/MutableValue.swift) - helps to stub Decompose's `Value`/`MutableValue` for Preview Components. See `PreviewMultiPaneComponent` in [MultiPaneView.swift](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/MultiPaneView.swift).
+* [SimpleChildStack](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/DecomposeHelpers/SimpleChildStack.swift) - helps to stub Decompose's `ChildStack` for Preview Components. See `PreviewCountersComponent` in [CountersView.swift](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/CountersView.swift).
