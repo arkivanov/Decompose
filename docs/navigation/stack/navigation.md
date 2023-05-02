@@ -26,7 +26,7 @@ The `Child Stack` usually performs the navigation synchronously, which means tha
 
 ## StackNavigator extension functions
 
-There are `StackNavigator` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/StackNavigatorExt.kt) to simplify the navigation. Some of which were already used in the [Child Stack overview example](overview#routing-example).
+There are `StackNavigator` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/StackNavigatorExt.kt) to simplify the navigation. Some of which were already used in the [Child Stack overview example](../overview#example).
 
 The preceding examples will utilize the following `sealed class` & `navigation` for showcasing the usage of the `StackNavigator` extensions.
 
@@ -79,7 +79,7 @@ Drops the configurations at the top of the stack while the provided predicate re
 navigation.popWhile { topOfStack: Configuration -> topOfStack !is B }
 ```
 
-![](Decompose/media/RouterPopWhile.png)
+![](../../media/RouterPopWhile.png)
 
 ### replaceCurrent
 
@@ -93,7 +93,7 @@ navigation.replaceCurrent(Configuration.D)
 
 ### bringToFront
 
-Removes all components with configurations of the provided `Configuration`'s class, and adds the provided `Configuration` to the top of the stack. This is primarily helpful when implementing a Decompose app with [bottom navigation](https://github.com/arkivanov/Decompose/discussions/178)
+Removes all components with configurations of the provided `Configuration`'s class, and adds the provided `Configuration` to the top of the stack. This is primarily helpful when implementing a Decompose app with [bottom navigation](https://github.com/badoo/Decompose/discussions/178)
 
 !!! note
     The operation is performed as one transaction. If there is already a component with the same configuration, it will not be recreated.
