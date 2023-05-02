@@ -93,7 +93,7 @@ navigation.replaceCurrent(Configuration.D)
 
 ### bringToFront
 
-Removes all components with configurations of the provided `Configuration`'s class, and adds the provided `Configuration` to the top of the stack. This is primarily helpful when implementing a Decompose app with [bottom navigation](https://github.com/badoo/Decompose/discussions/178)
+Removes all components with configurations of the provided `Configuration`'s class, and adds the provided `Configuration` to the top of the stack. This is primarily helpful when implementing a Decompose app with Bottom Navigation. See the [related discussion](https://github.com/badoo/Decompose/discussions/178) in the *old repository*.
 
 !!! note
     The operation is performed as one transaction. If there is already a component with the same configuration, it will not be recreated.
