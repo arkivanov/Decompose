@@ -44,4 +44,4 @@ class SomeComponent(
 
 ## Managing the root lifecycle
 
-When creating a root component, it's required to supply the root lifecycle (see the [docs](../overview/#root-componentcontext) for more information about the root `ComponentContext`). The way how the root lifecycle is controlled depends on the platform. See [Quick Start](../getting-started/quick-start) docs for details and examples.
+When creating a root component, it's required to supply the root lifecycle (see the [docs](../overview/#root-componentcontext) for more information about the root `ComponentContext`). The way how the root lifecycle is controlled depends on the platform. See [Quick Start](../../getting-started/quick-start) docs for details and examples.
