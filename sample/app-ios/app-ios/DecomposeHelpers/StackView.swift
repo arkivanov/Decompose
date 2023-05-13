@@ -7,7 +7,7 @@ struct StackView<T: AnyObject, Content: View>: View {
     var stackValue: ObservableValue<ChildStack<AnyObject, T>>
 
     var getTitle: (T) -> String
-    var onBack: () -> Void
+    var onBack: (_ toIndex: Int32) -> Void
     
     @ViewBuilder
     var childContent: (T) -> Content
@@ -20,11 +20,7 @@ struct StackView<T: AnyObject, Content: View>: View {
             NavigationStack(
                 path: Binding(
                     get: { stack.dropFirst() },
-                    set: { updatedPath in
-                        while stack.count > updatedPath.count + 1 {
-                            onBack()
-                        }
-                    }
+                    set: { updatedPath in onBack(Int32(updatedPath.count)) }
                 )
             ) {
                 childContent(stack.first!.instance!)
@@ -46,7 +42,7 @@ struct StackView<T: AnyObject, Content: View>: View {
 private struct StackInteropView<T: AnyObject, Content: View>: UIViewControllerRepresentable {
     var components: [T]
     var getTitle: (T) -> String
-    var onBack: () -> Void
+    var onBack: (_ toIndex: Int32) -> Void
     var childContent: (T) -> Content
     
     func makeCoordinator() -> Coordinator {
@@ -105,13 +101,16 @@ private struct StackInteropView<T: AnyObject, Content: View>: UIViewControllerRe
     class NavigationItemHostingController: UIHostingController<Content> {
         fileprivate(set) weak var coordinator: Coordinator?
         fileprivate(set) var component: T?
-        fileprivate(set) var onBack: (() -> Void)?
+        fileprivate(set) var onBack: ((_ toIndex: Int32) -> Void)?
         
-        override func viewDidDisappear(_ animated: Bool) {
-            super.viewDidDisappear(animated)
+        override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
             
-            if isMovingFromParent && coordinator?.preservedComponents.last === component {
-                onBack?()
+            guard let components = coordinator?.preservedComponents else { return }
+            guard let index = components.firstIndex(where: { $0 === component }) else { return }
+            
+            if (index < components.count - 1) {
+                onBack?(Int32(index))
             }
         }
     }
