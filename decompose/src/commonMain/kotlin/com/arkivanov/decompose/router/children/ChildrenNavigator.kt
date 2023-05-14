@@ -2,7 +2,6 @@ package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.router.children.ChildItem.Created
-import com.arkivanov.decompose.router.children.ChildItem.Created.*
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -185,9 +184,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         for (item in oldItems) {
             val child = item as? Created ?: continue
             if (item.configuration !in newConfigurations) {
-                child.backHandler.stop()
-                child.instanceKeeperDispatcher.destroy()
-                child.lifecycleRegistry.destroy()
+                child.destroy()
             }
         }
     }
@@ -203,10 +200,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
                         when (status) {
                             Status.DESTROYED -> {
                                 val savedState = item.stateKeeperDispatcher.save()
-                                item.backHandler.stop()
-                                item.instanceKeeperDispatcher.destroy()
-                                item.lifecycleRegistry.destroy()
-
+                                item.destroy()
                                 ChildItem.Destroyed(configuration = item.configuration, savedState = savedState)
                             }
 
@@ -239,6 +233,12 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
                     is ChildItem.Destroyed -> item
                 }
         }
+    }
+
+    private fun Created<*, *>.destroy() {
+        backHandler.stop()
+        lifecycleRegistry.destroy()
+        instanceKeeperDispatcher.destroy()
     }
 
     private class RetainedInstance<C : Any, T : Any> : InstanceKeeper.Instance {
