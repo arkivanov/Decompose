@@ -45,51 +45,88 @@ val navigation = StackNavigation<Configuration>()
 
 Pushes the provided `Configuration` at the top of the stack.
 
+```title="Before"
+[A, B*]
+```
+
 ```kotlin
-navigation.push(Configuration.B)
 navigation.push(Configuration.C)
 ```
 
-![](../../media/RouterPush.png)
+```title="After"
+[A, B, C*]
+```
 
 ### pop
 
 Pops the latest configuration at the top of the stack.
 
-```kotlin
-navigation.pop()
+```title="Before"
+[A, B, C*]
 ```
 
-Or
-
 ```kotlin
+navigation.pop()
+
+// Or
+
 navigation.pop { isSuccess ->
     // Called when the navigation is finished.
     // isSuccess - `true` if the stack size was greater than 1 and a component was popped, `false` otherwise.
 }
 ```
 
-![](../../media/RouterPop.png)
+```title="After"
+[A, B*]
+```
 
 ### popWhile
 
 Drops the configurations at the top of the stack while the provided predicate returns true.
 
+```title="Before"
+[A, B, C, D*]
+```
+
 ```kotlin
 navigation.popWhile { topOfStack: Configuration -> topOfStack !is B }
 ```
 
-![](../../media/RouterPopWhile.png)
+```title="After"
+[A, B*]
+```
+
+### popTo(index)
+
+Drops configurations at the top of the stack so that the provided index becomes active (the new top of the stack).
+
+```title="Before"
+[A, B, C, D*]
+```
+
+```kotlin
+navigation.popTo(index = 1)
+```
+
+```title="After"
+[A, B*]
+```
 
 ### replaceCurrent
 
 Replaces the current configuration at the top of the stack with the provided `Configuration`.
 
+```title="Before"
+[A, B, C*]
+```
+
 ```kotlin
 navigation.replaceCurrent(Configuration.D)
 ```
 
-![](../../media/RouterReplaceCurrent.png)
+```title="After"
+[A, B, D*]
+```
 
 ### bringToFront
 
@@ -98,8 +135,14 @@ Removes all components with configurations of the provided `Configuration`'s cla
 !!! note
     The operation is performed as one transaction. If there is already a component with the same configuration, it will not be recreated.
 
+```title="Before"
+[A, B, C*]
+```
+
 ```kotlin
 navigation.bringToFront(Configuration.B)
 ```
 
-![](../../media/RouterBringToFront.png)
+```title="After"
+[A, C, B*]
+```

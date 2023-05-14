@@ -54,6 +54,25 @@ inline fun <C : Any> StackNavigator<C>.popWhile(
 }
 
 /**
+ * Drops configurations at the top of the stack so that the provided index becomes active (the new top of the stack).
+ *
+ * @param index the index of the configuration to become active. Must not be negative.
+ * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
+ * The `isSuccess` argument is `true` if at least one component has been popped.
+ */
+inline fun <C : Any> StackNavigator<C>.popTo(
+    index: Int,
+    crossinline onComplete: (isSuccess: Boolean) -> Unit = {},
+) {
+    require(index >= 0) { "Index must not negative, but was $index" }
+
+    navigate(
+        transformer = { it.take(index + 1) },
+        onComplete = { newStack, oldStack -> onComplete(newStack.size < oldStack.size) },
+    )
+}
+
+/**
  * Replaces the current configuration at the top of the stack with the provided [configuration].
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
