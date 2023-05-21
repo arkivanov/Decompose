@@ -6,11 +6,11 @@ struct KittenView: View {
     private let component: KittenComponent
     private let kittenSize: KittenSize
 
-    @ObservedObject
-    private var model: ObservableValue<KittenComponentModel>
+    @StateValue
+    private var model: KittenComponentModel
 
     private var imageName: String {
-        switch model.value.imageType {
+        switch model.imageType {
         case .cat1: return "cat1"
         case .cat2: return "cat2"
         case .cat3: return "cat3"
@@ -30,7 +30,7 @@ struct KittenView: View {
     init(_ component: KittenComponent, _ kittenSize: KittenSize) {
         self.component = component
         self.kittenSize = kittenSize
-        model = ObservableValue(component.model)
+        _model = StateValue(component.model)
     }
 
     var body: some View {
@@ -39,7 +39,7 @@ struct KittenView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             VStack {
-                Text(model.value.text)
+                Text(model.text)
                         .padding(8)
                         .frame(maxWidth: .infinity)
                         .background(LinearGradient(

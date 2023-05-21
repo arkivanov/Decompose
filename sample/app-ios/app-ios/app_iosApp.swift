@@ -13,21 +13,22 @@ struct app_iosApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self)
     var appDelegate: AppDelegate
 
-    @Environment(\.scenePhase)
-    var scenePhase: ScenePhase
-
     private var rootHolder: RootHolder { appDelegate.getRootHolder() }
     
     var body: some Scene {
         WindowGroup {
             RootView(rootHolder.root)
-                .onChange(of: scenePhase) { newPhase in
-                    switch newPhase {
-                    case .background: LifecycleRegistryExtKt.stop(rootHolder.lifecycle)
-                    case .inactive: LifecycleRegistryExtKt.pause(rootHolder.lifecycle)
-                    case .active: LifecycleRegistryExtKt.resume(rootHolder.lifecycle)
-                    @unknown default: break
-                    }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+                    LifecycleRegistryExtKt.resume(rootHolder.lifecycle)
+                }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+                    LifecycleRegistryExtKt.pause(rootHolder.lifecycle)
+                }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+                    LifecycleRegistryExtKt.stop(rootHolder.lifecycle)
+                }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)) { _ in
+                    LifecycleRegistryExtKt.destroy(rootHolder.lifecycle)
                 }
         }
     }
@@ -83,9 +84,5 @@ private class RootHolder {
         )
         
         LifecycleRegistryExtKt.create(lifecycle)
-    }
-    
-    deinit {
-        LifecycleRegistryExtKt.destroy(lifecycle)
     }
 }
