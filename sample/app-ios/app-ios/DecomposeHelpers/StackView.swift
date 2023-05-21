@@ -3,8 +3,8 @@ import UIKit
 import Shared
 
 struct StackView<T: AnyObject, Content: View>: View {
-    @ObservedObject
-    var stackValue: ObservableValue<ChildStack<AnyObject, T>>
+    @StateValue
+    var stackValue: ChildStack<AnyObject, T>
 
     var getTitle: (T) -> String
     var onBack: (_ toIndex: Int32) -> Void
@@ -12,7 +12,7 @@ struct StackView<T: AnyObject, Content: View>: View {
     @ViewBuilder
     var childContent: (T) -> Content
     
-    var stack: [Child<AnyObject, T>] { stackValue.value.items }
+    private var stack: [Child<AnyObject, T>] { stackValue.items }
 
     var body: some View {
         // iOS 16.0 has an issue with swipe back see https://stackoverflow.com/questions/73978107/incomplete-swipe-back-gesture-causes-navigationpath-mismanagement

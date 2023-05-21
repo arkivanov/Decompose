@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		793B104A2A1AB70D006B2DEC /* StateValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793B10492A1AB70D006B2DEC /* StateValue.swift */; };
 		798DB83B282F05EE0072CCBD /* app_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DB83A282F05EE0072CCBD /* app_iosApp.swift */; };
 		798DB83F282F05F20072CCBD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 798DB83E282F05F20072CCBD /* Assets.xcassets */; };
 		798DB842282F05F20072CCBD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 798DB841282F05F20072CCBD /* Preview Assets.xcassets */; };
@@ -25,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		793B10492A1AB70D006B2DEC /* StateValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateValue.swift; sourceTree = "<group>"; };
 		798DB837282F05EE0072CCBD /* app-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "app-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		798DB83A282F05EE0072CCBD /* app_iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = app_iosApp.swift; sourceTree = "<group>"; };
 		798DB83E282F05F20072CCBD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				B308A9702AA36B6E6809BA0E /* SimpleChildStack.swift */,
 				B308AC4E61EEA23BB6FFE692 /* ObservableValue.swift */,
 				B308AF18F005F9183C457531 /* MutableValue.swift */,
+				793B10492A1AB70D006B2DEC /* StateValue.swift */,
 			);
 			path = DecomposeHelpers;
 			sourceTree = "<group>";
@@ -204,6 +207,7 @@
 				798DB83B282F05EE0072CCBD /* app_iosApp.swift in Sources */,
 				798DB856282F0E6F0072CCBD /* MultiPaneView.swift in Sources */,
 				798DB852282F096C0072CCBD /* CountersView.swift in Sources */,
+				793B104A2A1AB70D006B2DEC /* StateValue.swift in Sources */,
 				798DB85A282F11800072CCBD /* ArticleDetailsView.swift in Sources */,
 				798DB84A282F08670072CCBD /* CounterView.swift in Sources */,
 				B308A68175BF2D307474DCCC /* CustomNavigationView.swift in Sources */,

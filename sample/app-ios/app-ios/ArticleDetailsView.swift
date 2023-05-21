@@ -11,14 +11,12 @@ import Shared
 struct ArticleDetailsView: View {
     private let component: ArticleDetailsComponent
     
-    @ObservedObject
-    private var observableModel: ObservableValue<ArticleDetailsComponentModel>
-    
-    private var model: ArticleDetailsComponentModel { observableModel.value }
-    
+    @StateValue
+    private var model: ArticleDetailsComponentModel
+
     init(_ component: ArticleDetailsComponent) {
         self.component = component
-        observableModel = ObservableValue(component.models)
+        _model = StateValue(component.models)
     }
     
     var body: some View {

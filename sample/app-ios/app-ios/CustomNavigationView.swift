@@ -7,24 +7,20 @@ struct CustomNavigationView: View {
 
     private let component: CustomNavigationComponent
 
-    @ObservedObject
-    private var observableChildren: ObservableValue<Children>
-
-    private var mode: CustomNavigationComponentMode {
-        observableChildren.value.mode
-    }
+    @StateValue
+    private var children: Children
 
     init(_ component: CustomNavigationComponent) {
         self.component = component
-        observableChildren = ObservableValue(component.children)
+        _children = StateValue(component.children)
     }
 
     var body: some View {
         ZStack {
-            ChildItems(observableChildren.value)
+            ChildItems(children)
             VStack {
                 Spacer()
-                Buttons(component, mode).padding()
+                Buttons(component, children.mode).padding()
             }
         }
     }
