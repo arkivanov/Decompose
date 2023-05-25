@@ -368,6 +368,16 @@ class MergedLifecycleTest {
     }
 
     @Test
+    fun WHEN_lifecycle1_destroyed_and_lifecycle2_destroyed_THEN_onCreate_onDestroy_called() {
+        lifecycle1.create()
+        lifecycle1.destroy()
+        lifecycle2.create()
+        lifecycle2.destroy()
+
+        callbacks.assertEvents(Event.ON_CREATE, Event.ON_DESTROY)
+    }
+
+    @Test
     fun GIVEN_lifecycle1_destroyed_WHEN_MergedLifecycle_created_THEN_not_subscribed() {
         val lifecycle1 = TestLifecycleRegistry()
         val lifecycle2 = TestLifecycleRegistry()
@@ -410,6 +420,16 @@ class MergedLifecycleTest {
         lifecycle2.destroy()
 
         val merged = MergedLifecycle(lifecycle1, lifecycle2)
+
+        assertEquals(Lifecycle.State.DESTROYED, merged.state)
+    }
+
+    @Test
+    fun WHEN_lifecycle1_created_and_destroyed_and_lifecycle2_created_and_destroyed_THEN_state_destroyed() {
+        lifecycle1.create()
+        lifecycle1.destroy()
+        lifecycle2.create()
+        lifecycle2.destroy()
 
         assertEquals(Lifecycle.State.DESTROYED, merged.state)
     }
