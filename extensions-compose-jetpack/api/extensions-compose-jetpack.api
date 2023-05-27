@@ -77,6 +77,11 @@ public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/anim
 	public static synthetic fun fade$default (Landroidx/compose/animation/core/FiniteAnimationSpec;FILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
 }
 
+public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/PredictiveBackAnimationKt {
+	public static final fun predictiveBackAnimation (Lcom/arkivanov/essenty/backhandler/BackHandler;Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation;
+	public static synthetic fun predictiveBackAnimation$default (Lcom/arkivanov/essenty/backhandler/BackHandler;Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation;
+}
+
 public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/ScaleKt {
 	public static final fun scale (Landroidx/compose/animation/core/FiniteAnimationSpec;FF)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
 	public static synthetic fun scale$default (Landroidx/compose/animation/core/FiniteAnimationSpec;FFILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;

@@ -1,3 +1,11 @@
+public final class com/arkivanov/decompose/extensions/compose/jetbrains/PredictiveBackGestureIconKt {
+	public static final fun PredictiveBackGestureIcon-eaDK9VM (Landroidx/compose/ui/graphics/vector/ImageVector;FJJLandroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetbrains/PredictiveBackGestureOverlayKt {
+	public static final fun PredictiveBackGestureOverlay (Lcom/arkivanov/essenty/backhandler/BackDispatcher;Lkotlin/jvm/functions/Function4;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/SubscribeAsStateKt {
 	public static final fun subscribeAsState (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/runtime/SnapshotMutationPolicy;Landroidx/compose/runtime/Composer;II)Landroidx/compose/runtime/State;
 }
@@ -72,6 +80,11 @@ public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/an
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/FadeKt {
 	public static final fun fade (Landroidx/compose/animation/core/FiniteAnimationSpec;F)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;
 	public static synthetic fun fade$default (Landroidx/compose/animation/core/FiniteAnimationSpec;FILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/PredictiveBackAnimationKt {
+	public static final fun predictiveBackAnimation (Lcom/arkivanov/essenty/backhandler/BackHandler;Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
+	public static synthetic fun predictiveBackAnimation$default (Lcom/arkivanov/essenty/backhandler/BackHandler;Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/ScaleKt {
