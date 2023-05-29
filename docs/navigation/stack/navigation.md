@@ -26,7 +26,7 @@ The `Child Stack` usually performs the navigation synchronously, which means tha
 
 ## StackNavigator extension functions
 
-There are `StackNavigator` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/StackNavigatorExt.kt) to simplify the navigation. Some of which were already used in the [Child Stack overview example](overview#routing-example).
+There are `StackNavigator` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/StackNavigatorExt.kt) to simplify the navigation. Some of which were already used in the [Child Stack overview example](../overview#example).
 
 The preceding examples will utilize the following `sealed class` & `navigation` for showcasing the usage of the `StackNavigator` extensions.
 
@@ -45,61 +45,104 @@ val navigation = StackNavigation<Configuration>()
 
 Pushes the provided `Configuration` at the top of the stack.
 
+```title="Before"
+[A, B*]
+```
+
 ```kotlin
-navigation.push(Configuration.B)
 navigation.push(Configuration.C)
 ```
 
-![](../../media/RouterPush.png)
+```title="After"
+[A, B, C*]
+```
 
 ### pop
 
 Pops the latest configuration at the top of the stack.
 
-```kotlin
-navigation.pop()
+```title="Before"
+[A, B, C*]
 ```
 
-Or
-
 ```kotlin
+navigation.pop()
+
+// Or
+
 navigation.pop { isSuccess ->
     // Called when the navigation is finished.
     // isSuccess - `true` if the stack size was greater than 1 and a component was popped, `false` otherwise.
 }
 ```
 
-![](../../media/RouterPop.png)
+```title="After"
+[A, B*]
+```
 
 ### popWhile
 
 Drops the configurations at the top of the stack while the provided predicate returns true.
 
+```title="Before"
+[A, B, C, D*]
+```
+
 ```kotlin
 navigation.popWhile { topOfStack: Configuration -> topOfStack !is B }
 ```
 
-![](Decompose/media/RouterPopWhile.png)
+```title="After"
+[A, B*]
+```
+
+### popTo(index)
+
+Drops configurations at the top of the stack so that the provided index becomes active (the new top of the stack).
+
+```title="Before"
+[A, B, C, D*]
+```
+
+```kotlin
+navigation.popTo(index = 1)
+```
+
+```title="After"
+[A, B*]
+```
 
 ### replaceCurrent
 
 Replaces the current configuration at the top of the stack with the provided `Configuration`.
 
+```title="Before"
+[A, B, C*]
+```
+
 ```kotlin
 navigation.replaceCurrent(Configuration.D)
 ```
 
-![](../../media/RouterReplaceCurrent.png)
+```title="After"
+[A, B, D*]
+```
 
 ### bringToFront
 
-Removes all components with configurations of the provided `Configuration`'s class, and adds the provided `Configuration` to the top of the stack. This is primarily helpful when implementing a Decompose app with [bottom navigation](https://github.com/arkivanov/Decompose/discussions/178)
+Removes all components with configurations of the provided `Configuration`'s class, and adds the provided `Configuration` to the top of the stack. This is primarily helpful when implementing a Decompose app with Bottom Navigation. See the [related discussion](https://github.com/badoo/Decompose/discussions/178) in the *old repository*.
 
 !!! note
     The operation is performed as one transaction. If there is already a component with the same configuration, it will not be recreated.
+
+```title="Before"
+[A, B, C*]
+```
 
 ```kotlin
 navigation.bringToFront(Configuration.B)
 ```
 
-![](../../media/RouterBringToFront.png)
+```title="After"
+[A, C, B*]
+```

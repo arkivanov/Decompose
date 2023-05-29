@@ -212,7 +212,9 @@ struct RootView: View {
 
 #### What is ObservableValue?
 
-[ObservableValue](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/ObservableValue.swift) is a wrapper around `Value` that makes it compatible with SwiftUI. It is a simple class that conforms to `ObservableObject` protocol. Unfortunately it [does not look possible](https://github.com/arkivanov/Decompose/issues/206) to publish utils for SwiftUI as a library or framework, so it has to be copied to your project.
+[ObservableValue](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/DecomposeHelpers/ObservableValue.swift) is a wrapper around `Value` that makes it compatible with SwiftUI. It is a simple class that conforms to `ObservableObject` protocol. Unfortunately it [does not look possible](https://github.com/arkivanov/Decompose/issues/206) to publish utils for SwiftUI as a library or framework, so it has to be copied to your project. 
+
+### Child Stack with other UI Frameworks
 
 Please refer to [samples](/Decompose/samples/) for integrations with other UI frameworks.
 

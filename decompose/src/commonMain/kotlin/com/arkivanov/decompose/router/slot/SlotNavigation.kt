@@ -9,6 +9,5 @@ interface SlotNavigation<C : Any> : SlotNavigator<C>, SlotNavigationSource<C>
  * Returns a default implementation of [SlotNavigation].
  * Broadcasts navigation events to all subscribed observers.
  */
-@Suppress("FunctionName") // Factory function
 fun <C : Any> SlotNavigation(): SlotNavigation<C> =
     DefaultSlotNavigation()

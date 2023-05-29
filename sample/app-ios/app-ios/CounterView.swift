@@ -11,18 +11,16 @@ import Shared
 struct CounterView: View {
     private let counter: CounterComponent
     
-    @ObservedObject
-    private var observableModel: ObservableValue<CounterComponentModel>
+    @StateValue
+    private var model: CounterComponentModel
     
-    @ObservedObject
-    private var dialogSlot: ObservableValue<ChildSlot<AnyObject, DialogComponent>>
-    
-    private var model: CounterComponentModel { observableModel.value }
+    @StateValue
+    private var dialogSlot: ChildSlot<AnyObject, DialogComponent>
     
     init(_ counter: CounterComponent) {
         self.counter = counter
-        observableModel = ObservableValue(counter.model)
-        dialogSlot = ObservableValue(counter.dialogSlot)
+        _model = StateValue(counter.model)
+        _dialogSlot = StateValue(counter.dialogSlot)
     }
     
     var body: some View {
@@ -38,7 +36,7 @@ struct CounterView: View {
         }
         .navigationBarTitle(model.title, displayMode: .inline)
         .alert(
-            item: dialogSlot.value.child?.instance,
+            item: dialogSlot.child?.instance,
             onDismiss: { $0.onDismissClicked() },
             title: { Text($0.title) },
             message: { Text($0.message) },

@@ -4,7 +4,9 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.popTo
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
@@ -38,6 +40,10 @@ internal class DefaultCountersComponent(
             onNext = { navigation.push(Config(index = config.index + 1, isBackEnabled = true)) },
             onPrev = navigation::pop,
         )
+
+    override fun onBackClicked(toIndex: Int) {
+        navigation.popTo(index = toIndex)
+    }
 
     @Parcelize
     private data class Config(

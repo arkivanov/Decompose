@@ -3,21 +3,26 @@ import UIKit
 import Shared
 
 struct StackView<T: AnyObject, Content: View>: View {
-    @ObservedObject
-    var stackValue: ObservableValue<ChildStack<AnyObject, T>>
+    @StateValue
+    var stackValue: ChildStack<AnyObject, T>
 
     var getTitle: (T) -> String
-    var onBack: () -> Void
+    var onBack: (_ toIndex: Int32) -> Void
     
     @ViewBuilder
     var childContent: (T) -> Content
     
-    var stack: [Child<AnyObject, T>] { stackValue.value.items }
+    private var stack: [Child<AnyObject, T>] { stackValue.items }
 
     var body: some View {
         // iOS 16.0 has an issue with swipe back see https://stackoverflow.com/questions/73978107/incomplete-swipe-back-gesture-causes-navigationpath-mismanagement
         if #available(iOS 16.1, *) {
-            NavigationStack(path: Binding(get: { stack.dropFirst() }, set: { _ in onBack() })) {
+            NavigationStack(
+                path: Binding(
+                    get: { stack.dropFirst() },
+                    set: { updatedPath in onBack(Int32(updatedPath.count)) }
+                )
+            ) {
                 childContent(stack.first!.instance!)
                     .navigationDestination(for: Child<AnyObject, T>.self) {
                         childContent($0.instance!)
@@ -37,7 +42,7 @@ struct StackView<T: AnyObject, Content: View>: View {
 private struct StackInteropView<T: AnyObject, Content: View>: UIViewControllerRepresentable {
     var components: [T]
     var getTitle: (T) -> String
-    var onBack: () -> Void
+    var onBack: (_ toIndex: Int32) -> Void
     var childContent: (T) -> Content
     
     func makeCoordinator() -> Coordinator {
@@ -96,13 +101,16 @@ private struct StackInteropView<T: AnyObject, Content: View>: UIViewControllerRe
     class NavigationItemHostingController: UIHostingController<Content> {
         fileprivate(set) weak var coordinator: Coordinator?
         fileprivate(set) var component: T?
-        fileprivate(set) var onBack: (() -> Void)?
+        fileprivate(set) var onBack: ((_ toIndex: Int32) -> Void)?
         
-        override func viewDidDisappear(_ animated: Bool) {
-            super.viewDidDisappear(animated)
+        override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
             
-            if isMovingFromParent && coordinator?.preservedComponents.last === component {
-                onBack?()
+            guard let components = coordinator?.preservedComponents else { return }
+            guard let index = components.firstIndex(where: { $0 === component }) else { return }
+            
+            if (index < components.count - 1) {
+                onBack?(Int32(index))
             }
         }
     }

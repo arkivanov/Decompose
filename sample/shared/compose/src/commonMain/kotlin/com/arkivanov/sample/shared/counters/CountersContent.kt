@@ -54,4 +54,6 @@ internal class PreviewCountersComponent : CountersComponent {
                 instance = PreviewCounterComponent(),
             )
         )
+
+    override fun onBackClicked(toIndex: Int) {}
 }
