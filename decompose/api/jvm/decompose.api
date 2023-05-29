@@ -158,6 +158,79 @@ public final class com/arkivanov/decompose/router/overlay/ValueExtKt {
 	public static final fun getOverlay (Lcom/arkivanov/decompose/value/Value;)Lcom/arkivanov/decompose/Child$Created;
 }
 
+public final class com/arkivanov/decompose/router/pages/ChildPages {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/List;I)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()I
+	public final fun copy (Ljava/util/List;I)Lcom/arkivanov/decompose/router/pages/ChildPages;
+	public static synthetic fun copy$default (Lcom/arkivanov/decompose/router/pages/ChildPages;Ljava/util/List;IILjava/lang/Object;)Lcom/arkivanov/decompose/router/pages/ChildPages;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getItems ()Ljava/util/List;
+	public final fun getSelectedIndex ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/arkivanov/decompose/router/pages/ChildPagesFactoryKt {
+	public static final fun childPages (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/pages/PagesNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun childPages (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/pages/PagesNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childPages$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/pages/PagesNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childPages$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/pages/PagesNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun getDefaultPageStatus (ILcom/arkivanov/decompose/router/pages/Pages;)Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+}
+
+public final class com/arkivanov/decompose/router/pages/Pages {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/List;I)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()I
+	public final fun copy (Ljava/util/List;I)Lcom/arkivanov/decompose/router/pages/Pages;
+	public static synthetic fun copy$default (Lcom/arkivanov/decompose/router/pages/Pages;Ljava/util/List;IILjava/lang/Object;)Lcom/arkivanov/decompose/router/pages/Pages;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getItems ()Ljava/util/List;
+	public final fun getSelectedIndex ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/arkivanov/decompose/router/pages/PagesNavigation : com/arkivanov/decompose/router/pages/PagesNavigationSource, com/arkivanov/decompose/router/pages/PagesNavigator {
+}
+
+public final class com/arkivanov/decompose/router/pages/PagesNavigationKt {
+	public static final fun PagesNavigation ()Lcom/arkivanov/decompose/router/pages/PagesNavigation;
+}
+
+public abstract interface class com/arkivanov/decompose/router/pages/PagesNavigationSource : com/arkivanov/decompose/router/children/NavigationSource {
+}
+
+public final class com/arkivanov/decompose/router/pages/PagesNavigationSource$Event {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getOnComplete ()Lkotlin/jvm/functions/Function2;
+	public final fun getTransformer ()Lkotlin/jvm/functions/Function1;
+}
+
+public abstract interface class com/arkivanov/decompose/router/pages/PagesNavigator {
+	public abstract fun navigate (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+}
+
+public final class com/arkivanov/decompose/router/pages/PagesNavigatorExtKt {
+	public static final fun clear (Lcom/arkivanov/decompose/router/pages/PagesNavigator;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun clear$default (Lcom/arkivanov/decompose/router/pages/PagesNavigator;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun navigate (Lcom/arkivanov/decompose/router/pages/PagesNavigator;Lkotlin/jvm/functions/Function1;)V
+	public static final fun select (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun select$default (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun selectFirst (Lcom/arkivanov/decompose/router/pages/PagesNavigator;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun selectFirst$default (Lcom/arkivanov/decompose/router/pages/PagesNavigator;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun selectLast (Lcom/arkivanov/decompose/router/pages/PagesNavigator;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun selectLast$default (Lcom/arkivanov/decompose/router/pages/PagesNavigator;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun selectNext (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ZLkotlin/jvm/functions/Function2;)V
+	public static synthetic fun selectNext$default (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun selectPrev (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ZLkotlin/jvm/functions/Function2;)V
+	public static synthetic fun selectPrev$default (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
 public final class com/arkivanov/decompose/router/slot/ChildSlot {
 	public fun <init> ()V
 	public fun <init> (Lcom/arkivanov/decompose/Child$Created;)V
@@ -261,6 +334,8 @@ public final class com/arkivanov/decompose/router/stack/StackNavigatorExtKt {
 	public static final fun navigate (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lkotlin/jvm/functions/Function1;)V
 	public static final fun pop (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lkotlin/jvm/functions/Function1;)V
 	public static synthetic fun pop$default (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun popTo (Lcom/arkivanov/decompose/router/stack/StackNavigator;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun popTo$default (Lcom/arkivanov/decompose/router/stack/StackNavigator;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public static final fun popWhile (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lkotlin/jvm/functions/Function1;)V
 	public static final fun popWhile (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 	public static final fun push (Lcom/arkivanov/decompose/router/stack/StackNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V

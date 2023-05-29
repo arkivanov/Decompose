@@ -1,10 +1,13 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.children.ChildNavState.Status.ACTIVE
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.INACTIVE
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.decompose.value.getValue
+import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlin.test.Test
@@ -110,5 +113,33 @@ internal class ChildrenBasicTest : ChildrenTestBase() {
         }
 
         assertContentEquals(listOf(1, 2, 3), createEvents)
+    }
+
+    @Test
+    fun GIVEN_active_child_with_retained_instance_WHEN_child_removed_THEN_component_destroyed_before_instance() {
+        val destroyEvents = ArrayList<String>()
+        val children by context.children(initialState = stateOf(1 by INACTIVE, 2 by INACTIVE, 3 by ACTIVE))
+        val component = children.getById(id = 3).requireInstance()
+        val instance = component.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        component.lifecycle.doOnDestroy { destroyEvents += "component" }
+        instance.onDestroyed = { destroyEvents += "instance" }
+
+        navigate { listOf(1 by DESTROYED, 2 by INACTIVE) }
+
+        assertContentEquals(listOf("component", "instance"), destroyEvents)
+    }
+
+    @Test
+    fun GIVEN_active_child_with_retained_instance_WHEN_child_switched_to_destroyed_THEN_component_destroyed_before_instance() {
+        val destroyEvents = ArrayList<String>()
+        val children by context.children(initialState = stateOf(1 by INACTIVE, 2 by INACTIVE, 3 by ACTIVE))
+        val component = children.getById(id = 3).requireInstance()
+        val instance = component.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        component.lifecycle.doOnDestroy { destroyEvents += "component" }
+        instance.onDestroyed = { destroyEvents += "instance" }
+
+        navigate { listOf(1 by DESTROYED, 2 by INACTIVE, 3 by DESTROYED) }
+
+        assertContentEquals(listOf("component", "instance"), destroyEvents)
     }
 }

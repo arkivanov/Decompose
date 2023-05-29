@@ -11,14 +11,14 @@ import Shared
 struct RootView: View {
     private let root: RootComponent
     
-    @ObservedObject
-    private var childStack: ObservableValue<ChildStack<AnyObject, RootComponentChild>>
+    @StateValue
+    private var childStack: ChildStack<AnyObject, RootComponentChild>
     
-    private var activeChild: RootComponentChild { childStack.value.active.instance }
+    private var activeChild: RootComponentChild { childStack.active.instance }
     
     init(_ root: RootComponent) {
         self.root = root
-        childStack = ObservableValue(root.childStack)
+        _childStack = StateValue(root.childStack)
     }
     
     var body: some View {

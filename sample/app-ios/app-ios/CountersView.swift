@@ -9,20 +9,17 @@ import SwiftUI
 import Shared
 
 struct CountersView: View {
-    @ObservedObject
-    private var childStack: ObservableValue<ChildStack<AnyObject, CounterComponent>>
-    
-    private var stack: ChildStack<AnyObject, CounterComponent> { childStack.value }
+    private let counters: CountersComponent
     
     init(_ counters: CountersComponent) {
-        childStack = ObservableValue(counters.childStack)
+        self.counters = counters
     }
     
     var body: some View {
         StackView(
-            stackValue: childStack,
+            stackValue: StateValue(counters.childStack),
             getTitle: { $0.model.value.title },
-            onBack: stack.active.instance.onPrevClicked,
+            onBack: counters.onBackClicked,
             childContent: CounterView.init
         )
     }
@@ -37,4 +34,6 @@ struct CountersView_Previews: PreviewProvider {
 class PreviewCountersComponent: CountersComponent {
     let childStack: Value<ChildStack<AnyObject, CounterComponent>> =
     simpleChildStack(PreviewCounterComponent())
+    
+    func onBackClicked(toIndex: Int32) {}
 }

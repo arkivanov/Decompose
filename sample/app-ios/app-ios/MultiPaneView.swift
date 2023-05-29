@@ -14,16 +14,16 @@ private let detailsPaneWeight = CGFloat(0.6)
 struct MultiPaneView: View {
     private let component: MultiPaneComponent
     
-    @ObservedObject
-    private var children: ObservableValue<MultiPaneComponentChildren>
+    @StateValue
+    private var children: MultiPaneComponentChildren
     
-    private var isMultiPane: Bool { children.value.isMultiPane }
-    private var listComponent: ArticleListComponent { children.value.listChild.instance }
-    private var detailsComponent: ArticleDetailsComponent? { children.value.detailsChild?.instance }
+    private var isMultiPane: Bool { children.isMultiPane }
+    private var listComponent: ArticleListComponent { children.listChild.instance }
+    private var detailsComponent: ArticleDetailsComponent? { children.detailsChild?.instance }
     
     init(_ component: MultiPaneComponent) {
         self.component = component
-        children = ObservableValue(component.children)
+        _children = StateValue(component.children)
     }
     
     var body: some View {
