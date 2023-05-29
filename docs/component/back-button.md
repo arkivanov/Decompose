@@ -4,7 +4,7 @@ Some devices (e.g. Android) have hardware back buttons. A very common use case i
 
 ## Navigation with back button
 
-`Child Stack` can automatically navigate back when the back button is pressed. All you need to do is to supply the `handleBackButton=true` argument when you initialize the `ChildStack`. Please see the [Child Stack](/Decompose/navigation/stack/overview/) documentation page for more information.
+`Child Stack` and `Child Pages` can automatically navigate back when the back button is pressed. All you need to do is to supply the `handleBackButton=true` argument when you initialize a navigation model.
 
 Similarly, `Child Slot` can automatically dismiss the child component when the back button is pressed. see the [Child Slot](/Decompose/navigation/slot/overview/) documentation page for more information.
 

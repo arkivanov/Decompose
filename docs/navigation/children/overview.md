@@ -68,7 +68,7 @@ The `children` function returns an observable `Value` of the resulting children 
 
 ## Examples
 
-Both [Child Stack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStackFactory.kt) and [Child Slot](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/slot/ChildSlotFactory.kt) are implemented using the `Generic Navigation`. Please refer to their source code for implementation details.
+All existing navigation models (like [Child Stack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStackFactory.kt)) are implemented using the `Generic Navigation`. Please refer to their source code for implementation details.
 
 ### Sample project
 

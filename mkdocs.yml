@@ -43,6 +43,9 @@ nav:
       - Overview: navigation/slot/overview.md
       - Navigation: navigation/slot/navigation.md
       - Custom ComponentContext: navigation/slot/component-context.md
+    - Child Pages:
+        - Overview: navigation/pages/overview.md
+        - Navigation: navigation/pages/navigation.md
     - Generic Navigation:
         - Overview: navigation/children/overview.md
 

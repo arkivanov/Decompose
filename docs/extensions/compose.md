@@ -91,7 +91,7 @@ fun main() {
 
 ### Navigating between Composable components
 
-The [Child Stack](/Decompose/navigation/stack/overview/) feature provides [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) as `Value<ChildStack>` that can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `ChildStack` changes.
+The [Child Stack](/Decompose/navigation/stack/overview/) navigation model provides [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) as `Value<ChildStack>` that can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `ChildStack` changes.
 
 Both Compose extension modules provide the [Children(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-jetbrains/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/jetbrains/stack/Children.kt) function which has the following features:
 
@@ -136,6 +136,36 @@ fun MainContent(component: MainComponent) {
 
 @Composable
 fun DetailsContent(component: DetailsComponent) {
+    // Omitted code
+}
+```
+
+### Pager-like navigation
+
+!!!warning
+    This navigation model is experimental, the API is subject to change.
+
+The [Child Pages](/Decompose/navigation/pages/overview/) navigation model provides [ChildPages](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/pages/ChildPages.kt) as `Value<ChildPages>` that can be observed in a `Composable` component.
+
+Both Compose extension modules provide the [Pages(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-jetbrains/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/jetbrains/pages/Pages.kt) function which has the following features:
+
+- It listens for the `ChildPages` changes and displays child components using `HorizontalPager` or `VerticalPager` (see the related Jetpack Compose [documentation](https://developer.android.com/jetpack/compose/layouts/pager)).
+- It animates page changes if there is an `animation` spec provided.
+
+```kotlin title="Example"
+@Composable
+fun PagesContent(component: PagesComponent) {
+    Pages(
+        pages = component.pages,
+        onPageSelected = component::selectPage,
+        scrollAnimation = PagesScrollAnimation.Default,
+    ) { _, page ->
+        PageContent(page)
+    }
+}
+
+@Composable
+fun PageContent(component: PageComponent) {
     // Omitted code
 }
 ```
@@ -217,7 +247,7 @@ fun RootContent(component: RootComponent) {
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationSeparate.gif" width="512">
 
-It is also possible to take into account the other child and the animation direction when selecting the animation. 
+It is also possible to take into account the other child and the animation direction when selecting the animation.
 
 ```kotlin
 @Composable
