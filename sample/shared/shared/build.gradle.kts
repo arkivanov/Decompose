@@ -37,6 +37,7 @@ kotlin {
                     baseName = "Shared"
                     export(project(":decompose"))
                     export(deps.essenty.lifecycle)
+                    export(deps.essenty.backHandler)
 
                     // Optional, only if you need state preservation on Darwin (Apple) targets
                     export(deps.essenty.stateKeeper)
@@ -60,6 +61,7 @@ kotlin {
             implementation(project(":sample:shared:dynamic-features:api"))
             api(deps.essenty.lifecycle)
             api(deps.essenty.stateKeeper)
+            api(deps.essenty.backHandler)
             implementation(deps.reaktive.reaktive)
         }
 
