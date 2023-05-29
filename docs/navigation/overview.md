@@ -6,6 +6,7 @@ Currently, Decompose provides two predefined navigation models:
 
 - [Child Stack](/Decompose/navigation/stack/overview/) - prefer this way if you need to organize child components in a stack and navigate between them.
 - [Child Slot](/Decompose/navigation/slot/overview/) - prefer this way if you need to activate-dismiss one child component at a time.
+- [Child Pages](/Decompose/navigation/pages/overview/) - prefer this way if you need to organize child components in a list with one selected component.
 
 If none of this fit your needs, Decompose introduces [Generic Navigation](https://arkivanov.github.io/Decompose/navigation/children/overview/) that can be used to create your own custom navigation models.
 It offers a flexible API and allows you to create almost any kind of navigation.
