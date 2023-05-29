@@ -380,9 +380,13 @@ fun RootContent(component: RootComponent) {
 
 On Android, the predictive back gesture only works starting with Android T. On Android T, it works only between Activities, if enabled in the system settings. Starting with Android U, the predictive back gesture can be enabled between `Child Stack` screens inside a single Activity.
 
+<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureAndroid.mp4" type="video/mp4"></video>
+
 #### Predictive Back Gesture on other platforms
 
 On all other platforms, the predictive back gesture can be enabled by showing a special overlay that automatically handles the gesture and manipulates `BackDispatcher` as needed.
+
+<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureIos.mp4" type="video/mp4"></video>
 
 ```kotlin title="Initialising the root component"
 val lifecycle = LifecycleRegistry()
