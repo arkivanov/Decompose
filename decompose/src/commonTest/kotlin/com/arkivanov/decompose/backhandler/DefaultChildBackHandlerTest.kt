@@ -234,19 +234,31 @@ class DefaultChildBackHandlerTest {
         val handler = handler(isEnabled = true)
         handler.start()
         val items = ArrayList<Int>()
-        handler.register(callback(isEnabled = true) { items += 1 })
-        handler.register(callback(isEnabled = false) { items += 2 })
-        handler.register(callback(isEnabled = true) { items += 3 })
-        handler.register(callback(isEnabled = false) { items += 4 })
+        handler.register(callback(isEnabled = true, priority = 0) { items += 1 })
+        handler.register(callback(isEnabled = false, priority = 0) { items += 2 })
+        handler.register(callback(isEnabled = true, priority = 2) { items += 3 })
+        handler.register(callback(isEnabled = false, priority = 2) { items += 4 })
+        handler.register(callback(isEnabled = true, priority = 2) { items += 5 })
+        handler.register(callback(isEnabled = false, priority = 2) { items += 6 })
+        handler.register(callback(isEnabled = true, priority = 1) { items += 7 })
+        handler.register(callback(isEnabled = false, priority = 1) { items += 8 })
 
         parent.back()
 
-        assertEquals(listOf(3), items)
+        assertEquals(listOf(5), items)
     }
 
     private fun handler(isEnabled: Boolean = false): DefaultChildBackHandler =
-        DefaultChildBackHandler(parent = parent, isEnabled = isEnabled)
+        DefaultChildBackHandler(parent = parent, isEnabled = isEnabled, priority = 0)
 
-    private fun callback(isEnabled: Boolean = true, onBack: () -> Unit = {}): BackCallback =
-        BackCallback(isEnabled = isEnabled, onBack = onBack)
+    private fun callback(
+        isEnabled: Boolean = true,
+        priority: Int = BackCallback.PRIORITY_DEFAULT,
+        onBack: () -> Unit = {},
+    ): BackCallback =
+        BackCallback(
+            isEnabled = isEnabled,
+            priority = priority,
+            onBack = onBack,
+        )
 }

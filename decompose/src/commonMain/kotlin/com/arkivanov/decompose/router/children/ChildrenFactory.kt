@@ -82,7 +82,7 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
                 retainedInstanceSupplier = { factory -> instanceKeeper.getOrCreate(key = key, factory = factory) },
                 childItemFactory = DefaultChildItemFactory(
                     lifecycle = lifecycle,
-                    backHandler = backHandler.child(),
+                    backHandler = backHandler.child(priority = BackCallback.PRIORITY_DEFAULT + 1),
                     childFactory = childFactory,
                 ),
                 navState = restoredNavState ?: initialState(),
