@@ -333,22 +333,107 @@ fun someAnimator(): StackAnimator =
 
 Please refer to the predefined animators (`fade`, `slide`, etc.) for implementation examples.
 
+### Predictive Back Gesture
+
+!!!warning
+    Predictive Back Gesture support is experimental, the API is subject to change. For now, please use version 2.1.x.
+
+`Child Stack` supports the new [Android Predictive Back Gesture](https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture) on all platforms. To enable the gesture, first implement `BackHandlerOwner` interface in your component with `Child Stack`, then just pass `predictiveBackAnimation` to the `Children` function.
+
+```kotlin title="RootComponent"
+interface RootComponent : BackHandlerOwner {
+    val stack: Value<ChildStack<...>>
+
+    fun onBackClicked()
+}
+
+class DefaultRootComponent(
+    componentContext: ComponentContext,
+) : ComponentContext by componentContext, BackHandlerOwner {
+    // ComponentContext already implements BackHandlerOwner, no need to implement it separately
+
+    // Omitted body
+
+    override fun onBackClicked() {
+        navigation.pop()
+    }
+}
+```
+
+```kotlin title="RootContent"
+@Composable
+fun RootContent(component: RootComponent) {
+    Children(
+        stack = rootComponent.childStack,
+        animation = predictiveBackAnimation(
+            backHandler = component.backHandler,
+            animation = stackAnimation(fade() + scale()), // Your usual animation here
+            onBack = component::onBackClicked,
+        ),
+    ) {
+        // Omitted code
+    }
+}
+```
+
+#### Predictive Back Gesture on Android
+
+On Android, the predictive back gesture only works starting with Android T. On Android T, it works only between Activities, if enabled in the system settings. Starting with Android U, the predictive back gesture can be enabled between `Child Stack` screens inside a single Activity.
+
+#### Predictive Back Gesture on other platforms
+
+On all other platforms, the predictive back gesture can be enabled by showing a special overlay that automatically handles the gesture and manipulates `BackDispatcher` as needed.
+
+```kotlin title="Initialising the root component"
+val lifecycle = LifecycleRegistry()
+val backDispatcher = BackDispatcher()
+
+val componentContext = 
+    DefaultComponentContext(
+        lifecycle = lifecycle,
+        backHandler = backHandler, // Pass BackDispatcher here
+    )
+    
+val root = DefaultRootComponent(componentContext = componentContext)
+```
+
+```kotlin title="Using Composable PredictiveBackGestureOverlay"
+PredictiveBackGestureOverlay(
+    backDispatcher = backDispatcher, // Use the same BackDispatcher as above
+    backIcon = { progress, _ ->
+        PredictiveBackGestureIcon(
+            imageVector = Icons.Default.ArrowBack,
+            progress = progress,
+        )
+    },
+    modifier = Modifier.fillMaxSize(),
+) {
+    RootContent(
+        component = root,
+        modifier = Modifier.fillMaxSize(),
+    )
+}
+```
+
 ## Compose for iOS, macOS and Web (Canvas)
 
 Compose for iOS, macOS and Web (Canvas) is still work in progress and was not officially announced. However, Decompose already supports it. The support is also **experimental** and is not part of the main branch - see [#74](https://github.com/arkivanov/Decompose/issues/74) for more information.
 
-If you want to use Decompose with Compose for iOS/macOS/Web, you have to use special versions of `extensions-compose-jetbrains` module.
+If you want to use Decompose with Compose for iOS/macOS/Web, you have to use special versions of both `decompose` and `extensions-compose-jetbrains` modules.
 
 === "Groovy"
 
     ``` groovy
+    implementation "com.arkivanov.decompose:decompose:<version>-compose-experimental"
     implementation "com.arkivanov.decompose:extensions-compose-jetbrains:<version>-compose-experimental"
     ```
 
 === "Kotlin"
 
     ``` kotlin
+    implementation("com.arkivanov.decompose:decompose:<version>-compose-experimental")
     implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>-compose-experimental")
+    ```
 
 ### Samples
 

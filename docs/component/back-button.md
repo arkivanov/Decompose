@@ -34,3 +34,7 @@ class SomeComponent(
     }
 }
 ```
+
+## Predictive Back Gesture
+
+Decompose experimentally supports the new [Android Predictive Back Gesture](https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture), not only on Android. The UI part is covered by Compose extensions, please see the [related docs](../../extensions/compose#predictive-back-gesture).
