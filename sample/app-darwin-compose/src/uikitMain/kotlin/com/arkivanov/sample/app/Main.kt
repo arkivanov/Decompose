@@ -2,12 +2,17 @@ package com.arkivanov.sample.app
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Application
 import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.extensions.compose.jetbrains.PredictiveBackGestureIcon
+import com.arkivanov.decompose.extensions.compose.jetbrains.PredictiveBackGestureOverlay
+import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.resume
@@ -47,11 +52,12 @@ class SkikoAppDelegate : UIResponder, UIApplicationDelegateProtocol {
     @ObjCObjectBase.OverrideInit
     constructor() : super()
 
+    private val backDispatcher = BackDispatcher()
     private val lifecycle = LifecycleRegistry()
 
     private val root =
         DefaultRootComponent(
-            componentContext = DefaultComponentContext(lifecycle = lifecycle),
+            componentContext = DefaultComponentContext(lifecycle = lifecycle, backHandler = backDispatcher),
             featureInstaller = DefaultFeatureInstaller,
         )
 
@@ -63,15 +69,33 @@ class SkikoAppDelegate : UIResponder, UIApplicationDelegateProtocol {
 
     override fun application(application: UIApplication, didFinishLaunchingWithOptions: Map<Any?, *>?): Boolean {
         window = UIWindow(frame = UIScreen.mainScreen.bounds)
+
+//        backDispatcher.register(
+//            BackCallback {
+//                window!!.hidden = true
+//            }
+//        )
+
         window!!.rootViewController = Application("Minesweeper") {
             Column {
                 // To skip upper part of screen.
-                Box(modifier = Modifier.height(100.dp))
+                Box(modifier = Modifier.height(64.dp))
 
-                RootContent(
-                    component = root,
-                    modifier = Modifier.weight(1F).fillMaxWidth(),
-                )
+                PredictiveBackGestureOverlay(
+                    backDispatcher = backDispatcher,
+                    backIcon = { progress, _ ->
+                        PredictiveBackGestureIcon(
+                            imageVector = Icons.Default.ArrowBack,
+                            progress = progress,
+                        )
+                    },
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    RootContent(
+                        component = root,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
             }
         }
         window!!.makeKeyAndVisible()
