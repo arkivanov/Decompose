@@ -98,4 +98,4 @@ Components are created in their order. E.g. the first component in the list is c
 
 ## Multiple Child Pages in a component
 
-When multiple `Child Pages` are used in one component, each such `Child Pages` must have a unique `key` argument associated. The keys are required to be unique only within the hosting component, so it is ok for different components to have `Child Pages` with same keys. An exception will be thrown if multiple `Child PAges` with the same key are detected in a component.
+When multiple `Child Pages` are used in one component, each such `Child Pages` must have a unique `key` argument associated. The keys are required to be unique only within the hosting component, so it is ok for different components to have `Child Pages` with same keys. An exception will be thrown if multiple `Child Pages` with the same key are detected in a component.
