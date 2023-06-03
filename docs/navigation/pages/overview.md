@@ -18,7 +18,7 @@ The `Child Pages` navigation model consists of two main entities:
     - `Pages#selectedIndex` - index of the selected child configuration.
 - [ChildPages](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/pages/ChildPages.kt) - a simple data class that stores a list of components and their configurations, as well as the currently selected index.
     - `ChildPages#items` - the list of child component, can be empty.
-    - `ChildStack#selectedIndex` - the index of the currently selected child component. Must be within the range of `items` indices if `items` is not empty, otherwise can be any number.
+    - `ChildPages#selectedIndex` - the index of the currently selected child component. Must be within the range of `items` indices if `items` is not empty, otherwise can be any number.
 - [PagesNavigation](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/pages/PagesNavigation.kt) - an interface that accepts navigation commands and forwards them to all subscribed observers.
 
 ### Component Configurations
