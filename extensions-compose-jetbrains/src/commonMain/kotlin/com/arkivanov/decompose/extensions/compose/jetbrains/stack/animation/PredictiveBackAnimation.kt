@@ -9,6 +9,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -75,6 +76,15 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
 
     @Composable
     override fun invoke(stack: ChildStack<C, T>, modifier: Modifier, content: @Composable (child: Child.Created<C, T>) -> Unit) {
+        val childContent =
+            remember(content) {
+                movableContentOf<Child.Created<C, T>> { child ->
+                    key(child.configuration) {
+                        content(child)
+                    }
+                }
+            }
+
         val currentKey = remember { Holder(value = 0) }
 
         var items: List<Item<C, T>> by rememberMutableStateWithLatest(
@@ -89,7 +99,7 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
                     animation(
                         stack = item.stack,
                         modifier = Modifier.fillMaxSize().then(item.progressData?.toProgressModifier() ?: Modifier),
-                        content = content,
+                        content = childContent,
                     )
                 }
             }
