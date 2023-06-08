@@ -9,6 +9,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,27 +36,35 @@ import kotlin.time.Duration.Companion.milliseconds
  * Wraps the provided [animation], handles the predictive back gesture and animates
  * the transition from the current [Child] to the previous one.
  * Calls [onBack] when the animation is finished.
+ *
+ * @param backHandler a source of the predictive back gesture events, see [BackHandler].
+ * @param animation a [StackAnimation] for regular transitions.
+ * @param exitModifier a function that returns a [Modifier] for every gesture event, for
+ * the child being removed (the currently active child).
+ * @param enterModifier a function that returns a [Modifier] for every gesture event, for
+ * the previous child (behind the currently active child).
+ * @param onBack a callback that is called when the gesture is finished.
  */
 @ExperimentalDecomposeApi
 fun <C : Any, T : Any> predictiveBackAnimation(
     backHandler: BackHandler,
     animation: StackAnimation<C, T>? = null,
-    activeModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier = ::getPredictiveBackGestureAnimationModifier,
+    exitModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier = { progress, edge ->
+        Modifier.exitModifier(progress = progress, edge = edge)
+    },
+    enterModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier = { _, _ -> Modifier },
     onBack: () -> Unit,
 ): StackAnimation<C, T> =
     PredictiveBackAnimation(
         backHandler = backHandler,
         animation = animation ?: emptyStackAnimation(),
-        activeModifier = activeModifier,
+        exitModifier = exitModifier,
+        enterModifier = enterModifier,
         onBack = onBack,
     )
 
-private fun getPredictiveBackGestureAnimationModifier(
-    progress: Float,
-    edge: BackEvent.SwipeEdge,
-): Modifier =
-    Modifier
-        .scale(1F - progress * 0.25F)
+private fun Modifier.exitModifier(progress: Float, edge: BackEvent.SwipeEdge): Modifier =
+    scale(1F - progress * 0.25F)
         .absoluteOffset(
             x = when (edge) {
                 BackEvent.SwipeEdge.LEFT -> 32.dp * progress
@@ -69,12 +78,22 @@ private fun getPredictiveBackGestureAnimationModifier(
 private class PredictiveBackAnimation<C : Any, T : Any>(
     private val backHandler: BackHandler,
     private val animation: StackAnimation<C, T>,
-    private val activeModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier,
+    private val exitModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier,
+    private val enterModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier,
     private val onBack: () -> Unit,
 ) : StackAnimation<C, T> {
 
     @Composable
     override fun invoke(stack: ChildStack<C, T>, modifier: Modifier, content: @Composable (child: Child.Created<C, T>) -> Unit) {
+        val childContent =
+            remember(content) {
+                movableContentOf<Child.Created<C, T>> { child ->
+                    key(child.configuration) {
+                        content(child)
+                    }
+                }
+            }
+
         val currentKey = remember { Holder(value = 0) }
 
         var items: List<Item<C, T>> by rememberMutableStateWithLatest(
@@ -88,8 +107,8 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
                 key(item.key) {
                     animation(
                         stack = item.stack,
-                        modifier = Modifier.fillMaxSize().then(item.progressData?.toProgressModifier() ?: Modifier),
-                        content = content,
+                        modifier = Modifier.fillMaxSize().then(item.modifier),
+                        content = childContent,
                     )
                 }
             }
@@ -107,6 +126,8 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
                     scope = scope,
                     stack = stack,
                     currentKey = currentKey.value,
+                    exitModifier = exitModifier,
+                    enterModifier = enterModifier,
                     setItems = { items = it },
                     onFinished = {
                         currentKey.value++
@@ -142,18 +163,17 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
         return state
     }
 
-    private fun ProgressData.toProgressModifier(): Modifier =
-        activeModifier(progress, edge)
+    private data class BackData<out C : Any, out T : Any>(
+        val progress: Float,
+        val edge: BackEvent.SwipeEdge,
+        val exitItem: Item<C, T>,
+        val enterItem: Item<C, T>,
+    )
 
     private data class Item<out C : Any, out T : Any>(
         val stack: ChildStack<C, T>,
         val key: Int,
-        val progressData: ProgressData? = null,
-    )
-
-    private data class ProgressData(
-        val progress: Float,
-        val edge: BackEvent.SwipeEdge,
+        val modifier: Modifier = Modifier,
     )
 
     private class Holder<T>(var value: T)
@@ -162,34 +182,37 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
         private val scope: CoroutineScope,
         stack: ChildStack<C, T>,
         currentKey: Int,
+        private val exitModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier,
+        private val enterModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier,
         private val setItems: (List<Item<C, T>>) -> Unit,
         private val onFinished: (newKey: Int) -> Unit,
     ) : BackCallback() {
-        private val nextKey = currentKey + 1
-
-        private val previousItem =
-            Item(
-                stack = ChildStack(
-                    active = stack.backStack.last(),
-                    backStack = stack.backStack.dropLast(1),
-                ),
-                key = nextKey,
+        private var backData: BackData<C, T> =
+            BackData(
+                progress = 0F,
+                edge = BackEvent.SwipeEdge.UNKNOWN,
+                exitItem = Item(stack = stack, key = currentKey),
+                enterItem = Item(stack = stack.dropLast(), key = currentKey + 1),
             )
 
-        private var currentItem = Item(stack = stack, key = currentKey)
+        private fun ChildStack<C, T>.dropLast(): ChildStack<C, T> =
+            ChildStack(active = backStack.last(), backStack = backStack.dropLast(1))
 
         override fun onBackStarted(backEvent: BackEvent) {
-            currentItem = currentItem.copy(progressData = backEvent.toProgressData())
-            setItems(listOf(previousItem, currentItem))
+            updateData(backEvent)
+        }
+
+        private fun updateData(backEvent: BackEvent) {
+            backData = backData.withProgress(progress = backEvent.progress, edge = backEvent.swipeEdge)
+            setItems(listOf(backData.enterItem, backData.exitItem))
         }
 
         override fun onBackProgressed(backEvent: BackEvent) {
-            currentItem = currentItem.copy(progressData = backEvent.toProgressData())
-            setItems(listOf(previousItem, currentItem))
+            updateData(backEvent)
         }
 
         override fun onBackCancelled() {
-            setItems(listOf(currentItem.copy(progressData = null)))
+            setItems(listOf(backData.exitItem.copy(modifier = Modifier)))
         }
 
         override fun onBack() {
@@ -197,23 +220,29 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
         }
 
         private suspend fun CoroutineScope.continueGesture() {
-            currentItem.progressData?.also { progressData ->
-                var progress = progressData.progress
-                while ((progress <= 1F) && isActive) {
-                    delay(16.milliseconds)
-                    progress += 0.075F
-                    currentItem = currentItem.copy(progressData = progressData.copy(progress = progress))
-                    setItems(listOf(previousItem, currentItem))
-                }
+            var progress = backData.progress
+            while ((progress <= 1F) && isActive) {
+                delay(16.milliseconds)
+                progress += 0.075F
+                backData = backData.withProgress(progress = progress)
+                setItems(listOf(backData.enterItem, backData.exitItem))
             }
 
             if (isActive) {
-                setItems(listOf(previousItem))
-                onFinished(nextKey)
+                setItems(listOf(backData.enterItem.copy(modifier = Modifier)))
+                onFinished(backData.enterItem.key)
             }
         }
 
-        private fun BackEvent.toProgressData(): ProgressData =
-            ProgressData(progress = progress, edge = swipeEdge)
+        private fun BackData<C, T>.withProgress(
+            progress: Float = this.progress,
+            edge: BackEvent.SwipeEdge = this.edge,
+        ): BackData<C, T> =
+            copy(
+                progress = progress,
+                edge = edge,
+                exitItem = exitItem.copy(modifier = exitModifier(progress, edge)),
+                enterItem = enterItem.copy(modifier = enterModifier(progress, edge)),
+            )
     }
 }

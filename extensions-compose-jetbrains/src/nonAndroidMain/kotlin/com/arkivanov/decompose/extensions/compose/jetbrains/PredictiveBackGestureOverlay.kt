@@ -25,6 +25,7 @@ import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.backhandler.BackDispatcher.PredictiveBackDispatcher
 import com.arkivanov.essenty.backhandler.BackEvent
+import com.arkivanov.essenty.backhandler.BackEvent.SwipeEdge
 
 /**
  * Handles back gestures on both edges of the screen and drives the provided [backDispatcher] accordingly,
@@ -34,6 +35,8 @@ import com.arkivanov.essenty.backhandler.BackEvent
  * @param backIcon an icon to be shown while the gesture is being performed. A default icon can be shown
  * using [PredictiveBackGestureIcon].
  * @param modifier a [Modifier] to applied to the overlay.
+ * @param swipeEdges a [Set] of [SwipeEdge] where swipe gestures can be detected. Absolute, e.g. RTL mode
+ * should be handled manually.
  * @param onClose If supplied, then the back gesture is also handled when there are no other enabled back
  * callbacks registered in [backDispatcher], can be used to close the application.
  * @param content a content to be shown under the overlay.
@@ -42,8 +45,9 @@ import com.arkivanov.essenty.backhandler.BackEvent
 @Composable
 fun PredictiveBackGestureOverlay(
     backDispatcher: BackDispatcher,
-    backIcon: (@Composable (progress: Float, edge: BackEvent.SwipeEdge) -> Unit)?,
+    backIcon: (@Composable (progress: Float, edge: SwipeEdge) -> Unit)?,
     modifier: Modifier = Modifier,
+    swipeEdges: Set<SwipeEdge> = setOf(SwipeEdge.LEFT, SwipeEdge.RIGHT),
     onClose: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
@@ -52,6 +56,7 @@ fun PredictiveBackGestureOverlay(
     Box(
         modifier = modifier.handleBackGestures(
             backDispatcher = backDispatcher,
+            swipeEdges = swipeEdges,
             onIconMoved = { position, progress, edge ->
                 iconState.value =
                     IconState(
@@ -90,6 +95,7 @@ fun PredictiveBackGestureOverlay(
 
 private fun Modifier.handleBackGestures(
     backDispatcher: BackDispatcher,
+    swipeEdges: Set<SwipeEdge>,
     onIconMoved: (position: Offset, progress: Float, BackGestureHandler.Edge) -> Unit,
     onIconHidden: () -> Unit,
 ): Modifier =
@@ -100,7 +106,10 @@ private fun Modifier.handleBackGestures(
             val down = awaitFirstDown(pass = PointerEventPass.Initial)
             val startPosition = down.position
 
-            if ((startPosition.x > 16.dp.toPx()) && (startPosition.x < size.width - 16.dp.toPx())) {
+            val isLeftInvalid = (SwipeEdge.LEFT !in swipeEdges) || (startPosition.x > 16.dp.toPx())
+            val isRightInvalid = (SwipeEdge.RIGHT !in swipeEdges) || (startPosition.x < size.width - 16.dp.toPx())
+
+            if (isLeftInvalid && isRightInvalid) {
                 return@awaitEachGesture
             }
 
@@ -129,10 +138,10 @@ private fun Modifier.backIconOffset(position: Offset): Modifier =
         }
     }
 
-private fun BackGestureHandler.Edge.toSwipeEdge(): BackEvent.SwipeEdge =
+private fun BackGestureHandler.Edge.toSwipeEdge(): SwipeEdge =
     when (this) {
-        BackGestureHandler.Edge.LEFT -> BackEvent.SwipeEdge.LEFT
-        BackGestureHandler.Edge.RIGHT -> BackEvent.SwipeEdge.RIGHT
+        BackGestureHandler.Edge.LEFT -> SwipeEdge.LEFT
+        BackGestureHandler.Edge.RIGHT -> SwipeEdge.RIGHT
     }
 
 private data class IconState(
@@ -274,10 +283,10 @@ private class BackGestureHandler(
     private fun getChevronPositionY(position: Offset): Float =
         startPosition.y + (position.y - startPosition.y) / 4F
 
-    private fun Edge.toSwipeEdge(): BackEvent.SwipeEdge =
+    private fun Edge.toSwipeEdge(): SwipeEdge =
         when (this) {
-            Edge.LEFT -> BackEvent.SwipeEdge.LEFT
-            Edge.RIGHT -> BackEvent.SwipeEdge.RIGHT
+            Edge.LEFT -> SwipeEdge.LEFT
+            Edge.RIGHT -> SwipeEdge.RIGHT
         }
 
     enum class Edge {
