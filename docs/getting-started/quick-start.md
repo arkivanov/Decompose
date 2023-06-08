@@ -32,7 +32,7 @@ class DefaultRootComponent(
     init {
         lifecycle... // Access the Lifecycle
         stateKeeper... // Access the StateKeeper
-        intanceKeeper... // Access the InstanceKeeper
+        instanceKeeper... // Access the InstanceKeeper
         backHandler... // Access the BackHandler
     }
 }

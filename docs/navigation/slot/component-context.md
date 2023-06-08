@@ -5,7 +5,7 @@ Custom `ComponentContext` allows passing extra data and functionality to every c
 In order to pass custom component context (like `AppComponentContext`) to child slot components, make an extension function on your `AppComponentContext` interface. This custom extension function will initialize the `Child Slot` and provide every child an `AppComponentContext`.
 
 ```kotlin
-inline fun <reified C : Parcelable, T : Any> AppComponentContext.appChildOverlay(
+inline fun <reified C : Parcelable, T : Any> AppComponentContext.appChildSlot(
     source: SlotNavigationSource<C>,
     noinline initialConfiguration: () -> C? = { null },
     key: String = "DefaultSlot",
