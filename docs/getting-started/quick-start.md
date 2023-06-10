@@ -234,12 +234,12 @@ struct RootView: View {
             stackValue: StateValue(root.stack),
             getTitle: {
                 switch $0 {
-                case is RootComponentChild.ListChild: "List"
-                case is RootComponentChild.DetailsChild: "Details"
-                default: ""
+                case is RootComponentChild.ListChild: return "List"
+                case is RootComponentChild.DetailsChild: return "Details"
+                default: return ""
                 }
             },
-            onBack: counters.onBackClicked,
+            onBack: root.onBackClicked,
             childContent: {
                 switch $0 {
                 case let child as RootComponentChild.ListChild: ListView(child.component)
