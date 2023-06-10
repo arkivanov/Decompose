@@ -151,7 +151,7 @@ Using `Value` is not mandatory, you can use any other state holders, e.g. [State
 If you are using Jetpack/JetBrains Compose, `Value` can be observed in Composable functions using one of the Compose [extension modules](/Decompose/extensions/compose/).
 
 !!!warning
-    `Value` is not thread-safe, it should be accessed only from the main thread.
+    Even though both `Value` and `MutableValue` are thread-safe, it's recommended to subscribe and update it only on the main thread.
 
 ### Why not StateFlow?
 
@@ -169,7 +169,7 @@ class Counter {
     val state: Value<State> = _state
 
     fun increment() {
-        _state.reduce { it.copy(count = it.count + 1) }
+        _state.update { it.copy(count = it.count + 1) }
     }
 
     data class State(val count: Int = 0)
@@ -198,26 +198,27 @@ fun CounterUi(counter: Counter) {
 ```swift
 struct CounterView: View {
     private let counter: Counter
-    @ObservedObject
-    private var state: ObservableValue<CounterState>
+
+    @StateValue
+    private var state: CounterState
 
     init(_ counter: Counter) {
         self.counter = counter
-        self.state = ObservableValue(counter.state)
+        _state = StateValue(counter.state)
     }
 
     var body: some View {
         VStack(spacing: 8) {
-            Text(self.state.value.text)
-            Button(action: self.counter.increment, label: { Text("Increment") })
+            Text(state.value.text)
+            Button(action: counter.increment, label: { Text("Increment") })
         }
     }
 }
 ```
 
-#### What is ObservableValue?
+#### What is StateValue
 
-[ObservableValue](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/DecomposeHelpers/ObservableValue.swift) is a wrapper around `Value` that makes it compatible with SwiftUI. It is a simple class that conforms to `ObservableObject` protocol. Unfortunately it [does not look possible](https://github.com/arkivanov/Decompose/issues/206) to publish utils for SwiftUI as a library or framework, so it has to be copied to your project.
+[StateValue](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/DecomposeHelpers/StateValue.swift) is a property wrapper for `Value` that makes it observable in SwiftUI. Unfortunately it [does not look possible](https://github.com/arkivanov/Decompose/issues/206) to publish utils for SwiftUI as a library or framework, so it has to be copied in your project.
 
 #### More Swift utilities
 

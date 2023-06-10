@@ -70,7 +70,9 @@ class DefaultListComponent(
 }
 ```
 
-Observing `Value` in Jetpack Compose is easy, just use `subscribeAsState` extension function.
+### Observing Value in Jetpack Compose 
+
+Observing `Value` in Jetpack Compose is easy, just use the `subscribeAsState` extension function.
 
 ```kotlin
 @Composable
@@ -89,6 +91,34 @@ fun ListContent(component: ListComponent, modifier: Modifier = Modifier) {
     }
 }
 ```
+
+### Observing Value in SwiftUI
+
+```swift
+struct DetailsView: View {
+    private let list: ListComponent
+    
+    @StateValue
+    private var model: ListComponentModel
+
+    init(_ list: ListComponent) {
+        self.list = list
+        _model = StateValue(list.model)
+    }
+    
+    var body: some View {
+        List(model.items, ...) { item in
+            // Display the item
+        }
+    }
+}
+```
+
+#### What is StateValue
+
+[StateValue](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/DecomposeHelpers/StateValue.swift) is a property wrapper for `Value` that makes it observable in SwiftUI. Unfortunately it [does not look possible](https://github.com/arkivanov/Decompose/issues/206) to publish utils for SwiftUI as a library or framework, so it has to be copied in your project.
+
+### Observing Value in other UI Frameworks
 
 Please refer to the [docs](/Decompose/component/overview/) for information about other platforms and UI frameworks.
 
@@ -114,6 +144,9 @@ interface RootComponent {
 
     val stack: Value<ChildStack<*, Child>>
 
+    // It's possible to pop multiple screens at a time on iOS
+    fun onBackClicked(toIndex: Int)
+    
     // Defines all possible child components
     sealed class Child {
         class ListChild(val component: ListComponent) : Child()
@@ -127,15 +160,13 @@ class DefaultRootComponent(
 
     private val navigation = StackNavigation<Config>()
 
-    private val _stack =
+    override val stack: Value<ChildStack<*, RootComponent.Child>> =
         childStack(
             source = navigation,
             initialConfiguration = Config.List, // The initial child component is List
             handleBackButton = true, // Automatically pop from the stack on back button presses
             childFactory = ::child,
         )
-
-    override val stack: Value<ChildStack<*, RootComponent.Child>> = _stack
 
     private fun child(config: Config, componentContext: ComponentContext): RootComponent.Child =
         when (config) {
@@ -157,6 +188,10 @@ class DefaultRootComponent(
             item = config.item, // Supply arguments from the configuration
             onFinished = navigation::pop, // Pop the details component
         )
+    
+    override fun onBackClicked(toIndex: Int) {
+        navigation.popTo(index = toIndex)
+    }
 
     @Parcelize // The `kotlin-parcelize` plugin must be applied if you are targeting Android 
     private sealed interface Config : Parcelable {
@@ -190,29 +225,36 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
 struct RootView: View {
     private let root: RootComponent
     
-    @ObservedObject
-    private var childStack: ObservableValue<ChildStack<AnyObject, RootComponentChild>>
-    
-    private var activeChild: RootComponentChild { childStack.value.active.instance }
-    
     init(_ root: RootComponent) {
         self.root = root
-        childStack = ObservableValue(root.childStack)
     }
     
     var body: some View {
-        switch activeChild {
-        case let child as RootComponentChild.ListChild: ListView(child.component)
-        case let child as RootComponentChild.DetailsChild: DetailsView(child.component)
-        default: EmptyView()
-        }
+        StackView(
+            stackValue: StateValue(root.stack),
+            getTitle: {
+                switch $0 {
+                case is RootComponentChild.ListChild: "List"
+                case is RootComponentChild.DetailsChild: "Details"
+                default: ""
+                }
+            },
+            onBack: counters.onBackClicked,
+            childContent: {
+                switch $0 {
+                case let child as RootComponentChild.ListChild: ListView(child.component)
+                case let child as RootComponentChild.DetailsChild: DetailsView(child.component)
+                default: EmptyView()
+                }
+            }
+        )
     }
 }
 ```
 
-#### What is ObservableValue?
+#### What is StackView?
 
-[ObservableValue](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/DecomposeHelpers/ObservableValue.swift) is a wrapper around `Value` that makes it compatible with SwiftUI. It is a simple class that conforms to `ObservableObject` protocol. Unfortunately it [does not look possible](https://github.com/arkivanov/Decompose/issues/206) to publish utils for SwiftUI as a library or framework, so it has to be copied to your project. 
+[StackView](https://github.com/arkivanov/Decompose/blob/master/sample/app-ios/app-ios/DecomposeHelpers/StackView.swift) is a view that displays `Child Stack` using the native SwiftUI navigation and providing the native UX. For the same reason, it has to be copied in your project.
 
 ### Child Stack with other UI Frameworks
 
@@ -222,7 +264,7 @@ Please refer to [samples](/Decompose/samples/) for integrations with other UI fr
 
 ### Android with Jetpack Compose
 
-Use `defaultComponentContext` extension function to create the root `ComponentContext` in an `Activity`.
+Use `defaultComponentContext` extension function to create the root `ComponentContext` in an `Activity` or a `Fragment`.
 
 ```kotlin
 class MainActivity : AppCompatActivity() {
