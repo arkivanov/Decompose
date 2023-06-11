@@ -3,20 +3,25 @@
     <item
         android:id="@+id/tab_counters"
         android:icon="@drawable/ic_tab_counters"
-        android:title="Counters" />
+        android:title="@null" />
+
+    <item
+        android:id="@+id/tab_cards"
+        android:icon="@drawable/ic_tab_cards"
+        android:title="@null" />
 
     <item
         android:id="@+id/tab_multipane"
         android:icon="@drawable/ic_tab_multipane"
-        android:title="Multi-Pane" />
+        android:title="@null" />
 
     <item
         android:id="@+id/tab_dynamic_features"
         android:icon="@drawable/ic_tab_dynamic_features"
-        android:title="Dyn Features" />
+        android:title="@null" />
 
     <item
         android:id="@+id/tab_custom_navigation"
         android:icon="@drawable/ic_tab_custom_navigation"
-        android:title="Custom Nav" />
+        android:title="@null" />
 </menu>
