@@ -22,6 +22,18 @@ class DefaultAppComponentContext(
 }
 ```
 
+## Custom child ComponentContext
+
+The default [ComponentContext#childContext](child-components/#adding-a-child-component-manually) extension function returns the default `ComponentContext`. In order to create custom child `ComponentContext`, a special extension function is required.
+
+```kotlin
+fun AppComponentContext.childAppContext(key: String, lifecycle: Lifecycle? = null): AppComponentContext =
+    DefaultAppComponentContext(
+        componentContext = childContext(key = key, lifecycle = lifecycle),
+        // Supply additional dependencies here
+    )
+```
+
 ## Navigation with custom ComponentContext
 
 - [Using Child Stack](../navigation/stack/component-context.md)
