@@ -5,6 +5,7 @@ import com.arkivanov.sample.shared.componentContent
 import com.arkivanov.sample.shared.counters.CountersContent
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesContent
 import com.arkivanov.sample.shared.multipane.MultiPaneContent
+import com.arkivanov.sample.shared.root.RootComponent.Child.CardsChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.CountersChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
@@ -53,6 +54,7 @@ var RootContent: FC<RProps<RootComponent>> = FC { props ->
 
             when (val child = childStack.active.instance) {
                 is CountersChild -> componentContent(component = child.component, content = CountersContent)
+                is CardsChild -> NotImplementedContent()
                 is MultiPaneChild -> componentContent(component = child.component, content = MultiPaneContent)
                 is DynamicFeaturesChild -> componentContent(component = child.component, content = DynamicFeaturesContent)
                 is CustomNavigationChild -> NotImplementedContent()
@@ -69,6 +71,7 @@ var RootContent: FC<RProps<RootComponent>> = FC { props ->
 
             value = when (childStack.active.instance) {
                 is CountersChild -> TabItem.COUNTERS
+                is CardsChild -> TabItem.CARDS
                 is MultiPaneChild -> TabItem.MULTI_PANE
                 is DynamicFeaturesChild -> TabItem.DYNAMIC_FEATURES
                 is CustomNavigationChild -> TabItem.CUSTOM_NAVIGATION
@@ -77,6 +80,7 @@ var RootContent: FC<RProps<RootComponent>> = FC { props ->
             onChange = { _, newValue ->
                 when (newValue.unsafeCast<TabItem>()) {
                     TabItem.COUNTERS -> props.component.onCountersTabClicked()
+                    TabItem.CARDS -> props.component.onCardsTabClicked()
                     TabItem.MULTI_PANE -> props.component.onMultiPaneTabClicked()
                     TabItem.DYNAMIC_FEATURES -> props.component.onDynamicFeaturesTabClicked()
                     TabItem.CUSTOM_NAVIGATION -> props.component.onCustomNavigationTabClicked()
@@ -87,6 +91,12 @@ var RootContent: FC<RProps<RootComponent>> = FC { props ->
                 value = TabItem.COUNTERS
                 label = ReactNode("Counters")
                 icon = Icon.create { +"pin" }
+            }
+
+            BottomNavigationAction {
+                value = TabItem.CARDS
+                label = ReactNode("Cards")
+                icon = Icon.create { +"swipe_up" }
             }
 
             BottomNavigationAction {
@@ -111,5 +121,9 @@ var RootContent: FC<RProps<RootComponent>> = FC { props ->
 }
 
 private enum class TabItem {
-    COUNTERS, MULTI_PANE, DYNAMIC_FEATURES, CUSTOM_NAVIGATION
+    COUNTERS,
+    CARDS,
+    MULTI_PANE,
+    DYNAMIC_FEATURES,
+    CUSTOM_NAVIGATION,
 }

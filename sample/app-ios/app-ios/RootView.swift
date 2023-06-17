@@ -82,6 +82,7 @@ class PreviewRootComponent : RootComponent {
         simpleChildStack(RootComponentChild.CountersChild(component: PreviewCountersComponent()))
 
     func onCountersTabClicked() {}
+    func onCardsTabClicked() {}
     func onMultiPaneTabClicked() {}
     func onDynamicFeaturesTabClicked() {}
     func onCustomNavigationTabClicked() {}
