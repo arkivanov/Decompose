@@ -38,6 +38,14 @@ Extensions for JetBrains Compose are provided by the `extensions-compose-jetbrai
     implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>")
     ```
 
+#### ProGuard rules for Compose for Desktop (JVM)
+
+If you support Compose for Desktop, you will need to add the following rule for ProGuard, so that the app works correctly in release mode. See [Minification & obfuscation](https://github.com/JetBrains/compose-multiplatform/tree/master/tutorials/Native_distributions_and_local_execution#minification--obfuscation) section in Compose docs for more information.
+
+```
+-keep class com.arkivanov.decompose.extensions.compose.jetbrains.mainthread.SwingMainThreadChecker
+```
+
 ## Content
 
 As mentioned above both modules provide similar functionality. Most of the links in this document refer to the Jetpack module, however there usually a mirror in the JetBrains module.
