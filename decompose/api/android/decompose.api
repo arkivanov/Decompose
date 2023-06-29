@@ -67,6 +67,13 @@ public abstract interface annotation class com/arkivanov/decompose/ExperimentalD
 public abstract interface annotation class com/arkivanov/decompose/InternalDecomposeApi : java/lang/annotation/Annotation {
 }
 
+public final class com/arkivanov/decompose/RetainedComponentKt {
+	public static final fun retainedComponent (Landroidx/activity/ComponentActivity;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun retainedComponent (Landroidx/fragment/app/Fragment;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static synthetic fun retainedComponent$default (Landroidx/activity/ComponentActivity;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun retainedComponent$default (Landroidx/fragment/app/Fragment;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
 public final class com/arkivanov/decompose/errorhandler/ErrorHandlersKt {
 	public static final fun getOnDecomposeError ()Lkotlin/jvm/functions/Function1;
 	public static final fun setOnDecomposeError (Lkotlin/jvm/functions/Function1;)V
