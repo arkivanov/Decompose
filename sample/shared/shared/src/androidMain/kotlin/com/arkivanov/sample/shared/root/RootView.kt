@@ -9,6 +9,7 @@ import com.arkivanov.decompose.value.observe
 import com.arkivanov.sample.shared.R
 import com.arkivanov.sample.shared.beginDelayedSlideTransition
 import com.arkivanov.sample.shared.counters.CountersView
+import com.arkivanov.sample.shared.root.RootComponent.Child.CardsChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.CountersChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
@@ -27,6 +28,7 @@ fun ViewContext.RootView(component: RootComponent): View {
         val newView: View =
             when (val child = newStack.active.instance) {
                 is CountersChild -> CountersView(child.component)
+                is CardsChild,
                 is MultiPaneChild,
                 is DynamicFeaturesChild,
                 is CustomNavigationChild -> NotImplementedView()
@@ -50,6 +52,7 @@ fun ViewContext.RootView(component: RootComponent): View {
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (val id = item.itemId) {
                 R.id.tab_counters -> component.onCountersTabClicked()
+                R.id.tab_cards -> component.onCardsTabClicked()
                 R.id.tab_multipane -> component.onMultiPaneTabClicked()
                 R.id.tab_dynamic_features -> component.onDynamicFeaturesTabClicked()
                 R.id.tab_custom_navigation -> component.onCustomNavigationTabClicked()
@@ -67,6 +70,7 @@ fun ViewContext.RootView(component: RootComponent): View {
         navigationView.selectedItemId =
             when (state.active.instance) {
                 is CountersChild -> R.id.tab_counters
+                is CardsChild -> R.id.tab_cards
                 is MultiPaneChild -> R.id.tab_multipane
                 is DynamicFeaturesChild -> R.id.tab_dynamic_features
                 is CustomNavigationChild -> R.id.tab_custom_navigation
@@ -82,7 +86,8 @@ private val RootComponent.Child.index: Int
     get() =
         when (this) {
             is CountersChild -> 0
-            is MultiPaneChild -> 1
-            is DynamicFeaturesChild -> 2
-            is CustomNavigationChild -> 3
+            is CardsChild -> 1
+            is MultiPaneChild -> 2
+            is DynamicFeaturesChild -> 3
+            is CustomNavigationChild -> 4
         }
