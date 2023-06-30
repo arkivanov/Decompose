@@ -10,6 +10,7 @@ import com.arkivanov.decompose.router.stack.webhistory.WebHistoryController
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import com.arkivanov.sample.shared.cards.DefaultCardsComponent
 import com.arkivanov.sample.shared.counters.DefaultCountersComponent
 import com.arkivanov.sample.shared.customnavigation.DefaultCustomNavigationComponent
 import com.arkivanov.sample.shared.dynamicfeatures.DefaultDynamicFeaturesComponent
@@ -52,6 +53,7 @@ class DefaultRootComponent(
     private fun child(config: Config, componentContext: ComponentContext): Child =
         when (config) {
             is Config.Counters -> CountersChild(DefaultCountersComponent(componentContext))
+            is Config.Cards -> Child.CardsChild(DefaultCardsComponent(componentContext))
             is Config.MultiPane -> MultiPaneChild(DefaultMultiPaneComponent(componentContext))
             is Config.DynamicFeatures -> DynamicFeaturesChild(DefaultDynamicFeaturesComponent(componentContext, featureInstaller))
             is Config.CustomNavigation -> CustomNavigationChild(DefaultCustomNavigationComponent(componentContext))
@@ -59,6 +61,10 @@ class DefaultRootComponent(
 
     override fun onCountersTabClicked() {
         navigation.bringToFront(Config.Counters)
+    }
+
+    override fun onCardsTabClicked() {
+        navigation.bringToFront(Config.Cards)
     }
 
     override fun onMultiPaneTabClicked() {
@@ -75,6 +81,7 @@ class DefaultRootComponent(
 
     private companion object {
         private const val WEB_PATH_COUNTERS = "counters"
+        private const val WEB_PATH_CARDS = "cards"
         private const val WEB_PATH_MULTI_PANE = "multi-pane"
         private const val WEB_PATH_DYNAMIC_FEATURES = "dynamic-features"
         private const val WEB_PATH_CUSTOM_NAVIGATION = "custom-navigation"
@@ -88,6 +95,7 @@ class DefaultRootComponent(
         private fun getPathForConfig(config: Config): String =
             when (config) {
                 Config.Counters -> "/$WEB_PATH_COUNTERS"
+                Config.Cards -> "/$WEB_PATH_CARDS"
                 Config.MultiPane -> "/$WEB_PATH_MULTI_PANE"
                 Config.DynamicFeatures -> "/$WEB_PATH_DYNAMIC_FEATURES"
                 Config.CustomNavigation -> "/$WEB_PATH_CUSTOM_NAVIGATION"
@@ -96,6 +104,7 @@ class DefaultRootComponent(
         private fun getConfigForPath(path: String): Config =
             when (path.removePrefix("/")) {
                 WEB_PATH_COUNTERS -> Config.Counters
+                WEB_PATH_CARDS -> Config.Cards
                 WEB_PATH_MULTI_PANE -> Config.MultiPane
                 WEB_PATH_DYNAMIC_FEATURES -> Config.DynamicFeatures
                 WEB_PATH_CUSTOM_NAVIGATION -> Config.CustomNavigation
@@ -112,6 +121,16 @@ class DefaultRootComponent(
              */
             @Suppress("unused")
             private fun readResolve(): Any = Counters
+        }
+
+        @Parcelize
+        object Cards : Config {
+            /**
+             * Only required for state preservation on JVM/desktop via StateKeeper, as it uses Serializable.
+             * Temporary workaround for https://youtrack.jetbrains.com/issue/KT-40218.
+             */
+            @Suppress("unused")
+            private fun readResolve(): Any = Cards
         }
 
         @Parcelize

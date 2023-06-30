@@ -38,6 +38,14 @@ Extensions for JetBrains Compose are provided by the `extensions-compose-jetbrai
     implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>")
     ```
 
+#### ProGuard rules for Compose for Desktop (JVM)
+
+If you support Compose for Desktop, you will need to add the following rule for ProGuard, so that the app works correctly in release mode. See [Minification & obfuscation](https://github.com/JetBrains/compose-multiplatform/tree/master/tutorials/Native_distributions_and_local_execution#minification--obfuscation) section in Compose docs for more information.
+
+```
+-keep class com.arkivanov.decompose.extensions.compose.jetbrains.mainthread.SwingMainThreadChecker
+```
+
 ## Content
 
 As mentioned above both modules provide similar functionality. Most of the links in this document refer to the Jetpack module, however there usually a mirror in the JetBrains module.
@@ -91,7 +99,7 @@ fun main() {
 
 ### Navigating between Composable components
 
-The [Child Stack](/Decompose/navigation/stack/overview/) feature provides [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) as `Value<ChildStack>` that can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `ChildStack` changes.
+The [Child Stack](/Decompose/navigation/stack/overview/) navigation model provides [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) as `Value<ChildStack>` that can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `ChildStack` changes.
 
 Both Compose extension modules provide the [Children(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-jetbrains/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/jetbrains/stack/Children.kt) function which has the following features:
 
@@ -136,6 +144,36 @@ fun MainContent(component: MainComponent) {
 
 @Composable
 fun DetailsContent(component: DetailsComponent) {
+    // Omitted code
+}
+```
+
+### Pager-like navigation
+
+!!!warning
+    This navigation model is experimental, the API is subject to change.
+
+The [Child Pages](/Decompose/navigation/pages/overview/) navigation model provides [ChildPages](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/pages/ChildPages.kt) as `Value<ChildPages>` that can be observed in a `Composable` component.
+
+Both Compose extension modules provide the [Pages(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-jetbrains/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/jetbrains/pages/Pages.kt) function which has the following features:
+
+- It listens for the `ChildPages` changes and displays child components using `HorizontalPager` or `VerticalPager` (see the related Jetpack Compose [documentation](https://developer.android.com/jetpack/compose/layouts/pager)).
+- It animates page changes if there is an `animation` spec provided.
+
+```kotlin title="Example"
+@Composable
+fun PagesContent(component: PagesComponent) {
+    Pages(
+        pages = component.pages,
+        onPageSelected = component::selectPage,
+        scrollAnimation = PagesScrollAnimation.Default,
+    ) { _, page ->
+        PageContent(page)
+    }
+}
+
+@Composable
+fun PageContent(component: PageComponent) {
     // Omitted code
 }
 ```
@@ -217,7 +255,7 @@ fun RootContent(component: RootComponent) {
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationSeparate.gif" width="512">
 
-It is also possible to take into account the other child and the animation direction when selecting the animation. 
+It is also possible to take into account the other child and the animation direction when selecting the animation.
 
 ```kotlin
 @Composable
@@ -303,22 +341,111 @@ fun someAnimator(): StackAnimator =
 
 Please refer to the predefined animators (`fade`, `slide`, etc.) for implementation examples.
 
+### Predictive Back Gesture
+
+!!!warning
+    Predictive Back Gesture support is experimental, the API is subject to change. For now, please use version 2.1.x.
+
+`Child Stack` supports the new [Android Predictive Back Gesture](https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture) on all platforms. To enable the gesture, first implement `BackHandlerOwner` interface in your component with `Child Stack`, then just pass `predictiveBackAnimation` to the `Children` function.
+
+```kotlin title="RootComponent"
+interface RootComponent : BackHandlerOwner {
+    val stack: Value<ChildStack<...>>
+
+    fun onBackClicked()
+}
+
+class DefaultRootComponent(
+    componentContext: ComponentContext,
+) : ComponentContext by componentContext, BackHandlerOwner {
+    // ComponentContext already implements BackHandlerOwner, no need to implement it separately
+
+    // Omitted body
+
+    override fun onBackClicked() {
+        navigation.pop()
+    }
+}
+```
+
+```kotlin title="RootContent"
+@Composable
+fun RootContent(component: RootComponent) {
+    Children(
+        stack = rootComponent.childStack,
+        animation = predictiveBackAnimation(
+            backHandler = component.backHandler,
+            animation = stackAnimation(fade() + scale()), // Your usual animation here
+            onBack = component::onBackClicked,
+        ),
+    ) {
+        // Omitted code
+    }
+}
+```
+
+#### Predictive Back Gesture on Android
+
+On Android, the predictive back gesture only works starting with Android T. On Android T, it works only between Activities, if enabled in the system settings. Starting with Android U, the predictive back gesture can be enabled between `Child Stack` screens inside a single Activity.
+
+<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureAndroid.mp4" type="video/mp4"></video>
+
+#### Predictive Back Gesture on other platforms
+
+On all other platforms, the predictive back gesture can be enabled by showing a special overlay that automatically handles the gesture and manipulates `BackDispatcher` as needed.
+
+<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureIos.mp4" type="video/mp4"></video>
+
+```kotlin title="Initialising the root component"
+val lifecycle = LifecycleRegistry()
+val backDispatcher = BackDispatcher()
+
+val componentContext = 
+    DefaultComponentContext(
+        lifecycle = lifecycle,
+        backHandler = backHandler, // Pass BackDispatcher here
+    )
+    
+val root = DefaultRootComponent(componentContext = componentContext)
+```
+
+```kotlin title="Using Composable PredictiveBackGestureOverlay"
+PredictiveBackGestureOverlay(
+    backDispatcher = backDispatcher, // Use the same BackDispatcher as above
+    backIcon = { progress, _ ->
+        PredictiveBackGestureIcon(
+            imageVector = Icons.Default.ArrowBack,
+            progress = progress,
+        )
+    },
+    modifier = Modifier.fillMaxSize(),
+) {
+    RootContent(
+        component = root,
+        modifier = Modifier.fillMaxSize(),
+    )
+}
+```
+
 ## Compose for iOS, macOS and Web (Canvas)
 
 Compose for iOS, macOS and Web (Canvas) is still work in progress and was not officially announced. However, Decompose already supports it. The support is also **experimental** and is not part of the main branch - see [#74](https://github.com/arkivanov/Decompose/issues/74) for more information.
 
-If you want to use Decompose with Compose for iOS/macOS/Web, you have to use special versions of `extensions-compose-jetbrains` module.
+If you want to use Decompose with Compose for iOS/macOS/Web, you have to use special versions of both `decompose` and `extensions-compose-jetbrains` modules.
 
 === "Groovy"
 
     ``` groovy
+    implementation "com.arkivanov.decompose:decompose:<version>-compose-experimental"
     implementation "com.arkivanov.decompose:extensions-compose-jetbrains:<version>-compose-experimental"
     ```
 
 === "Kotlin"
 
     ``` kotlin
+    implementation("com.arkivanov.decompose:decompose:<version>-compose-experimental")
     implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>-compose-experimental")
+    ```
 
 ### Samples
 

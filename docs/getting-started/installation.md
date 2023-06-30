@@ -4,7 +4,7 @@ Decompose provides a number of modules, they are all published to Maven Central 
 
 ## The main Decompose module
 
-The main functionality is provided by the `decompose` module. It contains some core features like [ComponentContext](/Decompose/component/overview/#componentcontext), [Child Stack](/Decompose/navigation/stack/overview/), [Child Slot](/Decompose/navigation/slot/overview/), etc.
+The main functionality is provided by the `decompose` module. It contains some core features like [ComponentContext](/Decompose/component/overview/#componentcontext), [Child Stack](/Decompose/navigation/stack/overview/), etc.
 
 ### Gradle setup
 
@@ -23,6 +23,9 @@ The main functionality is provided by the `decompose` module. It contains some c
 ### Dependency on Essenty library
 
 Some functionality is actually provided by [Essenty](https://github.com/arkivanov/Essenty) library. Essenty is implemented by the same author and provides very basic things like `Lifecycle`, `StateKeeper`, etc. Most important Essenty modules are added to the `decompose` module as `api` dependency, so you don't have to add them manually to your project. Please familiarise yourself with Essenty library.
+
+!!! note
+    If you are targetting Android, make sure you applied the [kotlin-parcelize](https://developer.android.com/kotlin/parcelize) Gradle plugin.
 
 ## Extensions for Jetpack/JetBrains Compose
 

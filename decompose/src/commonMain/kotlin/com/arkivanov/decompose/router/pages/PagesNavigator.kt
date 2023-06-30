@@ -8,9 +8,9 @@ interface PagesNavigator<C : Any> {
     /**
      * Transforms the current [Pages] state into a new one.
      *
-     * During the navigation process, the Child Pages navigation model compares the [Pages] state with
-     * the previous one. The navigation model ensures that all removed components are destroyed, and
-     * updates lifecycles of the existing components to match the new state.
+     * During the navigation process, the Child Pages navigation model compares the new [Pages] state
+     * with the previous one. The navigation model ensures that all removed components are destroyed,
+     * and updates lifecycles of the existing components to match the new state.
      *
      * The navigation is usually performed synchronously, which means that by the time
      * the `navigate` method returns, the navigation is finished and all component lifecycles are
