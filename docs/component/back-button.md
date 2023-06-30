@@ -35,6 +35,20 @@ class SomeComponent(
 }
 ```
 
+### Callback order
+
+By default, registered callbacks are checked in reverse order, the last registered enabled callback is called first. Various navigation models may also register back button callbacks, e.g. `Child Stack` uses `BackHandler` to automatically pop the stack on back button press. If you want your callback to be called first, make sure to register it as later as possible. Similarly, if you want your callback to be called last, make sure to register it as early as possible.
+
+Since Essenty version `1.2.0-alpha`, it is also possible to specify a priority for your back callback.
+
+```kotlin
+// This will make sure your callback is always called first
+private val backCallback = BackCallback(priority = Int.MAX_VALUE) { ... }
+
+// This will make sure your callback is always called last
+private val backCallback = BackCallback(priority = Int.MIN_VALUE) { ... }
+```
+
 ## Predictive Back Gesture
 
 Decompose experimentally supports the new [Android Predictive Back Gesture](https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture), not only on Android. The UI part is covered by Compose extensions, please see the [related docs](../../extensions/compose#predictive-back-gesture).
