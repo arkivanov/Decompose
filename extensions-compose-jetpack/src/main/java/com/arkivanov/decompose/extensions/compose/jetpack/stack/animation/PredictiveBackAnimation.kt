@@ -16,7 +16,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
@@ -52,7 +54,9 @@ fun <C : Any, T : Any> predictiveBackAnimation(
     exitModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier = { progress, edge ->
         Modifier.exitModifier(progress = progress, edge = edge)
     },
-    enterModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier = { _, _ -> Modifier },
+    enterModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier = { progress, _ ->
+        Modifier.enterModifier(progress = progress)
+    },
     onBack: () -> Unit,
 ): StackAnimation<C, T> =
     PredictiveBackAnimation(
@@ -73,7 +77,13 @@ private fun Modifier.exitModifier(progress: Float, edge: BackEvent.SwipeEdge): M
             },
         )
         .alpha(((1F - progress) * 2F).coerceAtMost(1F))
-        .clip(RoundedCornerShape(percent = 10))
+        .clip(RoundedCornerShape(size = 64.dp * progress))
+
+private fun Modifier.enterModifier(progress: Float): Modifier =
+    drawWithContent {
+        drawContent()
+        drawRect(color = Color(red = 0F, green = 0F, blue = 0F, alpha = (1F - progress) / 4F))
+    }
 
 private class PredictiveBackAnimation<C : Any, T : Any>(
     private val backHandler: BackHandler,
@@ -239,7 +249,7 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
             edge: BackEvent.SwipeEdge = this.edge,
         ): BackData<C, T> =
             copy(
-                progress = progress,
+                progress = progress.coerceIn(0F..1F),
                 edge = edge,
                 exitItem = exitItem.copy(modifier = exitModifier(progress, edge)),
                 enterItem = enterItem.copy(modifier = enterModifier(progress, edge)),
