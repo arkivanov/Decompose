@@ -1,8 +1,8 @@
 [versions]
 
-decompose = "2.1.0-compose-experimental-alpha-03"
+decompose = "2.1.0-compose-experimental-alpha-04"
 kotlin = "1.8.20"
-essenty = "1.2.0-alpha-02"
+essenty = "1.2.0-alpha-03"
 parcelizeDarwin = "0.1.4"
 reaktive = "1.2.3"
 junit = "4.13.2"
