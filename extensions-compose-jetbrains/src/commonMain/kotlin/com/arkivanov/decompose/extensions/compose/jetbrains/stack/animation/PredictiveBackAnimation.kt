@@ -139,8 +139,8 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
                     exitModifier = exitModifier,
                     enterModifier = enterModifier,
                     setItems = { items = it },
-                    onFinished = {
-                        currentKey.value++
+                    onFinished = { newKey ->
+                        currentKey.value = newKey
                         onBack()
                     },
                 )
@@ -226,7 +226,11 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
         }
 
         override fun onBack() {
-            scope.launch { continueGesture() }
+            if (backData.progress > 0F) {
+                scope.launch { continueGesture() }
+            } else {
+                onFinished(backData.exitItem.key)
+            }
         }
 
         private suspend fun CoroutineScope.continueGesture() {
