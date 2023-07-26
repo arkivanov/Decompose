@@ -403,7 +403,7 @@ val backDispatcher = BackDispatcher()
 val componentContext = 
     DefaultComponentContext(
         lifecycle = lifecycle,
-        backHandler = backHandler, // Pass BackDispatcher here
+        backHandler = backDispatcher, // Pass BackDispatcher here
     )
     
 val root = DefaultRootComponent(componentContext = componentContext)

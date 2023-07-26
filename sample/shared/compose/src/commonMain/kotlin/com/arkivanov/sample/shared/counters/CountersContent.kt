@@ -8,10 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.isFront
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
@@ -25,13 +23,15 @@ internal fun CountersContent(component: CountersComponent, modifier: Modifier = 
     Children(
         stack = component.childStack,
         modifier = modifier,
-        animation = stackAnimation { _, _, direction ->
-            if (direction.isFront) {
-                slide() + fade()
-            } else {
-                scale(frontFactor = 1F, backFactor = 0.7F) + fade()
-            }
-        },
+        // Workaround for https://issuetracker.google.com/issues/270656235
+        animation = stackAnimation(fade() + scale())
+//        animation = stackAnimation { _, _, direction ->
+//            if (direction.isFront) {
+//                slide() + fade()
+//            } else {
+//                scale(frontFactor = 1F, backFactor = 0.7F) + fade()
+//            }
+//        },
     ) {
         CounterContent(
             component = it.instance,
