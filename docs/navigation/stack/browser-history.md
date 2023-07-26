@@ -51,11 +51,11 @@ config.devServer = {
 
 Using `WebHistoryController` is easy:
 
-1. Create an instance of `DefaultWebHistoryController` in the JS app and pass it via constructor to a component responsible for
-navigation (typically it is the root component)
-2. In the component, call the `WebHistoryController.attach` method and supply all arguments
-3. In the JS app, pass an initial deeplink to the component
-4. Use the deeplink in the component to generate an initial back stack
+1. Create an instance of `DefaultWebHistoryController` in the JS app and pass it via constructor to a component responsible for navigation (typically it is the root component).
+2. Create `Child Stack` and use `WebHistoryController#historyPaths` property for initial stack. This is required for cases when the page is reloaded (refreshed), so that the stack is aligned with te browser history.
+3. In the component, call the `WebHistoryController.attach` method and supply all arguments.
+4. In the JS app, pass an initial deeplink to the component.
+5. Use the deeplink in the component to generate an initial back stack.
 
 ### Example
 

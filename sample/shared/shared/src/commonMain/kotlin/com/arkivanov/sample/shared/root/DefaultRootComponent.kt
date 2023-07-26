@@ -35,7 +35,7 @@ class DefaultRootComponent(
     private val stack =
         childStack(
             source = navigation,
-            initialStack = { getInitialStack(deepLink) },
+            initialStack = { getInitialStack(webHistoryPaths = webHistoryController?.historyPaths, deepLink = deepLink) },
             childFactory = ::child,
         )
 
@@ -85,6 +85,12 @@ class DefaultRootComponent(
         private const val WEB_PATH_MULTI_PANE = "multi-pane"
         private const val WEB_PATH_DYNAMIC_FEATURES = "dynamic-features"
         private const val WEB_PATH_CUSTOM_NAVIGATION = "custom-navigation"
+
+        private fun getInitialStack(webHistoryPaths: List<String>?, deepLink: DeepLink): List<Config> =
+            webHistoryPaths
+                ?.takeUnless(List<*>::isEmpty)
+                ?.map(::getConfigForPath)
+                ?: getInitialStack(deepLink)
 
         private fun getInitialStack(deepLink: DeepLink): List<Config> =
             when (deepLink) {

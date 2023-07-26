@@ -403,6 +403,7 @@ public final class com/arkivanov/decompose/router/stack/ValueExtKt {
 
 public abstract interface class com/arkivanov/decompose/router/stack/webhistory/WebHistoryController {
 	public abstract fun attach (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun getHistoryPaths ()Ljava/util/List;
 }
 
 public abstract class com/arkivanov/decompose/value/MutableValue : com/arkivanov/decompose/value/Value {
