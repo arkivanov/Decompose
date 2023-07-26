@@ -75,6 +75,12 @@ private class MutableValueImpl<T : Any>(initialValue: T) : MutableValue<T>() {
         }
     }
 
+    @Deprecated(
+        "Calling this method from Swift leaks the observer, " +
+            "because Kotlin wraps the function passed from Swift every time the method is called. " +
+            "Please use the new `observe` method which returns `Disposable`.",
+        level = DeprecationLevel.WARNING,
+    )
     override fun subscribe(observer: (T) -> Unit) {
         lock.synchronized {
             if (observer in observers) {
@@ -102,6 +108,12 @@ private class MutableValueImpl<T : Any>(initialValue: T) : MutableValue<T>() {
         }
     }
 
+    @Deprecated(
+        "Calling this method from Swift doesn't have any effect, " +
+            "because Kotlin wraps the function passed from Swift every time the method is called. " +
+            "Please use the new `observe` method which returns `Disposable`.",
+        level = DeprecationLevel.WARNING,
+    )
     override fun unsubscribe(observer: (T) -> Unit) {
         lock.synchronized { observers -= observer }
     }

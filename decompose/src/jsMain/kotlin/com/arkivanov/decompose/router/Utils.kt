@@ -34,7 +34,7 @@ internal fun <T> List<T>.findFirstDifferentIndex(other: List<T>): Int {
 
 internal fun <T : Any> Value<T>.subscribe(observer: (new: T, old: T) -> Unit) {
     var old = value
-    subscribe { new ->
+    observe { new ->
         val tmp = old
         old = new
         observer(new, tmp)
