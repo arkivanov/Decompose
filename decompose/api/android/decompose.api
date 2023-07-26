@@ -5,6 +5,10 @@ public final class com/arkivanov/decompose/BuildConfig {
 	public fun <init> ()V
 }
 
+public abstract interface class com/arkivanov/decompose/Cancellation {
+	public abstract fun cancel ()V
+}
+
 public abstract class com/arkivanov/decompose/Child {
 	public abstract fun getConfiguration ()Ljava/lang/Object;
 	public abstract fun getInstance ()Ljava/lang/Object;
@@ -399,6 +403,7 @@ public final class com/arkivanov/decompose/router/stack/ValueExtKt {
 
 public abstract interface class com/arkivanov/decompose/router/stack/webhistory/WebHistoryController {
 	public abstract fun attach (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun getHistoryPaths ()Ljava/util/List;
 }
 
 public abstract class com/arkivanov/decompose/value/MutableValue : com/arkivanov/decompose/value/Value {
@@ -429,6 +434,7 @@ public final class com/arkivanov/decompose/value/ObserveLifecycleMode : java/lan
 public abstract class com/arkivanov/decompose/value/Value {
 	public fun <init> ()V
 	public abstract fun getValue ()Ljava/lang/Object;
+	public final fun observe (Lkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/Cancellation;
 	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
 }

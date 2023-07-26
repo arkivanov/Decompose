@@ -27,7 +27,7 @@ class MutableValueTest {
     fun WHEN_subscribe_THEN_current_value_emitted() {
         val values = ArrayList<Int>()
 
-        value.subscribe { values += it }
+        value.observe { values += it }
 
         assertContentEquals(listOf(0), values)
     }
@@ -37,7 +37,7 @@ class MutableValueTest {
         val values = List(10) { ArrayList<Int>() }
 
         repeat(10) { index ->
-            value.subscribe { values[index] += it }
+            value.observe { values[index] += it }
         }
 
         value.value = 1
@@ -50,9 +50,8 @@ class MutableValueTest {
     @Test
     fun GIVEN_unsubscribed_WHEN_value_changed_THEN_not_emitted() {
         val values = ArrayList<Int>()
-        val observer: (Int) -> Unit = { values += it }
-        value.subscribe(observer)
-        value.unsubscribe(observer)
+        val cancellation = value.observe { values += it }
+        cancellation.cancel()
         values.clear()
 
         value.value = 1
@@ -63,10 +62,9 @@ class MutableValueTest {
     @Test
     fun GIVEN_multiple_subscribes_and_one_unsubscribed_WHEN_value_changed_THEN_value_emitted_to_subscribed() {
         val values = ArrayList<Int>()
-        val observer: (Int) -> Unit = {}
-        value.subscribe(observer)
-        value.subscribe { values += it }
-        value.unsubscribe(observer)
+        val cancellation = value.observe {}
+        value.observe { values += it }
+        cancellation.cancel()
         values.clear()
 
         value.value = 1
@@ -77,10 +75,9 @@ class MutableValueTest {
     @Test
     fun GIVEN_multiple_subscribes_and_one_unsubscribed_WHEN_value_changed_THEN_value_not_emitted_to_unsubscribed() {
         val values = ArrayList<Int>()
-        val observer: (Int) -> Unit = { values += it }
-        value.subscribe(observer)
-        value.subscribe {}
-        value.unsubscribe(observer)
+        val cancellation = value.observe { values += it }
+        value.observe {}
+        cancellation.cancel()
         values.clear()
 
         value.value = 1

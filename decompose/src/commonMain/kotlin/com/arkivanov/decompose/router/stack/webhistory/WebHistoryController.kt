@@ -12,6 +12,14 @@ import com.arkivanov.decompose.value.Value
 interface WebHistoryController {
 
     /**
+     * Returns the current path history, including the current page's path but excluding any forward paths.
+     * Ordered from tail to head. Empty if no history is present yet (e.g. when the app is loaded first time
+     * and [Child Stack][com.arkivanov.decompose.router.stack.childStack] has not been attached yet).
+     * Can be used as initial stack for `Child Stack`, which is useful for cases when the page is reloaded (refreshed).
+     */
+    val historyPaths: List<String>
+
+    /**
      * Listens for the [ChildStack] changes and updates the Web [History](https://developer.mozilla.org/en-US/docs/Web/API/History)
      * accordingly. Also listens for the `History` changes and manipulates the [StackNavigator].
      *
@@ -24,6 +32,6 @@ interface WebHistoryController {
         navigator: StackNavigator<C>,
         stack: Value<ChildStack<C, *>>,
         getPath: (configuration: C) -> String,
-        getConfiguration: (path: String) -> C
+        getConfiguration: (path: String) -> C,
     )
 }
