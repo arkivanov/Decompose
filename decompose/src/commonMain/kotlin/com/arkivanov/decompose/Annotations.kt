@@ -14,3 +14,11 @@ annotation class InternalDecomposeApi
 @RequiresOptIn(level = RequiresOptIn.Level.WARNING)
 @Retention(AnnotationRetention.BINARY)
 annotation class ExperimentalDecomposeApi
+
+/**
+ * Marks Decompose API, the implementation of which may contain bugs or known to contain bugs.
+ * See the docs of the annotated API for more information.
+ */
+@RequiresOptIn(level = RequiresOptIn.Level.WARNING)
+@Retention(AnnotationRetention.BINARY)
+annotation class FaultyDecomposeApi
