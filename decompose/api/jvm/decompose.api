@@ -54,6 +54,9 @@ public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivan
 public abstract interface annotation class com/arkivanov/decompose/ExperimentalDecomposeApi : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class com/arkivanov/decompose/FaultyDecomposeApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class com/arkivanov/decompose/InternalDecomposeApi : java/lang/annotation/Annotation {
 }
 

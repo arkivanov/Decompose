@@ -64,30 +64,6 @@ Content:
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMultiPaneDesktop.png" width="392">
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMultiPaneWeb.gif" width="392">
 
-## Sample Todo List App
-
-<img src="https://raw.githubusercontent.com/JetBrains/compose-jb/master/examples/todoapp/screenshots/todo.png" width="384">
-
-The Sample Todo List App demonstrates the following features:
-
-* Multiplatform: Android, iOS, Desktop and Web
-* Shared JetBrains Compose UI for Android and Desktop apps
-* JetBrains (multiplatform) Compose UI for the Web browser app
-* SwiftUI for iOS app
-* Nested components
-* Shared routing with view state preservation
-* Using `Lifecycle`
-* Multi-module structure (one component per module)
-* Inter-component communication (via [Reaktive](https://github.com/badoo/Reaktive), just an example)
-* MVI using [MVIKotlin](https://github.com/arkivanov/MVIKotlin)
-* Data persistence using [SQLDelight](https://github.com/cashapp/sqldelight)
-
-Please refer to the [sample's readme](https://github.com/JetBrains/compose-jb/blob/master/examples/todoapp/README.md) for more information.
-
-### Source Code
-
-The Sample Todo List App can be found in the JetBrains Compose repository [here](https://github.com/JetBrains/compose-jb/tree/master/examples/todoapp).
-
 ## Sample Greetings App
 
 ![](media/SampleGreetingsDemo.gif)
