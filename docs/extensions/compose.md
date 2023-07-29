@@ -4,39 +4,7 @@ Extensions and utilities for easier integration of Decompose with Jetpack/JetBra
 
 ## Setup
 
-Since Jetpack and JetBrains Compose are published separately into different repositories, Decompose provides separate modules for each variant. Both modules provide similar functionality, but you need to choose the corresponding module depending on the used Compose variant.
-
-### Setup extensions for Jetpack Compose
-
-Extensions for Jetpack Compose are provided by the `extensions-compose-jetpack` module.
-
-=== "Groovy"
-
-    ``` groovy
-    implementation "com.arkivanov.decompose:extensions-compose-jetpack:<version>"
-    ```
-
-=== "Kotlin"
-
-    ``` kotlin
-    implementation("com.arkivanov.decompose:extensions-compose-jetpack:<version>")
-    ```
-
-### Setup extensions for JetBrains Compose
-
-Extensions for JetBrains Compose are provided by the `extensions-compose-jetbrains` module.
-
-=== "Groovy"
-
-    ``` groovy
-    implementation "com.arkivanov.decompose:extensions-compose-jetbrains:<version>"
-    ```
-
-=== "Kotlin"
-
-    ``` kotlin
-    implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>")
-    ```
+Please see the corresponding [Installation docs section](/Decompose/getting-started/installation/#extensions-for-jetpackjetbrains-compose).
 
 #### ProGuard rules for Compose for Desktop (JVM)
 

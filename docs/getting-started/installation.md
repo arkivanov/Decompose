@@ -61,6 +61,27 @@ Typically only one module should be selected, depending on the Compose UI varian
     implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>")
     ```
 
+#### Support for Compose for iOS and Web (JS Canvas, not WASM)
+
+Compose for iOS and Web (JS Canvas, not WASM) are supported and published from a separate branch: `compose-experimental`. This means that a special version suffix for all Decompose modules is required when configuring dependencies.
+
+=== "Groovy"
+
+    ``` groovy
+    implementation "com.arkivanov.decompose:decompose:<version>-compose-experimental"
+    implementation "com.arkivanov.decompose:extensions-compose-jetbrains:<version>-compose-experimental"
+    ```
+
+=== "Kotlin"
+
+    ``` kotlin
+    implementation("com.arkivanov.decompose:decompose:<version>-compose-experimental")
+    implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>-compose-experimental")
+    ```
+
+!!!warning
+    WASM target is not yet supported. Please follow [issue #74](https://github.com/arkivanov/Decompose/issues/74) for more information and updates.
+
 ## Extensions for Android views
 
 The `extensions-android` module provides extensions to connect Android views based UI to Decompose components. Please head to the corresponding [documentation page](/Decompose/extensions/android/) for more information.
@@ -137,4 +158,3 @@ kotlin {
 }
 ...
 ```
-
