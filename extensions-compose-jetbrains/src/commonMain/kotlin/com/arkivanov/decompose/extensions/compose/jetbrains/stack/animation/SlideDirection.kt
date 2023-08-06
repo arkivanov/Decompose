@@ -2,13 +2,18 @@ package com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.unit.LayoutDirection
 
 sealed interface SlideDirection {
 
-    fun offset(factor: Float): Modifier
+    fun offset(factor: Float, layoutDirection: LayoutDirection, modifier: Modifier = Modifier): Modifier
 
     object TopToBottom : SlideDirection {
-        override fun offset(factor: Float): Modifier = Modifier.layout { measurable, constraints ->
+        override fun offset(
+            factor: Float,
+            layoutDirection: LayoutDirection,
+            modifier: Modifier
+        ): Modifier = modifier.layout { measurable, constraints ->
             val placeable = measurable.measure(constraints)
 
             layout(placeable.width, placeable.height) {
@@ -18,7 +23,11 @@ sealed interface SlideDirection {
     }
 
     object BottomToTop : SlideDirection {
-        override fun offset(factor: Float): Modifier = Modifier.layout { measurable, constraints ->
+        override fun offset(
+            factor: Float,
+            layoutDirection: LayoutDirection,
+            modifier: Modifier
+        ): Modifier = modifier.layout { measurable, constraints ->
             val placeable = measurable.measure(constraints)
 
             layout(placeable.width, placeable.height) {
@@ -27,23 +36,50 @@ sealed interface SlideDirection {
         }
     }
 
-    object StartToEnd : SlideDirection {
-        override fun offset(factor: Float): Modifier = Modifier.layout { measurable, constraints ->
+    data class StartToEnd(
+        private val directionAware: Boolean
+    ) : SlideDirection {
+        override fun offset(
+            factor: Float,
+            layoutDirection: LayoutDirection,
+            modifier: Modifier
+        ): Modifier = modifier.layout { measurable, constraints ->
             val placeable = measurable.measure(constraints)
+            val positionX = (placeable.width.toFloat() * factor).toInt()
+            val directionAwarePositionX = when {
+                directionAware && layoutDirection == LayoutDirection.Rtl -> positionX
+                else -> positionX.unaryMinus()
+            }
 
             layout(placeable.width, placeable.height) {
-                placeable.placeRelative(x = (placeable.width.toFloat() * factor).toInt().unaryMinus(), y = 0)
+                placeable.placeRelative(x = directionAwarePositionX, y = 0)
             }
         }
     }
 
-    object EndToStart : SlideDirection {
-        override fun offset(factor: Float): Modifier = Modifier.layout { measurable, constraints ->
+    data class EndToStart(
+        private val directionAware: Boolean
+    ) : SlideDirection {
+        override fun offset(
+            factor: Float,
+            layoutDirection: LayoutDirection,
+            modifier: Modifier
+        ): Modifier = modifier.layout { measurable, constraints ->
             val placeable = measurable.measure(constraints)
+            val positionX = (placeable.width.toFloat() * factor).toInt()
+            val directionAwarePositionX = when {
+                directionAware && layoutDirection == LayoutDirection.Rtl -> positionX.unaryMinus()
+                else -> positionX
+            }
 
             layout(placeable.width, placeable.height) {
-                placeable.placeRelative(x = (placeable.width.toFloat() * factor).toInt(), y = 0)
+                placeable.placeRelative(x = directionAwarePositionX, y = 0)
             }
         }
+    }
+
+    companion object {
+        val StartToEnd = StartToEnd(directionAware = false)
+        val EndToStart = EndToStart(directionAware = false)
     }
 }
