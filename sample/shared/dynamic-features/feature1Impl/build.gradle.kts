@@ -65,11 +65,13 @@ compose.web.targets()
 
 plugins.removeAll { it is ComposeCompilerKotlinSupportPlugin }
 
-class ComposeNoNativePlugin : KotlinCompilerPluginSupportPlugin by ComposeCompilerKotlinSupportPlugin({}) {
+class ComposeNoNativePlugin : KotlinCompilerPluginSupportPlugin by ComposeCompilerKotlinSupportPlugin(
+    buildEventsListenerRegistry = {},
+) {
     override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
         return when (kotlinCompilation.target.platformType) {
             KotlinPlatformType.native -> false
-            else -> ComposeCompilerKotlinSupportPlugin {}.isApplicable(kotlinCompilation)
+            else -> ComposeCompilerKotlinSupportPlugin(buildEventsListenerRegistry = {}).isApplicable(kotlinCompilation)
         }
     }
 }
