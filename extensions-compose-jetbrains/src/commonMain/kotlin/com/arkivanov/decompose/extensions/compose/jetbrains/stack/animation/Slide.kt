@@ -9,26 +9,47 @@ import androidx.compose.ui.layout.layout
 /**
  * A simple sliding animation. Children enter from one side and exit to another side.
  */
+@Deprecated(
+    message = "Please use the new slide StackAnimator with orientation specification",
+    replaceWith = ReplaceWith(
+        expression = "slide(animationSpec, orientation)",
+        imports = [
+            "com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide",
+            "androidx.compose.foundation.gestures.Orientation"
+        ]
+    ),
+    level = DeprecationLevel.HIDDEN
+)
+fun slide(
+    animationSpec: FiniteAnimationSpec<Float> = tween()
+): StackAnimator = slide(animationSpec, Orientation.Horizontal)
+
+/**
+ * A simple sliding animation. Children enter from one side and exit to another side.
+ */
 fun slide(
     animationSpec: FiniteAnimationSpec<Float> = tween(),
     orientation: Orientation = Orientation.Horizontal
 ): StackAnimator =
     stackAnimator(animationSpec = animationSpec) { factor, _, content ->
-        content(Modifier.offset(factor = factor, orientation = orientation))
+        content(when (orientation) {
+            Orientation.Horizontal -> Modifier.offsetXFactor(factor)
+            Orientation.Vertical -> Modifier.offsetYFactor(factor)
+        })
     }
 
-private fun Modifier.offset(factor: Float, orientation: Orientation): Modifier = layout { measurable, constraints ->
+private fun Modifier.offsetXFactor(factor: Float): Modifier = layout { measurable, constraints ->
     val placeable = measurable.measure(constraints)
-    val (x, y) = when (orientation) {
-        Orientation.Horizontal -> {
-            (placeable.width.toFloat() * factor).toInt() to 0
-        }
-        Orientation.Vertical -> {
-            0 to (placeable.height.toFloat() * factor).toInt()
-        }
-    }
 
     layout(placeable.width, placeable.height) {
-        placeable.placeRelative(x = x, y = y)
+        placeable.placeRelative(x = (placeable.width.toFloat() * factor).toInt(), y = 0)
+    }
+}
+
+private fun Modifier.offsetYFactor(factor: Float): Modifier = layout { measurable, constraints ->
+    val placeable = measurable.measure(constraints)
+
+    layout(placeable.width, placeable.height) {
+        placeable.placeRelative(x = 0, y = (placeable.height.toFloat() * factor).toInt())
     }
 }
