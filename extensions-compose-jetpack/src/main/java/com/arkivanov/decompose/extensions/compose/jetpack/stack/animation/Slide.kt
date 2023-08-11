@@ -11,13 +11,6 @@ import androidx.compose.ui.layout.layout
  */
 @Deprecated(
     message = "Please use the new slide StackAnimator with orientation specification",
-    replaceWith = ReplaceWith(
-        expression = "slide(animationSpec, orientation)",
-        imports = [
-            "com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.slide",
-            "androidx.compose.foundation.gestures.Orientation"
-        ]
-    ),
     level = DeprecationLevel.HIDDEN
 )
 fun slide(
