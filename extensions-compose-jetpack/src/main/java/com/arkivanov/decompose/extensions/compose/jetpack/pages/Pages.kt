@@ -2,6 +2,7 @@ package com.arkivanov.decompose.extensions.compose.jetpack.pages
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -26,7 +27,7 @@ fun <T : Any> Pages(
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     pager: Pager = defaultHorizontalPager(),
-    pageContent: @Composable (index: Int, page: T) -> Unit,
+    pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
     val state = pages.subscribeAsState()
 
@@ -52,10 +53,13 @@ fun <T : Any> Pages(
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     pager: Pager = defaultHorizontalPager(),
-    pageContent: @Composable (index: Int, page: T) -> Unit,
+    pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
     val selectedIndex = pages.selectedIndex
-    val state = rememberPagerState(initialPage = selectedIndex)
+    val state = rememberPagerState(
+        initialPage = selectedIndex,
+        pageCount = { pages.items.size },
+    )
 
     LaunchedEffect(selectedIndex) {
         if (state.currentPage != selectedIndex) {
@@ -75,7 +79,6 @@ fun <T : Any> Pages(
     val items = pages.items
 
     pager(
-        items.size,
         modifier,
         state,
         { items[it].configuration },
@@ -89,9 +92,8 @@ fun <T : Any> Pages(
 @ExperimentalFoundationApi
 @ExperimentalDecomposeApi
 fun defaultHorizontalPager(): Pager =
-    { pageCount, modifier, state, key, pageContent ->
+    { modifier, state, key, pageContent ->
         HorizontalPager(
-            pageCount = pageCount,
             modifier = modifier,
             state = state,
             key = key,
@@ -102,9 +104,8 @@ fun defaultHorizontalPager(): Pager =
 @ExperimentalFoundationApi
 @ExperimentalDecomposeApi
 fun defaultVerticalPager(): Pager =
-    { pageCount, modifier, state, key, pageContent ->
+    { modifier, state, key, pageContent ->
         VerticalPager(
-            pageCount = pageCount,
             modifier = modifier,
             state = state,
             key = key,
@@ -115,9 +116,8 @@ fun defaultVerticalPager(): Pager =
 @OptIn(ExperimentalFoundationApi::class)
 internal typealias Pager =
     @Composable (
-        pageCount: Int,
         Modifier,
         PagerState,
         key: (index: Int) -> Any,
-        pageContent: @Composable (index: Int) -> Unit,
+        pageContent: @Composable PagerScope.(index: Int) -> Unit,
     ) -> Unit
