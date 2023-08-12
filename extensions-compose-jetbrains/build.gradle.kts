@@ -13,7 +13,7 @@ plugins {
 }
 
 setupMultiplatform {
-    android()
+    androidTarget()
     jvm()
 }
 
