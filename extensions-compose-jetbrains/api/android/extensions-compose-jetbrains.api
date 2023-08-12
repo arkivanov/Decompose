@@ -49,6 +49,13 @@ public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/Ch
 	public static final fun Children (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
 
+public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/ComposableSingletons$SlideKt {
+	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/ComposableSingletons$SlideKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function5;
+	public fun <init> ()V
+	public final fun getLambda-1$extensions_compose_jetbrains_release ()Lkotlin/jvm/functions/Function5;
+}
+
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/Direction : java/lang/Enum {
 	public static final field ENTER_BACK Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/Direction;
 	public static final field ENTER_FRONT Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/Direction;
