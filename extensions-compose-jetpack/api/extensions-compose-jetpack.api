@@ -88,8 +88,10 @@ public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/anim
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/SlideKt {
-	public static final fun slide (Landroidx/compose/animation/core/FiniteAnimationSpec;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
+	public static final synthetic fun slide (Landroidx/compose/animation/core/FiniteAnimationSpec;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
+	public static final fun slide (Landroidx/compose/animation/core/FiniteAnimationSpec;Landroidx/compose/foundation/gestures/Orientation;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
 	public static synthetic fun slide$default (Landroidx/compose/animation/core/FiniteAnimationSpec;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
+	public static synthetic fun slide$default (Landroidx/compose/animation/core/FiniteAnimationSpec;Landroidx/compose/foundation/gestures/Orientation;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimator;
 }
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/jetpack/stack/animation/StackAnimation {
