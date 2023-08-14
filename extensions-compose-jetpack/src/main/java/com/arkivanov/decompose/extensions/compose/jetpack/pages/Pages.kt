@@ -9,6 +9,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
@@ -32,7 +34,7 @@ fun <T : Any> Pages(
     val state = pages.subscribeAsState()
 
     Pages(
-        pages = state.value,
+        pages = state,
         onPageSelected = onPageSelected,
         modifier = modifier,
         scrollAnimation = scrollAnimation,
@@ -48,17 +50,18 @@ fun <T : Any> Pages(
 @ExperimentalDecomposeApi
 @Composable
 fun <T : Any> Pages(
-    pages: ChildPages<*, T>,
+    pages: State<ChildPages<*, T>>,
     onPageSelected: (index: Int) -> Unit,
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     pager: Pager = defaultHorizontalPager(),
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
-    val selectedIndex = pages.selectedIndex
+    val childPages by pages
+    val selectedIndex = childPages.selectedIndex
     val state = rememberPagerState(
         initialPage = selectedIndex,
-        pageCount = { pages.items.size },
+        pageCount = { childPages.items.size },
     )
 
     LaunchedEffect(selectedIndex) {
@@ -76,14 +79,12 @@ fun <T : Any> Pages(
         onDispose {}
     }
 
-    val items = pages.items
-
     pager(
         modifier,
         state,
-        { items[it].configuration },
+        { childPages.items[it].configuration },
     ) { pageIndex ->
-        items[pageIndex].instance?.also { page ->
+        childPages.items[pageIndex].instance?.also { page ->
             pageContent(pageIndex, page)
         }
     }
