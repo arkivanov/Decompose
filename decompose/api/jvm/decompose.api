@@ -74,6 +74,7 @@ public final class com/arkivanov/decompose/router/children/ChildNavState$Status 
 	public static final field ACTIVE Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
 	public static final field DESTROYED Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
 	public static final field INACTIVE Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
 	public static fun values ()[Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
 }
@@ -385,6 +386,7 @@ public final class com/arkivanov/decompose/value/ObserveLifecycleMode : java/lan
 	public static final field CREATE_DESTROY Lcom/arkivanov/decompose/value/ObserveLifecycleMode;
 	public static final field RESUME_PAUSE Lcom/arkivanov/decompose/value/ObserveLifecycleMode;
 	public static final field START_STOP Lcom/arkivanov/decompose/value/ObserveLifecycleMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/value/ObserveLifecycleMode;
 	public static fun values ()[Lcom/arkivanov/decompose/value/ObserveLifecycleMode;
 }
