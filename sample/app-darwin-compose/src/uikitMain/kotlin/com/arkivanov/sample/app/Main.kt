@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
+
 package com.arkivanov.sample.app
 
 import androidx.compose.foundation.layout.Box
@@ -8,7 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Application
+import androidx.compose.ui.window.ComposeUIViewController
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.PredictiveBackGestureIcon
 import com.arkivanov.decompose.extensions.compose.jetbrains.PredictiveBackGestureOverlay
@@ -20,7 +22,8 @@ import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DefaultFeatureInstaller
 import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootContent
-import kotlinx.cinterop.ObjCObjectBase
+import kotlinx.cinterop.BetaInteropApi
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.autoreleasepool
 import kotlinx.cinterop.cstr
 import kotlinx.cinterop.memScoped
@@ -46,11 +49,8 @@ fun main() {
     }
 }
 
-class SkikoAppDelegate : UIResponder, UIApplicationDelegateProtocol {
+class SkikoAppDelegate @OverrideInit constructor() : UIResponder(), UIApplicationDelegateProtocol {
     companion object : UIResponderMeta(), UIApplicationDelegateProtocolMeta
-
-    @ObjCObjectBase.OverrideInit
-    constructor() : super()
 
     private val backDispatcher = BackDispatcher()
     private val lifecycle = LifecycleRegistry()
@@ -70,13 +70,7 @@ class SkikoAppDelegate : UIResponder, UIApplicationDelegateProtocol {
     override fun application(application: UIApplication, didFinishLaunchingWithOptions: Map<Any?, *>?): Boolean {
         window = UIWindow(frame = UIScreen.mainScreen.bounds)
 
-//        backDispatcher.register(
-//            BackCallback {
-//                window!!.hidden = true
-//            }
-//        )
-
-        window!!.rootViewController = Application("Minesweeper") {
+        window!!.rootViewController = ComposeUIViewController {
             Column {
                 // To skip upper part of screen.
                 Box(modifier = Modifier.height(64.dp))

@@ -1,6 +1,3 @@
-enableFeaturePreview("VERSION_CATALOGS")
-
-@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     versionCatalogs {
         create("deps") {
@@ -18,7 +15,7 @@ pluginManagement {
     resolutionStrategy {
         eachPlugin {
             if (requested.id.toString() == "com.arkivanov.gradle.setup") {
-                useModule("com.github.arkivanov:gradle-setup-plugin:0f3baf84e9")
+                useModule("com.github.arkivanov:gradle-setup-plugin:2571f348ff")
             }
         }
     }
@@ -41,7 +38,10 @@ if (!startParameter.projectProperties.containsKey("check_publication")) {
     include(":sample:app-android")
     include(":sample:app-desktop")
     include(":sample:app-darwin-compose")
-    include(":sample:app-js-compose")
+
+    // Disabled until Kotlin 1.9.10, see https://youtrack.jetbrains.com/issue/KT-60852
+//    include(":sample:app-js-compose")
+
     include(":sample:app-js")
 } else {
     include(":tools:check-publication")
