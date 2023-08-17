@@ -95,11 +95,18 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
 
     @Composable
     override fun invoke(stack: ChildStack<C, T>, modifier: Modifier, content: @Composable (child: Child.Created<C, T>) -> Unit) {
+        var activeConfigurations: Set<C> by remember { mutableStateOf(emptySet()) }
+
         val childContent =
             remember(content) {
                 movableContentOf<Child.Created<C, T>> { child ->
                     key(child.configuration) {
                         content(child)
+
+                        DisposableEffect(Unit) {
+                            activeConfigurations += child.configuration
+                            onDispose { activeConfigurations -= child.configuration }
+                        }
                     }
                 }
             }
@@ -124,26 +131,33 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
             }
         }
 
-        DisposableEffect(stack) {
-            if (stack.backStack.isEmpty()) {
+        val isBackEnabled = stack.backStack.isNotEmpty()
+        val isBackGestureEnabled = isBackEnabled && ((items.size > 1) || (items.size == 1) && (activeConfigurations.size == 1))
+
+        DisposableEffect(stack, isBackEnabled, isBackGestureEnabled) {
+            if (!isBackEnabled) {
                 return@DisposableEffect onDispose {}
             }
 
             val scope = CoroutineScope(Dispatchers.Main.immediate)
 
             val callback =
-                GestureBackCallback(
-                    scope = scope,
-                    stack = stack,
-                    currentKey = currentKey.value,
-                    exitModifier = exitModifier,
-                    enterModifier = enterModifier,
-                    setItems = { items = it },
-                    onFinished = { newKey ->
-                        currentKey.value = newKey
-                        onBack()
-                    },
-                )
+                if (isBackGestureEnabled) {
+                    GestureBackCallback(
+                        scope = scope,
+                        stack = stack,
+                        currentKey = currentKey.value,
+                        exitModifier = exitModifier,
+                        enterModifier = enterModifier,
+                        setItems = { items = it },
+                        onFinished = { newKey ->
+                            currentKey.value = newKey
+                            onBack()
+                        },
+                    )
+                } else {
+                    BackCallback(onBack = onBack)
+                }
 
             backHandler.register(callback)
 
