@@ -9,7 +9,7 @@ plugins {
 }
 
 setupMultiplatform {
-    js(IR) {
+    js {
         browser()
         binaries.executable()
     }

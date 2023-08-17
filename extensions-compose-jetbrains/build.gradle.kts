@@ -19,10 +19,7 @@ setupMultiplatform {
     jvm()
     macosCompat()
     iosCompat()
-
-    js(IR) {
-        browser()
-    }
+    js { browser() }
 }
 
 setupPublication()

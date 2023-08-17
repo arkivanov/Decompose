@@ -15,7 +15,7 @@ setupMultiplatform {
     androidTarget()
     jvm()
     iosCompat()
-    js(IR) { browser() }
+    js { browser() }
 }
 
 android {
