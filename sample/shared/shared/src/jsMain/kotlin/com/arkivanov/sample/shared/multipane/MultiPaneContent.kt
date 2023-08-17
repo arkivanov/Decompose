@@ -7,11 +7,6 @@ import com.arkivanov.sample.shared.multipane.details.ArticleDetailsContent
 import com.arkivanov.sample.shared.multipane.list.ArticleListComponent
 import com.arkivanov.sample.shared.multipane.list.ArticleListContent
 import com.arkivanov.sample.shared.useAsState
-import csstype.Display
-import csstype.Flex
-import csstype.number
-import csstype.pct
-import csstype.px
 import kotlinx.browser.window
 import mui.material.Box
 import mui.system.sx
@@ -19,6 +14,11 @@ import org.w3c.dom.events.Event
 import react.FC
 import react.Props
 import react.useEffectOnce
+import web.cssom.Display
+import web.cssom.Flex
+import web.cssom.number
+import web.cssom.pct
+import web.cssom.px
 
 private const val MULTI_PANE_WIDTH_THRESHOLD = 960
 
