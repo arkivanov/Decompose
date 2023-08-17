@@ -15,7 +15,7 @@ plugins {
 }
 
 setupMultiplatform {
-    android()
+    androidTarget()
     jvm()
     macosCompat()
     iosCompat()

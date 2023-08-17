@@ -8,9 +8,9 @@ plugins {
 }
 
 setupMultiplatform {
-    android()
+    androidTarget()
     jvm()
-    js(IR) { browser() }
+    js { browser() }
     iosCompat()
 }
 

@@ -1,6 +1,3 @@
-enableFeaturePreview("VERSION_CATALOGS")
-
-@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     versionCatalogs {
         create("deps") {
@@ -18,7 +15,7 @@ pluginManagement {
     resolutionStrategy {
         eachPlugin {
             if (requested.id.toString() == "com.arkivanov.gradle.setup") {
-                useModule("com.github.arkivanov:gradle-setup-plugin:0f3baf84e9")
+                useModule("com.github.arkivanov:gradle-setup-plugin:2571f348ff")
             }
         }
     }

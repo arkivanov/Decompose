@@ -2,13 +2,6 @@ package com.arkivanov.sample.shared.multipane.details
 
 import com.arkivanov.sample.shared.RProps
 import com.arkivanov.sample.shared.useAsState
-import csstype.BoxSizing
-import csstype.Display
-import csstype.FlexDirection
-import csstype.Overflow
-import csstype.number
-import csstype.pct
-import csstype.px
 import mui.material.AppBar
 import mui.material.AppBarPosition
 import mui.material.Box
@@ -22,6 +15,13 @@ import mui.material.Typography
 import mui.material.styles.TypographyVariant
 import mui.system.sx
 import react.FC
+import web.cssom.BoxSizing
+import web.cssom.Display
+import web.cssom.FlexDirection
+import web.cssom.Overflow
+import web.cssom.number
+import web.cssom.pct
+import web.cssom.px
 
 val ArticleDetailsContent: FC<RProps<ArticleDetailsComponent>> = FC { props ->
     val model by props.component.models.useAsState()
