@@ -8,16 +8,16 @@ import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeature
 import com.arkivanov.sample.shared.dynamicfeatures.feature1.Feature1Content
 import com.arkivanov.sample.shared.dynamicfeatures.feature2.Feature2Content
 import com.arkivanov.sample.shared.useAsState
-import csstype.AlignItems
-import csstype.Display
-import csstype.FlexDirection
-import csstype.pct
-import csstype.px
 import mui.material.Box
 import mui.material.Paper
 import mui.material.PaperVariant
 import mui.system.sx
 import react.FC
+import web.cssom.AlignItems
+import web.cssom.Display
+import web.cssom.FlexDirection
+import web.cssom.pct
+import web.cssom.px
 
 val DynamicFeaturesContent: FC<RProps<DynamicFeaturesComponent>> = FC { props ->
     val childStack by props.component.childStack.useAsState()
