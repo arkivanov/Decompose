@@ -78,7 +78,7 @@ internal class DefaultMultiPaneComponent(
 
     private sealed interface Config : Parcelable {
         @Parcelize
-        object List : Config
+        data object List : Config
 
         @Parcelize
         data class Details(val articleId: Long) : Config
