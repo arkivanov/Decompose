@@ -362,8 +362,6 @@ On Android, the predictive back gesture only works starting with Android T. On A
 
 On all other platforms, the predictive back gesture can be enabled by showing a special overlay that automatically handles the gesture and manipulates `BackDispatcher` as needed.
 
-<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureIos.mp4" type="video/mp4"></video>
-
 ```kotlin title="Initialising the root component"
 val lifecycle = LifecycleRegistry()
 val backDispatcher = BackDispatcher()
@@ -394,6 +392,88 @@ PredictiveBackGestureOverlay(
     )
 }
 ```
+
+#### Predictive Back Gesture on iOS
+
+It is possible to customize the predictive back gesture, so it looks native-ish on iOS.
+
+```kotlin title="In commonMain source set"
+@Composable
+fun RootContent(component: RootComponent) {
+    Children(
+        stack = rootComponent.childStack,
+        animation = backAnimation(
+            backHandler = component.backHandler, 
+            onBack = component::onBackClicked,
+        ),
+    ) {
+        // Omitted code
+    }
+}
+
+expect fun <C : Any, T : Any> backAnimation(
+    backHandler: BackHandler,
+    onBack: () -> Unit,
+): StackAnimation<C, T>
+```
+
+```kotlin title="In androidMain source set"
+actual fun <C : Any, T : Any> backAnimation(
+    backHandler: BackHandler,
+    onBack: () -> Unit,
+): StackAnimation<C, T> =
+    predictiveBackAnimation(
+        backHandler = backHandler,
+        animation = stackAnimation(fade() + scale()),
+        onBack = onBack,
+    )
+```
+
+```kotlin title="In iosMain source set"
+actual fun <C : Any, T : Any> backAnimation(
+    backHandler: BackHandler,
+    onBack: () -> Unit,
+): StackAnimation<C, T> =
+    predictiveBackAnimation(
+        backHandler = backHandler,
+        animation = stackAnimation(iosLikeSlide()),
+        exitModifier = { progress, _ -> Modifier.slideExitModifier(progress = progress) },
+        enterModifier = { progress, _ -> Modifier.slideEnterModifier(progress = progress) },
+        onBack = onBack,
+    )
+
+private fun iosLikeSlide(animationSpec: FiniteAnimationSpec<Float> = tween()): StackAnimator =
+    stackAnimator(animationSpec = animationSpec) { factor, direction, content ->
+        content(
+            Modifier
+                .then(if (direction.isFront) Modifier else Modifier.fade(factor + 1F))
+                .offsetXFactor(factor = if (direction.isFront) factor else factor * 0.5F)
+        )
+    }
+
+private fun Modifier.slideExitModifier(progress: Float): Modifier =
+    offsetXFactor(progress)
+
+private fun Modifier.slideEnterModifier(progress: Float): Modifier =
+    fade(progress).offsetXFactor((progress - 1f) * 0.5f)
+
+private fun Modifier.fade(factor: Float) =
+    drawWithContent {
+        drawContent()
+        drawRect(color = Color(red = 0F, green = 0F, blue = 0F, alpha = (1F - factor) / 4F))
+    }
+
+private fun Modifier.offsetXFactor(factor: Float): Modifier =
+    layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
+
+        layout(placeable.width, placeable.height) {
+            placeable.placeRelative(x = (placeable.width.toFloat() * factor).toInt(), y = 0)
+        }
+    }
+```
+
+<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureIos.mp4" type="video/mp4"></video>
 
 ## Compose for iOS, macOS and Web (Canvas)
 
