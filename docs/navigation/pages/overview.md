@@ -74,9 +74,9 @@ class DefaultPagesComponent(
                     selectedIndex = 0,
                 )
             },
-        ) { config, componentContext ->
+        ) { config, childComponentContext ->
             DefaultPageComponent(
-                componentContext = componentContext,
+                componentContext = childComponentContext,
                 data = config.data,
             )
         }
