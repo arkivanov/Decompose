@@ -99,6 +99,10 @@ Please refer to the [Quick start](https://arkivanov.github.io/Decompose/getting-
 
 Check out the [Samples](https://arkivanov.github.io/Decompose/samples/) section of the docs for a full description of each sample.
 
+## Template
+
+Check out the [template repository](https://github.com/arkivanov/decompose-multiplatform-template) which may be used to kick-start a project for you.
+
 ## Articles
 
 - [Decompose — experiments with Kotlin Multiplatform lifecycle-aware components and navigation](https://proandroiddev.com/decompose-experiments-with-kotlin-multiplatform-lifecycle-aware-components-and-navigation-a04ef3c7f6a3?source=friends_link&sk=f7d289cc329b6c8a765fc049e36c313f)
