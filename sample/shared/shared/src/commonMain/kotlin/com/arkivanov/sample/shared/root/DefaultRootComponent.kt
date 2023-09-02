@@ -120,58 +120,23 @@ class DefaultRootComponent(
 
     private sealed interface Config : Parcelable {
         @Parcelize
-        object Counters : Config {
-            /**
-             * Only required for state preservation on JVM/desktop via StateKeeper, as it uses Serializable.
-             * Temporary workaround for https://youtrack.jetbrains.com/issue/KT-40218.
-             */
-            @Suppress("unused")
-            private fun readResolve(): Any = Counters
-        }
+        data object Counters : Config
 
         @Parcelize
-        object Cards : Config {
-            /**
-             * Only required for state preservation on JVM/desktop via StateKeeper, as it uses Serializable.
-             * Temporary workaround for https://youtrack.jetbrains.com/issue/KT-40218.
-             */
-            @Suppress("unused")
-            private fun readResolve(): Any = Cards
-        }
+        data object Cards : Config
 
         @Parcelize
-        object MultiPane : Config {
-            /**
-             * Only required for state preservation on JVM/desktop via StateKeeper, as it uses Serializable.
-             * Temporary workaround for https://youtrack.jetbrains.com/issue/KT-40218.
-             */
-            @Suppress("unused")
-            private fun readResolve(): Any = MultiPane
-        }
+        data object MultiPane : Config
 
         @Parcelize
-        object DynamicFeatures : Config {
-            /**
-             * Only required for state preservation on JVM/desktop via StateKeeper, as it uses Serializable.
-             * Temporary workaround for https://youtrack.jetbrains.com/issue/KT-40218.
-             */
-            @Suppress("unused")
-            private fun readResolve(): Any = DynamicFeatures
-        }
+        data object DynamicFeatures : Config
 
         @Parcelize
-        object CustomNavigation : Config {
-            /**
-             * Only required for state preservation on JVM/desktop via StateKeeper, as it uses Serializable.
-             * Temporary workaround for https://youtrack.jetbrains.com/issue/KT-40218.
-             */
-            @Suppress("unused")
-            private fun readResolve(): Any = CustomNavigation
-        }
+        data object CustomNavigation : Config
     }
 
     sealed interface DeepLink {
-        object None : DeepLink
+        data object None : DeepLink
         class Web(val path: String) : DeepLink
     }
 }

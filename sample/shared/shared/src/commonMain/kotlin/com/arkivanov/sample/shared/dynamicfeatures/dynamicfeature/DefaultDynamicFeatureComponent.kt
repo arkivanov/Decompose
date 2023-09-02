@@ -64,12 +64,12 @@ internal class DefaultDynamicFeatureComponent<out T : Any>(
 
     private sealed interface Config : Parcelable {
         @Parcelize
-        object Loading : Config
+        data object Loading : Config
 
         @Parcelize
-        object Feature : Config
+        data object Feature : Config
 
         @Parcelize
-        object Error : Config
+        data object Error : Config
     }
 }
