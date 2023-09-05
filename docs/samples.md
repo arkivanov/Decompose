@@ -64,13 +64,25 @@ Content:
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMultiPaneDesktop.png" width="392">
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMultiPaneWeb.gif" width="392">
 
+## Sample Todo App
+
+Simple todo application with a list and detail page that shares UI between Android and desktop with Compose Multiplatform and SwiftUI for iOS. The following libraries are used in this sample: 
+
+* [MVIKotlin](https://github.com/arkivanov/MVIKotlin) - presentation and business logic
+* [Reaktive](https://github.com/badoo/Reaktive) - background processing and data transformation
+* [SQLDelight](https://github.com/cashapp/sqldelight) - data storage
+
+[TodoAppDecomposeMviKotlin](https://github.com/IlyaGulya/TodoAppDecomposeMviKotlin)
+
+![](https://github.com/IlyaGulya/TodoAppDecomposeMviKotlin/blob/master/screenshots/todo.png?raw=true)
+
 ## Sample Greetings App
 
 ![](media/SampleGreetingsDemo.gif)
 
 [Sample Greetings Repository](https://github.com/theapache64/decompose-desktop-example)
 
-## Related articles
+## Related Articles
 
 * [Decompose — experiments with Kotlin Multiplatform lifecycle-aware components and navigation](https://proandroiddev.com/decompose-experiments-with-kotlin-multiplatform-lifecycle-aware-components-and-navigation-a04ef3c7f6a3?source=friends_link&sk=f7d289cc329b6c8a765fc049e36c313f)
 * [Fully cross-platform Kotlin applications (almost)](https://proandroiddev.com/fully-cross-platform-kotlin-applications-almost-29c7054f8f28?source=friends_link&sk=4619fdcb17912fde589bc4fca83efbbd)
