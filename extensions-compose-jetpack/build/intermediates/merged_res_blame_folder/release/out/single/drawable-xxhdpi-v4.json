@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/drawable-xxhdpi-v4/ic_call_answer_low.png",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-20:/drawable-xxhdpi-v4/ic_call_answer_low.png"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/drawable-xxhdpi-v4/ic_call_answer_video.png",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-20:/drawable-xxhdpi-v4/ic_call_answer_video.png"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/drawable-xxhdpi-v4/ic_call_answer.png",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-20:/drawable-xxhdpi-v4/ic_call_answer.png"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/drawable-xxhdpi-v4/ic_call_decline.png",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-20:/drawable-xxhdpi-v4/ic_call_decline.png"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/drawable-xxhdpi-v4/ic_call_decline_low.png",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-20:/drawable-xxhdpi-v4/ic_call_decline_low.png"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/drawable-xxhdpi-v4/ic_call_answer_video_low.png",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-20:/drawable-xxhdpi-v4/ic_call_answer_video_low.png"
+    }
+]

@@ -1,0 +1,82 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/values-as/values-as.xml",
+            "map": [
+                {
+                    "source": "/Users/arkivanov/.gradle/caches/transforms-3/8afa556a9a7ba3803354b8dc53f35df0/transformed/ui-release/res/values-as/values-as.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,200,285,378,476,563,660,759,848,938,1006,1078,1161,1246,1325,1400,1466",
+                        "endColumns": "94,84,92,97,86,96,98,88,89,67,71,82,84,78,74,65,117",
+                        "endOffsets": "195,280,373,471,558,655,754,843,933,1001,1073,1156,1241,1320,1395,1461,1579"
+                    },
+                    "to": {
+                        "startLines": "9,10,11,12,13,14,15,16,17,18,19,20,21,22,24,25,26",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "855,950,1035,1128,1226,1313,1410,1509,1598,1688,1756,1828,1911,1996,2176,2251,2317",
+                        "endColumns": "94,84,92,97,86,96,98,88,89,67,71,82,84,78,74,65,117",
+                        "endOffsets": "945,1030,1123,1221,1308,1405,1504,1593,1683,1751,1823,1906,1991,2070,2246,2312,2430"
+                    }
+                },
+                {
+                    "source": "/Users/arkivanov/.gradle/caches/transforms-3/a5ac388b4970af78226d7509586d84ba/transformed/core-1.10.0/res/values-as/values-as.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,156,259,367,472,576,676,805",
+                        "endColumns": "100,102,107,104,103,99,128,100",
+                        "endOffsets": "151,254,362,467,571,671,800,901"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,23",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,206,309,417,522,626,726,2075",
+                        "endColumns": "100,102,107,104,103,99,128,100",
+                        "endOffsets": "201,304,412,517,621,721,850,2171"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-mergeReleaseResources-34:/values-as/values-as.xml",
+            "map": [
+                {
+                    "source": "/Users/arkivanov/.gradle/caches/transforms-3/8afa556a9a7ba3803354b8dc53f35df0/transformed/ui-release/res/values-as/values-as.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,200,285,378,476,563,660,759,848,938,1006,1078,1161,1246,1325,1400,1466",
+                        "endColumns": "94,84,92,97,86,96,98,88,89,67,71,82,84,78,74,65,117",
+                        "endOffsets": "195,280,373,471,558,655,754,843,933,1001,1073,1156,1241,1320,1395,1461,1579"
+                    },
+                    "to": {
+                        "startLines": "9,10,11,12,13,14,15,16,17,18,19,20,21,22,24,25,26",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "855,950,1035,1128,1226,1313,1410,1509,1598,1688,1756,1828,1911,1996,2176,2251,2317",
+                        "endColumns": "94,84,92,97,86,96,98,88,89,67,71,82,84,78,74,65,117",
+                        "endOffsets": "945,1030,1123,1221,1308,1405,1504,1593,1683,1751,1823,1906,1991,2070,2246,2312,2430"
+                    }
+                },
+                {
+                    "source": "/Users/arkivanov/.gradle/caches/transforms-3/a5ac388b4970af78226d7509586d84ba/transformed/core-1.10.0/res/values-as/values-as.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,156,259,367,472,576,676,805",
+                        "endColumns": "100,102,107,104,103,99,128,100",
+                        "endOffsets": "151,254,362,467,571,671,800,901"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,23",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,206,309,417,522,626,726,2075",
+                        "endColumns": "100,102,107,104,103,99,128,100",
+                        "endOffsets": "201,304,412,517,621,721,850,2171"
+                    }
+                }
+            ]
+        }
+    ]
+}

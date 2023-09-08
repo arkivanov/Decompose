@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/drawable-anydpi-v21/ic_call_answer_low.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-20:/drawable-anydpi-v21/ic_call_answer_low.xml"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/drawable-anydpi-v21/ic_call_answer_video.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-20:/drawable-anydpi-v21/ic_call_answer_video.xml"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/drawable-anydpi-v21/ic_call_answer.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-20:/drawable-anydpi-v21/ic_call_answer.xml"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/drawable-anydpi-v21/ic_call_answer_video_low.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-20:/drawable-anydpi-v21/ic_call_answer_video_low.xml"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/drawable-anydpi-v21/ic_call_decline_low.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-20:/drawable-anydpi-v21/ic_call_decline_low.xml"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/drawable-anydpi-v21/ic_call_decline.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-20:/drawable-anydpi-v21/ic_call_decline.xml"
+    }
+]

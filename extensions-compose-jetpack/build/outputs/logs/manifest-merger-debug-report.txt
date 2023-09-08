@@ -1,0 +1,25 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml:2:1-12
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml:2:1-12
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml:2:1-12
+	package
+		INJECTED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml
+		ADDED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml:2:1-12
+		INJECTED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml:2:1-12
+uses-sdk
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml
+		ADDED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml
+		INJECTED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml
+		ADDED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml
+		INJECTED from /Users/arkivanov/dev/workspace/Decompose/extensions-compose-jetpack/src/main/AndroidManifest.xml

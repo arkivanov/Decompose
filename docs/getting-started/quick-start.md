@@ -1,5 +1,7 @@
 # Quick start
 
+Please see the [template repository](https://github.com/arkivanov/decompose-multiplatform-template) which can be used to kick-start your project.
+
 ## A simplest component
 
 ```kotlin

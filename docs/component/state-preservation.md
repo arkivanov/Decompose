@@ -4,9 +4,9 @@ Sometimes it might be necessary to preserve state or data in a component when it
 
 The `decompose` module adds Essenty's `state-keeper` module as `api` dependency, so you don't need to explicitly add it to your project. Please familiarise yourself with Essenty library, especially with the `StateKeeper`.
 
-## Usage example
+## Usage examples
 
-```kotlin
+```kotlin title="Saving state in a component"
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -24,6 +24,46 @@ class SomeComponent(
 
     @Parcelize
     private class State(val someValue: Int = 0) : Parcelable
+}
+```
+
+```kotlin title="Saving state of a retained instance"
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.instancekeeper.getOrCreate
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.ParcelableContainer
+import com.arkivanov.essenty.parcelable.Parcelize
+import com.arkivanov.essenty.parcelable.consume
+import com.arkivanov.essenty.statekeeper.consume
+
+class SomeComponent(
+    componentContext: ComponentContext
+) : ComponentContext by componentContext {
+
+    private val statefulEntity =
+        instanceKeeper.getOrCreate {
+            SomeStatefulEntity(savedState = stateKeeper.consume(key = "SAVED_STATE"))
+        }
+
+    init {
+        stateKeeper.register(key = "SAVED_STATE", supplier = statefulEntity::saveState)
+    }
+}
+
+class SomeStatefulEntity(
+    savedState: ParcelableContainer?,
+) : InstanceKeeper.Instance {
+
+    var state: State = savedState?.consume() ?: State()
+        private set
+
+    fun saveState(): ParcelableContainer =
+        ParcelableContainer(state)
+
+    override fun onDestroy() {}
+
+    @Parcelize
+    data class State(val someValue: Int = 0) : Parcelable
 }
 ```
 
