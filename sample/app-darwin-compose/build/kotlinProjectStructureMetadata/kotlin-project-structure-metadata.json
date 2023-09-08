@@ -1,0 +1,61 @@
+{
+  "projectStructure": {
+    "formatVersion": "0.3.3",
+    "isPublishedAsRoot": "true",
+    "variants": [
+      {
+        "name": "uikitArm64ApiElements",
+        "sourceSet": [
+          "commonMain",
+          "uikitMain"
+        ]
+      },
+      {
+        "name": "uikitX64ApiElements",
+        "sourceSet": [
+          "commonMain",
+          "uikitMain"
+        ]
+      }
+    ],
+    "sourceSets": [
+      {
+        "name": "commonMain",
+        "dependsOn": [],
+        "moduleDependency": [
+          "org.jetbrains.kotlin:kotlin-stdlib",
+          "com.arkivanov.decompose:decompose",
+          "com.arkivanov.decompose:extensions-compose-jetbrains",
+          "Decompose.sample.shared:shared",
+          "Decompose.sample.shared:compose",
+          "org.jetbrains.compose.runtime:runtime",
+          "org.jetbrains.compose.foundation:foundation",
+          "org.jetbrains.compose.material:material"
+        ],
+        "sourceSetCInteropMetadataDirectory": "commonMain-cinterop",
+        "binaryLayout": "klib",
+        "hostSpecific": "true"
+      },
+      {
+        "name": "uikitMain",
+        "dependsOn": [
+          "commonMain"
+        ],
+        "moduleDependency": [
+          "org.jetbrains.kotlin:kotlin-stdlib-common",
+          "org.jetbrains.kotlin:kotlin-stdlib",
+          "com.arkivanov.decompose:decompose",
+          "com.arkivanov.decompose:extensions-compose-jetbrains",
+          "Decompose.sample.shared:shared",
+          "Decompose.sample.shared:compose",
+          "org.jetbrains.compose.runtime:runtime",
+          "org.jetbrains.compose.foundation:foundation",
+          "org.jetbrains.compose.material:material"
+        ],
+        "sourceSetCInteropMetadataDirectory": "uikitMain-cinterop",
+        "binaryLayout": "klib",
+        "hostSpecific": "true"
+      }
+    ]
+  }
+}
