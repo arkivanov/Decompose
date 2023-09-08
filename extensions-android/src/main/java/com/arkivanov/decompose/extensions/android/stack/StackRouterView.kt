@@ -16,6 +16,7 @@ import com.arkivanov.decompose.extensions.android.DefaultViewContext
 import com.arkivanov.decompose.extensions.android.R
 import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.forEachChild
+import com.arkivanov.decompose.hashString
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
@@ -125,7 +126,7 @@ class StackRouterView @JvmOverloads constructor(
 
         val newChildView = findNewChildView()
 
-        val activeChildKey = activeChild.configuration.hashCode().toString()
+        val activeChildKey = activeChild.configuration.hashString()
 
         newChildView.key = activeChildKey
 

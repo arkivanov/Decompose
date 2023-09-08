@@ -57,20 +57,18 @@ class DefaultRootComponent(
 
     private val dialogNavigation = SlotNavigation<DialogConfig>()
 
-    private val _dialog =
+    override val dialog: Value<ChildSlot<*, DialogComponent>> =
         childSlot(
             source = dialogNavigation,
             // persistent = false, // Disable navigation state saving, if needed
             handleBackButton = true, // Close the dialog on back button press
-        ) { config, componentContext ->
+        ) { config, childComponentContext ->
             DefaultDialogComponent(
-                componentContext = componentContext,
+                componentContext = childComponentContext,
                 message = config.message,
                 onDismissed = dialogNavigation::dismiss,
             )
         }
-
-    override val dialog: Value<ChildSlot<*, DialogComponent>> = _dialog
 
     private fun showDialog(message: String) {
         dialogNavigation.activate(DialogConfig(message = message))
