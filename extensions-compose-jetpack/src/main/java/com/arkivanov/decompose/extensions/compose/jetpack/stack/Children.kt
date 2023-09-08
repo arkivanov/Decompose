@@ -8,12 +8,15 @@ import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
+import com.arkivanov.decompose.hashString
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 
+@OptIn(InternalDecomposeApi::class)
 @Composable
 fun <C : Any, T : Any> Children(
     stack: ChildStack<C, T>,
@@ -28,7 +31,7 @@ fun <C : Any, T : Any> Children(
     val anim = animation ?: emptyStackAnimation()
 
     anim(stack = stack, modifier = modifier) { child ->
-        holder.SaveableStateProvider(child.configuration.key()) {
+        holder.SaveableStateProvider(child.configuration.hashString()) {
             content(child)
         }
     }
@@ -51,10 +54,9 @@ fun <C : Any, T : Any> Children(
     )
 }
 
+@OptIn(InternalDecomposeApi::class)
 private fun ChildStack<*, *>.getConfigurations(): Set<String> =
-    items.mapTo(HashSet()) { it.configuration.key() }
-
-private fun Any.key(): String = "${this::class.simpleName}_${hashCode().toString(radix = 36)}"
+    items.mapTo(HashSet()) { it.configuration.hashString() }
 
 @SuppressLint("ComposableNaming")
 @Composable
