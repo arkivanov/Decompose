@@ -1,7 +1,6 @@
 package com.arkivanov.decompose.router.stack.webhistory
 
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.hashString
 import com.arkivanov.decompose.router.findFirstDifferentIndex
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigator
@@ -126,7 +125,7 @@ class DefaultWebHistoryController internal constructor(
             isStateObserverEnabled = false
 
             navigator.navigate { stack ->
-                val indexInStack = stack.indexOfLast { it.hashString() == newConfigurationKey }
+                val indexInStack = stack.indexOfLast { it.hashCode() == newConfigurationKey }
                 if (indexInStack >= 0) {
                     // History popped, pop from the Router
                     stack.take(indexInStack + 1)
@@ -140,13 +139,13 @@ class DefaultWebHistoryController internal constructor(
         }
 
         private fun History.pushState(configuration: C) {
-            val nextItem = PageItem(configurationKey = configuration.hashString(), path = getPath(configuration))
+            val nextItem = PageItem(configurationKey = configuration.hashCode(), path = getPath(configuration))
             val newData = getCurrentData() + nextItem
             pushState(data = newData, url = nextItem.path)
         }
 
         private fun History.replaceState(configuration: C) {
-            val newItem = PageItem(configurationKey = configuration.hashString(), path = getPath(configuration))
+            val newItem = PageItem(configurationKey = configuration.hashCode(), path = getPath(configuration))
             val newData = getCurrentData().dropLast(1).toTypedArray() + newItem
             replaceState(data = newData, url = newItem.path)
         }
@@ -157,7 +156,7 @@ class DefaultWebHistoryController internal constructor(
     }
 
     private data class PageItem(
-        val configurationKey: String,
+        val configurationKey: Int,
         val path: String,
     )
 
