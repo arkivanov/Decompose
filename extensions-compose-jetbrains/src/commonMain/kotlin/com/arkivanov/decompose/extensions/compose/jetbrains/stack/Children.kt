@@ -10,6 +10,7 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.decompose.hashString
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 
@@ -27,7 +28,7 @@ fun <C : Any, T : Any> Children(
     val anim = animation ?: emptyStackAnimation()
 
     anim(stack = stack, modifier = modifier) { child ->
-        holder.SaveableStateProvider(child.configuration.key()) {
+        holder.SaveableStateProvider(child.configuration.hashString()) {
             content(child)
         }
     }
@@ -51,9 +52,7 @@ fun <C : Any, T : Any> Children(
 }
 
 private fun ChildStack<*, *>.getConfigurations(): Set<String> =
-    items.mapTo(HashSet()) { it.configuration.key() }
-
-private fun Any.key(): String = "${this::class.simpleName}_${hashCode().toString(radix = 36)}"
+    items.mapTo(HashSet()) { it.configuration.hashString() }
 
 @Composable
 private fun SaveableStateHolder.retainStates(currentKeys: Set<Any>) {

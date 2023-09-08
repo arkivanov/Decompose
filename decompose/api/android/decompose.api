@@ -70,6 +70,9 @@ public abstract interface annotation class com/arkivanov/decompose/FaultyDecompo
 public abstract interface annotation class com/arkivanov/decompose/InternalDecomposeApi : java/lang/annotation/Annotation {
 }
 
+public final class com/arkivanov/decompose/UtilsKt {
+}
+
 public final class com/arkivanov/decompose/errorhandler/ErrorHandlersKt {
 	public static final fun getOnDecomposeError ()Lkotlin/jvm/functions/Function1;
 	public static final fun setOnDecomposeError (Lkotlin/jvm/functions/Function1;)V
