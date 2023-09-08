@@ -93,15 +93,13 @@ class DefaultRootComponent(
 
     private val navigation = StackNavigation<Config>()
 
-    private val _childStack =
+    override val childStack: Value<ChildStack<*, RootComponent.Child>> =
         childStack(
             source = navigation,
             initialConfiguration = Config.List,
             handleBackButton = true, // Pop the back stack on back button press
             childFactory = ::createChild,
         )
-
-    override val childStack: Value<ChildStack<*, RootComponent.Child>> = _childStack
 
     private fun createChild(config: Config, componentContext: ComponentContext): RootComponent.Child =
         when (config) {

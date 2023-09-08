@@ -1,0 +1,31 @@
+{
+  "name": "Decompose-app-js-compose",
+  "version": "0.0.0-unspecified",
+  "main": "Decompose-app-js-compose.js",
+  "types": "Decompose-app-js-compose.d.ts",
+  "devDependencies": {
+    "typescript": "4.7.4",
+    "webpack": "5.74.0",
+    "webpack-cli": "4.10.0",
+    "format-util": "1.0.5",
+    "source-map-loader": "4.0.0",
+    "webpack-dev-server": "4.9.3"
+  },
+  "dependencies": {
+    "@emotion/css": "^11.10.5",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/material": "^5.9.1",
+    "@mui/lab": "^5.0.0-alpha.100",
+    "@mui/x-date-pickers": "^5.0.4",
+    "react-dom": "^18.2.0",
+    "react": "^18.2.0",
+    "@popperjs/core": "^2.11.6",
+    "css-in-js-utils": "^3.1.0",
+    "inline-style-prefixer": "^7.0.0",
+    "styled-components": "^5.3.6"
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}

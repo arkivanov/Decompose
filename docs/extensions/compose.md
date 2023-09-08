@@ -4,41 +4,9 @@ Extensions and utilities for easier integration of Decompose with Jetpack/JetBra
 
 ## Setup
 
-Since Jetpack and JetBrains Compose are published separately into different repositories, Decompose provides separate modules for each variant. Both modules provide similar functionality, but you need to choose the corresponding module depending on the used Compose variant.
+Please see the corresponding [Installation docs section](/Decompose/getting-started/installation/#extensions-for-jetpackjetbrains-compose).
 
-### Setup extensions for Jetpack Compose
-
-Extensions for Jetpack Compose are provided by the `extensions-compose-jetpack` module.
-
-=== "Groovy"
-
-    ``` groovy
-    implementation "com.arkivanov.decompose:extensions-compose-jetpack:<version>"
-    ```
-
-=== "Kotlin"
-
-    ``` kotlin
-    implementation("com.arkivanov.decompose:extensions-compose-jetpack:<version>")
-    ```
-
-### Setup extensions for JetBrains Compose
-
-Extensions for JetBrains Compose are provided by the `extensions-compose-jetbrains` module.
-
-=== "Groovy"
-
-    ``` groovy
-    implementation "com.arkivanov.decompose:extensions-compose-jetbrains:<version>"
-    ```
-
-=== "Kotlin"
-
-    ``` kotlin
-    implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>")
-    ```
-
-#### ProGuard rules for Compose for Desktop (JVM)
+### ProGuard rules for Compose for Desktop (JVM)
 
 If you support Compose for Desktop, you will need to add the following rule for ProGuard, so that the app works correctly in release mode. See [Minification & obfuscation](https://github.com/JetBrains/compose-multiplatform/tree/master/tutorials/Native_distributions_and_local_execution#minification--obfuscation) section in Compose docs for more information.
 
@@ -46,11 +14,7 @@ If you support Compose for Desktop, you will need to add the following rule for 
 -keep class com.arkivanov.decompose.extensions.compose.jetbrains.mainthread.SwingMainThreadChecker
 ```
 
-## Content
-
-As mentioned above both modules provide similar functionality. Most of the links in this document refer to the Jetpack module, however there usually a mirror in the JetBrains module.
-
-### Converting Value to State
+## Converting Value to State
 
 To convert Decompose [Value](https://github.com/arkivanov/Decompose/tree/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value) to Compose `State` use `Value<T>.subscribeAsState(): State<T>` extension function:
 
@@ -67,7 +31,7 @@ fun SomeContent(component: SomeComponent) {
 }
 ```
 
-### Controlling the Lifecycle on Desktop
+## Controlling the Lifecycle on Desktop
 
 When using JetBrains Compose, you can have a `LifecycleRegistry` react to changes in the window state using the `LifecycleController()` composable. This will trigger appropriate lifecycle events when the window is minimized, restored or closed.
 
@@ -97,7 +61,7 @@ fun main() {
 !!!warning
     When using Compose in desktop platforms, make sure to always use one of the methods above, or your components might not receive lifecycle events correctly.
 
-### Navigating between Composable components
+## Navigating between Composable components
 
 The [Child Stack](/Decompose/navigation/stack/overview/) navigation model provides [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) as `Value<ChildStack>` that can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `ChildStack` changes.
 
@@ -148,7 +112,7 @@ fun DetailsContent(component: DetailsComponent) {
 }
 ```
 
-### Pager-like navigation
+## Pager-like navigation
 
 !!!warning
     This navigation model is experimental, the API is subject to change.
@@ -178,11 +142,11 @@ fun PageContent(component: PageComponent) {
 }
 ```
 
-### Animations
+## Animations
 
 Decompose provides [Child Animation API](https://github.com/arkivanov/Decompose/tree/master/extensions-compose-jetpack/src/main/java/com/arkivanov/decompose/extensions/compose/jetpack/stack/animation) for Compose, as well as some predefined animation specs. To enable child animations you need to pass the `animation` argument to the `Children` function. There are predefined animators provided by Decompose.
 
-#### Fade animation
+### Fade animation
 
 ```kotlin
 @Composable
@@ -198,7 +162,7 @@ fun RootContent(component: RootComponent) {
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationFade.gif" width="512">
 
-#### Slide animation
+### Slide animation
 
 ```kotlin
 @Composable
@@ -214,7 +178,7 @@ fun RootContent(component: RootComponent) {
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationSlide.gif" width="512">
 
-#### Combining animators
+### Combining animators
 
 It is also possible to combine animators using the `plus` operator. Please note that the order matters - the right animator is applied after the left animator.
 
@@ -232,7 +196,7 @@ fun RootContent(component: RootComponent) {
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComposeAnimationFadeScale.gif" width="512">
 
-#### Separate animations for children
+### Separate animations for children
 
 Previous examples demonstrate simple cases, when all children have the same animation. But it is also possible to specify separate animations for children.
 
@@ -271,11 +235,13 @@ fun RootContent(component: RootComponent) {
 }
 ```
 
-#### Custom animations
+### Custom animations
 
 It is also possible to define custom animations.
 
-Implementing `StackAnimation` manually. This is the most flexible low-level API. The animation block receives the current `ChildStack` and animates children using the provided `content` slot.
+#### Implementing `StackAnimation`
+
+This is the most flexible low-level API. The animation block receives the current `ChildStack` and animates children using the provided `content` slot.
 
 ```kotlin
 @Composable
@@ -296,7 +262,9 @@ fun <C : Any, T : Any> someAnimation(): StackAnimation<C, T> =
     }
 ```
 
-Using the `stackAnimation` helper function and implementing `StackAnimator`. The `stackAnimation` function takes care of tracking the `ChildStack` changes. `StackAnimator` is only responsible for manipulating the `Modifier` in the given `direction`, and calling `onFinished` at the end.
+#### Implementing `StackAnimator`
+
+The `stackAnimation` function takes care of tracking the `ChildStack` changes. `StackAnimator` is only responsible for manipulating the `Modifier` in the given `direction`, and calling `onFinished` at the end.
 
 ```kotlin
 @Composable
@@ -318,7 +286,9 @@ fun someAnimator(): StackAnimator =
     }
 ```
 
-Using `stackAnimation` and `stackAnimator` helper functions. This is the simplest, but less powerful way. The `stackAnimator` function takes care of running the animation. Its block has a very limited responsibility - to render the current frame using the provided `factor` and `direction`.
+#### Using `stackAnimator` function
+
+This is the simplest, but less powerful way. The `stackAnimator` function takes care of running the animation. Its block has a very limited responsibility - to render the current frame using the provided `factor` and `direction`.
 
 ```kotlin
 @Composable
@@ -341,7 +311,7 @@ fun someAnimator(): StackAnimator =
 
 Please refer to the predefined animators (`fade`, `slide`, etc.) for implementation examples.
 
-### Predictive Back Gesture
+## Predictive Back Gesture
 
 !!!warning
     Predictive Back Gesture support is experimental, the API is subject to change. For now, please use version 2.1.x.
@@ -384,17 +354,15 @@ fun RootContent(component: RootComponent) {
 }
 ```
 
-#### Predictive Back Gesture on Android
+### Predictive Back Gesture on Android
 
 On Android, the predictive back gesture only works starting with Android T. On Android T, it works only between Activities, if enabled in the system settings. Starting with Android U, the predictive back gesture can be enabled between `Child Stack` screens inside a single Activity.
 
 <video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureAndroid.mp4" type="video/mp4"></video>
 
-#### Predictive Back Gesture on other platforms
+### Predictive Back Gesture on other platforms
 
 On all other platforms, the predictive back gesture can be enabled by showing a special overlay that automatically handles the gesture and manipulates `BackDispatcher` as needed.
-
-<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureIos.mp4" type="video/mp4"></video>
 
 ```kotlin title="Initialising the root component"
 val lifecycle = LifecycleRegistry()
@@ -426,6 +394,88 @@ PredictiveBackGestureOverlay(
     )
 }
 ```
+
+### Predictive Back Gesture on iOS
+
+It is possible to customize the predictive back gesture, so it looks native-ish on iOS.
+
+```kotlin title="In commonMain source set"
+@Composable
+fun RootContent(component: RootComponent) {
+    Children(
+        stack = rootComponent.childStack,
+        animation = backAnimation(
+            backHandler = component.backHandler, 
+            onBack = component::onBackClicked,
+        ),
+    ) {
+        // Omitted code
+    }
+}
+
+expect fun <C : Any, T : Any> backAnimation(
+    backHandler: BackHandler,
+    onBack: () -> Unit,
+): StackAnimation<C, T>
+```
+
+```kotlin title="In androidMain source set"
+actual fun <C : Any, T : Any> backAnimation(
+    backHandler: BackHandler,
+    onBack: () -> Unit,
+): StackAnimation<C, T> =
+    predictiveBackAnimation(
+        backHandler = backHandler,
+        animation = stackAnimation(fade() + scale()),
+        onBack = onBack,
+    )
+```
+
+```kotlin title="In iosMain source set"
+actual fun <C : Any, T : Any> backAnimation(
+    backHandler: BackHandler,
+    onBack: () -> Unit,
+): StackAnimation<C, T> =
+    predictiveBackAnimation(
+        backHandler = backHandler,
+        animation = stackAnimation(iosLikeSlide()),
+        exitModifier = { progress, _ -> Modifier.slideExitModifier(progress = progress) },
+        enterModifier = { progress, _ -> Modifier.slideEnterModifier(progress = progress) },
+        onBack = onBack,
+    )
+
+private fun iosLikeSlide(animationSpec: FiniteAnimationSpec<Float> = tween()): StackAnimator =
+    stackAnimator(animationSpec = animationSpec) { factor, direction, content ->
+        content(
+            Modifier
+                .then(if (direction.isFront) Modifier else Modifier.fade(factor + 1F))
+                .offsetXFactor(factor = if (direction.isFront) factor else factor * 0.5F)
+        )
+    }
+
+private fun Modifier.slideExitModifier(progress: Float): Modifier =
+    offsetXFactor(progress)
+
+private fun Modifier.slideEnterModifier(progress: Float): Modifier =
+    fade(progress).offsetXFactor((progress - 1f) * 0.5f)
+
+private fun Modifier.fade(factor: Float) =
+    drawWithContent {
+        drawContent()
+        drawRect(color = Color(red = 0F, green = 0F, blue = 0F, alpha = (1F - factor) / 4F))
+    }
+
+private fun Modifier.offsetXFactor(factor: Float): Modifier =
+    layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
+
+        layout(placeable.width, placeable.height) {
+            placeable.placeRelative(x = (placeable.width.toFloat() * factor).toInt(), y = 0)
+        }
+    }
+```
+
+<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureIos.mp4" type="video/mp4"></video>
 
 ## Compose for iOS, macOS and Web (Canvas)
 

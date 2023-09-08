@@ -49,7 +49,7 @@ sealed class Configuration : Parcelable {
 val navigation = StackNavigation<Configuration>()
 ```
 
-### push
+### push(configuration)
 
 Pushes the provided `Configuration` at the top of the stack.
 
@@ -88,7 +88,7 @@ navigation.pop { isSuccess ->
 [A, B*]
 ```
 
-### popWhile
+### popWhile(predicate)
 
 Drops the configurations at the top of the stack while the provided predicate returns true.
 
@@ -120,7 +120,7 @@ navigation.popTo(index = 1)
 [A, B*]
 ```
 
-### replaceCurrent
+### replaceCurrent(configuration)
 
 Replaces the current configuration at the top of the stack with the provided `Configuration`.
 
@@ -136,7 +136,23 @@ navigation.replaceCurrent(Configuration.D)
 [A, B, D*]
 ```
 
-### bringToFront
+### replaceAll(vararg configurations)
+
+Replaces all configurations currently in the stack with the provided configurations. Components that remain in the stack are not recreated, components that are no longer in the stack are destroyed.
+
+```title="Before"
+[A, B, C*]
+```
+
+```kotlin
+navigation.replaceAll(Configuration.B, Configuration.C, Configuration.D)
+```
+
+```title="After"
+[B, C, D*]
+```
+
+### bringToFront(configuration)
 
 Removes all components with configurations of the provided `Configuration`'s class, and adds the provided `Configuration` to the top of the stack. This is primarily helpful when implementing a Decompose app with Bottom Navigation. See the [related discussion](https://github.com/badoo/Decompose/discussions/178) in the *old repository*.
 
