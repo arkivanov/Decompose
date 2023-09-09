@@ -7,9 +7,6 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.subscribe
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
-import com.arkivanov.essenty.statekeeper.consume
 import com.arkivanov.sample.shared.cards.card.CardComponent.Model
 import com.badoo.reaktive.disposable.Disposable
 import com.badoo.reaktive.disposable.scope.DisposableScope
@@ -19,6 +16,7 @@ import com.badoo.reaktive.scheduler.Scheduler
 import com.badoo.reaktive.scheduler.mainScheduler
 import com.badoo.reaktive.subject.behavior.BehaviorObservable
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
+import kotlinx.serialization.Serializable
 
 class DefaultCardComponent(
     componentContext: ComponentContext,
@@ -30,7 +28,7 @@ class DefaultCardComponent(
     private val handler =
         instanceKeeper.getOrCreate {
             Handler(
-                initialCount = stateKeeper.consume<SavedState>(key = KEY_SAVED_STATE)?.count ?: 0,
+                initialCount = stateKeeper.consume(key = KEY_SAVED_STATE, strategy = SavedState.serializer())?.count ?: 0,
                 tickScheduler = tickScheduler,
             )
         }
@@ -39,7 +37,7 @@ class DefaultCardComponent(
     override val model: Value<Model> = _model
 
     init {
-        stateKeeper.register(KEY_SAVED_STATE) { SavedState(count = handler.count.value) }
+        stateKeeper.register(key = KEY_SAVED_STATE, strategy = SavedState.serializer()) { SavedState(count = handler.count.value) }
 
         handler.count.subscribeScoped { count ->
             _model.update { it.copy(text = "Count: $count") }
@@ -92,6 +90,6 @@ class DefaultCardComponent(
         }
     }
 
-    @Parcelize
-    private class SavedState(val count: Int) : Parcelable
+    @Serializable
+    private class SavedState(val count: Int)
 }

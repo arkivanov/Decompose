@@ -9,8 +9,6 @@ import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.SimpleNavigation
 import com.arkivanov.decompose.router.children.children
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.sample.shared.multipane.MultiPaneComponent.Children
 import com.arkivanov.sample.shared.multipane.database.DefaultArticleDatabase
 import com.arkivanov.sample.shared.multipane.details.ArticleDetailsComponent
@@ -22,6 +20,7 @@ import com.badoo.reaktive.disposable.scope.DisposableScope
 import com.badoo.reaktive.observable.map
 import com.badoo.reaktive.observable.notNull
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
+import kotlinx.serialization.Serializable
 
 internal class DefaultMultiPaneComponent(
     componentContext: ComponentContext
@@ -34,6 +33,7 @@ internal class DefaultMultiPaneComponent(
     override val children: Value<Children> =
         children(
             source = navigation,
+            stateSerializer = NavigationState.serializer(),
             key = "children",
             initialState = ::NavigationState,
             navTransformer = { navState, event -> event(navState) },
@@ -76,24 +76,25 @@ internal class DefaultMultiPaneComponent(
         navigation.navigate { it.copy(isMultiPane = isMultiPane) }
     }
 
-    private sealed interface Config : Parcelable {
-        @Parcelize
+    @Serializable
+    private sealed interface Config {
+        @Serializable
         data object List : Config
 
-        @Parcelize
+        @Serializable
         data class Details(val articleId: Long) : Config
     }
 
-    @Parcelize
+    @Serializable
     private data class NavigationState(
         val isMultiPane: Boolean = false,
         val articleId: Long? = null,
-    ) : NavState<Config>, Parcelable {
-        override val children: List<ChildNavState<Config>>
-            get() =
-                listOfNotNull(
-                    SimpleChildNavState(Config.List, if (isMultiPane || (articleId == null)) Status.ACTIVE else Status.INACTIVE),
-                    if (articleId != null) SimpleChildNavState(Config.Details(articleId), Status.ACTIVE) else null,
-                )
+    ) : NavState<Config> {
+        override val children: List<ChildNavState<Config>> by lazy {
+            listOfNotNull(
+                SimpleChildNavState(Config.List, if (isMultiPane || (articleId == null)) Status.ACTIVE else Status.INACTIVE),
+                if (articleId != null) SimpleChildNavState(Config.Details(articleId), Status.ACTIVE) else null,
+            )
+        }
     }
 }
