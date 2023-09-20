@@ -31,11 +31,19 @@ There are `StackNavigator` [extension functions](https://github.com/arkivanov/De
 The preceding examples will utilize the following `sealed class` & `navigation` for showcasing the usage of the `StackNavigator` extensions.
 
 ```kotlin
-sealed class Configuration {
-    object A : Configuration()
-    object B : Configuration()
-    object C : Configuration()
-    object D : Configuration()
+sealed class Configuration : Parcelable {
+    
+    @Parcelize
+    data object A : Configuration()
+
+    @Parcelize
+    data object B : Configuration()
+
+    @Parcelize
+    data object C : Configuration()
+
+    @Parcelize
+    data object D : Configuration()
 }
 
 val navigation = StackNavigation<Configuration>()

@@ -79,8 +79,8 @@ class RouterBringToFrontTest {
     }
 
     private sealed class Config {
-        object A : Config()
-        object B : Config()
+        data object A : Config()
+        data object B : Config()
         data class C(val value: Int) : Config()
     }
 }

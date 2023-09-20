@@ -122,7 +122,7 @@ class DefaultRootComponent(
 
     private sealed class Config : Parcelable {
         @Parcelize
-        object List : Config()
+        data object List : Config()
 
         @Parcelize
         data class Details(val itemId: Long) : Config()

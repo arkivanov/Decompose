@@ -30,9 +30,9 @@ plugins {
 
 setupDefaults(
     multiplatformConfigurator = {
-        android()
+        androidTarget()
         jvm()
-        js(BOTH) { browser() }
+        js { browser() }
         iosCompat()
         watchosCompat()
         tvosCompat()

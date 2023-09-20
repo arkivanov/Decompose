@@ -1,4 +1,5 @@
 import com.arkivanov.gradle.bundle
+import com.arkivanov.gradle.dependsOn
 import com.arkivanov.gradle.setupBinaryCompatibilityValidator
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupPublication
@@ -12,7 +13,7 @@ plugins {
 }
 
 setupMultiplatform {
-    android()
+    androidTarget()
     jvm()
 }
 
@@ -27,6 +28,10 @@ kotlin {
     setupSourceSets {
         val android by bundle()
         val jvm by bundle()
+        val nonAndroid by bundle()
+
+        nonAndroid dependsOn common
+        (allSet - android) dependsOn nonAndroid
 
         all {
             languageSettings {
