@@ -2,7 +2,7 @@
 
 decompose = "2.1.0-beta-01"
 kotlin = "1.9.10"
-essenty = "1.2.0-beta-01"
+essenty = "1.2.0"
 parcelizeDarwin = "0.2.1"
 reaktive = "1.2.3"
 junit = "4.13.2"
