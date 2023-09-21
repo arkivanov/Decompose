@@ -1,13 +1,13 @@
 package com.arkivanov.sample.shared.root
 
-import csstype.AlignItems
-import csstype.Display
-import csstype.FlexDirection
-import csstype.px
 import mui.material.Box
 import mui.material.Typography
 import mui.system.sx
 import react.FC
+import web.cssom.AlignItems
+import web.cssom.Display
+import web.cssom.FlexDirection
+import web.cssom.px
 
 var NotImplementedContent: FC<Nothing> = FC {
     Box {

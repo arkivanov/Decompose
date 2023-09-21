@@ -4,9 +4,6 @@ import com.arkivanov.sample.shared.RProps
 import com.arkivanov.sample.shared.componentContent
 import com.arkivanov.sample.shared.dialog.DialogComponentContent
 import com.arkivanov.sample.shared.useAsState
-import csstype.AlignItems
-import csstype.BoxSizing
-import csstype.number
 import mui.material.AppBar
 import mui.material.AppBarPosition
 import mui.material.Button
@@ -24,6 +21,9 @@ import mui.material.styles.TypographyVariant
 import mui.system.responsive
 import mui.system.sx
 import react.FC
+import web.cssom.AlignItems
+import web.cssom.BoxSizing
+import web.cssom.number
 
 internal val CounterContent: FC<RProps<CounterComponent>> = FC { props ->
     val model by props.component.model.useAsState()

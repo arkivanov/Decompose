@@ -22,7 +22,7 @@ abstract class AbstractValueMapThreadingTest : AbstractThreadingTest() {
             val counters = IntArray(observerCount)
 
             repeat(observerCount) { index ->
-                value.subscribe {
+                value.observe {
                     repeat(1000) { counters[index]++ }
                     lastValues[index] = it
                     repeat(1000) { counters[index]-- }

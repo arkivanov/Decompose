@@ -197,7 +197,7 @@ class DefaultRootComponent(
 
     @Parcelize // The `kotlin-parcelize` plugin must be applied if you are targeting Android 
     private sealed interface Config : Parcelable {
-        object List : Config
+        data object List : Config
         data class Details(val item: String) : Config
     }
 }

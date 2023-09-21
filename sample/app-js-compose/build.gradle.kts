@@ -9,7 +9,7 @@ plugins {
 }
 
 setupMultiplatform {
-    js(IR) {
+    js {
         browser()
         binaries.executable()
     }
@@ -27,6 +27,8 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
+            implementation(project.dependencies.enforcedPlatform(deps.jetbrains.kotlinWrappers.kotlinWrappersBom.get()))
+            implementation("org.jetbrains.kotlin-wrappers:kotlin-browser")
         }
     }
 }

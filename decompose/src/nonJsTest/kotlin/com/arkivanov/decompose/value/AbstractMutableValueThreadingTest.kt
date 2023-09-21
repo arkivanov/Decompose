@@ -16,7 +16,7 @@ abstract class AbstractMutableValueThreadingTest : AbstractThreadingTest() {
             var lastValue = 0
             var counter = 0
 
-            value.subscribe {
+            value.observe {
                 repeat(1000) { counter++ }
                 lastValue = it
                 repeat(1000) { counter-- }
@@ -41,7 +41,7 @@ abstract class AbstractMutableValueThreadingTest : AbstractThreadingTest() {
             var lastValue = 0
             var counter = 0
 
-            value.subscribe {
+            value.observe {
                 repeat(1000) { counter++ }
                 lastValue = it
                 repeat(1000) { counter-- }
@@ -68,7 +68,7 @@ abstract class AbstractMutableValueThreadingTest : AbstractThreadingTest() {
             var counter = 0
 
             repeat(3) {
-                value.subscribe {}
+                value.observe {}
             }
 
             race { threadIndex ->
@@ -76,7 +76,7 @@ abstract class AbstractMutableValueThreadingTest : AbstractThreadingTest() {
                     value.update { it + 1 }
 
                     if ((threadIndex == 0) && (index == iterationCount / 2)) {
-                        value.subscribe {
+                        value.observe {
                             repeat(1000) { counter++ }
                             lastValue = it
                             repeat(1000) { counter-- }

@@ -1,8 +1,5 @@
-public final class com/arkivanov/decompose/BuildConfig {
-	public static final field BUILD_TYPE Ljava/lang/String;
-	public static final field DEBUG Z
-	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
-	public fun <init> ()V
+public abstract interface class com/arkivanov/decompose/Cancellation {
+	public abstract fun cancel ()V
 }
 
 public abstract class com/arkivanov/decompose/Child {
@@ -70,6 +67,13 @@ public abstract interface annotation class com/arkivanov/decompose/FaultyDecompo
 public abstract interface annotation class com/arkivanov/decompose/InternalDecomposeApi : java/lang/annotation/Annotation {
 }
 
+public final class com/arkivanov/decompose/RetainedComponentKt {
+	public static final fun retainedComponent (Landroidx/activity/ComponentActivity;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun retainedComponent (Landroidx/fragment/app/Fragment;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static synthetic fun retainedComponent$default (Landroidx/activity/ComponentActivity;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun retainedComponent$default (Landroidx/fragment/app/Fragment;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
 public final class com/arkivanov/decompose/UtilsKt {
 }
 
@@ -87,6 +91,7 @@ public final class com/arkivanov/decompose/router/children/ChildNavState$Status 
 	public static final field ACTIVE Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
 	public static final field DESTROYED Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
 	public static final field INACTIVE Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
 	public static fun values ()[Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
 }
@@ -398,6 +403,7 @@ public final class com/arkivanov/decompose/router/stack/ValueExtKt {
 
 public abstract interface class com/arkivanov/decompose/router/stack/webhistory/WebHistoryController {
 	public abstract fun attach (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun getHistoryPaths ()Ljava/util/List;
 }
 
 public abstract class com/arkivanov/decompose/value/MutableValue : com/arkivanov/decompose/value/Value {
@@ -421,6 +427,7 @@ public final class com/arkivanov/decompose/value/ObserveLifecycleMode : java/lan
 	public static final field CREATE_DESTROY Lcom/arkivanov/decompose/value/ObserveLifecycleMode;
 	public static final field RESUME_PAUSE Lcom/arkivanov/decompose/value/ObserveLifecycleMode;
 	public static final field START_STOP Lcom/arkivanov/decompose/value/ObserveLifecycleMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/value/ObserveLifecycleMode;
 	public static fun values ()[Lcom/arkivanov/decompose/value/ObserveLifecycleMode;
 }
@@ -428,6 +435,7 @@ public final class com/arkivanov/decompose/value/ObserveLifecycleMode : java/lan
 public abstract class com/arkivanov/decompose/value/Value {
 	public fun <init> ()V
 	public abstract fun getValue ()Ljava/lang/Object;
+	public final fun observe (Lkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/Cancellation;
 	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
 }

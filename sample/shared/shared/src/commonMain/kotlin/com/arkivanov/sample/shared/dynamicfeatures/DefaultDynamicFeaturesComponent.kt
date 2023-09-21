@@ -71,7 +71,7 @@ internal class DefaultDynamicFeaturesComponent(
 
     private sealed interface Config : Parcelable {
         @Parcelize
-        object Feature1 : Config
+        data object Feature1 : Config
 
         @Parcelize
         data class Feature2(val magicNumber: Int) : Config

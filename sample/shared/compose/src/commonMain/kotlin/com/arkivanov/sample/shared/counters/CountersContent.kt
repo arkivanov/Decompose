@@ -9,11 +9,14 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.predictiveBackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.backhandler.BackDispatcher
+import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.sample.shared.counters.counter.CounterComponent
 import com.arkivanov.sample.shared.counters.counter.CounterContent
 import com.arkivanov.sample.shared.counters.counter.PreviewCounterComponent
@@ -23,15 +26,19 @@ internal fun CountersContent(component: CountersComponent, modifier: Modifier = 
     Children(
         stack = component.childStack,
         modifier = modifier,
-        // Workaround for https://issuetracker.google.com/issues/270656235
-        animation = stackAnimation(fade() + scale())
-//        animation = stackAnimation { _, _, direction ->
-//            if (direction.isFront) {
-//                slide() + fade()
-//            } else {
-//                scale(frontFactor = 1F, backFactor = 0.7F) + fade()
-//            }
-//        },
+        animation = predictiveBackAnimation(
+            backHandler = component.backHandler,
+            // Workaround for https://issuetracker.google.com/issues/270656235
+            animation = stackAnimation(fade() + scale()),
+//            animation = stackAnimation { _, _, direction ->
+//                if (direction.isFront) {
+//                    slide() + fade()
+//                } else {
+//                    scale(frontFactor = 1F, backFactor = 0.7F) + fade()
+//                }
+//            },
+            onBack = component::onBackClicked,
+        ),
     ) {
         CounterContent(
             component = it.instance,
@@ -47,6 +54,8 @@ internal fun CountersPreview() {
 }
 
 internal class PreviewCountersComponent : CountersComponent {
+    override val backHandler: BackHandler = BackDispatcher()
+
     override val childStack: Value<ChildStack<*, CounterComponent>> =
         MutableValue(
             ChildStack(
@@ -55,5 +64,6 @@ internal class PreviewCountersComponent : CountersComponent {
             )
         )
 
+    override fun onBackClicked() {}
     override fun onBackClicked(toIndex: Int) {}
 }

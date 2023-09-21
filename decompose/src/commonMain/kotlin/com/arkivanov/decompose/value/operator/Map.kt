@@ -28,6 +28,12 @@ private class MappedValue<T : Any, out R : Any>(
             lastMappedValue
         }
 
+    @Deprecated(
+        "Calling this method from Swift leaks the observer, " +
+            "because Kotlin wraps the function passed from Swift every time the method is called. " +
+            "Please use the new `observe` method which returns `Disposable`.",
+        level = DeprecationLevel.WARNING,
+    )
     override fun subscribe(observer: (R) -> Unit) {
         val upstreamObserver: (T) -> Unit = { value -> observer(mapCached(value)) }
 
@@ -39,11 +45,20 @@ private class MappedValue<T : Any, out R : Any>(
             observers[observer] = upstreamObserver
         }
 
+        @Suppress("DEPRECATION")
         upstream.subscribe(upstreamObserver)
     }
 
+    @Deprecated(
+        "Calling this method from Swift doesn't have any effect, " +
+            "because Kotlin wraps the function passed from Swift every time the method is called. " +
+            "Please use the new `observe` method which returns `Disposable`.",
+        level = DeprecationLevel.WARNING,
+    )
     override fun unsubscribe(observer: (R) -> Unit) {
         val upstreamObserver = lock.synchronized { observers.remove(observer) } ?: return
+
+        @Suppress("DEPRECATION")
         upstream.unsubscribe(upstreamObserver)
     }
 }

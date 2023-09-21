@@ -7,8 +7,8 @@ interface FeatureInstaller {
     fun install(name: String): Single<Result>
 
     sealed interface Result {
-        object Installed : Result
-        object Cancelled : Result
-        object Error : Result
+        data object Installed : Result
+        data object Cancelled : Result
+        data object Error : Result
     }
 }

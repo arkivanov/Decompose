@@ -18,27 +18,54 @@ class DefaultWebHistoryController internal constructor(
     @Suppress("unused") // Public API
     constructor() : this(WindowImpl())
 
+    override val historyPaths: List<String>
+        get() = window.history.getItems().map(PageItem::path)
+
+    private fun History.getItems(): List<PageItem> =
+        state?.unsafeCast<Array<PageItem>>()?.asList() ?: emptyList()
+
+    private fun History.pushState(items: List<PageItem>) {
+        pushState(data = items.toTypedArray(), url = items.last().path)
+    }
+
+    private fun History.replaceState(items: List<PageItem>) {
+        replaceState(data = items.toTypedArray(), url = items.last().path)
+    }
+
     override fun <C : Any> attach(
         navigator: StackNavigator<C>,
         stack: Value<ChildStack<C, *>>,
         getPath: (configuration: C) -> String,
-        getConfiguration: (path: String) -> C
+        getConfiguration: (path: String) -> C,
     ) {
-        val impl = Impl(navigator, window, getPath, getConfiguration)
-        stack.subscribe(impl::onStackChanged)
+        val impl = Impl(navigator, stack, getPath, getConfiguration)
+        impl.init()
         window.onPopState = impl::onPopState
     }
 
-    private class Impl<in C : Any>(
+    private inner class Impl<in C : Any>(
         private val navigator: StackNavigator<C>,
-        private val window: Window,
+        private val stack: Value<ChildStack<C, *>>,
         private val getPath: (C) -> String,
         private val getConfiguration: (String) -> C,
     ) {
         private var isStateObserverFirstPass = true
         private var isStateObserverEnabled = true
 
-        fun onStackChanged(newStack: ChildStack<C, *>, oldStack: ChildStack<C, *>) {
+        fun init() {
+            // Initialise the history if it's empty
+            if (window.history.getItems().isEmpty()) {
+                val configurations = stack.value.configurations()
+                window.history.replaceState(configurations[0])
+                for (i in 1..configurations.lastIndex) {
+                    window.history.pushState(configurations[i])
+                }
+            }
+
+            stack.subscribe(::onStackChanged)
+        }
+
+        private fun onStackChanged(newStack: ChildStack<C, *>, oldStack: ChildStack<C, *>) {
             if (!isStateObserverEnabled) {
                 return
             }
@@ -48,14 +75,8 @@ class DefaultWebHistoryController internal constructor(
             val firstDifferentIndex = oldConfigurationStack.findFirstDifferentIndex(newConfigurationStack)
 
             when {
-                // Initialize the history
-                isStateObserverFirstPass -> {
-                    isStateObserverFirstPass = false
-                    window.history.replaceState(newConfigurationStack[0])
-                    for (i in 1..newConfigurationStack.lastIndex) {
-                        window.history.pushState(newConfigurationStack[i])
-                    }
-                }
+                // Skip the first emission
+                isStateObserverFirstPass -> isStateObserverFirstPass = false
 
                 newConfigurationStack == oldConfigurationStack -> return
 
@@ -125,7 +146,7 @@ class DefaultWebHistoryController internal constructor(
             isStateObserverEnabled = false
 
             navigator.navigate { stack ->
-                val indexInStack = stack.indexOfLast { it.hashCode() == newConfigurationKey }
+                val indexInStack = stack.indexOfLast { it.key() == newConfigurationKey }
                 if (indexInStack >= 0) {
                     // History popped, pop from the Router
                     stack.take(indexInStack + 1)
@@ -135,28 +156,34 @@ class DefaultWebHistoryController internal constructor(
                 }
             }
 
+            window.history.replaceState(stack.value.configurations())
+
             isStateObserverEnabled = true
         }
 
         private fun History.pushState(configuration: C) {
-            val nextItem = PageItem(configurationKey = configuration.hashCode(), path = getPath(configuration))
-            val newData = getCurrentData() + nextItem
-            pushState(data = newData, url = nextItem.path)
+            pushState(items = window.history.getItems() + PageItem(configuration = configuration))
         }
 
         private fun History.replaceState(configuration: C) {
-            val newItem = PageItem(configurationKey = configuration.hashCode(), path = getPath(configuration))
-            val newData = getCurrentData().dropLast(1).toTypedArray() + newItem
-            replaceState(data = newData, url = newItem.path)
+            replaceState(items = window.history.getItems().dropLast(1) + PageItem(configuration = configuration))
         }
 
-        private fun getCurrentData(): Array<PageItem> = window.history.state?.unsafeCast<Array<PageItem>>() ?: emptyArray()
+        private fun History.replaceState(configurations: List<C>) {
+            replaceState(items = configurations.map(::PageItem))
+        }
+
+        private fun PageItem(configuration: C): PageItem =
+            PageItem(
+                configurationKey = configuration.key(),
+                path = getPath(configuration),
+            )
 
         private fun PopStateEvent.getData(): Array<PageItem>? = state?.unsafeCast<Array<PageItem>>()
     }
 
     private data class PageItem(
-        val configurationKey: Int,
+        val configurationKey: String,
         val path: String,
     )
 

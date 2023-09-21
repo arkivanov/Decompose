@@ -1,4 +1,5 @@
 import com.arkivanov.gradle.bundle
+import com.arkivanov.gradle.dependsOn
 import com.arkivanov.gradle.iosCompat
 import com.arkivanov.gradle.macosCompat
 import com.arkivanov.gradle.setupBinaryCompatibilityValidator
@@ -14,14 +15,11 @@ plugins {
 }
 
 setupMultiplatform {
-    android()
+    androidTarget()
     jvm()
     macosCompat()
     iosCompat()
-
-    js(IR) {
-        browser()
-    }
+    js { browser() }
 }
 
 setupPublication()
@@ -35,6 +33,10 @@ kotlin {
     setupSourceSets {
         val android by bundle()
         val jvm by bundle()
+        val nonAndroid by bundle()
+
+        nonAndroid dependsOn common
+        (allSet - android) dependsOn nonAndroid
 
         all {
             languageSettings {
