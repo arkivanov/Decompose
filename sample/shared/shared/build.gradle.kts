@@ -10,7 +10,7 @@ plugins {
     id("kotlin-multiplatform")
     id("com.android.library")
     id("kotlin-parcelize")
-    id("com.arkivanov.parcelize.darwin") // Optional, only if you need state preservation on Darwin (Apple) targets
+    id("kotlinx-serialization")
     id("com.arkivanov.gradle.setup")
 }
 

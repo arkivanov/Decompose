@@ -2,7 +2,10 @@ package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.PARCELIZE_DEPRECATED_MESSAGE
 import com.arkivanov.decompose.backhandler.child
+import com.arkivanov.decompose.router.consumeRequired
+import com.arkivanov.decompose.router.toParcelableContainer
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
@@ -13,6 +16,50 @@ import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.essenty.parcelable.consumeRequired
 import com.arkivanov.essenty.statekeeper.consume
+import kotlinx.serialization.KSerializer
+
+/**
+ * A convenience method for the main [children] method. Allows having `Serializable` navigation state [N],
+ * so it's automatically saved and restored. This method can be used if the custom save/restore logic
+ * is not required.
+ */
+fun <C : Any, T : Any, E : Any, N, S : Any> ComponentContext.children(
+    source: NavigationSource<E>,
+    stateSerializer: KSerializer<N>?,
+    initialState: () -> N,
+    key: String,
+    navTransformer: (state: N, event: E) -> N,
+    stateMapper: (state: N, children: List<Child<C, T>>) -> S,
+    onStateChanged: (newState: N, oldState: N?) -> Unit = { _, _ -> },
+    onEventComplete: (event: E, newState: N, oldState: N) -> Unit = { _, _, _ -> },
+    backTransformer: (state: N) -> (() -> N)? = { null },
+    childFactory: (configuration: C, componentContext: ComponentContext) -> T,
+): Value<S> where N : NavState<C>, N : Any =
+    children(
+        source = source,
+        saveState = { state ->
+            if (stateSerializer != null) {
+                state.toParcelableContainer(strategy = stateSerializer)
+            } else {
+                null
+            }
+        },
+        restoreState = { container ->
+            if (stateSerializer != null) {
+                container.consumeRequired(strategy = stateSerializer)
+            } else {
+                null
+            }
+        },
+        initialState = initialState,
+        key = key,
+        navTransformer = navTransformer,
+        stateMapper = stateMapper,
+        onStateChanged = onStateChanged,
+        onEventComplete = onEventComplete,
+        backTransformer = backTransformer,
+        childFactory = childFactory,
+    )
 
 /**
  * Initialised and manages a generic list of components. This is an API for custom navigation models.
@@ -151,6 +198,8 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
  * so it's automatically saved and restored. This method can be used if the custom save/restore logic
  * is not required.
  */
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated(message = PARCELIZE_DEPRECATED_MESSAGE)
 inline fun <C : Parcelable, T : Any, E : Any, reified N, S : Any> ComponentContext.children(
     source: NavigationSource<E>,
     key: String,

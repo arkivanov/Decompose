@@ -2,14 +2,63 @@ package com.arkivanov.decompose.router.slot
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.PARCELIZE_DEPRECATED_MESSAGE
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
 import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.children
+import com.arkivanov.decompose.router.consumeRequired
+import com.arkivanov.decompose.router.toParcelableContainer
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.ParcelableContainer
+import kotlinx.serialization.KSerializer
 import kotlin.reflect.KClass
+
+/**
+ * Initializes and manages a slot for one child component.
+ * The child component can be either active or dismissed (destroyed).
+ *
+ * @param source a source of navigation events.
+ * @param serializer an optional [KSerializer] to be used for serializing and deserializing configurations.
+ * If `null` then the navigation state will not be preserved.
+ * @param key a key of the slot, must be unique within the parent (hosting) component.
+ * @param initialConfiguration a component configuration that should be shown if there is
+ * no saved state, return `null` to show nothing.
+ * @param handleBackButton determines whether the child component should be automatically dismissed
+ * on back button press or not, default is `false`.
+ * @param childFactory a factory function that creates new child instances.
+ * @return an observable [Value] of [ChildSlot].
+ */
+fun <C : Any, T : Any> ComponentContext.childSlot(
+    source: SlotNavigationSource<C>,
+    serializer: KSerializer<C>?,
+    initialConfiguration: () -> C? = { null },
+    key: String = "DefaultChildSlot",
+    handleBackButton: Boolean = false,
+    childFactory: (configuration: C, ComponentContext) -> T,
+): Value<ChildSlot<C, T>> =
+    childSlot(
+        source = source,
+        saveConfiguration = { configuration ->
+            if ((serializer != null) && (configuration != null)) {
+                configuration.toParcelableContainer(strategy = serializer)
+            } else {
+                null
+            }
+        },
+        restoreConfiguration = { container ->
+            if (serializer != null) {
+                container.consumeRequired(strategy = serializer)
+            } else {
+                null
+            }
+        },
+        key = key,
+        initialConfiguration = initialConfiguration,
+        handleBackButton = handleBackButton,
+        childFactory = childFactory,
+    )
 
 /**
  * Initializes and manages a slot for one child component.
@@ -27,6 +76,8 @@ import kotlin.reflect.KClass
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildSlot].
  */
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated(message = PARCELIZE_DEPRECATED_MESSAGE)
 fun <C : Parcelable, T : Any> ComponentContext.childSlot(
     source: SlotNavigationSource<C>,
     configurationClass: KClass<out C>,
