@@ -4,28 +4,52 @@ Sometimes it might be necessary to preserve state or data in a component when it
 
 The `decompose` module adds Essenty's `state-keeper` module as `api` dependency, so you don't need to explicitly add it to your project. Please familiarise yourself with Essenty library, especially with the `StateKeeper`.
 
+Since Decompose `v2.2.0-alpha01` the recommended way is to use [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization) library. Most of the Parcelable/Parcelize APIs are now deprecated.
+
 ## Usage examples
 
-```kotlin title="Saving state in a component"
-import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
-import com.arkivanov.essenty.statekeeper.consume
+=== "Before v1.2.0-alpha01"
 
-class SomeComponent(
-    componentContext: ComponentContext
-) : ComponentContext by componentContext {
-
-    private var state: State = stateKeeper.consume(key = "SAVED_STATE") ?: State()
-
-    init {
-        stateKeeper.register(key = "SAVED_STATE") { state }
+    ```kotlin title="Saving state in a component"
+    import com.arkivanov.decompose.ComponentContext
+    import com.arkivanov.essenty.parcelable.Parcelable
+    import com.arkivanov.essenty.parcelable.Parcelize
+    import com.arkivanov.essenty.statekeeper.consume
+    
+    class SomeComponent(
+        componentContext: ComponentContext
+    ) : ComponentContext by componentContext {
+    
+        private var state: State = stateKeeper.consume(key = "SAVED_STATE") ?: State()
+    
+        init {
+            stateKeeper.register(key = "SAVED_STATE") { state }
+        }
+    
+        @Parcelize
+        private class State(val someValue: Int = 0) : Parcelable
     }
+    ```
 
-    @Parcelize
-    private class State(val someValue: Int = 0) : Parcelable
-}
-```
+=== "After v1.2.0-alpha01"
+
+    ```kotlin title="Saving state in a component"
+    import kotlinx.serialization.Serializable
+    
+    class SomeComponent(
+        componentContext: ComponentContext
+    ) : ComponentContext by componentContext {
+    
+        private var state: State = stateKeeper.consume(key = "SAVED_STATE", strategy = State.serializer()) ?: State()
+    
+        init {
+            stateKeeper.register(key = "SAVED_STATE", strategy = State.serializer()) { state }
+        }
+    
+        @Serializable
+        private class State(val someValue: Int = 0)
+    }
+    ```
 
 ```kotlin title="Saving state of a retained instance"
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
@@ -51,6 +75,7 @@ class SomeComponent(
 }
 
 class SomeStatefulEntity(
+    // There is no any `kotlinx-serialization` replacement for `ParcelableContainer` currently, please continue using it until v3.0
     savedState: ParcelableContainer?,
 ) : InstanceKeeper.Instance {
 

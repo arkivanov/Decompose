@@ -76,59 +76,119 @@ class DefaultItemDetailsComponent(
 }
 ```
 
-```kotlin title="Root component"
-interface RootComponent {
+=== "Before v1.2.0-alpha01"
 
-    val childStack: Value<ChildStack<*, Child>>
-
-    sealed class Child {
-        class ListChild(val component: ItemList) : Child()
-        class DetailsChild(val component: ItemDetails) : Child()
-    }
-}
-
-class DefaultRootComponent(
-    componentContext: ComponentContext
-) : RootComponent, ComponentContext by componentContext {
-
-    private val navigation = StackNavigation<Config>()
-
-    override val childStack: Value<ChildStack<*, RootComponent.Child>> =
-        childStack(
-            source = navigation,
-            initialConfiguration = Config.List,
-            handleBackButton = true, // Pop the back stack on back button press
-            childFactory = ::createChild,
-        )
-
-    private fun createChild(config: Config, componentContext: ComponentContext): RootComponent.Child =
-        when (config) {
-            is Config.List -> ListChild(itemList(componentContext))
-            is Config.Details -> DetailsChild(itemDetails(componentContext, config))
+    ```kotlin title="Root component"
+    interface RootComponent {
+    
+        val childStack: Value<ChildStack<*, Child>>
+    
+        sealed class Child {
+            class ListChild(val component: ItemList) : Child()
+            class DetailsChild(val component: ItemDetails) : Child()
         }
-
-    private fun itemList(componentContext: ComponentContext): ItemListComponent =
-        DefaultItemListComponent(
-            componentContext = componentContext,
-            onItemSelected = { navigation.push(Config.Details(itemId = it)) }
-        )
-
-    private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetailsComponent =
-        DefaultItemDetailsComponent(
-            componentContext = componentContext,
-            itemId = config.itemId,
-            onFinished = { navigation.pop() }
-        )
-
-    private sealed class Config : Parcelable {
-        @Parcelize
-        data object List : Config()
-
-        @Parcelize
-        data class Details(val itemId: Long) : Config()
     }
-}
-```
+    
+    class DefaultRootComponent(
+        componentContext: ComponentContext
+    ) : RootComponent, ComponentContext by componentContext {
+    
+        private val navigation = StackNavigation<Config>()
+    
+        override val childStack: Value<ChildStack<*, RootComponent.Child>> =
+            childStack(
+                source = navigation,
+                initialConfiguration = Config.List,
+                handleBackButton = true, // Pop the back stack on back button press
+                childFactory = ::createChild,
+            )
+    
+        private fun createChild(config: Config, componentContext: ComponentContext): RootComponent.Child =
+            when (config) {
+                is Config.List -> ListChild(itemList(componentContext))
+                is Config.Details -> DetailsChild(itemDetails(componentContext, config))
+            }
+    
+        private fun itemList(componentContext: ComponentContext): ItemListComponent =
+            DefaultItemListComponent(
+                componentContext = componentContext,
+                onItemSelected = { navigation.push(Config.Details(itemId = it)) }
+            )
+    
+        private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetailsComponent =
+            DefaultItemDetailsComponent(
+                componentContext = componentContext,
+                itemId = config.itemId,
+                onFinished = { navigation.pop() }
+            )
+    
+        private sealed class Config : Parcelable {
+            @Parcelize
+            data object List : Config()
+    
+            @Parcelize
+            data class Details(val itemId: Long) : Config()
+        }
+    }
+    ```
+
+=== "Since v1.2.0-alpha01"
+
+    ```kotlin title="Root component"
+    interface RootComponent {
+    
+        val childStack: Value<ChildStack<*, Child>>
+    
+        sealed class Child {
+            class ListChild(val component: ItemList) : Child()
+            class DetailsChild(val component: ItemDetails) : Child()
+        }
+    }
+    
+    class DefaultRootComponent(
+        componentContext: ComponentContext
+    ) : RootComponent, ComponentContext by componentContext {
+    
+        private val navigation = StackNavigation<Config>()
+    
+        override val childStack: Value<ChildStack<*, RootComponent.Child>> =
+            childStack(
+                source = navigation,
+                serializer = Config.serializer(), // Or null to disable navigation state saving 
+                initialConfiguration = Config.List,
+                handleBackButton = true, // Pop the back stack on back button press
+                childFactory = ::createChild,
+            )
+    
+        private fun createChild(config: Config, componentContext: ComponentContext): RootComponent.Child =
+            when (config) {
+                is Config.List -> ListChild(itemList(componentContext))
+                is Config.Details -> DetailsChild(itemDetails(componentContext, config))
+            }
+    
+        private fun itemList(componentContext: ComponentContext): ItemListComponent =
+            DefaultItemListComponent(
+                componentContext = componentContext,
+                onItemSelected = { navigation.push(Config.Details(itemId = it)) }
+            )
+    
+        private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetailsComponent =
+            DefaultItemDetailsComponent(
+                componentContext = componentContext,
+                itemId = config.itemId,
+                onFinished = { navigation.pop() }
+            )
+    
+        @Serializable // kotlinx-serialization plugin must be applied
+        private sealed class Config {
+            @Serializable
+            data object List : Config()
+    
+            @Serializable
+            data class Details(val itemId: Long) : Config()
+        }
+    }
+    ```
 
 ## Components in the back stack
 

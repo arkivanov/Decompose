@@ -45,41 +45,81 @@ class DefaultDialogComponent(
 }
 ```
 
-```kotlin title="Root component"
-interface RootComponent {
+=== "Before v1.2.0-alpha01"
 
-    val dialog: Value<ChildSlot<*, DialogComponent>>
-}
-
-class DefaultRootComponent(
-    componentContext: ComponentContext,
-) : RootComponent, ComponentContext by componentContext {
-
-    private val dialogNavigation = SlotNavigation<DialogConfig>()
-
-    override val dialog: Value<ChildSlot<*, DialogComponent>> =
-        childSlot(
-            source = dialogNavigation,
-            // persistent = false, // Disable navigation state saving, if needed
-            handleBackButton = true, // Close the dialog on back button press
-        ) { config, childComponentContext ->
-            DefaultDialogComponent(
-                componentContext = childComponentContext,
-                message = config.message,
-                onDismissed = dialogNavigation::dismiss,
-            )
-        }
-
-    private fun showDialog(message: String) {
-        dialogNavigation.activate(DialogConfig(message = message))
+    ```kotlin title="Root component"
+    interface RootComponent {
+    
+        val dialog: Value<ChildSlot<*, DialogComponent>>
     }
+    
+    class DefaultRootComponent(
+        componentContext: ComponentContext,
+    ) : RootComponent, ComponentContext by componentContext {
+    
+        private val dialogNavigation = SlotNavigation<DialogConfig>()
+    
+        override val dialog: Value<ChildSlot<*, DialogComponent>> =
+            childSlot(
+                source = dialogNavigation,
+                // persistent = false, // Disable navigation state saving, if needed
+                handleBackButton = true, // Close the dialog on back button press
+            ) { config, childComponentContext ->
+                DefaultDialogComponent(
+                    componentContext = childComponentContext,
+                    message = config.message,
+                    onDismissed = dialogNavigation::dismiss,
+                )
+            }
+    
+        private fun showDialog(message: String) {
+            dialogNavigation.activate(DialogConfig(message = message))
+        }
+    
+        @Parcelize // kotlin-parcelize plugin must be applied if you are targetting Android
+        private data class DialogConfig(
+            val message: String,
+        ) : Parcelable
+    }
+    ```
 
-    @Parcelize
-    private data class DialogConfig(
-        val message: String,
-    ) : Parcelable
-}
-```
+=== "Since v1.2.0-alpha01"
+
+    ```kotlin title="Root component"
+    interface RootComponent {
+    
+        val dialog: Value<ChildSlot<*, DialogComponent>>
+    }
+    
+    class DefaultRootComponent(
+        componentContext: ComponentContext,
+    ) : RootComponent, ComponentContext by componentContext {
+    
+        private val dialogNavigation = SlotNavigation<DialogConfig>()
+    
+        override val dialog: Value<ChildSlot<*, DialogComponent>> =
+            childSlot(
+                source = dialogNavigation,
+                serializer = DialogConfig.serializer(), // Or null to disable navigation state saving
+                handleBackButton = true, // Close the dialog on back button press
+            ) { config, childComponentContext ->
+                DefaultDialogComponent(
+                    componentContext = childComponentContext,
+                    message = config.message,
+                    onDismissed = dialogNavigation::dismiss,
+                )
+            }
+    
+        private fun showDialog(message: String) {
+            dialogNavigation.activate(DialogConfig(message = message))
+        }
+    
+        @Serializable // kotlinx-serialization plugin must be applied
+        private data class DialogConfig(
+            val message: String,
+        )
+    }
+    ```
 
 ## Multiple Child Slots in a component
 
