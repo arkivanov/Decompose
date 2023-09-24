@@ -139,7 +139,7 @@ Child component configurations is another important concepts of Decompose. It al
 Each child component is represented by a persistent configuration class. A configuration class denotes which child component should be instantiated, and holds persistent arguments required for instantiation. A configuration class must be defined for every child component.
 
 !!!warning
-    Before `v2.2.0-alpha01`, configuration classes must implement `Parcelable` interface and be annotated with [@Parcelize](https://developer.android.com/kotlin/parcelize) annotation. Starting with `v2.2.0-alpha01`, Parcelable/Parcelize support is deprecated and the recommended way is to annotate configuration classes with [@Serializable](https://github.com/Kotlin/kotlinx.serialization) annotation.
+    Before `v2.2.0-alpha01`, configuration classes must implement `Parcelable` interface and be annotated with [@Parcelize](https://github.com/arkivanov/Essenty#parcelable-and-parcelize-deprecated-since-v130-alpha01) annotation. Starting with `v2.2.0-alpha01`, Parcelable/Parcelize support is deprecated and the recommended way is to annotate configuration classes with [@Serializable](https://github.com/Kotlin/kotlinx.serialization) annotation.
 
 ### Using the Child Stack
 
