@@ -8,11 +8,10 @@ import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.SimpleNavigation
 import com.arkivanov.decompose.router.children.children
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent.Children
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent.Mode
 import com.arkivanov.sample.shared.customnavigation.KittenComponent.ImageType
+import kotlinx.serialization.Serializable
 
 class DefaultCustomNavigationComponent(
     componentContext: ComponentContext,
@@ -23,6 +22,7 @@ class DefaultCustomNavigationComponent(
     private val _children: Value<Children<Config, KittenComponent>> =
         children(
             source = navigation,
+            stateSerializer = NavigationState.serializer(),
             key = "carousel",
             initialState = {
                 NavigationState(
@@ -87,25 +87,25 @@ class DefaultCustomNavigationComponent(
         }
     }
 
-    @Parcelize
+    @Serializable
     private data class Config(
         val imageType: ImageType,
-    ) : Parcelable
+    )
 
-    @Parcelize
+    @Serializable
     private data class NavigationState(
         val configurations: List<Config>,
         val index: Int,
         val mode: Mode,
-    ) : NavState<Config>, Parcelable {
+    ) : NavState<Config> {
 
-        override val children: List<SimpleChildNavState<Config>>
-            get() =
-                configurations.mapIndexed { index, config ->
-                    SimpleChildNavState(
-                        configuration = config,
-                        status = if (index == this.index) ChildNavState.Status.ACTIVE else ChildNavState.Status.INACTIVE,
-                    )
-                }
+        override val children: List<SimpleChildNavState<Config>> by lazy {
+            configurations.mapIndexed { index, config ->
+                SimpleChildNavState(
+                    configuration = config,
+                    status = if (index == this.index) ChildNavState.Status.ACTIVE else ChildNavState.Status.INACTIVE,
+                )
+            }
+        }
     }
 }

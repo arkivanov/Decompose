@@ -8,15 +8,13 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.subscribe
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
-import com.arkivanov.essenty.statekeeper.consume
 import com.arkivanov.sample.shared.customnavigation.KittenComponent.ImageType
 import com.arkivanov.sample.shared.customnavigation.KittenComponent.Model
 import com.badoo.reaktive.disposable.Disposable
 import com.badoo.reaktive.observable.observableInterval
 import com.badoo.reaktive.observable.subscribe
 import com.badoo.reaktive.scheduler.mainScheduler
+import kotlinx.serialization.Serializable
 
 class DefaultKittenComponent(
     componentContext: ComponentContext,
@@ -25,7 +23,7 @@ class DefaultKittenComponent(
 
     private val handler =
         instanceKeeper.getOrCreate(KEY_STATE) {
-            Handler(initialState = stateKeeper.consume(KEY_STATE) ?: State())
+            Handler(initialState = stateKeeper.consume(key = KEY_STATE, strategy = State.serializer()) ?: State())
         }
 
     override val model: Value<Model> = handler.state.map { it.toModel() }
@@ -36,7 +34,7 @@ class DefaultKittenComponent(
             onStop = handler::pause,
         )
 
-        stateKeeper.register(KEY_STATE) { handler.state.value }
+        stateKeeper.register(key = KEY_STATE, strategy = State.serializer()) { handler.state.value }
     }
 
     private fun State.toModel(): Model =
@@ -49,10 +47,10 @@ class DefaultKittenComponent(
         private const val KEY_STATE = "STATE"
     }
 
-    @Parcelize
+    @Serializable
     private data class State(
         val count: Int = 0,
-    ) : Parcelable
+    )
 
     private class Handler(initialState: State) : InstanceKeeper.Instance {
         val state: MutableValue<State> = MutableValue(initialState)

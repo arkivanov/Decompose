@@ -2,16 +2,86 @@ package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.PARCELIZE_DEPRECATED_MESSAGE
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
 import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.children
+import com.arkivanov.decompose.router.consumeRequired
+import com.arkivanov.decompose.router.toParcelableContainer
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.essenty.parcelable.consumeRequired
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.ListSerializer
 import kotlin.reflect.KClass
+
+/**
+ * Initializes and manages a stack of components.
+ *
+ * @param source a source of navigation events.
+ * @param serializer an optional [KSerializer] to be used for serializing and deserializing configurations.
+ * If `null` then the navigation state will not be preserved.
+ * @param initialStack a stack of component configurations (ordered from tail to head) that should be set
+ * if there is no saved state, must be not empty and unique.
+ * @param key a key of the stack, must be unique if there are multiple stacks in the same component.
+ * @param handleBackButton determines whether the stack should be automatically popped on back button press or not,
+ * default is `false`.
+ * @param childFactory a factory function that creates new child instances.
+ * @return an observable [Value] of [ChildStack].
+ */
+fun <C : Any, T : Any> ComponentContext.childStack(
+    source: StackNavigationSource<C>,
+    serializer: KSerializer<C>?,
+    initialStack: () -> List<C>,
+    key: String = "DefaultChildStack",
+    handleBackButton: Boolean = false,
+    childFactory: (configuration: C, ComponentContext) -> T,
+): Value<ChildStack<C, T>> =
+    childStack(
+        source = source,
+        saveStack = { stack ->
+            if (serializer != null) {
+                stack.toParcelableContainer(strategy = ListSerializer(serializer))
+            } else {
+                null
+            }
+        },
+        restoreStack = { container ->
+            if (serializer != null) {
+                container.consumeRequired(strategy = ListSerializer(serializer))
+            } else {
+                null
+            }
+        },
+        initialStack = initialStack,
+        key = key,
+        handleBackButton = handleBackButton,
+        childFactory = childFactory,
+    )
+
+/**
+ * A convenience extension function for [ComponentContext.childStack].
+ */
+@Suppress("DeprecatedCallableAddReplaceWith")
+fun <C : Any, T : Any> ComponentContext.childStack(
+    source: StackNavigationSource<C>,
+    serializer: KSerializer<C>?,
+    initialConfiguration: C,
+    key: String = "DefaultChildStack",
+    handleBackButton: Boolean = false,
+    childFactory: (configuration: C, ComponentContext) -> T
+): Value<ChildStack<C, T>> =
+    childStack(
+        source = source,
+        serializer = serializer,
+        initialStack = { listOf(initialConfiguration) },
+        key = key,
+        handleBackButton = handleBackButton,
+        childFactory = childFactory,
+    )
 
 /**
  * Initializes and manages a stack of components.
@@ -28,6 +98,7 @@ import kotlin.reflect.KClass
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildStack].
  */
+@Deprecated(message = PARCELIZE_DEPRECATED_MESSAGE)
 fun <C : Parcelable, T : Any> ComponentContext.childStack(
     source: StackNavigationSource<C>,
     initialStack: () -> List<C>,
