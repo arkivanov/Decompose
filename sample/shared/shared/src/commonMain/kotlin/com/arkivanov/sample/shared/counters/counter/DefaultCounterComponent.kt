@@ -12,9 +12,6 @@ import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
-import com.arkivanov.essenty.statekeeper.consume
 import com.arkivanov.sample.shared.counters.counter.CounterComponent.Model
 import com.arkivanov.sample.shared.dialog.DefaultDialogComponent
 import com.arkivanov.sample.shared.dialog.DialogComponent
@@ -22,6 +19,7 @@ import com.badoo.reaktive.disposable.scope.DisposableScope
 import com.badoo.reaktive.observable.observableInterval
 import com.badoo.reaktive.scheduler.Scheduler
 import com.badoo.reaktive.scheduler.mainScheduler
+import kotlinx.serialization.Serializable
 
 internal class DefaultCounterComponent(
     componentContext: ComponentContext,
@@ -35,7 +33,7 @@ internal class DefaultCounterComponent(
     private val handler =
         instanceKeeper.getOrCreate(KEY_STATE) {
             Handler(
-                initialState = stateKeeper.consume(KEY_STATE) ?: State(),
+                initialState = stateKeeper.consume(key = KEY_STATE, strategy = State.serializer()) ?: State(),
                 tickScheduler = tickScheduler,
             )
         }
@@ -47,7 +45,7 @@ internal class DefaultCounterComponent(
     private val _dialogSlot =
         childSlot<DialogConfig, DialogComponent>(
             source = dialogNavigation,
-            persistent = false,
+            serializer = null,
             handleBackButton = true,
             childFactory = { config, _ ->
                 DefaultDialogComponent(
@@ -65,7 +63,7 @@ internal class DefaultCounterComponent(
     }
 
     init {
-        stateKeeper.register(KEY_STATE) { handler.state.value }
+        stateKeeper.register(key = KEY_STATE, strategy = State.serializer()) { handler.state.value }
     }
 
     private fun State.toModel(): Model =
@@ -90,15 +88,15 @@ internal class DefaultCounterComponent(
         private const val KEY_STATE = "STATE"
     }
 
-    @Parcelize
+    @Serializable
     private data class State(
         val count: Int = 0,
-    ) : Parcelable
+    )
 
-    @Parcelize
+    @Serializable
     private data class DialogConfig(
         val count: Int,
-    ) : Parcelable
+    )
 
     private class Handler(
         initialState: State,

@@ -2,13 +2,14 @@
 
 decompose = "2.1.0-compose-experimental"
 kotlin = "1.9.10"
-essenty = "1.2.0"
-parcelizeDarwin = "0.2.1"
+essenty = "1.3.0-alpha01"
+parcelizeDarwin = "0.2.2"
 reaktive = "1.2.3"
 junit = "4.13.2"
 jetbrainsCompose = "1.5.1"
 jetbrainsKotlinWrappers = "1.0.0-pre.608"
 jetbrainsKotlinxCoroutines = "1.6.4"
+jetbrainsKotlinxSerialization = "1.6.0"
 jetbrainsBinaryCompatibilityValidator = "0.13.2"
 jetpackCompose = "1.5.0"
 jetpackComposeCompiler = "1.5.3"
@@ -46,6 +47,9 @@ jetbrains-kotlinWrappers-kotlinWrappersBom = { group = "org.jetbrains.kotlin-wra
 jetbrains-kotlinx-binaryCompatibilityValidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version.ref = "jetbrainsBinaryCompatibilityValidator" }
 jetbrains-kotlinx-kotlinxCoroutinesCore = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "jetbrainsKotlinxCoroutines" }
 jetbrains-kotlinx-kotlinxCoroutinesSwing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "jetbrainsKotlinxCoroutines" }
+jetbrains-kotlin-serializationGradlePlug = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
+jetbrains-kotlinx-kotlinxSerializationCore = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "jetbrainsKotlinxSerialization" }
+jetbrains-kotlinx-kotlinxSerializationJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "jetbrainsKotlinxSerialization" }
 
 androidx-compose-runtime-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "jetpackCompose" }
 

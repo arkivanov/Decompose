@@ -9,6 +9,7 @@ import com.arkivanov.gradle.setupSourceSets
 plugins {
     id("kotlin-multiplatform")
     id("com.android.library")
+    id("kotlinx-serialization")
     id("kotlin-parcelize")
     id("com.arkivanov.parcelize.darwin")
     id("com.arkivanov.gradle.setup")
@@ -51,6 +52,8 @@ kotlin {
             api(deps.essenty.stateKeeper)
             api(deps.essenty.instanceKeeper)
             api(deps.essenty.backHandler)
+            api(deps.jetbrains.kotlinx.kotlinxSerializationCore)
+            implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
         }
 
         common.test.dependencies {
