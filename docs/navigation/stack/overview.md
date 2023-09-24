@@ -76,7 +76,7 @@ class DefaultItemDetailsComponent(
 }
 ```
 
-=== "Before v1.2.0-alpha01"
+=== "Before v2.2.0-alpha01"
 
     ```kotlin title="Root component"
     interface RootComponent {
@@ -132,7 +132,7 @@ class DefaultItemDetailsComponent(
     }
     ```
 
-=== "Since v1.2.0-alpha01"
+=== "Since v2.2.0-alpha01"
 
     ```kotlin title="Root component"
     interface RootComponent {

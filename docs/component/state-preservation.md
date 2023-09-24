@@ -8,7 +8,7 @@ Since Decompose `v2.2.0-alpha01` the recommended way is to use [kotlinx-serializ
 
 ## Usage examples
 
-=== "Before v1.2.0-alpha01"
+=== "Before v2.2.0-alpha01"
 
     ```kotlin title="Saving state in a component"
     import com.arkivanov.decompose.ComponentContext
@@ -31,7 +31,7 @@ Since Decompose `v2.2.0-alpha01` the recommended way is to use [kotlinx-serializ
     }
     ```
 
-=== "After v1.2.0-alpha01"
+=== "After v2.2.0-alpha01"
 
     ```kotlin title="Saving state in a component"
     import kotlinx.serialization.Serializable
