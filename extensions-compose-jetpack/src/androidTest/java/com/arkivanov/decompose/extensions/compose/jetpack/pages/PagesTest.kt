@@ -96,7 +96,7 @@ class PagesTest {
         composeRule.runOnIdle {}
     }
 
-    private sealed class Config : Serializable {
+    private sealed class Config {
         data object Config1 : Config()
         data object Config2 : Config()
         data object Config3 : Config()
