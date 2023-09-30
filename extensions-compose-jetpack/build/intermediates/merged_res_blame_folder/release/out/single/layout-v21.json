@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/layout-v21/notification_template_icon_group.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-6:/layout-v21/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/layout-v21/notification_action_tombstone.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-6:/layout-v21/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/layout-v21/notification_template_custom_big.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-6:/layout-v21/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/layout-v21/notification_action.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-6:/layout-v21/notification_action.xml"
+    }
+]

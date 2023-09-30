@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/layout/custom_dialog.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-6:/layout/custom_dialog.xml"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/layout/notification_template_part_chronometer.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-6:/layout/notification_template_part_chronometer.xml"
+    },
+    {
+        "merged": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/layout/notification_template_part_time.xml",
+        "source": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-core-1.10.0-6:/layout/notification_template_part_time.xml"
+    }
+]

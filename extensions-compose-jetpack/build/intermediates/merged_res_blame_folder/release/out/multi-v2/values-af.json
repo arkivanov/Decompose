@@ -1,0 +1,82 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-merged_res-36:/values-af/values-af.xml",
+            "map": [
+                {
+                    "source": "/Users/arkivanov/.gradle/caches/transforms-3/545af8e5f38b04869fc02769345fb621/transformed/core-1.10.0/res/values-af/values-af.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,153,255,353,451,558,667,787",
+                        "endColumns": "97,101,97,97,106,108,119,100",
+                        "endOffsets": "148,250,348,446,553,662,782,883"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,23",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,203,305,403,501,608,717,2006",
+                        "endColumns": "97,101,97,97,106,108,119,100",
+                        "endOffsets": "198,300,398,496,603,712,832,2102"
+                    }
+                },
+                {
+                    "source": "/Users/arkivanov/.gradle/caches/transforms-3/19b3f6c2fe7c4fc8a20b2a6ce584b71f/transformed/ui-release/res/values-af/values-af.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,201,288,385,486,572,648,739,829,915,979,1044,1122,1203,1274,1355,1425",
+                        "endColumns": "95,86,96,100,85,75,90,89,85,63,64,77,80,70,80,69,119",
+                        "endOffsets": "196,283,380,481,567,643,734,824,910,974,1039,1117,1198,1269,1350,1420,1540"
+                    },
+                    "to": {
+                        "startLines": "9,10,11,12,13,14,15,16,17,18,19,20,21,22,24,25,26",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "837,933,1020,1117,1218,1304,1380,1471,1561,1647,1711,1776,1854,1935,2107,2188,2258",
+                        "endColumns": "95,86,96,100,85,75,90,89,85,63,64,77,80,70,80,69,119",
+                        "endOffsets": "928,1015,1112,1213,1299,1375,1466,1556,1642,1706,1771,1849,1930,2001,2183,2253,2373"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "com.arkivanov.decompose.extensions.compose.jetpack.extensions-compose-jetpack-mergeReleaseResources-34:/values-af/values-af.xml",
+            "map": [
+                {
+                    "source": "/Users/arkivanov/.gradle/caches/transforms-3/545af8e5f38b04869fc02769345fb621/transformed/core-1.10.0/res/values-af/values-af.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,153,255,353,451,558,667,787",
+                        "endColumns": "97,101,97,97,106,108,119,100",
+                        "endOffsets": "148,250,348,446,553,662,782,883"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,23",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,203,305,403,501,608,717,2006",
+                        "endColumns": "97,101,97,97,106,108,119,100",
+                        "endOffsets": "198,300,398,496,603,712,832,2102"
+                    }
+                },
+                {
+                    "source": "/Users/arkivanov/.gradle/caches/transforms-3/19b3f6c2fe7c4fc8a20b2a6ce584b71f/transformed/ui-release/res/values-af/values-af.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,201,288,385,486,572,648,739,829,915,979,1044,1122,1203,1274,1355,1425",
+                        "endColumns": "95,86,96,100,85,75,90,89,85,63,64,77,80,70,80,69,119",
+                        "endOffsets": "196,283,380,481,567,643,734,824,910,974,1039,1117,1198,1269,1350,1420,1540"
+                    },
+                    "to": {
+                        "startLines": "9,10,11,12,13,14,15,16,17,18,19,20,21,22,24,25,26",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "837,933,1020,1117,1218,1304,1380,1471,1561,1647,1711,1776,1854,1935,2107,2188,2258",
+                        "endColumns": "95,86,96,100,85,75,90,89,85,63,64,77,80,70,80,69,119",
+                        "endOffsets": "928,1015,1112,1213,1299,1375,1466,1556,1642,1706,1771,1849,1930,2001,2183,2253,2373"
+                    }
+                }
+            ]
+        }
+    ]
+}
