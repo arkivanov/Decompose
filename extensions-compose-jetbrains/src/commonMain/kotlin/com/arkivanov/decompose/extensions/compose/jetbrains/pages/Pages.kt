@@ -12,7 +12,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.decompose.hashString
 import com.arkivanov.decompose.router.pages.ChildPages
@@ -21,15 +23,17 @@ import com.arkivanov.decompose.value.Value
 /**
  * Displays a list of pages represented by [ChildPages].
  */
+@OptIn(InternalDecomposeApi::class)
 @ExperimentalFoundationApi
 @ExperimentalDecomposeApi
 @Composable
-fun <T : Any> Pages(
-    pages: Value<ChildPages<*, T>>,
+fun <C : Any, T : Any> Pages(
+    pages: Value<ChildPages<C, T>>,
     onPageSelected: (index: Int) -> Unit,
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     pager: Pager = defaultHorizontalPager(),
+    key: (Child<C, T>) -> Any = { it.configuration.hashString() },
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
     val state = pages.subscribeAsState()
@@ -40,6 +44,7 @@ fun <T : Any> Pages(
         modifier = modifier,
         scrollAnimation = scrollAnimation,
         pager = pager,
+        key = key,
         pageContent = pageContent,
     )
 }
@@ -47,18 +52,20 @@ fun <T : Any> Pages(
 /**
  * Displays a list of pages represented by [ChildPages].
  */
+@OptIn(InternalDecomposeApi::class)
 @ExperimentalFoundationApi
 @ExperimentalDecomposeApi
 @Composable
-fun <T : Any> Pages(
-    pages: State<ChildPages<*, T>>,
+fun <C : Any, T : Any> Pages(
+    pages: State<ChildPages<C, T>>,
     onPageSelected: (index: Int) -> Unit,
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     pager: Pager = defaultHorizontalPager(),
+    key: (Child<C, T>) -> Any = { it.configuration.hashString() },
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
-    val childPages by pages 
+    val childPages by pages
     val selectedIndex = childPages.selectedIndex
     val state = rememberPagerState(
         initialPage = selectedIndex,
@@ -83,7 +90,7 @@ fun <T : Any> Pages(
     pager(
         modifier,
         state,
-        { childPages.items[it].configuration.hashString() },
+        { key(childPages.items[it]) },
     ) { pageIndex ->
         childPages.items[pageIndex].instance?.also { page ->
             pageContent(pageIndex, page)
