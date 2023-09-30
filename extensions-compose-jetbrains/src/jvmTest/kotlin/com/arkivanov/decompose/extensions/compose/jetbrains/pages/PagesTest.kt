@@ -16,6 +16,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import kotlin.test.Test
 
+@Suppress("TestFunctionName")
 class PagesTest {
 
     @get:Rule
@@ -23,7 +24,7 @@ class PagesTest {
 
     @OptIn(ExperimentalDecomposeApi::class)
     @Test
-    fun GIVEN_pages_dislpayed_WHEN_page_state_changed_THEN_pageCount_updated() {
+    fun GIVEN_pages_displayed_WHEN_page_state_changed_THEN_pageCount_updated() {
         runBlocking(Dispatchers.Main) {
             val state = mutableStateOf(
                 ChildPages<Config, Config>(
@@ -55,7 +56,7 @@ class PagesTest {
 
     @OptIn(ExperimentalDecomposeApi::class)
     @Test
-    fun GIVEN_page0_dislpayed_WHEN_switching_pages_THEN_current_page_updated() {
+    fun GIVEN_page0_displayed_WHEN_switching_pages_THEN_current_page_updated() {
         runBlocking(Dispatchers.Main) {
             val state = mutableStateOf(
                 ChildPages(

@@ -138,70 +138,142 @@ Child component configurations is another important concepts of Decompose. It al
 
 Each child component is represented by a persistent configuration class. A configuration class denotes which child component should be instantiated, and holds persistent arguments required for instantiation. A configuration class must be defined for every child component.
 
+!!!warning
+    Before `v2.2.0-alpha01`, configuration classes must implement `Parcelable` interface and be annotated with [@Parcelize](https://github.com/arkivanov/Essenty#parcelable-and-parcelize-deprecated-since-v130-alpha01) annotation. Starting with `v2.2.0-alpha01`, Parcelable/Parcelize support is deprecated and the recommended way is to annotate configuration classes with [@Serializable](https://github.com/Kotlin/kotlinx.serialization) annotation.
 
 ### Using the Child Stack
 
-```kotlin
-interface RootComponent {
+=== "Before 2.2.0-alpha01"
 
-    val stack: Value<ChildStack<*, Child>>
-
-    // It's possible to pop multiple screens at a time on iOS
-    fun onBackClicked(toIndex: Int)
+    ```kotlin
+    interface RootComponent {
     
-    // Defines all possible child components
-    sealed class Child {
-        class ListChild(val component: ListComponent) : Child()
-        class DetailsChild(val component: DetailsComponent) : Child()
-    }
-}
-
-class DefaultRootComponent(
-    componentContext: ComponentContext,
-) : RootComponent, ComponentContext by componentContext {
-
-    private val navigation = StackNavigation<Config>()
-
-    override val stack: Value<ChildStack<*, RootComponent.Child>> =
-        childStack(
-            source = navigation,
-            initialConfiguration = Config.List, // The initial child component is List
-            handleBackButton = true, // Automatically pop from the stack on back button presses
-            childFactory = ::child,
-        )
-
-    private fun child(config: Config, componentContext: ComponentContext): RootComponent.Child =
-        when (config) {
-            is Config.List -> ListChild(listComponent(componentContext))
-            is Config.Details -> DetailsChild(detailsComponent(componentContext, config))
+        val stack: Value<ChildStack<*, Child>>
+    
+        // It's possible to pop multiple screens at a time on iOS
+        fun onBackClicked(toIndex: Int)
+    
+        // Defines all possible child components
+        sealed class Child {
+            class ListChild(val component: ListComponent) : Child()
+            class DetailsChild(val component: DetailsComponent) : Child()
         }
-
-    private fun listComponent(componentContext: ComponentContext): ListComponent =
-        DefaultListComponent(
-            componentContext = componentContext,
-            onItemSelected = { item: String -> // Supply dependencies and callbacks
-                navigation.push(Config.Details(item = item)) // Push the details component
-            },
-        )
-
-    private fun detailsComponent(componentContext: ComponentContext, config: Config.Details): DetailsComponent =
-        DefaultDetailsComponent(
-            componentContext = componentContext,
-            item = config.item, // Supply arguments from the configuration
-            onFinished = navigation::pop, // Pop the details component
-        )
+    }
     
-    override fun onBackClicked(toIndex: Int) {
-        navigation.popTo(index = toIndex)
+    class DefaultRootComponent(
+        componentContext: ComponentContext,
+    ) : RootComponent, ComponentContext by componentContext {
+    
+        private val navigation = StackNavigation<Config>()
+    
+        override val stack: Value<ChildStack<*, RootComponent.Child>> =
+            childStack(
+                source = navigation,
+                initialConfiguration = Config.List, // The initial child component is List
+                handleBackButton = true, // Automatically pop from the stack on back button presses
+                childFactory = ::child,
+            )
+    
+        private fun child(config: Config, componentContext: ComponentContext): RootComponent.Child =
+            when (config) {
+                is Config.List -> ListChild(listComponent(componentContext))
+                is Config.Details -> DetailsChild(detailsComponent(componentContext, config))
+            }
+    
+        private fun listComponent(componentContext: ComponentContext): ListComponent =
+            DefaultListComponent(
+                componentContext = componentContext,
+                onItemSelected = { item: String -> // Supply dependencies and callbacks
+                    navigation.push(Config.Details(item = item)) // Push the details component
+                },
+            )
+    
+        private fun detailsComponent(componentContext: ComponentContext, config: Config.Details): DetailsComponent =
+            DefaultDetailsComponent(
+                componentContext = componentContext,
+                item = config.item, // Supply arguments from the configuration
+                onFinished = navigation::pop, // Pop the details component
+            )
+        
+        override fun onBackClicked(toIndex: Int) {
+            navigation.popTo(index = toIndex)
+        }
+    
+        @Parcelize // kotlin-parcelize plugin must be applied if you are targeting Android 
+        private sealed interface Config : Parcelable {
+            data object List : Config
+            data class Details(val item: String) : Config
+        }
     }
+    ```
 
-    @Parcelize // The `kotlin-parcelize` plugin must be applied if you are targeting Android 
-    private sealed interface Config : Parcelable {
-        data object List : Config
-        data class Details(val item: String) : Config
+=== "Since 2.2.0-alpha01"
+
+    ```kotlin
+    interface RootComponent {
+    
+        val stack: Value<ChildStack<*, Child>>
+    
+        // It's possible to pop multiple screens at a time on iOS
+        fun onBackClicked(toIndex: Int)
+    
+        // Defines all possible child components
+        sealed class Child {
+            class ListChild(val component: ListComponent) : Child()
+            class DetailsChild(val component: DetailsComponent) : Child()
+        }
     }
-}
-```
+    
+    class DefaultRootComponent(
+        componentContext: ComponentContext,
+    ) : RootComponent, ComponentContext by componentContext {
+    
+        private val navigation = StackNavigation<Config>()
+    
+        override val stack: Value<ChildStack<*, RootComponent.Child>> =
+            childStack(
+                source = navigation,
+                serializer = Config.serializer(),
+                initialConfiguration = Config.List, // The initial child component is List
+                handleBackButton = true, // Automatically pop from the stack on back button presses
+                childFactory = ::child,
+            )
+    
+        private fun child(config: Config, componentContext: ComponentContext): RootComponent.Child =
+            when (config) {
+                is Config.List -> ListChild(listComponent(componentContext))
+                is Config.Details -> DetailsChild(detailsComponent(componentContext, config))
+            }
+    
+        private fun listComponent(componentContext: ComponentContext): ListComponent =
+            DefaultListComponent(
+                componentContext = componentContext,
+                onItemSelected = { item: String -> // Supply dependencies and callbacks
+                    navigation.push(Config.Details(item = item)) // Push the details component
+                },
+            )
+    
+        private fun detailsComponent(componentContext: ComponentContext, config: Config.Details): DetailsComponent =
+            DefaultDetailsComponent(
+                componentContext = componentContext,
+                item = config.item, // Supply arguments from the configuration
+                onFinished = navigation::pop, // Pop the details component
+            )
+        
+        override fun onBackClicked(toIndex: Int) {
+            navigation.popTo(index = toIndex)
+        }
+    
+        @Serializable // kotlinx-serialization plugin must be applied
+        private sealed interface Config {
+            @Serializable
+            data object List : Config
+
+            @Serializable
+            data class Details(val item: String) : Config
+        }
+    }
+    ```
 
 ### Child Stack with Jetpack Compose
 

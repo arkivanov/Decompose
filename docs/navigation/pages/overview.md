@@ -52,43 +52,86 @@ class DefaultPageComponent(
 ) : PageComponent, ComponentContext by componentContext
 ```
 
-```kotlin title="PagesComponent"
-interface PagesComponent {
-    val pages: Value<ChildPages<*, PageComponent>>
+=== "Before v2.2.0-alpha01"
 
-    fun selectPage(index: Int)
-}
-
-class DefaultPagesComponent(
-    componentContext: ComponentContext,
-) : PagesComponent, ComponentContext by componentContext {
-
-    private val navigation = PagesNavigation<Config>()
-
-    override val pages: Value<ChildPages<*, PageComponent>> =
-        childPages(
-            source = navigation,
-            initialPages = {
-                Pages(
-                    items = List(10) { index -> Config(data = "Item $index") },
-                    selectedIndex = 0,
-                )
-            },
-        ) { config, childComponentContext ->
-            DefaultPageComponent(
-                componentContext = childComponentContext,
-                data = config.data,
-            )
-        }
-
-    override fun selectPage(index: Int) {
-        navigation.select(index = index)
+    ```kotlin title="PagesComponent"
+    interface PagesComponent {
+        val pages: Value<ChildPages<*, PageComponent>>
+    
+        fun selectPage(index: Int)
     }
+    
+    class DefaultPagesComponent(
+        componentContext: ComponentContext,
+    ) : PagesComponent, ComponentContext by componentContext {
+    
+        private val navigation = PagesNavigation<Config>()
+    
+        override val pages: Value<ChildPages<*, PageComponent>> =
+            childPages(
+                source = navigation,
+                initialPages = {
+                    Pages(
+                        items = List(10) { index -> Config(data = "Item $index") },
+                        selectedIndex = 0,
+                    )
+                },
+            ) { config, childComponentContext ->
+                DefaultPageComponent(
+                    componentContext = childComponentContext,
+                    data = config.data,
+                )
+            }
+    
+        override fun selectPage(index: Int) {
+            navigation.select(index = index)
+        }
+    
+        @Parcelize // kotlin-parcelize plugin must be applied if you are targetting Android
+        private data class Config(val data: String) : Parcelable
+    }
+    ```
 
-    @Parcelize
-    private data class Config(val data: String) : Parcelable
-}
-```
+=== "Since v2.2.0-alpha01"
+
+    ```kotlin title="PagesComponent"
+    interface PagesComponent {
+        val pages: Value<ChildPages<*, PageComponent>>
+    
+        fun selectPage(index: Int)
+    }
+    
+    class DefaultPagesComponent(
+        componentContext: ComponentContext,
+    ) : PagesComponent, ComponentContext by componentContext {
+    
+        private val navigation = PagesNavigation<Config>()
+    
+        override val pages: Value<ChildPages<*, PageComponent>> =
+            childPages(
+                source = navigation,
+                serializer = Config.serializer(), // Or null to disable navigation state saving
+                initialPages = {
+                    Pages(
+                        items = List(10) { index -> Config(data = "Item $index") },
+                        selectedIndex = 0,
+                    )
+                },
+            ) { config, childComponentContext ->
+                DefaultPageComponent(
+                    componentContext = childComponentContext,
+                    data = config.data,
+                )
+            }
+    
+        override fun selectPage(index: Int) {
+            navigation.select(index = index)
+        }
+    
+        @Serializable // kotlinx-serialization plugin must be applied
+        private data class Config(val data: String)
+    }
+    ```
 
 ## Screen recreation and process death on (not only) Android
 
