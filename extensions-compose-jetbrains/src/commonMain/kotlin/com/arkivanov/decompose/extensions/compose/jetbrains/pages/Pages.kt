@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.decompose.hashString
 import com.arkivanov.decompose.router.pages.ChildPages
 import com.arkivanov.decompose.value.Value
 
@@ -82,7 +83,7 @@ fun <T : Any> Pages(
     pager(
         modifier,
         state,
-        { childPages.items[it].configuration },
+        { childPages.items[it].configuration.hashString() },
     ) { pageIndex ->
         childPages.items[pageIndex].instance?.also { page ->
             pageContent(pageIndex, page)
