@@ -13,7 +13,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
+import com.arkivanov.decompose.hashString
 import com.arkivanov.decompose.router.pages.ChildPages
 import com.arkivanov.decompose.value.Value
 
@@ -46,6 +48,7 @@ fun <T : Any> Pages(
 /**
  * Displays a list of pages represented by [ChildPages].
  */
+@OptIn(InternalDecomposeApi::class)
 @ExperimentalFoundationApi
 @ExperimentalDecomposeApi
 @Composable
@@ -74,15 +77,15 @@ fun <T : Any> Pages(
         }
     }
 
-    DisposableEffect(state.settledPage) {
-        onPageSelected(state.settledPage)
+    DisposableEffect(state.currentPage) {
+        onPageSelected(state.currentPage)
         onDispose {}
     }
 
     pager(
         modifier,
         state,
-        { childPages.items[it].configuration },
+        { childPages.items[it].configuration.hashString() },
     ) { pageIndex ->
         childPages.items[pageIndex].instance?.also { page ->
             pageContent(pageIndex, page)

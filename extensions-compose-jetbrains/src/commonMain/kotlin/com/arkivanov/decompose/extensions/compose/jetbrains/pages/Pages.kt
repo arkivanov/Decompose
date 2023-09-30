@@ -74,8 +74,8 @@ fun <T : Any> Pages(
         }
     }
 
-    DisposableEffect(state.settledPage) {
-        onPageSelected(state.settledPage)
+    DisposableEffect(state.currentPage) {
+        onPageSelected(state.currentPage)
         onDispose {}
     }
 
