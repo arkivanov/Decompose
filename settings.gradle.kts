@@ -38,10 +38,7 @@ if (!startParameter.projectProperties.containsKey("check_publication")) {
     include(":sample:app-android")
     include(":sample:app-desktop")
     include(":sample:app-darwin-compose")
-
-    // Disabled until Kotlin 1.9.10, see https://youtrack.jetbrains.com/issue/KT-60852
-//    include(":sample:app-js-compose")
-
+    include(":sample:app-js-compose")
     include(":sample:app-js")
 } else {
     include(":tools:check-publication")
