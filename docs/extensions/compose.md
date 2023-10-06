@@ -112,6 +112,47 @@ fun DetailsContent(component: DetailsComponent) {
 }
 ```
 
+## Child Slot navigation with Compose
+
+Child Slot navigation model can be used for different purposes. It can be used to just show/hide a certain part of UI, or to present a dialog, or a sheet (like Material Bottom Sheet). Although Decompose doesn't provide any special Compose API for Child Slot, it's pretty easy to do it manually.
+
+```kotlin title="AlertDialog example"
+interface RootComponent {
+    val dialog: Value<ChildSlot<*, DialogComponent>>
+}
+
+@Composable
+fun RootContent(component: RootComponent) {
+    val dialogSlot by component.dialog.subscribeAsState()
+    dialogSlot.child?.instance?.also {
+        DialogContent(component = it)
+    }
+}
+
+interface DialogComponent {
+    fun onDismissClicked()
+}
+
+@Composable
+fun DialogContent(component: DialogComponent) {
+    AlertDialog(
+        onDismissRequest = component::onDismissClicked,
+        title = { Text(text = "Title") },
+        text = { Text(text = "Message") },
+        confirmButton = {
+            TextButton(onClick = component::onDismissClicked) {
+                Text("Dismiss")
+            }
+        },
+        modifier = Modifier.width(300.dp),
+    )
+}
+```
+
+!!! note
+
+    Child Slot might not be suitable for a Navigation Drawer. This is because the Navigation Drawer can be opened by a drag gesture at any time. The corresponding component should be [always created](https://arkivanov.github.io/Decompose/component/child-components/#adding-a-child-component-manually) so that it's always ready to be rendered.
+
 ## Pager-like navigation
 
 !!!warning
