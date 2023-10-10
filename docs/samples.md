@@ -76,6 +76,12 @@ Simple todo application with a list and detail page that shares UI between Andro
 
 ![](https://github.com/IlyaGulya/TodoAppDecomposeMviKotlin/blob/master/screenshots/todo.png?raw=true)
 
+## Decompose-Dagger Sample
+
+A sample Android project demonstrating the use of Decompose library together with Dagger DI framework.
+
+[decompose-dagger-sample](https://github.com/arkivanov/decompose-dagger-sample)
+
 ## Sample Greetings App
 
 ![](media/SampleGreetingsDemo.gif)
