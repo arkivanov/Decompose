@@ -9,8 +9,6 @@ import androidx.compose.ui.window.WindowState
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -24,88 +22,78 @@ class LifecycleControllerTest {
 
     @Test
     fun WHEN_initial_isMinimized_false_THEN_state_RESUMED() {
-        runBlocking(Dispatchers.Main) {
-            val lifecycle = LifecycleRegistry()
-            val windowState = WindowState(isMinimized = false)
+        val lifecycle = LifecycleRegistry()
+        val windowState = WindowState(isMinimized = false)
 
-            setContent {
-                LifecycleController(lifecycle, windowState)
-            }
-
-            assertEquals(Lifecycle.State.RESUMED, lifecycle.state)
+        setContent {
+            LifecycleController(lifecycle, windowState)
         }
+
+        assertEquals(Lifecycle.State.RESUMED, lifecycle.state)
     }
 
     @Test
     fun WHEN_initial_isMinimized_true_THEN_state_CREATED() {
-        runBlocking(Dispatchers.Main) {
-            val lifecycle = LifecycleRegistry()
-            val windowState = WindowState(isMinimized = true)
+        val lifecycle = LifecycleRegistry()
+        val windowState = WindowState(isMinimized = true)
 
-            setContent {
-                LifecycleController(lifecycle, windowState)
-            }
-
-            assertEquals(Lifecycle.State.CREATED, lifecycle.state)
+        setContent {
+            LifecycleController(lifecycle, windowState)
         }
+
+        assertEquals(Lifecycle.State.CREATED, lifecycle.state)
     }
 
     @Test
     fun GIVEN_isMinimized_false_WHEN_isMinimized_changed_to_true_THEN_state_CREATED() {
-        runBlocking(Dispatchers.Main) {
-            val lifecycle = LifecycleRegistry()
-            val windowState = WindowState(isMinimized = false)
+        val lifecycle = LifecycleRegistry()
+        val windowState = WindowState(isMinimized = false)
 
-            setContent {
-                LifecycleController(lifecycle, windowState)
-            }
-
-            windowState.isMinimized = true
-            composeRule.awaitIdle()
-
-            assertEquals(Lifecycle.State.CREATED, lifecycle.state)
+        setContent {
+            LifecycleController(lifecycle, windowState)
         }
+
+        windowState.isMinimized = true
+        composeRule.runOnIdle {}
+
+        assertEquals(Lifecycle.State.CREATED, lifecycle.state)
     }
 
     @Test
     fun GIVEN_isMinimized_true_WHEN_isMinimized_changed_to_false_THEN_state_RESUMED() {
-        runBlocking(Dispatchers.Main) {
-            val lifecycle = LifecycleRegistry()
-            val windowState = WindowState(isMinimized = true)
+        val lifecycle = LifecycleRegistry()
+        val windowState = WindowState(isMinimized = true)
 
-            setContent {
-                LifecycleController(lifecycle, windowState)
-            }
-
-            windowState.isMinimized = false
-            composeRule.awaitIdle()
-
-            assertEquals(Lifecycle.State.RESUMED, lifecycle.state)
+        setContent {
+            LifecycleController(lifecycle, windowState)
         }
+
+        windowState.isMinimized = false
+        composeRule.runOnIdle {}
+
+        assertEquals(Lifecycle.State.RESUMED, lifecycle.state)
     }
 
     @Test
     fun GIVEN_isMinimized_false_WHEN_disposed_THEN_state_DESTROYED() {
-        runBlocking(Dispatchers.Main) {
-            val lifecycle = LifecycleRegistry()
-            val windowState = WindowState(isMinimized = false)
-            var dispose by mutableStateOf(false)
+        val lifecycle = LifecycleRegistry()
+        val windowState = WindowState(isMinimized = false)
+        var dispose by mutableStateOf(false)
 
-            setContent {
-                if (!dispose) {
-                    LifecycleController(lifecycle, windowState)
-                }
+        setContent {
+            if (!dispose) {
+                LifecycleController(lifecycle, windowState)
             }
-
-            dispose = true
-            composeRule.awaitIdle()
-
-            assertEquals(Lifecycle.State.DESTROYED, lifecycle.state)
         }
+
+        dispose = true
+        composeRule.runOnIdle {}
+
+        assertEquals(Lifecycle.State.DESTROYED, lifecycle.state)
     }
 
-    private suspend fun setContent(block: @Composable () -> Unit) {
+    private fun setContent(block: @Composable () -> Unit) {
         composeRule.setContent(block)
-        composeRule.awaitIdle()
+        composeRule.runOnIdle {}
     }
 }
