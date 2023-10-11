@@ -78,7 +78,10 @@ fun <T : Any> Pages(
     }
 
     DisposableEffect(state.currentPage) {
-        onPageSelected(state.currentPage)
+        if (state.currentPage == state.targetPage) {
+            onPageSelected(state.currentPage)
+        }
+
         onDispose {}
     }
 

@@ -58,7 +58,7 @@ fun <T : Any> Pages(
     pager: Pager = defaultHorizontalPager(),
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
-    val childPages by pages 
+    val childPages by pages
     val selectedIndex = childPages.selectedIndex
     val state = rememberPagerState(
         initialPage = selectedIndex,
@@ -76,7 +76,10 @@ fun <T : Any> Pages(
     }
 
     DisposableEffect(state.currentPage) {
-        onPageSelected(state.currentPage)
+        if (state.currentPage == state.targetPage) {
+            onPageSelected(state.currentPage)
+        }
+
         onDispose {}
     }
 

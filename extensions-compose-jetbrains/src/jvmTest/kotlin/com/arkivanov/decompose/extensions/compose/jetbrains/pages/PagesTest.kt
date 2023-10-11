@@ -15,14 +15,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 
+@OptIn(ExperimentalDecomposeApi::class, ExperimentalFoundationApi::class)
 @Suppress("TestFunctionName")
 class PagesTest {
 
     @get:Rule
     val composeRule = createComposeRule()
 
-    @OptIn(ExperimentalDecomposeApi::class)
     @Test
     fun GIVEN_pages_displayed_WHEN_page_state_changed_THEN_pageCount_updated() {
         runBlocking(Dispatchers.Main) {
@@ -39,7 +40,7 @@ class PagesTest {
             setContent(state)
             composeRule.onNodeWithText(text = "Page0", substring = true).assertExists()
 
-            state.setValueOnIdle(
+            state.updateOnIdle {
                 ChildPages(
                     items = listOf(
                         Child.Created(Config.Config1, Config.Config1),
@@ -48,13 +49,12 @@ class PagesTest {
                     ),
                     selectedIndex = 2,
                 )
-            )
+            }
 
             composeRule.onNodeWithText(text = "Page2", substring = true).assertExists()
         }
     }
 
-    @OptIn(ExperimentalDecomposeApi::class)
     @Test
     fun GIVEN_page0_displayed_WHEN_switching_pages_THEN_current_page_updated() {
         runBlocking(Dispatchers.Main) {
@@ -71,18 +71,84 @@ class PagesTest {
             setContent(state)
             composeRule.onNodeWithText(text = "Page0", substring = true).assertExists()
 
-            state.setValueOnIdle(state.value.copy(selectedIndex = 1))
+            state.updateOnIdle { it.copy(selectedIndex = 1) }
 
             composeRule.onNodeWithText(text = "Page1", substring = true).assertExists()
         }
     }
 
-    @OptIn(ExperimentalDecomposeApi::class, ExperimentalFoundationApi::class)
-    private suspend fun setContent(stack: State<ChildPages<Config, Config>>, ) {
+    @Test
+    fun GIVEN_pages_without_animation_WHEN_page_changed_from_0_to_2_THEN_onPageSelected_called_with_index_2() {
+        runBlocking(Dispatchers.Main) {
+            val state =
+                mutableStateOf(
+                    ChildPages(
+                        items = listOf(
+                            Child.Created(Config.Config1, Config.Config1),
+                            Child.Created(Config.Config2, Config.Config2),
+                            Child.Created(Config.Config3, Config.Config3),
+                        ),
+                        selectedIndex = 0,
+                    ),
+                )
+
+            val indices = ArrayList<Int>()
+
+            setContent(
+                pages = state,
+                onPageSelected = { indices += it },
+            )
+
+            indices.clear()
+
+            state.updateOnIdle { it.copy(selectedIndex = 2) }
+
+            assertContentEquals(listOf(2), indices)
+        }
+    }
+
+
+    @Test
+    fun GIVEN_pages_with_animation_WHEN_page_changed_from_0_to_2_THEN_onPageSelected_called_with_index_2() {
+        runBlocking(Dispatchers.Main) {
+            val state =
+                mutableStateOf(
+                    ChildPages(
+                        items = listOf(
+                            Child.Created(Config.Config1, Config.Config1),
+                            Child.Created(Config.Config2, Config.Config2),
+                            Child.Created(Config.Config3, Config.Config3),
+                        ),
+                        selectedIndex = 0,
+                    ),
+                )
+
+            val indices = ArrayList<Int>()
+
+            setContent(
+                pages = state,
+                onPageSelected = { indices += it },
+                scrollAnimation = PagesScrollAnimation.Default,
+            )
+
+            indices.clear()
+
+            state.updateOnIdle { it.copy(selectedIndex = 2) }
+
+            assertContentEquals(listOf(2), indices)
+        }
+    }
+
+    private suspend fun setContent(
+        pages: State<ChildPages<Config, Config>>,
+        onPageSelected: (index: Int) -> Unit = {},
+        scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
+    ) {
         composeRule.setContent {
             Pages(
-                pages = stack,
-                onPageSelected = {},
+                pages = pages,
+                onPageSelected = onPageSelected,
+                scrollAnimation = scrollAnimation,
             ) { index, page ->
                 Page(index, page)
             }
@@ -96,9 +162,9 @@ class PagesTest {
         BasicText(text = "Page$index=$page")
     }
 
-    private suspend fun <T> MutableState<T>.setValueOnIdle(value: T) {
-        runOnIdle { this.value = value }
-        runOnIdle {}
+    private fun <T> MutableState<T>.updateOnIdle(func: (T) -> T) {
+        composeRule.runOnIdle { value = func(value) }
+        composeRule.runOnIdle {}
     }
 
     private suspend fun runOnIdle(block: () -> Unit) {
@@ -107,8 +173,8 @@ class PagesTest {
     }
 
     private sealed class Config {
-        data object Config1: Config()
-        data object Config2: Config()
-        data object Config3: Config()
+        data object Config1 : Config()
+        data object Config2 : Config()
+        data object Config3 : Config()
     }
 }
