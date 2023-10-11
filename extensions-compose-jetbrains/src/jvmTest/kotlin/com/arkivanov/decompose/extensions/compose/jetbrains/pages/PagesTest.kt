@@ -11,8 +11,6 @@ import androidx.compose.ui.test.onNodeWithText
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.pages.ChildPages
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -26,120 +24,112 @@ class PagesTest {
 
     @Test
     fun GIVEN_pages_displayed_WHEN_page_state_changed_THEN_pageCount_updated() {
-        runBlocking(Dispatchers.Main) {
-            val state = mutableStateOf(
-                ChildPages<Config, Config>(
-                    items = listOf(
-                        Child.Created(Config.Config1, Config.Config1),
-                        Child.Destroyed(Config.Config2),
-                    ),
-                    selectedIndex = 0,
+        val state = mutableStateOf(
+            ChildPages<Config, Config>(
+                items = listOf(
+                    Child.Created(Config.Config1, Config.Config1),
+                    Child.Destroyed(Config.Config2),
                 ),
+                selectedIndex = 0,
+            ),
+        )
+
+        setContent(state)
+        composeRule.onNodeWithText(text = "Page0", substring = true).assertExists()
+
+        state.updateOnIdle {
+            ChildPages(
+                items = listOf(
+                    Child.Created(Config.Config1, Config.Config1),
+                    Child.Destroyed(Config.Config2),
+                    Child.Created(Config.Config3, Config.Config3),
+                ),
+                selectedIndex = 2,
             )
-
-            setContent(state)
-            composeRule.onNodeWithText(text = "Page0", substring = true).assertExists()
-
-            state.updateOnIdle {
-                ChildPages(
-                    items = listOf(
-                        Child.Created(Config.Config1, Config.Config1),
-                        Child.Destroyed(Config.Config2),
-                        Child.Created(Config.Config3, Config.Config3),
-                    ),
-                    selectedIndex = 2,
-                )
-            }
-
-            composeRule.onNodeWithText(text = "Page2", substring = true).assertExists()
         }
+
+        composeRule.onNodeWithText(text = "Page2", substring = true).assertExists()
     }
 
     @Test
     fun GIVEN_page0_displayed_WHEN_switching_pages_THEN_current_page_updated() {
-        runBlocking(Dispatchers.Main) {
-            val state = mutableStateOf(
+        val state = mutableStateOf(
+            ChildPages(
+                items = listOf(
+                    Child.Created(Config.Config1, Config.Config1),
+                    Child.Created(Config.Config2, Config.Config2),
+                ),
+                selectedIndex = 0,
+            ),
+        )
+
+        setContent(state)
+        composeRule.onNodeWithText(text = "Page0", substring = true).assertExists()
+
+        state.updateOnIdle { it.copy(selectedIndex = 1) }
+
+        composeRule.onNodeWithText(text = "Page1", substring = true).assertExists()
+    }
+
+    @Test
+    fun GIVEN_pages_without_animation_WHEN_page_changed_from_0_to_2_THEN_onPageSelected_called_with_index_2() {
+        val state =
+            mutableStateOf(
                 ChildPages(
                     items = listOf(
                         Child.Created(Config.Config1, Config.Config1),
                         Child.Created(Config.Config2, Config.Config2),
+                        Child.Created(Config.Config3, Config.Config3),
                     ),
                     selectedIndex = 0,
                 ),
             )
 
-            setContent(state)
-            composeRule.onNodeWithText(text = "Page0", substring = true).assertExists()
+        val indices = ArrayList<Int>()
 
-            state.updateOnIdle { it.copy(selectedIndex = 1) }
+        setContent(
+            pages = state,
+            onPageSelected = { indices += it },
+        )
 
-            composeRule.onNodeWithText(text = "Page1", substring = true).assertExists()
-        }
-    }
+        indices.clear()
 
-    @Test
-    fun GIVEN_pages_without_animation_WHEN_page_changed_from_0_to_2_THEN_onPageSelected_called_with_index_2() {
-        runBlocking(Dispatchers.Main) {
-            val state =
-                mutableStateOf(
-                    ChildPages(
-                        items = listOf(
-                            Child.Created(Config.Config1, Config.Config1),
-                            Child.Created(Config.Config2, Config.Config2),
-                            Child.Created(Config.Config3, Config.Config3),
-                        ),
-                        selectedIndex = 0,
-                    ),
-                )
+        state.updateOnIdle { it.copy(selectedIndex = 2) }
 
-            val indices = ArrayList<Int>()
-
-            setContent(
-                pages = state,
-                onPageSelected = { indices += it },
-            )
-
-            indices.clear()
-
-            state.updateOnIdle { it.copy(selectedIndex = 2) }
-
-            assertContentEquals(listOf(2), indices)
-        }
+        assertContentEquals(listOf(2), indices)
     }
 
 
     @Test
     fun GIVEN_pages_with_animation_WHEN_page_changed_from_0_to_2_THEN_onPageSelected_called_with_index_2() {
-        runBlocking(Dispatchers.Main) {
-            val state =
-                mutableStateOf(
-                    ChildPages(
-                        items = listOf(
-                            Child.Created(Config.Config1, Config.Config1),
-                            Child.Created(Config.Config2, Config.Config2),
-                            Child.Created(Config.Config3, Config.Config3),
-                        ),
-                        selectedIndex = 0,
+        val state =
+            mutableStateOf(
+                ChildPages(
+                    items = listOf(
+                        Child.Created(Config.Config1, Config.Config1),
+                        Child.Created(Config.Config2, Config.Config2),
+                        Child.Created(Config.Config3, Config.Config3),
                     ),
-                )
-
-            val indices = ArrayList<Int>()
-
-            setContent(
-                pages = state,
-                onPageSelected = { indices += it },
-                scrollAnimation = PagesScrollAnimation.Default,
+                    selectedIndex = 0,
+                ),
             )
 
-            indices.clear()
+        val indices = ArrayList<Int>()
 
-            state.updateOnIdle { it.copy(selectedIndex = 2) }
+        setContent(
+            pages = state,
+            onPageSelected = { indices += it },
+            scrollAnimation = PagesScrollAnimation.Default,
+        )
 
-            assertContentEquals(listOf(2), indices)
-        }
+        indices.clear()
+
+        state.updateOnIdle { it.copy(selectedIndex = 2) }
+
+        assertContentEquals(listOf(2), indices)
     }
 
-    private suspend fun setContent(
+    private fun setContent(
         pages: State<ChildPages<Config, Config>>,
         onPageSelected: (index: Int) -> Unit = {},
         scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
@@ -154,7 +144,7 @@ class PagesTest {
             }
         }
 
-        runOnIdle {}
+        composeRule.runOnIdle {}
     }
 
     @Composable
@@ -165,11 +155,6 @@ class PagesTest {
     private fun <T> MutableState<T>.updateOnIdle(func: (T) -> T) {
         composeRule.runOnIdle { value = func(value) }
         composeRule.runOnIdle {}
-    }
-
-    private suspend fun runOnIdle(block: () -> Unit) {
-        composeRule.awaitIdle()
-        block()
     }
 
     private sealed class Config {
