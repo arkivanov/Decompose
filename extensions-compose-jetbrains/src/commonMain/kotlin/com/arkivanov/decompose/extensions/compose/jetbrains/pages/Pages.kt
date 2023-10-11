@@ -11,6 +11,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
@@ -88,7 +89,9 @@ fun <T : Any> Pages(
         state,
         { childPages.items[it].configuration.hashString() },
     ) { pageIndex ->
-        childPages.items[pageIndex].instance?.also { page ->
+        val item = childPages.items[pageIndex]
+        val page = remember(item.configuration) { item.instance }
+        if (page != null) {
             pageContent(pageIndex, page)
         }
     }
