@@ -99,7 +99,6 @@ class PagesTest {
         assertContentEquals(listOf(2), indices)
     }
 
-
     @Test
     fun GIVEN_pages_with_animation_WHEN_page_changed_from_0_to_2_THEN_onPageSelected_called_with_index_2() {
         val state =
@@ -129,6 +128,20 @@ class PagesTest {
         assertContentEquals(listOf(2), indices)
     }
 
+    @Test
+    fun GIVEN_pages_empty_WHEN_shown_THEN_onPageSelected_not_called() {
+        val state = mutableStateOf(ChildPages<Config, Config>())
+
+        val indices = ArrayList<Int>()
+
+        setContent(
+            pages = state,
+            onPageSelected = { indices += it },
+            scrollAnimation = PagesScrollAnimation.Default,
+        )
+
+        assertContentEquals(emptyList(), indices)
+    }
 
     private fun setContent(
         pages: State<ChildPages<Config, Config>>,

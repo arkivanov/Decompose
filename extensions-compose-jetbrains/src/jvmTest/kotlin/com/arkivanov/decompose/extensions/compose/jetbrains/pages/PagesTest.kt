@@ -129,6 +129,21 @@ class PagesTest {
         assertContentEquals(listOf(2), indices)
     }
 
+    @Test
+    fun GIVEN_pages_empty_WHEN_shown_THEN_onPageSelected_not_called() {
+        val state = mutableStateOf(ChildPages<Config, Config>())
+
+        val indices = ArrayList<Int>()
+
+        setContent(
+            pages = state,
+            onPageSelected = { indices += it },
+            scrollAnimation = PagesScrollAnimation.Default,
+        )
+
+        assertContentEquals(emptyList(), indices)
+    }
+
     private fun setContent(
         pages: State<ChildPages<Config, Config>>,
         onPageSelected: (index: Int) -> Unit = {},
