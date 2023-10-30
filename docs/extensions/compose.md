@@ -480,8 +480,13 @@ actual fun <C : Any, T : Any> backAnimation(
     predictiveBackAnimation(
         backHandler = backHandler,
         animation = stackAnimation(iosLikeSlide()),
-        exitModifier = { progress, _ -> Modifier.slideExitModifier(progress = progress) },
-        enterModifier = { progress, _ -> Modifier.slideEnterModifier(progress = progress) },
+        selector = { initialBackEvent, _, _ ->
+            predictiveBackAnimatable(
+                initialBackEvent = initialBackEvent,
+                exitModifier = { progress, _ -> Modifier.slideExitModifier(progress = progress) },
+                enterModifier = { progress, _ -> Modifier.slideEnterModifier(progress = progress) },
+            )
+        },
         onBack = onBack,
     )
 
