@@ -42,4 +42,5 @@ dependencies {
     androidTestImplementation(deps.junit.junit)
     androidTestImplementation(deps.androidx.compose.ui.uiTestManifest)
     androidTestImplementation(deps.androidx.test.core)
+    androidTestImplementation(deps.kotlin.test)
 }

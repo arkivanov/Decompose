@@ -10,7 +10,7 @@ repo_url: https://github.com/arkivanov/Decompose
 edit_uri: ""
 
 # Copyright
-copyright: Copyright &copy; 2020 - 2022 Arkadii Ivanov
+copyright: Copyright &copy; 2020 - 2023 Arkadii Ivanov
 
 # Page tree
 nav:
@@ -55,6 +55,7 @@ nav:
     - Extensions for Android views: extensions/android.md
 
   - Samples: samples.md
+  - Community: community.md
 
   # Configuration
 theme:

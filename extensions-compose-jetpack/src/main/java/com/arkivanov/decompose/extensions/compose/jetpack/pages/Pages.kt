@@ -11,6 +11,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
@@ -83,7 +84,10 @@ fun <C : Any, T : Any> Pages(
     }
 
     DisposableEffect(state.currentPage) {
-        onPageSelected(state.currentPage)
+        if (state.currentPage == state.targetPage) {
+            onPageSelected(state.currentPage)
+        }
+
         onDispose {}
     }
 
@@ -92,7 +96,9 @@ fun <C : Any, T : Any> Pages(
         state,
         { key(childPages.items[it]) },
     ) { pageIndex ->
-        childPages.items[pageIndex].instance?.also { page ->
+        val item = childPages.items[pageIndex]
+        val page = remember(item.configuration) { item.instance }
+        if (page != null) {
             pageContent(pageIndex, page)
         }
     }

@@ -19,7 +19,7 @@ Decompose is a Kotlin Multiplatform library for breaking down your code into lif
 - Decompose draws clear boundaries between UI and non-UI code, which gives the following benefits:
     - Better separation of concerns
     - Pluggable platform-specific UI (Compose, SwiftUI, React, etc.)
-    - Business logic code is testable with pure multiplatform unit tets
+    - Business logic code is testable with pure multiplatform unit tests
 - Proper dependency injection (DI) and inversion of control (IoC) via constructor, including but not limited to type-safe arguments.
 - Shared navigation logic
 - Lifecycle-aware components
