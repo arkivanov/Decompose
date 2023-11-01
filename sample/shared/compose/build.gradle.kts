@@ -5,6 +5,7 @@ import com.arkivanov.gradle.setupSourceSets
 plugins {
     id("kotlin-multiplatform")
     id("com.android.library")
+    id("kotlin-parcelize")
     id("org.jetbrains.compose")
     id("com.arkivanov.gradle.setup")
 }
