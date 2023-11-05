@@ -1,6 +1,6 @@
 [versions]
 
-decompose = "2.1.3-compose-experimental"
+decompose = "2.1.4-compose-experimental"
 kotlin = "1.9.10"
 essenty = "1.2.0"
 parcelizeDarwin = "0.2.1"
