@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.InternalDecomposeApi
+import com.arkivanov.decompose.Ref
 import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.arkivanov.decompose.hashString
 import com.arkivanov.decompose.router.pages.ChildPages
@@ -92,7 +93,13 @@ fun <T : Any> Pages(
         { childPages.items[it].configuration.hashString() },
     ) { pageIndex ->
         val item = childPages.items[pageIndex]
-        val page = remember(item.configuration) { item.instance }
+
+        val pageRef = remember(item.configuration) { Ref(item.instance) }
+        if (item.instance != null) {
+            pageRef.value = item.instance
+        }
+
+        val page = pageRef.value
         if (page != null) {
             pageContent(pageIndex, page)
         }
