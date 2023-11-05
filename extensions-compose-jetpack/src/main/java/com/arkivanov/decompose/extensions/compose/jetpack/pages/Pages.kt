@@ -14,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.decompose.Ref
 import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.arkivanov.decompose.hashString
@@ -50,7 +49,6 @@ fun <T : Any> Pages(
 /**
  * Displays a list of pages represented by [ChildPages].
  */
-@OptIn(InternalDecomposeApi::class)
 @ExperimentalFoundationApi
 @ExperimentalDecomposeApi
 @Composable
