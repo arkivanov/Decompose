@@ -27,6 +27,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    kotlinOptions {
+        freeCompilerArgs += "-opt-in=com.arkivanov.decompose.InternalDecomposeApi"
+    }
+
     packagingOptions {
         pickFirst("META-INF/AL2.0")
         pickFirst("META-INF/LGPL2.0")

@@ -51,106 +51,152 @@ val navigation = StackNavigation<Configuration>()
 
 ### push(configuration)
 
-Pushes the provided `Configuration` at the top of the stack.
+Pushes the provided `Configuration` at the top of the stack. Decompose will throw an exception if the provided `Configuration` is already present in the stack.
 
-```title="Before"
-[A, B*]
-```
+!!! note "Illustration"
 
-```kotlin
-navigation.push(Configuration.C)
-```
+    ```title="Before"
+    [A, B*]
+    ```
+    
+    ```kotlin
+    navigation.push(Configuration.C)
+    ```
+    
+    ```title="After"
+    [A, B, C*]
+    ```
 
-```title="After"
-[A, B, C*]
-```
+### pushNew(configuration) (since v2.2.0-alpha03)
+
+Pushes the provided `Configuration` at the top of the stack. Does nothing if the provided `Configuration` is already on top of the stack. Decompose will throw an exception if the provided `Configuration` is already present in the back stack (not at the top of the stack).
+
+This can be useful when pushing a component on button click, to avoid pushing the same component if the user clicks the same button quickly multiple times.
+
+!!! note "Illustration 1"
+
+    ```title="Before"
+    [A, B*]
+    ```
+    
+    ```kotlin
+    navigation.pushNew(Configuration.C)
+    ```
+    
+    ```title="After"
+    [A, B, C*]
+    ```
+
+!!! note "Illustration 2"
+
+    ```title="Before"
+    [A, B, C*]
+    ```
+    
+    ```kotlin
+    navigation.pushNew(Configuration.C)
+    ```
+    
+    ```title="After"
+    [A, B, C*]
+    ```
 
 ### pop
 
 Pops the latest configuration at the top of the stack.
 
-```title="Before"
-[A, B, C*]
-```
+!!! note "Illustration"
 
-```kotlin
-navigation.pop()
-
-// Or
-
-navigation.pop { isSuccess ->
-    // Called when the navigation is finished.
-    // isSuccess - `true` if the stack size was greater than 1 and a component was popped, `false` otherwise.
-}
-```
-
-```title="After"
-[A, B*]
-```
+    ```title="Before"
+    [A, B, C*]
+    ```
+    
+    ```kotlin
+    navigation.pop()
+    
+    // Or
+    
+    navigation.pop { isSuccess ->
+        // Called when the navigation is finished.
+        // isSuccess - `true` if the stack size was greater than 1 and a component was popped, `false` otherwise.
+    }
+    ```
+    
+    ```title="After"
+    [A, B*]
+    ```
 
 ### popWhile(predicate)
 
 Drops the configurations at the top of the stack while the provided predicate returns true.
 
-```title="Before"
-[A, B, C, D*]
-```
+!!! note "Illustration"
 
-```kotlin
-navigation.popWhile { topOfStack: Configuration -> topOfStack !is B }
-```
-
-```title="After"
-[A, B*]
-```
+    ```title="Before"
+    [A, B, C, D*]
+    ```
+    
+    ```kotlin
+    navigation.popWhile { topOfStack: Configuration -> topOfStack !is B }
+    ```
+    
+    ```title="After"
+    [A, B*]
+    ```
 
 ### popTo(index)
 
 Drops configurations at the top of the stack so that the provided index becomes active (the new top of the stack).
 
-```title="Before"
-[A, B, C, D*]
-```
+!!! note "Illustration"
 
-```kotlin
-navigation.popTo(index = 1)
-```
-
-```title="After"
-[A, B*]
-```
+    ```title="Before"
+    [A, B, C, D*]
+    ```
+    
+    ```kotlin
+    navigation.popTo(index = 1)
+    ```
+    
+    ```title="After"
+    [A, B*]
+    ```
 
 ### replaceCurrent(configuration)
 
 Replaces the current configuration at the top of the stack with the provided `Configuration`.
 
-```title="Before"
-[A, B, C*]
-```
+!!! note "Illustration"
 
-```kotlin
-navigation.replaceCurrent(Configuration.D)
-```
-
-```title="After"
-[A, B, D*]
-```
+    ```title="Before"
+    [A, B, C*]
+    ```
+    
+    ```kotlin
+    navigation.replaceCurrent(Configuration.D)
+    ```
+    
+    ```title="After"
+    [A, B, D*]
+    ```
 
 ### replaceAll(vararg configurations)
 
 Replaces all configurations currently in the stack with the provided configurations. Components that remain in the stack are not recreated, components that are no longer in the stack are destroyed.
 
-```title="Before"
-[A, B, C*]
-```
+!!! note "Illustration"
 
-```kotlin
-navigation.replaceAll(Configuration.B, Configuration.C, Configuration.D)
-```
-
-```title="After"
-[B, C, D*]
-```
+    ```title="Before"
+    [A, B, C*]
+    ```
+    
+    ```kotlin
+    navigation.replaceAll(Configuration.B, Configuration.C, Configuration.D)
+    ```
+    
+    ```title="After"
+    [B, C, D*]
+    ```
 
 ### bringToFront(configuration)
 
@@ -159,14 +205,16 @@ Removes all components with configurations of the provided `Configuration`'s cla
 !!! note
     The operation is performed as one transaction. If there is already a component with the same configuration, it will not be recreated.
 
-```title="Before"
-[A, B, C*]
-```
+!!! note "Illustration"
 
-```kotlin
-navigation.bringToFront(Configuration.B)
-```
-
-```title="After"
-[A, C, B*]
-```
+    ```title="Before"
+    [A, B, C*]
+    ```
+    
+    ```kotlin
+    navigation.bringToFront(Configuration.B)
+    ```
+    
+    ```title="After"
+    [A, C, B*]
+    ```
