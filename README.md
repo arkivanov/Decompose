@@ -53,6 +53,8 @@ Additional resources:
   * Better separation of concerns
   * Pluggable platform-specific UI (Compose, SwiftUI, React, etc.)
   * Business logic code is testable with pure multiplatform unit tests
+* Navigation state is fully exposed - plug any UI you want, animate as you like using your favourite UI framework's API or use predefined API.
+* Navigation is a pure function from the old state to a new one - navigate without limits.
 * Proper dependency injection (DI) and inversion of control (IoC) via constructor, including but not limited to type-safe arguments.
 * Shared navigation logic
 * Lifecycle-aware components
