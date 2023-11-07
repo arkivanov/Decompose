@@ -42,11 +42,17 @@ public final class com/arkivanov/decompose/extensions/compose/jetbrains/pages/Pa
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation$Default : com/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation {
 	public static final field $stable I
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation$Default;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation$Disabled : com/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation {
 	public static final field $stable I
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation$Disabled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/ChildrenKt {

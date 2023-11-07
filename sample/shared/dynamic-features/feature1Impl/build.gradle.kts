@@ -2,9 +2,6 @@ import com.arkivanov.gradle.bundle
 import com.arkivanov.gradle.iosCompat
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupSourceSets
-import org.jetbrains.compose.ComposeCompilerKotlinSupportPlugin
-import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
-import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
 plugins {
@@ -60,20 +57,6 @@ kotlin {
     }
 }
 
-compose.web.targets()
-
-
-plugins.removeAll { it is ComposeCompilerKotlinSupportPlugin }
-
-class ComposeNoNativePlugin : KotlinCompilerPluginSupportPlugin by ComposeCompilerKotlinSupportPlugin(
-    buildEventsListenerRegistry = {},
-) {
-    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean {
-        return when (kotlinCompilation.target.platformType) {
-            KotlinPlatformType.native -> false
-            else -> ComposeCompilerKotlinSupportPlugin(buildEventsListenerRegistry = {}).isApplicable(kotlinCompilation)
-        }
-    }
+compose {
+    platformTypes.set(platformTypes.get() - KotlinPlatformType.js - KotlinPlatformType.native)
 }
-
-apply<ComposeNoNativePlugin>()

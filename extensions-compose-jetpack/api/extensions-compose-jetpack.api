@@ -30,11 +30,17 @@ public final class com/arkivanov/decompose/extensions/compose/jetpack/pages/Page
 public final class com/arkivanov/decompose/extensions/compose/jetpack/pages/PagesScrollAnimation$Default : com/arkivanov/decompose/extensions/compose/jetpack/pages/PagesScrollAnimation {
 	public static final field $stable I
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/jetpack/pages/PagesScrollAnimation$Default;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetpack/pages/PagesScrollAnimation$Disabled : com/arkivanov/decompose/extensions/compose/jetpack/pages/PagesScrollAnimation {
 	public static final field $stable I
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/jetpack/pages/PagesScrollAnimation$Disabled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetpack/stack/ChildrenKt {
