@@ -27,17 +27,15 @@ kotlin {
     setupSourceSets {
         val android by bundle()
         val nonAndroid by bundle()
-        val native by bundle()
         val nonNative by bundle()
         val darwin by bundle()
         val js by bundle()
         val nonJs by bundle()
 
-        (nonAndroid + native + nonNative + nonJs) dependsOn common
+        (nonAndroid + darwin + nonNative + nonJs) dependsOn common
         (allSet - android) dependsOn nonAndroid
         (allSet - nativeSet) dependsOn nonNative
         (allSet - js) dependsOn nonJs
-        (nativeSet + darwin) dependsOn native
         darwinSet dependsOn darwin
 
         all {

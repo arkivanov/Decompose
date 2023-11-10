@@ -1,7 +1,6 @@
 package com.arkivanov.decompose.value
 
 import com.arkivanov.decompose.Lock
-import com.arkivanov.decompose.ensureNeverFrozen
 import com.arkivanov.decompose.synchronized
 
 /**
@@ -11,10 +10,6 @@ import com.arkivanov.decompose.synchronized
 fun <T : Any> MutableValue(initialValue: T): MutableValue<T> = MutableValueImpl(initialValue)
 
 private class MutableValueImpl<T : Any>(initialValue: T) : MutableValue<T>() {
-
-    init {
-        ensureNeverFrozen()
-    }
 
     private val lock = Lock()
     private var _value: T = initialValue
