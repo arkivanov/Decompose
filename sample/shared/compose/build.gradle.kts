@@ -3,6 +3,8 @@ import com.arkivanov.gradle.dependsOn
 import com.arkivanov.gradle.iosCompat
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupSourceSets
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.konan.target.Family
 
 plugins {
     id("kotlin-multiplatform")
@@ -23,6 +25,28 @@ android {
 }
 
 kotlin {
+    targets
+        .filterIsInstance<KotlinNativeTarget>()
+        .filter { it.konanTarget.family == Family.IOS }
+        .forEach {
+            it.binaries {
+                framework {
+                    baseName = "Shared" // Used by app-ios-compose
+                    export(project(":decompose"))
+                    export(project(":sample:shared:shared"))
+
+                    // Optional, only if you need Predictive Back Gesture on Darwin (Apple) targets
+                    export(deps.essenty.backHandler)
+
+                    // Optional, only if you need state preservation on Darwin (Apple) targets
+                    export(deps.essenty.stateKeeper)
+
+                    // Optional, only if you need state preservation on Darwin (Apple) targets
+                    export(deps.parcelizeDarwin.runtime)
+                }
+            }
+        }
+
     setupSourceSets {
         val jvm by bundle()
         val ios by bundle()
@@ -31,9 +55,9 @@ kotlin {
         iosSet dependsOn ios
 
         common.main.dependencies {
-            implementation(project(":decompose"))
+            api(project(":decompose"))
             implementation(project(":extensions-compose-jetbrains"))
-            implementation(project(":sample:shared:shared"))
+            api(project(":sample:shared:shared"))
             implementation(project(":sample:shared:dynamic-features:api"))
             implementation(project(":sample:shared:dynamic-features:compose-api"))
             implementation(compose.runtime)

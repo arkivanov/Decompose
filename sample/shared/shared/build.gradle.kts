@@ -32,9 +32,8 @@ kotlin {
         .forEach {
             it.binaries {
                 framework {
-                    baseName = "Shared"
+                    baseName = "Shared" // Used by app-ios
                     export(project(":decompose"))
-                    export(deps.essenty.lifecycle)
 
                     // Optional, only if you need state preservation on Darwin (Apple) targets
                     export(deps.essenty.stateKeeper)
@@ -61,7 +60,6 @@ kotlin {
             api(deps.essenty.backHandler)
             implementation(deps.reaktive.reaktive)
         }
-
 
         common.test.dependencies {
             implementation(deps.reaktive.reaktiveTesting)
