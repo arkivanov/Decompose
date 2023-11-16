@@ -297,11 +297,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
 
 ```swift
 struct RootView: View {
-    private let root: RootComponent
-    
-    init(_ root: RootComponent) {
-        self.root = root
-    }
+    let root: RootComponent
     
     var body: some View {
         StackView(
@@ -398,7 +394,35 @@ fun main() {
 }
 ```
 
-### IOS with SwiftUI
+### IOS with SwiftUI (with the experimental ApplicationLifecycle)
+
+1. Declare a simple `AppDelegate` containing the `RootComponent`.
+
+```swift
+class AppDelegate: NSObject, UIApplicationDelegate {
+    let root: RootComponent = DefaultRootComponent(
+        componentContext: DefaultComponentContext(lifecycle: ApplicationLifecycle())
+    )
+}
+```
+
+2. Use `AppDelegate` in your `App` entrypoint.
+
+```swift
+@main
+struct iOSApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self)
+    var appDelegate: AppDelegate
+
+    var body: some Scene {
+        WindowGroup {
+            RootView(root: appDelegate.root)
+        }
+    }
+}
+```
+
+### IOS with SwiftUI (without the experimental ApplicationLifecycle)
 
 1. Create `RootHolder` class that holds the root component and its lifecycle.
 
@@ -432,11 +456,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 }
 ```
 
-3. Create `RootHolder` instance and pass it to `RootView`.
+3. Use `AppDelegate` in your `App` entrypoint.
 
 ```swift
 @main
-struct app_iosApp: App {
+struct iOSApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self)
     var appDelegate: AppDelegate
 
