@@ -68,9 +68,7 @@ fun main() {
             state = windowState,
             title = "Decompose Sample"
         ) {
-            Surface(modifier = Modifier.fillMaxSize()) {
-                RootContent(root)
-            }
+            RootContent(root)
 
             if (isCloseRequested) {
                 SaveStateDialog(
