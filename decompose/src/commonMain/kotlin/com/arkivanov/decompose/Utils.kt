@@ -9,6 +9,4 @@ fun Any.hashString(): String =
 
 internal expect val KClass<*>.uniqueName: String?
 
-internal expect fun Any.ensureNeverFrozen()
-
 internal val Lifecycle.isDestroyed: Boolean get() = state == Lifecycle.State.DESTROYED

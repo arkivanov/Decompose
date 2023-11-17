@@ -1,14 +1,9 @@
 package com.arkivanov.decompose.backhandler
 
-import com.arkivanov.decompose.ensureNeverFrozen
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.backhandler.BackDispatcher
 
 internal class TestBackDispatcher : BackDispatcher {
-
-    init {
-        ensureNeverFrozen()
-    }
 
     private var set = emptySet<BackCallback>()
     val size: Int get() = set.size
