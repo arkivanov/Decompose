@@ -8,7 +8,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 @ExperimentalDecomposeApi
 sealed interface PagesScrollAnimation {
 
-    object Disabled : PagesScrollAnimation
-    object Default : PagesScrollAnimation
+    data object Disabled : PagesScrollAnimation
+    data object Default : PagesScrollAnimation
     class Custom(val spec: AnimationSpec<Float>) : PagesScrollAnimation
 }
