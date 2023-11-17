@@ -72,9 +72,6 @@ class SkikoAppDelegate @OverrideInit constructor() : UIResponder(), UIApplicatio
 
         window!!.rootViewController = ComposeUIViewController {
             Column {
-                // To skip upper part of screen.
-                Box(modifier = Modifier.height(64.dp))
-
                 PredictiveBackGestureOverlay(
                     backDispatcher = backDispatcher,
                     backIcon = { progress, _ ->

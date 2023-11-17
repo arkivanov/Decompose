@@ -30,11 +30,3 @@ struct CountersView_Previews: PreviewProvider {
         CountersView(PreviewCountersComponent())
     }
 }
-
-class PreviewCountersComponent: CountersComponent {
-    var backHandler: BackHandler = BackDispatcherKt.BackDispatcher()
-    let childStack: Value<ChildStack<AnyObject, CounterComponent>> = simpleChildStack(PreviewCounterComponent())
-    
-    func onBackClicked(toIndex: Int32) {}
-    func onBackClicked() {}
-}
