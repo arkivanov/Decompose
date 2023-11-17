@@ -4,16 +4,14 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.android.DefaultViewContext
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DefaultFeatureInstaller
-import com.arkivanov.sample.shared.root.RootComponent
 import com.arkivanov.sample.shared.root.DefaultRootComponent
+import com.arkivanov.sample.shared.root.RootComponent
 import com.arkivanov.sample.shared.root.RootContent
 import com.arkivanov.sample.shared.root.RootView
 
@@ -38,11 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun drawViaCompose(root: RootComponent) {
         setContent {
-            MaterialTheme {
-                Surface(color = MaterialTheme.colors.background) {
-                    RootContent(component = root, modifier = Modifier.fillMaxSize())
-                }
-            }
+            RootContent(component = root, modifier = Modifier.fillMaxSize())
         }
     }
 

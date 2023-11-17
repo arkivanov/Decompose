@@ -4,11 +4,18 @@ package com.arkivanov.sample.shared.root
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.List
@@ -26,13 +33,9 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.isEn
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.SwipeUp
 import com.arkivanov.sample.shared.cards.CardsContent
 import com.arkivanov.sample.shared.counters.CountersContent
-import com.arkivanov.sample.shared.counters.PreviewCountersComponent
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationContent
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesContent
@@ -46,83 +49,100 @@ import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
 
 @Composable
 fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
+    MaterialTheme {
+        Surface(modifier = modifier, color = MaterialTheme.colors.background) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)),
+            ) {
+                Children(component = component, modifier = Modifier.weight(1F))
+                BottomBar(component = component, modifier = Modifier.fillMaxWidth())
+            }
+        }
+    }
+}
+
+@Composable
+private fun Children(component: RootComponent, modifier: Modifier = Modifier) {
+    Children(
+        stack = component.childStack,
+        modifier = modifier,
+
+        // Workaround for https://issuetracker.google.com/issues/270656235
+        animation = stackAnimation(fade()),
+//            animation = tabAnimation(),
+    ) {
+        when (val child = it.instance) {
+            is CountersChild -> CountersContent(component = child.component, modifier = Modifier.fillMaxSize())
+            is CardsChild -> CardsContent(component = child.component, modifier = Modifier.fillMaxSize())
+            is MultiPaneChild -> MultiPaneContent(component = child.component, modifier = Modifier.fillMaxSize())
+            is DynamicFeaturesChild -> DynamicFeaturesContent(component = child.component, modifier = Modifier.fillMaxSize())
+            is CustomNavigationChild -> CustomNavigationContent(component = child.component, Modifier.fillMaxSize())
+        }
+    }
+}
+
+@Composable
+private fun BottomBar(component: RootComponent, modifier: Modifier = Modifier) {
     val childStack by component.childStack.subscribeAsState()
     val activeComponent = childStack.active.instance
 
-    Column(modifier = modifier) {
-        Children(
-            stack = childStack,
-            modifier = Modifier.weight(weight = 1F),
+    BottomNavigation(modifier = modifier) {
+        BottomNavigationItem(
+            selected = activeComponent is CountersChild,
+            onClick = component::onCountersTabClicked,
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = "Counters",
+                )
+            },
+        )
 
-            // Workaround for https://issuetracker.google.com/issues/270656235
-            animation = stackAnimation(fade()),
-//            animation = tabAnimation(),
-        ) {
-            when (val child = it.instance) {
-                is CountersChild -> CountersContent(component = child.component, modifier = Modifier.fillMaxSize())
-                is CardsChild -> CardsContent(component = child.component, modifier = Modifier.fillMaxSize())
-                is MultiPaneChild -> MultiPaneContent(component = child.component, modifier = Modifier.fillMaxSize())
-                is DynamicFeaturesChild -> DynamicFeaturesContent(component = child.component, modifier = Modifier.fillMaxSize())
-                is CustomNavigationChild -> CustomNavigationContent(component = child.component, modifier.fillMaxSize())
-            }
-        }
+        BottomNavigationItem(
+            selected = activeComponent is CardsChild,
+            onClick = component::onCardsTabClicked,
+            icon = {
+                Icon(
+                    imageVector = Icons.Filled.SwipeUp,
+                    contentDescription = "Cards",
+                )
+            },
+        )
 
-        BottomNavigation(modifier = Modifier.fillMaxWidth()) {
-            BottomNavigationItem(
-                selected = activeComponent is CountersChild,
-                onClick = component::onCountersTabClicked,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "Counters",
-                    )
-                },
-            )
+        BottomNavigationItem(
+            selected = activeComponent is MultiPaneChild,
+            onClick = component::onMultiPaneTabClicked,
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.List,
+                    contentDescription = "Multi-Pane",
+                )
+            },
+        )
 
-            BottomNavigationItem(
-                selected = activeComponent is CardsChild,
-                onClick = component::onCardsTabClicked,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.SwipeUp,
-                        contentDescription = "Cards",
-                    )
-                },
-            )
+        BottomNavigationItem(
+            selected = activeComponent is DynamicFeaturesChild,
+            onClick = component::onDynamicFeaturesTabClicked,
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "Dynamic Features",
+                )
+            },
+        )
 
-            BottomNavigationItem(
-                selected = activeComponent is MultiPaneChild,
-                onClick = component::onMultiPaneTabClicked,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.List,
-                        contentDescription = "Multi-Pane",
-                    )
-                },
-            )
-
-            BottomNavigationItem(
-                selected = activeComponent is DynamicFeaturesChild,
-                onClick = component::onDynamicFeaturesTabClicked,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = "Dynamic Features",
-                    )
-                },
-            )
-
-            BottomNavigationItem(
-                selected = activeComponent is CustomNavigationComponent,
-                onClick = component::onCustomNavigationTabClicked,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.LocationOn,
-                        contentDescription = "Custom Navigation",
-                    )
-                },
-            )
-        }
+        BottomNavigationItem(
+            selected = activeComponent is CustomNavigationComponent,
+            onClick = component::onCustomNavigationTabClicked,
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = "Custom Navigation",
+                )
+            },
+        )
     }
 }
 
@@ -182,18 +202,3 @@ internal fun RootContentPreview() {
     RootContent(PreviewRootComponent())
 }
 
-internal class PreviewRootComponent : RootComponent {
-    override val childStack: Value<ChildStack<*, Child>> =
-        MutableValue(
-            ChildStack(
-                configuration = Unit,
-                instance = CountersChild(component = PreviewCountersComponent()),
-            )
-        )
-
-    override fun onCountersTabClicked() {}
-    override fun onCardsTabClicked() {}
-    override fun onMultiPaneTabClicked() {}
-    override fun onDynamicFeaturesTabClicked() {}
-    override fun onCustomNavigationTabClicked() {}
-}

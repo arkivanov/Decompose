@@ -76,14 +76,3 @@ struct RootView_Previews: PreviewProvider {
         RootView(PreviewRootComponent())
     }
 }
-
-class PreviewRootComponent : RootComponent {
-    let childStack: Value<ChildStack<AnyObject, RootComponentChild>> =
-        simpleChildStack(RootComponentChild.CountersChild(component: PreviewCountersComponent()))
-
-    func onCountersTabClicked() {}
-    func onCardsTabClicked() {}
-    func onMultiPaneTabClicked() {}
-    func onDynamicFeaturesTabClicked() {}
-    func onCustomNavigationTabClicked() {}
-}
