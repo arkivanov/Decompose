@@ -13,11 +13,11 @@ jobs:
       repository-id: ${{ steps.create.outputs.repository-id }}
     steps:
       - id: create
-        uses: nexus-actions/create-nexus-staging-repo@v1
+        uses: nexus-actions/create-nexus-staging-repo@v1.2.0
         with:
           username: arkivanov
           password: ${{ secrets.SONATYPE_PASSWORD }}
-          staging-profile-id: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
+          staging_profile_id: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
           description: Created by GitHub Actions
           base_url: https://oss.sonatype.org/service/local/
   publish:
