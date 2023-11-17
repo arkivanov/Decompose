@@ -34,7 +34,7 @@ internal fun MultiPaneContent(component: MultiPaneComponent, modifier: Modifier 
     val listPane: @Composable (Child.Created<*, ArticleListComponent>) -> Unit =
         remember {
             movableContentOf { (config, component) ->
-                saveableStateHolder.SaveableStateProvider(key = config) {
+                saveableStateHolder.SaveableStateProvider(key = config.hashCode()) {
                     ArticleListContent(
                         component = component,
                         modifier = Modifier.fillMaxSize(),
