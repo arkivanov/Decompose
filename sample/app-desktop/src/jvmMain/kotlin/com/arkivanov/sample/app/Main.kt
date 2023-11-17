@@ -1,7 +1,5 @@
 package com.arkivanov.sample.app
 
-import androidx.compose.foundation.LocalScrollbarStyle
-import androidx.compose.foundation.defaultScrollbarStyle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,12 +8,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -73,11 +69,7 @@ fun main() {
             title = "Decompose Sample"
         ) {
             Surface(modifier = Modifier.fillMaxSize()) {
-                MaterialTheme {
-                    CompositionLocalProvider(LocalScrollbarStyle provides defaultScrollbarStyle()) {
-                        RootContent(root)
-                    }
-                }
+                RootContent(root)
             }
 
             if (isCloseRequested) {

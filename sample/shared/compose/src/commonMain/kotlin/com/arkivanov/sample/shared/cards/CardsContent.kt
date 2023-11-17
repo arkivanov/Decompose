@@ -277,26 +277,3 @@ private data class Item<out T : Any>(
 internal fun CardsContentPreview() {
     CardsContent(PreviewCardsComponent())
 }
-
-internal class PreviewCardsComponent : CardsComponent {
-    override val stack: Value<ChildStack<*, CardComponent>> =
-        MutableValue(
-            ChildStack(
-                active = Child.Created(
-                    configuration = 1,
-                    instance = PreviewCardComponent(color = 0xFFFF0000),
-                ),
-                backStack = listOf(
-                    Child.Created(
-                        configuration = 2,
-                        instance = PreviewCardComponent(color = 0xFF0000FF),
-                    )
-                ),
-            )
-        )
-
-    override fun onCardSwiped(index: Int) {}
-    override fun onAddClicked() {}
-    override fun onRemoveClicked() {}
-}
-

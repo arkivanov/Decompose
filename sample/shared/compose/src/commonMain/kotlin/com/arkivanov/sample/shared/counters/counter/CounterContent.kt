@@ -1,3 +1,5 @@
+@file:Suppress("OPTIONAL_DECLARATION_USAGE_IN_NON_COMMON_SOURCE") // Workaround for KTIJ-22326
+
 package com.arkivanov.sample.shared.counters.counter
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
@@ -18,11 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.router.slot.ChildSlot
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
-import com.arkivanov.sample.shared.counters.counter.CounterComponent.Model
-import com.arkivanov.sample.shared.dialog.DialogComponent
 import com.arkivanov.sample.shared.dialog.DialogContent
 
 @Composable
@@ -93,22 +90,4 @@ internal fun CounterContent(component: CounterComponent, modifier: Modifier = Mo
 @Composable
 internal fun CounterContentPreview() {
     CounterContent(component = PreviewCounterComponent())
-}
-
-internal class PreviewCounterComponent : CounterComponent {
-    override val model: Value<Model> =
-        MutableValue(
-            Model(
-                title = "Counter 0",
-                text = "123",
-                isBackEnabled = false,
-            )
-        )
-
-    override val dialogSlot: Value<ChildSlot<Unit, DialogComponent>> =
-        MutableValue(ChildSlot())
-
-    override fun onNextClicked() {}
-    override fun onPrevClicked() {}
-    override fun onInfoClicked() {}
 }

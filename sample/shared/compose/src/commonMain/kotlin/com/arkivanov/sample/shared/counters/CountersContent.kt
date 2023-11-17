@@ -1,3 +1,5 @@
+@file:Suppress("OPTIONAL_DECLARATION_USAGE_IN_NON_COMMON_SOURCE") // Workaround for KTIJ-22326
+
 package com.arkivanov.sample.shared.counters
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
@@ -12,14 +14,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.predictiveback.predictiveBackAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
-import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.backhandler.BackDispatcher
-import com.arkivanov.essenty.backhandler.BackHandler
-import com.arkivanov.sample.shared.counters.counter.CounterComponent
 import com.arkivanov.sample.shared.counters.counter.CounterContent
-import com.arkivanov.sample.shared.counters.counter.PreviewCounterComponent
 
 @Composable
 internal fun CountersContent(component: CountersComponent, modifier: Modifier = Modifier) {
@@ -51,19 +46,4 @@ internal fun CountersContent(component: CountersComponent, modifier: Modifier = 
 @Composable
 internal fun CountersPreview() {
     CountersContent(component = PreviewCountersComponent())
-}
-
-internal class PreviewCountersComponent : CountersComponent {
-    override val backHandler: BackHandler = BackDispatcher()
-
-    override val childStack: Value<ChildStack<*, CounterComponent>> =
-        MutableValue(
-            ChildStack(
-                configuration = Unit,
-                instance = PreviewCounterComponent(),
-            )
-        )
-
-    override fun onBackClicked() {}
-    override fun onBackClicked(toIndex: Int) {}
 }

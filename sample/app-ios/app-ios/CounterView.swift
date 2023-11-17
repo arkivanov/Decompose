@@ -71,21 +71,3 @@ struct CounterView_Previews: PreviewProvider {
         CounterView(PreviewCounterComponent())
     }
 }
-
-class PreviewCounterComponent : CounterComponent {
-    let model: Value<CounterComponentModel> = mutableValue(
-        CounterComponentModel(
-            title: "Counter 0",
-            text: "123",
-            isBackEnabled: false
-        )
-    )
-    
-    let dialogSlot: Value<ChildSlot<AnyObject, DialogComponent>> =
-    mutableValue(ChildSlot(child: nil))
-    
-    func onInfoClicked() {}
-    func onNextClicked() {}
-    func onPrevClicked() {}
-}
-
