@@ -124,6 +124,11 @@ public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/an
 	public static synthetic fun stackAnimator$default (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function5;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;
 }
 
+public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/MaterialPredictiveBackAnimatableKt {
+	public static final fun materialPredictiveBackAnimatable (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/PredictiveBackAnimatable;
+	public static synthetic fun materialPredictiveBackAnimatable$default (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/PredictiveBackAnimatable;
+}
+
 public abstract interface class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/PredictiveBackAnimatable {
 	public abstract fun animate (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun finish (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -133,7 +138,6 @@ public abstract interface class com/arkivanov/decompose/extensions/compose/jetbr
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/PredictiveBackAnimatableKt {
 	public static final fun predictiveBackAnimatable (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/PredictiveBackAnimatable;
-	public static synthetic fun predictiveBackAnimatable$default (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/PredictiveBackAnimatable;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/PredictiveBackAnimationKt {
