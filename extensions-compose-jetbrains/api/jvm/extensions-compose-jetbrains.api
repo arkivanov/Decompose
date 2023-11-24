@@ -3,7 +3,7 @@ public final class com/arkivanov/decompose/extensions/compose/jetbrains/Predicti
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/PredictiveBackGestureOverlayKt {
-	public static final fun PredictiveBackGestureOverlay (Lcom/arkivanov/essenty/backhandler/BackDispatcher;Lkotlin/jvm/functions/Function4;Landroidx/compose/ui/Modifier;Ljava/util/Set;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun PredictiveBackGestureOverlay (Lcom/arkivanov/essenty/backhandler/BackDispatcher;Lkotlin/jvm/functions/Function4;Landroidx/compose/ui/Modifier;ZZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/SubscribeAsStateKt {
