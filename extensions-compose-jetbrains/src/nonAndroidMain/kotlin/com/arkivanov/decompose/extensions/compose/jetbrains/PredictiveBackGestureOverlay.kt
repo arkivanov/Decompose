@@ -99,7 +99,7 @@ private fun Modifier.handleBackGestures(
     onIconMoved: (position: Offset, progress: Float, BackGestureHandler.Edge) -> Unit,
     onIconHidden: () -> Unit,
 ): Modifier =
-    pointerInput(backDispatcher) {
+    pointerInput(backDispatcher, swipeEdges) {
         awaitEachGesture {
             onIconHidden()
 
