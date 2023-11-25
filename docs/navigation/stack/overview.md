@@ -84,8 +84,8 @@ class DefaultItemDetailsComponent(
         val childStack: Value<ChildStack<*, Child>>
     
         sealed class Child {
-            class ListChild(val component: ItemList) : Child()
-            class DetailsChild(val component: ItemDetails) : Child()
+            class ListChild(val component: ItemListComponent) : Child()
+            class DetailsChild(val component: ItemDetailsComponent) : Child()
         }
     }
     
@@ -140,8 +140,8 @@ class DefaultItemDetailsComponent(
         val childStack: Value<ChildStack<*, Child>>
     
         sealed class Child {
-            class ListChild(val component: ItemList) : Child()
-            class DetailsChild(val component: ItemDetails) : Child()
+            class ListChild(val component: ItemListComponent) : Child()
+            class DetailsChild(val component: ItemDetailsComponent) : Child()
         }
     }
     
@@ -268,9 +268,9 @@ class DefaultRootComponent(
             componentContext = componentContext,
             itemId = config.itemId,
             onDeleted = { itemId ->
-                navigation.pop { // Pop ItemDetails component
+                navigation.pop { // Pop ItemDetailsComponent
                     // Deliver the result to ItemList component
-                    (stack.value.active.instance as? ItemList)?.onItemDeleted(id = itemId)
+                    (stack.active.instance as? ListChild)?.component?.onItemDeleted(id = itemId)
                 }
             }
         )
@@ -349,7 +349,7 @@ class DefaultRootComponent(
             componentContext = componentContext,
             itemId = config.itemId,
             onItemDeleted = { id ->
-                navigation.pop { // Pop ItemDetails component
+                navigation.pop { // Pop ItemDetailsComponent
                     // Deliver the result to ItemList component
                     listInput.onNext(ItemList.Input.ItemDeleted(id = id))
                 }
