@@ -13,7 +13,7 @@ jobs:
       repository_id: ${{ steps.create.outputs.repository_id }}
     steps:
       - id: create
-        uses: nexus-actions/create-nexus-staging-repo@v1.2.0
+        uses: nexus-actions/create-nexus-staging-repo@v1.3.0
         with:
           username: arkivanov
           password: ${{ secrets.SONATYPE_PASSWORD }}
