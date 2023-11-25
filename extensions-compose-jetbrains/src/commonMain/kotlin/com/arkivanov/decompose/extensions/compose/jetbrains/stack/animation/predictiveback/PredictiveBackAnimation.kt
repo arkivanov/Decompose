@@ -42,7 +42,7 @@ fun <C : Any, T : Any> predictiveBackAnimation(
         exitChild: Child.Created<C, T>,
         enterChild: Child.Created<C, T>,
     ) -> PredictiveBackAnimatable = { initialBackEvent, _, _ ->
-        predictiveBackAnimatable(initialBackEvent = initialBackEvent)
+        materialPredictiveBackAnimatable(initialBackEvent = initialBackEvent)
     },
     onBack: () -> Unit,
 ): StackAnimation<C, T> =
