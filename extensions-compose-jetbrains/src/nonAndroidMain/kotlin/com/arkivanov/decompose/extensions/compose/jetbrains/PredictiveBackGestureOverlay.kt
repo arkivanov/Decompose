@@ -18,9 +18,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackCallback
@@ -37,10 +35,8 @@ import com.arkivanov.essenty.backhandler.BackEvent.SwipeEdge
  * @param backIcon an icon to be shown while the gesture is being performed. A default icon can be shown
  * using [PredictiveBackGestureIcon].
  * @param modifier a [Modifier] to applied to the overlay.
- * @param startEdgeEnabled controls whether the start edge is enabled or not,
- * left in RTL mode and right in LTR mode.
- * @param endEdgeEnabled controls whether the end edge is enabled or not,
- * right in RTL mode and left in LTR mode.
+ * @param swipeEdges a [Set] of [SwipeEdge] where swipe gestures can be detected. Absolute, e.g. RTL mode
+ * should be handled manually.
  * @param onClose If supplied, then the back gesture is also handled when there are no other enabled back
  * callbacks registered in [backDispatcher], can be used to close the application.
  * @param content a content to be shown under the overlay.
@@ -51,25 +47,16 @@ fun PredictiveBackGestureOverlay(
     backDispatcher: BackDispatcher,
     backIcon: (@Composable (progress: Float, edge: SwipeEdge) -> Unit)?,
     modifier: Modifier = Modifier,
-    startEdgeEnabled: Boolean = true,
-    endEdgeEnabled: Boolean = true,
+    swipeEdges: Set<SwipeEdge> = setOf(SwipeEdge.LEFT, SwipeEdge.RIGHT),
     onClose: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     val iconState: MutableState<IconState> = remember { mutableStateOf(IconState()) }
-    val layoutDirection = LocalLayoutDirection.current
 
     Box(
         modifier = modifier.handleBackGestures(
             backDispatcher = backDispatcher,
-            leftEdgeEnabled = when (layoutDirection) {
-                LayoutDirection.Ltr -> startEdgeEnabled
-                LayoutDirection.Rtl -> endEdgeEnabled
-            },
-            rightEdgeEnabled = when (layoutDirection) {
-                LayoutDirection.Ltr -> endEdgeEnabled
-                LayoutDirection.Rtl -> startEdgeEnabled
-            },
+            swipeEdges = swipeEdges,
             onIconMoved = { position, progress, edge ->
                 iconState.value =
                     IconState(
@@ -108,20 +95,19 @@ fun PredictiveBackGestureOverlay(
 
 private fun Modifier.handleBackGestures(
     backDispatcher: BackDispatcher,
-    leftEdgeEnabled: Boolean,
-    rightEdgeEnabled: Boolean,
+    swipeEdges: Set<SwipeEdge>,
     onIconMoved: (position: Offset, progress: Float, BackGestureHandler.Edge) -> Unit,
     onIconHidden: () -> Unit,
 ): Modifier =
-    pointerInput(backDispatcher, leftEdgeEnabled, rightEdgeEnabled) {
+    pointerInput(backDispatcher, swipeEdges) {
         awaitEachGesture {
             onIconHidden()
 
             val down = awaitFirstDown(pass = PointerEventPass.Initial)
             val startPosition = down.position
 
-            val isLeftInvalid = !leftEdgeEnabled || (startPosition.x > 16.dp.toPx())
-            val isRightInvalid = !rightEdgeEnabled || (startPosition.x < size.width - 16.dp.toPx())
+            val isLeftInvalid = (SwipeEdge.LEFT !in swipeEdges) || (startPosition.x > 16.dp.toPx())
+            val isRightInvalid = (SwipeEdge.RIGHT !in swipeEdges) || (startPosition.x < size.width - 16.dp.toPx())
 
             if (isLeftInvalid && isRightInvalid) {
                 return@awaitEachGesture
