@@ -10,14 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Create staging repository
     outputs:
-      repository-id: ${{ steps.create.outputs.repository-id }}
+      repository_id: ${{ steps.create.outputs.repository_id }}
     steps:
       - id: create
-        uses: nexus-actions/create-nexus-staging-repo@v1
+        uses: nexus-actions/create-nexus-staging-repo@v1.3.0
         with:
           username: arkivanov
           password: ${{ secrets.SONATYPE_PASSWORD }}
-          staging-profile-id: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
+          staging_profile_id: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
           description: Created by GitHub Actions
           base_url: https://oss.sonatype.org/service/local/
   publish:
@@ -33,7 +33,7 @@ jobs:
           java-version: 17
       - name: Publish
         env:
-          SONATYPE_REPOSITORY_ID: ${{ needs.create-staging-repository.outputs.repository-id }}
+          SONATYPE_REPOSITORY_ID: ${{ needs.create-staging-repository.outputs.repository_id }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
@@ -48,7 +48,7 @@ jobs:
         with:
           username: arkivanov
           password: ${{ secrets.SONATYPE_PASSWORD }}
-          staging_repository_id: ${{ needs.create-staging-repository.outputs.repository-id }}
+          staging_repository_id: ${{ needs.create-staging-repository.outputs.repository_id }}
           base_url: https://oss.sonatype.org/service/local/
           close_only: 'true'
   check-publication:
