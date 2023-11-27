@@ -111,6 +111,10 @@ Check out the [template repository](https://github.com/arkivanov/decompose-multi
 - [Fully cross-platform Kotlin applications (almost)](https://proandroiddev.com/fully-cross-platform-kotlin-applications-almost-29c7054f8f28?source=friends_link&sk=4619fdcb17912fde589bc4fca83efbbd)
 - [A comprehensive thirty-line navigation for Jetpack/Multiplatform Compose](https://medium.com/p/5b723c4f256e) - if you find Decompose verbose and would prefer something built on top of Jetpack Compose.
 
+- "Component-based Approach" series by [Artur Artikov](https://twitter.com/artik_artikov)
+  - Part 1: [Fighting Complexity in Android Applications](https://medium.com/@a.artikov/component-based-approach-fighting-complexity-in-android-applications-2eaf5e8c5fad)
+  - Part 2: [Implementing Screens with the Decompose Library](https://medium.com/@a.artikov/component-based-approach-implementing-screens-with-the-decompose-library-19c41d8ed087)
+
 ## Author
 
 Twitter: [@arkann1985](https://twitter.com/arkann1985)
