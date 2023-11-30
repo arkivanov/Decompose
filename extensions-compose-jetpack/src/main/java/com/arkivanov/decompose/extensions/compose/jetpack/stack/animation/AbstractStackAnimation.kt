@@ -25,13 +25,13 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
 
     @Composable
     override operator fun invoke(stack: ChildStack<C, T>, modifier: Modifier, content: @Composable (child: Child.Created<C, T>) -> Unit) {
-        var activePage by remember { mutableStateOf(stack.activePage()) }
-        var items by remember { mutableStateOf(getAnimationItems(newPage = activePage, oldPage = null)) }
+        var currentStack by remember { mutableStateOf(stack) }
+        var items by remember { mutableStateOf(getAnimationItems(newStack = currentStack, oldStack = null)) }
 
-        if (stack.active.configuration != activePage.child.configuration) {
-            val oldPage = activePage
-            activePage = stack.activePage()
-            items = getAnimationItems(newPage = activePage, oldPage = oldPage)
+        if (stack.active.configuration != currentStack.active.configuration) {
+            val oldStack = currentStack
+            currentStack = stack
+            items = getAnimationItems(newStack = currentStack, oldStack = oldStack)
         }
 
         Box(modifier = modifier) {
@@ -73,36 +73,34 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
         )
     }
 
-    private fun ChildStack<C, T>.activePage(): Page<C, T> =
-        Page(child = active, index = items.lastIndex)
-
-    private fun getAnimationItems(newPage: Page<C, T>, oldPage: Page<C, T>?): Map<C, AnimationItem<C, T>> =
+    private fun getAnimationItems(newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>?): Map<C, AnimationItem<C, T>> =
         when {
-            oldPage == null ->
-                listOf(AnimationItem(child = newPage.child, direction = Direction.ENTER_FRONT, isInitial = true))
+            oldStack == null ->
+                listOf(AnimationItem(child = newStack.active, direction = Direction.ENTER_FRONT, isInitial = true))
 
-            newPage.index >= oldPage.index ->
+            (newStack.size < oldStack.size) && (newStack.active.configuration in oldStack.backStack) ->
                 listOf(
-                    AnimationItem(child = oldPage.child, direction = Direction.EXIT_BACK, otherChild = newPage.child),
-                    AnimationItem(child = newPage.child, direction = Direction.ENTER_FRONT, otherChild = oldPage.child),
+                    AnimationItem(child = newStack.active, direction = Direction.ENTER_BACK, otherChild = oldStack.active),
+                    AnimationItem(child = oldStack.active, direction = Direction.EXIT_FRONT, otherChild = newStack.active),
                 )
 
             else ->
                 listOf(
-                    AnimationItem(child = newPage.child, direction = Direction.ENTER_BACK, otherChild = oldPage.child),
-                    AnimationItem(child = oldPage.child, direction = Direction.EXIT_FRONT, otherChild = newPage.child),
+                    AnimationItem(child = oldStack.active, direction = Direction.EXIT_BACK, otherChild = newStack.active),
+                    AnimationItem(child = newStack.active, direction = Direction.ENTER_FRONT, otherChild = oldStack.active),
                 )
         }.associateBy { it.child.configuration }
+
+    private val ChildStack<*, *>.size: Int
+        get() = items.size
+
+    private operator fun <C : Any> Iterable<Child<C, *>>.contains(config: C): Boolean =
+        any { it.configuration == config }
 
     protected data class AnimationItem<out C : Any, out T : Any>(
         val child: Child.Created<C, T>,
         val direction: Direction,
         val isInitial: Boolean = false,
         val otherChild: Child.Created<C, T>? = null,
-    )
-
-    private class Page<out C : Any, out T : Any>(
-        val child: Child.Created<C, T>,
-        val index: Int,
     )
 }
