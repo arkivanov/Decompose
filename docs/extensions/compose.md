@@ -357,7 +357,9 @@ Please refer to the predefined animators (`fade`, `slide`, etc.) for implementat
 !!!warning
     Predictive Back Gesture support is experimental, the API is subject to change. For now, please use version 2.1.x.
 
-`Child Stack` supports the new [Android Predictive Back Gesture](https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture) on all platforms. To enable the gesture, first implement `BackHandlerOwner` interface in your component with `Child Stack`, then just pass `predictiveBackAnimation` to the `Children` function.
+`Child Stack` supports the new [Android Predictive Back Gesture](https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture) on all platforms. By default, the gesture animation resembles the [predictive back design for Android](https://developer.android.com/design/ui/mobile/guides/patterns/predictive-back), but it's customizable.
+
+To enable the gesture, first implement `BackHandlerOwner` interface in your component with `Child Stack`, then just pass `predictiveBackAnimation` to the `Children` function.
 
 ```kotlin title="RootComponent"
 interface RootComponent : BackHandlerOwner {

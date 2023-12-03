@@ -6,10 +6,6 @@ internal class Relay<T>(
     private val isMainThreadCheckEnabled: Boolean = false,
 ) {
 
-    init {
-        ensureNeverFrozen()
-    }
-
     private val lock = Lock()
     private val queue = ArrayDeque<T>()
     private var isDraining = false

@@ -9,10 +9,9 @@ import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.sample.shared.cards.card.CardComponent
 import com.arkivanov.sample.shared.cards.card.DefaultCardComponent
+import kotlinx.serialization.Serializable
 
 class DefaultCardsComponent(
     componentContext: ComponentContext,
@@ -23,6 +22,7 @@ class DefaultCardsComponent(
     private val _stack: Value<ChildStack<Config, CardComponent>> =
         childStack(
             source = navigation,
+            serializer = Config.serializer(),
             initialStack = {
                 COLORS.mapIndexed { index, color ->
                     Config(color = color, number = index + 1)
@@ -76,9 +76,9 @@ class DefaultCardsComponent(
             )
     }
 
-    @Parcelize
+    @Serializable
     private data class Config(
         val color: Long,
         val number: Int,
-    ) : Parcelable
+    )
 }

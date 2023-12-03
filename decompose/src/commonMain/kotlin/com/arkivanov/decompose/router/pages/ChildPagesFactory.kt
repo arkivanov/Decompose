@@ -2,17 +2,86 @@ package com.arkivanov.decompose.router.pages
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.PARCELIZE_DEPRECATED_MESSAGE
 import com.arkivanov.decompose.router.children.ChildNavState
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
 import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.children
+import com.arkivanov.decompose.router.consumeRequired
+import com.arkivanov.decompose.router.toParcelableContainer
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.essenty.parcelable.consumeRequired
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
+
+/**
+ * Initializes and manages a list of components with one selected (active) component.
+ * The list can be empty.
+ *
+ * @param source a source of navigation events.
+ * @param serializer an optional [KSerializer] to be used for serializing and deserializing configurations.
+ * If `null` then the navigation state will not be preserved.
+ * @param initialPages an initial state of Child Pages that should be set
+ * if there is no saved state. See [Pages] for more information.
+ * @param key a key of the list, must be unique if there are multiple Child Pages used in
+ * the same component.
+ * @param pageStatus a function that returns a [Status] of a page at a given index.
+ * By default, the currently selected page is [Status.ACTIVE], its two neighbours
+ * are [Status.INACTIVE], and the rest are [Status.DESTROYED]. You can implement your own
+ * logic, for example with circular behaviour.
+ * @param handleBackButton determines whether the previous component should be automatically
+ * selected on back button press or not, default is `false`.
+ * @param childFactory a factory function that creates new child instances.
+ * @return an observable [Value] of [ChildPages].
+ */
+@ExperimentalDecomposeApi
+fun <C : Any, T : Any> ComponentContext.childPages(
+    source: PagesNavigationSource<C>,
+    serializer: KSerializer<C>?,
+    initialPages: () -> Pages<C> = { Pages() },
+    key: String = "DefaultChildPages",
+    pageStatus: (index: Int, Pages<C>) -> Status = ::getDefaultPageStatus,
+    handleBackButton: Boolean = false,
+    childFactory: (configuration: C, ComponentContext) -> T,
+): Value<ChildPages<C, T>> =
+    childPages(
+        source = source,
+        savePages = { pages ->
+            if (serializer != null) {
+                SerializablePages(items = pages.items, selectedIndex = pages.selectedIndex)
+                    .toParcelableContainer(strategy = SerializablePages.serializer(serializer))
+            } else {
+                null
+            }
+        },
+        restorePages = { container ->
+            if (serializer != null) {
+                val pages = container.consumeRequired(strategy = SerializablePages.serializer(serializer))
+                Pages(
+                    items = pages.items,
+                    selectedIndex = pages.selectedIndex,
+                )
+            } else {
+                null
+            }
+        },
+        initialPages = initialPages,
+        key = key,
+        pageStatus = pageStatus,
+        handleBackButton = handleBackButton,
+        childFactory = childFactory,
+    )
+
+@Serializable
+private class SerializablePages<out C : Any>(
+    val items: List<C>,
+    val selectedIndex: Int,
+)
 
 /**
  * Initializes and manages a list of components with one selected (active) component.
@@ -34,6 +103,8 @@ import kotlin.reflect.KClass
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildPages].
  */
+@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
+@Deprecated(message = PARCELIZE_DEPRECATED_MESSAGE)
 @ExperimentalDecomposeApi
 inline fun <reified C : Parcelable, T : Any> ComponentContext.childPages(
     source: PagesNavigationSource<C>,
@@ -76,6 +147,7 @@ inline fun <reified C : Parcelable, T : Any> ComponentContext.childPages(
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildPages].
  */
+@Deprecated(message = PARCELIZE_DEPRECATED_MESSAGE)
 @ExperimentalDecomposeApi
 fun <C : Parcelable, T : Any> ComponentContext.childPages(
     source: PagesNavigationSource<C>,

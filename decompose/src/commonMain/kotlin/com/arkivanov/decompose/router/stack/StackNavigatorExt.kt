@@ -1,5 +1,7 @@
 package com.arkivanov.decompose.router.stack
 
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+
 /**
  * A convenience method for [StackNavigator.navigate].
  */
@@ -10,10 +12,36 @@ fun <C : Any> StackNavigator<C>.navigate(transformer: (stack: List<C>) -> List<C
 /**
  * Pushes the provided [configuration] at the top of the stack.
  *
+ * Decompose will throw an exception if the provided [configuration] is already present in the stack.
+ *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
 fun <C : Any> StackNavigator<C>.push(configuration: C, onComplete: () -> Unit = {}) {
     navigate(transformer = { it + configuration }, onComplete = { _, _ -> onComplete() })
+}
+
+/**
+ * Pushes the provided [configuration] at the top of the stack. Does nothing if the provided
+ * [configuration] is already on top of the stack.
+ *
+ * Decompose will throw an exception if the provided [configuration] is already present in the
+ * back stack (not at the top of the stack).
+ *
+ * This can be useful when pushing a component on button click, to avoid pushing the same component
+ * if the user clicks the same button quickly multiple times.
+ *
+ * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
+ * The `isSuccess` argument is `true` if the component was pushed, `false` otherwise.
+ */
+@ExperimentalDecomposeApi
+fun <C : Any> StackNavigator<C>.pushNew(
+    configuration: C,
+    onComplete: (isSuccess: Boolean) -> Unit = {},
+) {
+    navigate(
+        transformer = { stack -> if (stack.last() == configuration) stack else stack + configuration },
+        onComplete = { newStack, oldStack -> onComplete(newStack.size > oldStack.size) },
+    )
 }
 
 /**

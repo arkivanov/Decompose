@@ -7,14 +7,13 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.subscribe
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeatureComponent.Child
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeatureComponent.Child.ErrorChild
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeatureComponent.Child.FeatureChild
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeatureComponent.Child.LoadingChild
 import com.badoo.reaktive.disposable.scope.DisposableScope
 import com.badoo.reaktive.disposable.scope.disposableScope
+import kotlinx.serialization.Serializable
 
 internal class DefaultDynamicFeatureComponent<out T : Any>(
     componentContext: ComponentContext,
@@ -28,6 +27,7 @@ internal class DefaultDynamicFeatureComponent<out T : Any>(
     private val stack =
         childStack(
             source = navigation,
+            serializer = Config.serializer(),
             initialConfiguration = Config.Loading,
             childFactory = ::child,
         )
@@ -62,14 +62,15 @@ internal class DefaultDynamicFeatureComponent<out T : Any>(
         }
     }
 
-    private sealed interface Config : Parcelable {
-        @Parcelize
+    @Serializable
+    private sealed interface Config {
+        @Serializable
         data object Loading : Config
 
-        @Parcelize
+        @Serializable
         data object Feature : Config
 
-        @Parcelize
+        @Serializable
         data object Error : Config
     }
 }
