@@ -82,14 +82,6 @@ public final class com/arkivanov/decompose/errorhandler/ErrorHandlersKt {
 	public static final fun setOnDecomposeError (Lkotlin/jvm/functions/Function1;)V
 }
 
-public final class com/arkivanov/decompose/router/ParcelableJson$Creator : android/os/Parcelable$Creator {
-	public fun <init> ()V
-	public final fun createFromParcel (Landroid/os/Parcel;)Lcom/arkivanov/decompose/router/ParcelableJson;
-	public synthetic fun createFromParcel (Landroid/os/Parcel;)Ljava/lang/Object;
-	public final fun newArray (I)[Lcom/arkivanov/decompose/router/ParcelableJson;
-	public synthetic fun newArray (I)[Ljava/lang/Object;
-}
-
 public abstract interface class com/arkivanov/decompose/router/children/ChildNavState {
 	public abstract fun getConfiguration ()Ljava/lang/Object;
 	public abstract fun getStatus ()Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
@@ -118,14 +110,6 @@ public abstract interface class com/arkivanov/decompose/router/children/NavState
 public abstract interface class com/arkivanov/decompose/router/children/NavigationSource {
 	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
-}
-
-public final class com/arkivanov/decompose/router/children/SavedState$Creator : android/os/Parcelable$Creator {
-	public fun <init> ()V
-	public final fun createFromParcel (Landroid/os/Parcel;)Lcom/arkivanov/decompose/router/children/SavedState;
-	public synthetic fun createFromParcel (Landroid/os/Parcel;)Ljava/lang/Object;
-	public final fun newArray (I)[Lcom/arkivanov/decompose/router/children/SavedState;
-	public synthetic fun newArray (I)[Ljava/lang/Object;
 }
 
 public final class com/arkivanov/decompose/router/children/SimpleChildNavState : com/arkivanov/decompose/router/children/ChildNavState {
@@ -164,10 +148,8 @@ public final class com/arkivanov/decompose/router/pages/ChildPages {
 
 public final class com/arkivanov/decompose/router/pages/ChildPagesFactoryKt {
 	public static final fun childPages (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/pages/PagesNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
-	public static final fun childPages (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/pages/PagesNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
 	public static final fun childPages (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/pages/PagesNavigationSource;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
 	public static synthetic fun childPages$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/pages/PagesNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
-	public static synthetic fun childPages$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/pages/PagesNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
 	public static synthetic fun childPages$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/pages/PagesNavigationSource;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
 	public static final fun getDefaultPageStatus (ILcom/arkivanov/decompose/router/pages/Pages;)Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
 }
@@ -223,14 +205,6 @@ public final class com/arkivanov/decompose/router/pages/PagesNavigatorExtKt {
 	public static synthetic fun selectPrev$default (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
-public final class com/arkivanov/decompose/router/pages/PagesSavedNavState$Creator : android/os/Parcelable$Creator {
-	public fun <init> ()V
-	public final fun createFromParcel (Landroid/os/Parcel;)Lcom/arkivanov/decompose/router/pages/PagesSavedNavState;
-	public synthetic fun createFromParcel (Landroid/os/Parcel;)Ljava/lang/Object;
-	public final fun newArray (I)[Lcom/arkivanov/decompose/router/pages/PagesSavedNavState;
-	public synthetic fun newArray (I)[Ljava/lang/Object;
-}
-
 public final class com/arkivanov/decompose/router/slot/ChildSlot {
 	public fun <init> ()V
 	public fun <init> (Lcom/arkivanov/decompose/Child$Created;)V
@@ -246,10 +220,8 @@ public final class com/arkivanov/decompose/router/slot/ChildSlot {
 
 public final class com/arkivanov/decompose/router/slot/ChildSlotFactoryKt {
 	public static final fun childSlot (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/slot/SlotNavigationSource;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function0;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
-	public static final fun childSlot (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/slot/SlotNavigationSource;Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/jvm/functions/Function0;ZZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
 	public static final fun childSlot (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/slot/SlotNavigationSource;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function0;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
 	public static synthetic fun childSlot$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/slot/SlotNavigationSource;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function0;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
-	public static synthetic fun childSlot$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/slot/SlotNavigationSource;Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/jvm/functions/Function0;ZZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
 	public static synthetic fun childSlot$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/slot/SlotNavigationSource;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function0;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
 }
 
@@ -304,11 +276,9 @@ public final class com/arkivanov/decompose/router/stack/ChildStack {
 
 public final class com/arkivanov/decompose/router/stack/ChildStackFactoryKt {
 	public static final fun childStack (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
-	public static final fun childStack (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
 	public static final fun childStack (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlinx/serialization/KSerializer;Ljava/lang/Object;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
 	public static final fun childStack (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function0;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
 	public static synthetic fun childStack$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
-	public static synthetic fun childStack$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ZZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
 	public static synthetic fun childStack$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlinx/serialization/KSerializer;Ljava/lang/Object;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
 	public static synthetic fun childStack$default (Lcom/arkivanov/decompose/ComponentContext;Lcom/arkivanov/decompose/router/stack/StackNavigationSource;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function0;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
 }
@@ -352,14 +322,6 @@ public final class com/arkivanov/decompose/router/stack/StackNavigatorExtKt {
 	public static synthetic fun replaceAll$default (Lcom/arkivanov/decompose/router/stack/StackNavigator;[Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
 	public static final fun replaceCurrent (Lcom/arkivanov/decompose/router/stack/StackNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V
 	public static synthetic fun replaceCurrent$default (Lcom/arkivanov/decompose/router/stack/StackNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
-}
-
-public final class com/arkivanov/decompose/router/stack/StackSavedNavState$Creator : android/os/Parcelable$Creator {
-	public fun <init> ()V
-	public final fun createFromParcel (Landroid/os/Parcel;)Lcom/arkivanov/decompose/router/stack/StackSavedNavState;
-	public synthetic fun createFromParcel (Landroid/os/Parcel;)Ljava/lang/Object;
-	public final fun newArray (I)[Lcom/arkivanov/decompose/router/stack/StackSavedNavState;
-	public synthetic fun newArray (I)[Ljava/lang/Object;
 }
 
 public final class com/arkivanov/decompose/router/stack/ValueExtKt {

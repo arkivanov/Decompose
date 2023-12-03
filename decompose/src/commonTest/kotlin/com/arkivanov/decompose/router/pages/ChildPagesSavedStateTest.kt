@@ -23,7 +23,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
         var stateKeeper = StateKeeperDispatcher()
         var context = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = stateKeeper)
         context.childPages(
-            initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 2),
+            initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 2),
             persistent = true,
         )
 
@@ -40,14 +40,14 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
         var stateKeeper = StateKeeperDispatcher()
         var context = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = stateKeeper)
         context.childPages(
-            initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 2),
+            initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 2),
             persistent = false,
         )
 
         val savedState = stateKeeper.save()
         stateKeeper = StateKeeperDispatcher(savedState = savedState)
         context = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = stateKeeper)
-        val pages2 by context.childPages(initialPages = Pages(items = configs(5, 6, 7), selectedIndex = 0))
+        val pages2 by context.childPages(initialPages = Pages(items = listOf(5, 6, 7), selectedIndex = 0))
 
         pages2.assertPages(ids = listOf(5, 6, 7), selectedIndex = 0)
     }

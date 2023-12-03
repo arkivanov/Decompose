@@ -17,7 +17,7 @@ internal class ChildrenBackPressedTest : ChildrenTestBase() {
     fun GIVEN_children_created_with_active_child_and_enabled_callback_registered_WHEN_back_THEN_callback_called() {
         var isCalled = false
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
-        children.getById(id = 3).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
+        children.getByConfig(config = 3).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
 
         backDispatcher.back()
 
@@ -28,7 +28,7 @@ internal class ChildrenBackPressedTest : ChildrenTestBase() {
     fun GIVEN_children_created_with_active_child_and_disabled_callback_registered_WHEN_back_THEN_callback_not_called() {
         var isCalled = false
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
-        children.getById(id = 3).requireInstance().backHandler.register(BackCallback(isEnabled = false) { isCalled = true })
+        children.getByConfig(config = 3).requireInstance().backHandler.register(BackCallback(isEnabled = false) { isCalled = true })
 
         backDispatcher.back()
 
@@ -39,7 +39,7 @@ internal class ChildrenBackPressedTest : ChildrenTestBase() {
     fun GIVEN_children_created_with_inactive_child_and_enabled_callback_registered_WHEN_back_THEN_callback_not_called() {
         var isCalled = false
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
-        children.getById(id = 2).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
+        children.getByConfig(config = 2).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
 
         backDispatcher.back()
 
@@ -50,7 +50,7 @@ internal class ChildrenBackPressedTest : ChildrenTestBase() {
     fun GIVEN_children_created_with_inactive_child_and_disabled_callback_registered_WHEN_back_THEN_callback_not_called() {
         var isCalled = false
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
-        children.getById(id = 2).requireInstance().backHandler.register(BackCallback(isEnabled = false) { isCalled = true })
+        children.getByConfig(config = 2).requireInstance().backHandler.register(BackCallback(isEnabled = false) { isCalled = true })
 
         backDispatcher.back()
 
@@ -62,7 +62,7 @@ internal class ChildrenBackPressedTest : ChildrenTestBase() {
         var isCalled = false
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         navigate { listOf(1 by INACTIVE, 2 by INACTIVE, 3 by ACTIVE) }
-        children.getById(id = 1).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
+        children.getByConfig(config = 1).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
 
         backDispatcher.back()
 
@@ -74,7 +74,7 @@ internal class ChildrenBackPressedTest : ChildrenTestBase() {
         var isCalled = false
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         navigate { listOf(1 by ACTIVE, 2 by INACTIVE, 3 by ACTIVE) }
-        children.getById(id = 1).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
+        children.getByConfig(config = 1).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
 
         backDispatcher.back()
 
@@ -86,7 +86,7 @@ internal class ChildrenBackPressedTest : ChildrenTestBase() {
         var isCalled = false
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         navigate { listOf(1 by DESTROYED, 2 by ACTIVE, 3 by ACTIVE) }
-        children.getById(id = 2).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
+        children.getByConfig(config = 2).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
 
         backDispatcher.back()
 
@@ -98,7 +98,7 @@ internal class ChildrenBackPressedTest : ChildrenTestBase() {
         var isCalled = false
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
         navigate { listOf(1 by DESTROYED, 2 by INACTIVE, 3 by INACTIVE) }
-        children.getById(id = 3).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
+        children.getByConfig(config = 3).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
 
         backDispatcher.back()
 
@@ -109,7 +109,7 @@ internal class ChildrenBackPressedTest : ChildrenTestBase() {
     fun GIVEN_enabled_callback_registered_in_inactive_child_and_switched_to_active_WHEN_back_THEN_callback_called() {
         var isCalled = false
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
-        children.getById(id = 2).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
+        children.getByConfig(config = 2).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
         navigate { listOf(1 by DESTROYED, 2 by ACTIVE, 3 by ACTIVE) }
 
         backDispatcher.back()
@@ -121,7 +121,7 @@ internal class ChildrenBackPressedTest : ChildrenTestBase() {
     fun GIVEN_enabled_callback_registered_in_inactive_child_and_switched_to_destroyed_WHEN_back_THEN_callback_not_called() {
         var isCalled = false
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
-        children.getById(id = 2).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
+        children.getByConfig(config = 2).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
         navigate { listOf(1 by DESTROYED, 2 by DESTROYED, 3 by ACTIVE) }
 
         backDispatcher.back()
@@ -133,7 +133,7 @@ internal class ChildrenBackPressedTest : ChildrenTestBase() {
     fun GIVEN_enabled_callback_registered_in_active_child_and_switched_to_inactive_WHEN_back_THEN_callback_not_called() {
         var isCalled = false
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
-        children.getById(id = 3).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
+        children.getByConfig(config = 3).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
         navigate { listOf(1 by DESTROYED, 2 by INACTIVE, 3 by INACTIVE) }
 
         backDispatcher.back()
@@ -145,7 +145,7 @@ internal class ChildrenBackPressedTest : ChildrenTestBase() {
     fun GIVEN_enabled_callback_registered_in_active_child_and_switched_to_destroyed_WHEN_back_THEN_callback_not_called() {
         var isCalled = false
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by INACTIVE, 3 by ACTIVE))
-        children.getById(id = 3).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
+        children.getByConfig(config = 3).requireInstance().backHandler.register(BackCallback(isEnabled = true) { isCalled = true })
         navigate { listOf(1 by DESTROYED, 2 by INACTIVE, 3 by DESTROYED) }
 
         backDispatcher.back()

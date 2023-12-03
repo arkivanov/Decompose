@@ -2,21 +2,16 @@ package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.PARCELIZE_DEPRECATED_MESSAGE
 import com.arkivanov.decompose.backhandler.child
-import com.arkivanov.decompose.router.consumeRequired
-import com.arkivanov.decompose.router.toParcelableContainer
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.doOnDestroy
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.ParcelableContainer
-import com.arkivanov.essenty.parcelable.Parcelize
-import com.arkivanov.essenty.parcelable.consumeRequired
-import com.arkivanov.essenty.statekeeper.consume
+import com.arkivanov.essenty.statekeeper.SerializableContainer
+import com.arkivanov.essenty.statekeeper.consumeRequired
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
 
 /**
  * A convenience method for the main [children] method. Allows having `Serializable` navigation state [N],
@@ -39,7 +34,7 @@ fun <C : Any, T : Any, E : Any, N, S : Any> ComponentContext.children(
         source = source,
         saveState = { state ->
             if (stateSerializer != null) {
-                state.toParcelableContainer(strategy = stateSerializer)
+                SerializableContainer(value = state, strategy = stateSerializer)
             } else {
                 null
             }
@@ -86,9 +81,9 @@ fun <C : Any, T : Any, E : Any, N, S : Any> ComponentContext.children(
  * @param key a key of this `children` collection, must be unique if there are multiple
  * `children` used in the same component.
  * @param initialState an initial navigation state that should be used if there is no previously saved state.
- * @param saveState a function that saves the provided navigation state into [ParcelableContainer].
+ * @param saveState a function that saves the provided navigation state into [SerializableContainer].
  * The navigation state is not saved if `null` is returned.
- * @param restoreState a function that restores the navigation state from the provided [ParcelableContainer].
+ * @param restoreState a function that restores the navigation state from the provided [SerializableContainer].
  * If `null` is returned then [initialState] is used instead.
  * The restored navigation state must have the same amount of child configurations and in the same order.
  * The restored child [Statuses][ChildNavState.Status] can be any, e.g. a previously active child may become
@@ -109,8 +104,8 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
     source: NavigationSource<E>,
     key: String,
     initialState: () -> N,
-    saveState: (state: N) -> ParcelableContainer?,
-    restoreState: (container: ParcelableContainer) -> N?,
+    saveState: (state: N) -> SerializableContainer?,
+    restoreState: (container: SerializableContainer) -> N?,
     navTransformer: (state: N, event: E) -> N,
     stateMapper: (state: N, children: List<Child<C, T>>) -> S,
     onStateChanged: (newState: N, oldState: N?) -> Unit = { _, _ -> },
@@ -121,7 +116,7 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
     val mainBackHandler = backHandler.child()
 
     val navigator =
-        stateKeeper.consume<SavedState>(key = key).let { savedState ->
+        stateKeeper.consume(key = key, strategy = SavedState.serializer()).let { savedState ->
             val restoredNavState: N? = savedState?.navState?.let(restoreState)
 
             ChildrenNavigator(
@@ -137,7 +132,7 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
             )
         }
 
-    stateKeeper.register(key = key) {
+    stateKeeper.register(key = key, strategy = SavedState.serializer()) {
         saveState(navigator.navState)?.let { savedState ->
             SavedState(
                 navState = savedState,
@@ -193,40 +188,8 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
     return state
 }
 
-/**
- * A convenience method for the main [children] method. Allows having [Parcelable] navigation state [N],
- * so it's automatically saved and restored. This method can be used if the custom save/restore logic
- * is not required.
- */
-@Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated(message = PARCELIZE_DEPRECATED_MESSAGE)
-inline fun <C : Parcelable, T : Any, E : Any, reified N, S : Any> ComponentContext.children(
-    source: NavigationSource<E>,
-    key: String,
-    noinline initialState: () -> N,
-    noinline navTransformer: (state: N, event: E) -> N,
-    noinline stateMapper: (state: N, children: List<Child<C, T>>) -> S,
-    noinline onStateChanged: (newState: N, oldState: N?) -> Unit = { _, _ -> },
-    noinline onEventComplete: (event: E, newState: N, oldState: N) -> Unit = { _, _, _ -> },
-    noinline backTransformer: (state: N) -> (() -> N)? = { null },
-    noinline childFactory: (configuration: C, componentContext: ComponentContext) -> T,
-): Value<S> where N : NavState<C>, N : Parcelable =
-    children(
-        source = source,
-        key = key,
-        initialState = initialState,
-        saveState = { ParcelableContainer(it) },
-        restoreState = { it.consumeRequired(N::class) },
-        navTransformer = navTransformer,
-        stateMapper = stateMapper,
-        onStateChanged = onStateChanged,
-        onEventComplete = onEventComplete,
-        backTransformer = backTransformer,
-        childFactory = childFactory,
-    )
-
-@Parcelize
+@Serializable
 private class SavedState(
-    val navState: ParcelableContainer,
-    val childState: List<ParcelableContainer?>,
-) : Parcelable
+    val navState: SerializableContainer,
+    val childState: List<SerializableContainer?>,
+)

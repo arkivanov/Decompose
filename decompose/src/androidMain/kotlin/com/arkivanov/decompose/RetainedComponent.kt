@@ -22,9 +22,8 @@ import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.start
 import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.essenty.lifecycle.subscribe
-import com.arkivanov.essenty.parcelable.ParcelableContainer
+import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
-import com.arkivanov.essenty.statekeeper.consume
 import com.arkivanov.essenty.statekeeper.stateKeeper
 
 /**
@@ -88,7 +87,7 @@ private fun <T, O> O.retainedComponent(
     val holder =
         instanceKeeper.getOrCreate(key = key) {
             RetainedComponentHolder(
-                savedState = stateKeeper.consume(key = key),
+                savedState = stateKeeper.consume(key = key, strategy = SerializableContainer.serializer()),
                 factory = factory,
             )
         }
@@ -114,7 +113,7 @@ private fun <T, O> O.retainedComponent(
         },
     )
 
-    stateKeeper.register(key = key) { holder.stateKeeper.save() }
+    stateKeeper.register(key = key, strategy = SerializableContainer.serializer()) { holder.stateKeeper.save() }
 
     if (onBackPressedDispatcher != null) {
         val onBackPressedCallback = DelegateOnBackPressedCallback(holder.onBackPressedDispatcher)
@@ -146,7 +145,7 @@ private class DelegateOnBackPressedCallback(
 }
 
 private class RetainedComponentHolder<out T>(
-    savedState: ParcelableContainer?,
+    savedState: SerializableContainer?,
     factory: (ComponentContext) -> T,
 ) : InstanceKeeper.Instance {
     val lifecycle: LifecycleRegistry = LifecycleRegistry()

@@ -10,8 +10,6 @@ plugins {
     id("kotlin-multiplatform")
     id("com.android.library")
     id("kotlinx-serialization")
-    id("kotlin-parcelize")
-    id("com.arkivanov.parcelize.darwin")
     id("com.arkivanov.gradle.setup")
 }
 
@@ -26,16 +24,12 @@ android {
 kotlin {
     setupSourceSets {
         val android by bundle()
-        val nonAndroid by bundle()
-        val nonNative by bundle()
         val darwin by bundle()
         val itvos by bundle()
         val js by bundle()
         val nonJs by bundle()
 
-        (nonAndroid + darwin + nonNative + nonJs) dependsOn common
-        (allSet - android) dependsOn nonAndroid
-        (allSet - nativeSet) dependsOn nonNative
+        (darwin) dependsOn common
         (allSet - js) dependsOn nonJs
         (iosSet + tvosSet) dependsOn itvos
         (darwinSet - iosSet - tvosSet + itvos) dependsOn darwin
@@ -53,7 +47,6 @@ kotlin {
             api(deps.essenty.instanceKeeper)
             api(deps.essenty.backHandler)
             api(deps.jetbrains.kotlinx.kotlinxSerializationCore)
-            implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
         }
 
         common.test.dependencies {

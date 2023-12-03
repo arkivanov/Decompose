@@ -9,7 +9,6 @@ import org.jetbrains.kotlin.konan.target.Family
 plugins {
     id("kotlin-multiplatform")
     id("com.android.library")
-    id("kotlin-parcelize")
     id("kotlinx-serialization")
     id("com.arkivanov.gradle.setup")
 }
@@ -37,9 +36,6 @@ kotlin {
 
                     // Optional, only if you need state preservation on Darwin (Apple) targets
                     export(deps.essenty.stateKeeper)
-
-                    // Optional, only if you need state preservation on Darwin (Apple) targets
-                    export(deps.parcelizeDarwin.runtime)
                 }
             }
         }
@@ -47,10 +43,13 @@ kotlin {
     setupSourceSets {
         val android by bundle()
         val js by bundle()
+        val ios by bundle()
         val nonAndroid by bundle()
 
-        nonAndroid.dependsOn(common)
-        (allSet - android).dependsOn(nonAndroid)
+        nonAndroid dependsOn common
+        ios dependsOn nonAndroid
+        iosSet dependsOn ios
+        (allSet - iosSet - android).dependsOn(nonAndroid)
 
         common.main.dependencies {
             api(project(":decompose"))
@@ -59,6 +58,7 @@ kotlin {
             api(deps.essenty.stateKeeper)
             api(deps.essenty.backHandler)
             implementation(deps.reaktive.reaktive)
+            implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
         }
 
         common.test.dependencies {

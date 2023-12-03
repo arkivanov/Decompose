@@ -9,10 +9,9 @@ import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.ParcelableContainer
-import com.arkivanov.essenty.parcelable.Parcelize
-import com.arkivanov.essenty.parcelable.consumeRequired
+import com.arkivanov.essenty.statekeeper.SerializableContainer
+import com.arkivanov.essenty.statekeeper.consumeRequired
+import kotlinx.serialization.Serializable
 import kotlin.test.BeforeTest
 import kotlin.test.assertContentEquals
 
@@ -37,16 +36,17 @@ internal open class ChildrenTestBase {
 
     protected fun ComponentContext.children(
         initialState: TestNavState = TestNavState(),
-        saveState: (state: TestNavState) -> ParcelableContainer? = { state ->
-            ParcelableContainer(
-                SavedNavState(
+        saveState: (state: TestNavState) -> SerializableContainer? = { state ->
+            SerializableContainer(
+                value = SavedNavState(
                     configurations = state.children.map { it.configuration },
                     statuses = state.children.map { it.status },
-                )
+                ),
+                strategy = SavedNavState.serializer(),
             )
         },
-        restoreState: (container: ParcelableContainer) -> TestNavState? = { container ->
-            val savedState = container.consumeRequired<SavedNavState>()
+        restoreState: (container: SerializableContainer) -> TestNavState? = { container ->
+            val savedState = container.consumeRequired(SavedNavState.serializer())
             TestNavState(
                 children = savedState.configurations.zip(savedState.statuses).map { (configuration, status) ->
                     SimpleChildNavState(
@@ -63,8 +63,8 @@ internal open class ChildrenTestBase {
             oldState: TestNavState,
         ) -> Unit = { _, _, _ -> },
         backTransformer: (state: TestNavState) -> (() -> TestNavState)? = { null },
-        childFactory: (Config, ComponentContext) -> Component = ::Component,
-    ): Value<List<Child<Config, Component>>> =
+        childFactory: (Int, ComponentContext) -> Component = ::Component,
+    ): Value<List<Child<Int, Component>>> =
         children(
             source = navigation,
             key = "Key",
@@ -79,53 +79,46 @@ internal open class ChildrenTestBase {
             childFactory = childFactory,
         )
 
-    protected fun navigate(transformer: (List<SimpleChildNavState<Config>>) -> List<SimpleChildNavState<Config>>) {
+    protected fun navigate(transformer: (List<SimpleChildNavState<Int>>) -> List<SimpleChildNavState<Int>>) {
         navigation.navigate { it.copy(children = transformer(it.children)) }
     }
 
-    protected infix fun Int.by(status: ChildNavState.Status): SimpleChildNavState<Config> =
-        SimpleChildNavState(configuration = Config(id = this), status = status)
+    protected infix fun Int.by(status: ChildNavState.Status): SimpleChildNavState<Int> =
+        SimpleChildNavState(configuration = this, status = status)
 
-    protected fun stateOf(vararg children: SimpleChildNavState<Config>): TestNavState =
+    protected fun stateOf(vararg children: SimpleChildNavState<Int>): TestNavState =
         TestNavState(children = children.asList())
 
-    protected fun List<Child<Config, Component>>.assertChildren(vararg children: Pair<Int, Int?>) {
+    protected fun List<Child<Int, Component>>.assertChildren(vararg children: Pair<Int, Int?>) {
         assertContentEquals(
             children.toList(),
             map { child ->
                 when (child) {
-                    is Child.Created -> child.configuration.id to child.instance.id
-                    is Child.Destroyed -> child.configuration.id to null
+                    is Child.Created -> child.configuration to child.instance.config
+                    is Child.Destroyed -> child.configuration to null
                 }
             }
         )
     }
 
-    protected fun List<Child<Config, Component>>.getById(id: Int): Child<Config, Component> =
-        first { it.configuration.id == id }
+    protected fun List<Child<Int, Component>>.getByConfig(config: Int): Child<Int, Component> =
+        first { it.configuration == config }
 
     protected fun Child<*, Component>.requireInstance(): Component =
         requireNotNull(instance)
 
     protected data class TestNavState(
-        override val children: List<SimpleChildNavState<Config>> = emptyList(),
-    ) : NavState<Config>
-
-    @Parcelize
-    protected data class Config(
-        val id: Int,
-    ) : Parcelable
+        override val children: List<SimpleChildNavState<Int>> = emptyList(),
+    ) : NavState<Int>
 
     protected class Component(
-        config: Config,
+        val config: Int,
         componentContext: ComponentContext,
-    ) : ComponentContext by componentContext {
-        val id: Int = config.id
-    }
+    ) : ComponentContext by componentContext
 
-    @Parcelize
+    @Serializable
     protected class SavedNavState(
-        val configurations: List<Config>,
+        val configurations: List<Int>,
         val statuses: List<ChildNavState.Status>,
-    ) : Parcelable
+    )
 }

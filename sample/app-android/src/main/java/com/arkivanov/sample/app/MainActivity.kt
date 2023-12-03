@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     private val mode = Mode.COMPOSE
 
+    @OptIn(ExperimentalDecomposeApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -40,9 +40,6 @@ kotlin {
 
                     // Optional, only if you need state preservation on Darwin (Apple) targets
                     export(deps.essenty.stateKeeper)
-
-                    // Optional, only if you need state preservation on Darwin (Apple) targets
-                    export(deps.parcelizeDarwin.runtime)
                 }
             }
         }

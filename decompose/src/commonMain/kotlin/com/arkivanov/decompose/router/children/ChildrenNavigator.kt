@@ -10,14 +10,14 @@ import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.stop
-import com.arkivanov.essenty.parcelable.ParcelableContainer
+import com.arkivanov.essenty.statekeeper.SerializableContainer
 
 internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     lifecycle: Lifecycle,
     retainedInstanceSupplier: (factory: () -> InstanceKeeper.Instance) -> InstanceKeeper.Instance,
     private val childItemFactory: ChildItemFactory<C, T>,
     navState: N,
-    savedChildState: List<ParcelableContainer?>?,
+    savedChildState: List<SerializableContainer?>?,
 ) {
     var navState: N = navState
         private set
@@ -60,7 +60,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         }
     }
 
-    private fun restore(navState: N, savedStates: List<ParcelableContainer?>) {
+    private fun restore(navState: N, savedStates: List<SerializableContainer?>) {
         val retainedChildren = retainedInstance.items.associateByTo(HashMap(), Created<C, *>::configuration)
         retainedInstance.items.clear()
 
@@ -96,7 +96,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         retainedChildren.values.forEach { it.instanceKeeperDispatcher.destroy() }
     }
 
-    fun saveChildState(): List<ParcelableContainer?> =
+    fun saveChildState(): List<SerializableContainer?> =
         items.map { item ->
             when (item) {
                 is Created -> item.stateKeeperDispatcher.save()

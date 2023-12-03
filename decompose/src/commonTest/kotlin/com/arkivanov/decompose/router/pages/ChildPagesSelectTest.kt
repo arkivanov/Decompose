@@ -29,7 +29,7 @@ class ChildPagesSelectTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_0_WHEN_select_0_THEN_selected_0() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 0))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 0))
 
         navigation.select(index = 0)
 
@@ -38,7 +38,7 @@ class ChildPagesSelectTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_0_WHEN_select_2_THEN_selected_2() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 0))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 0))
 
         navigation.select(index = 2)
 
@@ -47,7 +47,7 @@ class ChildPagesSelectTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_0_WHEN_select_4_THEN_selected_4() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 0))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 0))
 
         navigation.select(index = 4)
 
@@ -56,7 +56,7 @@ class ChildPagesSelectTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_4_WHEN_select_0_THEN_selected_0() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 4))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 4))
 
         navigation.select(index = 0)
 
@@ -65,7 +65,7 @@ class ChildPagesSelectTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_4_WHEN_select_2_THEN_selected_2() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 4))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 4))
 
         navigation.select(index = 2)
 
@@ -74,7 +74,7 @@ class ChildPagesSelectTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_4_WHEN_select_4_THEN_selected_4() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 4))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 4))
 
         navigation.select(index = 4)
 

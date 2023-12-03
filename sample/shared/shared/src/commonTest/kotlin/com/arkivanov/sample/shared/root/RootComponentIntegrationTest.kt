@@ -1,6 +1,7 @@
 package com.arkivanov.sample.shared.root
 
 import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.active
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
@@ -93,6 +94,7 @@ class RootComponentIntegrationTest {
         assertTrue(activeChild is CustomNavigationChild)
     }
 
+    @OptIn(ExperimentalDecomposeApi::class)
     private fun createComponent(
         deepLink: DeepLink = DeepLink.None,
     ) {

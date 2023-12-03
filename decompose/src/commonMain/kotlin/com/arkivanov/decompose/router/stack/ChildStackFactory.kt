@@ -2,21 +2,15 @@ package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.PARCELIZE_DEPRECATED_MESSAGE
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
 import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.children
-import com.arkivanov.decompose.router.consumeRequired
-import com.arkivanov.decompose.router.toParcelableContainer
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.ParcelableContainer
-import com.arkivanov.essenty.parcelable.Parcelize
-import com.arkivanov.essenty.parcelable.consumeRequired
+import com.arkivanov.essenty.statekeeper.SerializableContainer
+import com.arkivanov.essenty.statekeeper.consumeRequired
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
-import kotlin.reflect.KClass
 
 /**
  * Initializes and manages a stack of components.
@@ -44,7 +38,7 @@ fun <C : Any, T : Any> ComponentContext.childStack(
         source = source,
         saveStack = { stack ->
             if (serializer != null) {
-                stack.toParcelableContainer(strategy = ListSerializer(serializer))
+                SerializableContainer(value = stack, strategy = ListSerializer(serializer))
             } else {
                 null
             }
@@ -65,7 +59,6 @@ fun <C : Any, T : Any> ComponentContext.childStack(
 /**
  * A convenience extension function for [ComponentContext.childStack].
  */
-@Suppress("DeprecatedCallableAddReplaceWith")
 fun <C : Any, T : Any> ComponentContext.childStack(
     source: StackNavigationSource<C>,
     serializer: KSerializer<C>?,
@@ -89,59 +82,9 @@ fun <C : Any, T : Any> ComponentContext.childStack(
  * @param source a source of navigation events.
  * @param initialStack a stack of component configurations (ordered from tail to head) that should be set
  * if there is no saved state, must be not empty and unique.
- * @param configurationClass a [KClass] of the component configurations.
- * @param key a key of the stack, must be unique if there are multiple stacks in the same component.
- * @param persistent determines whether the navigation state should pre preserved or not,
- * default is `true`.
- * @param handleBackButton determines whether the stack should be automatically popped on back button press or not,
- * default is `false`.
- * @param childFactory a factory function that creates new child instances.
- * @return an observable [Value] of [ChildStack].
- */
-@Deprecated(message = PARCELIZE_DEPRECATED_MESSAGE)
-fun <C : Parcelable, T : Any> ComponentContext.childStack(
-    source: StackNavigationSource<C>,
-    initialStack: () -> List<C>,
-    configurationClass: KClass<out C>,
-    key: String = "DefaultChildStack",
-    persistent: Boolean = true,
-    handleBackButton: Boolean = false,
-    childFactory: (configuration: C, ComponentContext) -> T,
-): Value<ChildStack<C, T>> =
-    childStack(
-        source = source,
-        initialStack = initialStack,
-        saveStack = { stack ->
-            if (persistent) {
-                ParcelableContainer(
-                    StackSavedNavState(
-                        configurations = stack.map { ParcelableContainer(it) },
-                    )
-                )
-            } else {
-                null
-            }
-        },
-        restoreStack = { container ->
-            container
-                .consumeRequired<StackSavedNavState>()
-                .configurations
-                .map { it.consumeRequired(configurationClass) }
-        },
-        key = key,
-        handleBackButton = handleBackButton,
-        childFactory = childFactory,
-    )
-
-/**
- * Initializes and manages a stack of components.
- *
- * @param source a source of navigation events.
- * @param initialStack a stack of component configurations (ordered from tail to head) that should be set
- * if there is no saved state, must be not empty and unique.
- * @param saveStack a function that saves the provided stack of configurations into [ParcelableContainer].
+ * @param saveStack a function that saves the provided stack of configurations into [SerializableContainer].
  * The navigation state is not saved if `null` is returned.
- * @param restoreStack a function that restores the stack of configuration from the provided [ParcelableContainer].
+ * @param restoreStack a function that restores the stack of configuration from the provided [SerializableContainer].
  * If `null` is returned then [initialStack] is used instead.
  * The restored stack must have the same amount of configurations and in the same order.
  * @param key a key of the stack, must be unique if there are multiple stacks in the same component.
@@ -153,8 +96,8 @@ fun <C : Parcelable, T : Any> ComponentContext.childStack(
 fun <C : Any, T : Any> ComponentContext.childStack(
     source: StackNavigationSource<C>,
     initialStack: () -> List<C>,
-    saveStack: (List<C>) -> ParcelableContainer?,
-    restoreStack: (ParcelableContainer) -> List<C>?,
+    saveStack: (List<C>) -> SerializableContainer?,
+    restoreStack: (SerializableContainer) -> List<C>?,
     key: String = "DefaultChildStack",
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, ComponentContext) -> T,
@@ -188,48 +131,6 @@ fun <C : Any, T : Any> ComponentContext.childStack(
         childFactory = childFactory,
     )
 
-/**
- * A convenience extension function for [ComponentContext.childStack].
- */
-inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
-    source: StackNavigationSource<C>,
-    noinline initialStack: () -> List<C>,
-    key: String = "DefaultChildStack",
-    persistent: Boolean = true,
-    handleBackButton: Boolean = false,
-    noinline childFactory: (configuration: C, ComponentContext) -> T
-): Value<ChildStack<C, T>> =
-    childStack(
-        source = source,
-        initialStack = initialStack,
-        configurationClass = C::class,
-        key = key,
-        persistent = persistent,
-        handleBackButton = handleBackButton,
-        childFactory = childFactory,
-    )
-
-/**
- * A convenience extension function for [ComponentContext.childStack].
- */
-inline fun <reified C : Parcelable, T : Any> ComponentContext.childStack(
-    source: StackNavigationSource<C>,
-    initialConfiguration: C,
-    key: String = "DefaultChildStack",
-    persistent: Boolean = true,
-    handleBackButton: Boolean = false,
-    noinline childFactory: (configuration: C, ComponentContext) -> T
-): Value<ChildStack<C, T>> =
-    childStack(
-        source = source,
-        initialStack = { listOf(initialConfiguration) },
-        configurationClass = C::class,
-        key = key,
-        persistent = persistent,
-        handleBackButton = handleBackButton,
-        childFactory = childFactory,
-    )
-
 private data class StackNavState<out C : Any>(
     val configurations: List<C>,
 ) : NavState<C> {
@@ -246,8 +147,3 @@ private data class StackNavState<out C : Any>(
             )
         }
 }
-
-@Parcelize
-private class StackSavedNavState(
-    val configurations: List<ParcelableContainer>,
-) : Parcelable

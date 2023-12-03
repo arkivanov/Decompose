@@ -29,7 +29,7 @@ class ChildPagesClearTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_0_WHEN_clear_THEN_pages_empty() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 0))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 0))
 
         navigation.clear()
 
@@ -38,7 +38,7 @@ class ChildPagesClearTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_2_WHEN_clear_THEN_pages_empty() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 2))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 2))
 
         navigation.clear()
 
@@ -47,7 +47,7 @@ class ChildPagesClearTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_4_WHEN_clear_THEN_pages_empty() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 4))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 4))
 
         navigation.clear()
 

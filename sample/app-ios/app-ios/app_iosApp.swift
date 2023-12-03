@@ -12,7 +12,7 @@ import Shared
 struct app_iosApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self)
     var appDelegate: AppDelegate
-
+    
     var body: some Scene {
         WindowGroup {
             RootView(appDelegate.root)
@@ -22,7 +22,7 @@ struct app_iosApp: App {
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     private var stateKeeper = StateKeeperDispatcherKt.StateKeeperDispatcher(savedState: nil)
-
+    
     lazy var root: RootComponent = DefaultRootComponent(
         componentContext: DefaultComponentContext(
             lifecycle: ApplicationLifecycle(),
@@ -34,19 +34,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         deepLink: DefaultRootComponentDeepLinkNone.shared,
         webHistoryController: nil
     )
-
+    
     func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
-        CodingKt.encodeParcelable(coder, value: stateKeeper.save(), key: "savedState")
+        StateKeeperUtilsKt.save(coder: coder, state: stateKeeper.save())
         return true
     }
     
     func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
-        do {
-            let savedState = try CodingKt.decodeParcelable(coder, key: "savedState") as! ParcelableParcelableContainer
-            stateKeeper = StateKeeperDispatcherKt.StateKeeperDispatcher(savedState: savedState)
-            return true
-        } catch {
-            return false
-        }
+        stateKeeper = StateKeeperDispatcherKt.StateKeeperDispatcher(savedState: StateKeeperUtilsKt.restore(coder: coder))
+        return true
     }
 }

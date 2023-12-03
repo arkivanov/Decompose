@@ -8,7 +8,7 @@ import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.essenty.parcelable.ParcelableContainer
+import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
 internal class DefaultChildItemFactory<C : Any, out T : Any>(
@@ -19,7 +19,7 @@ internal class DefaultChildItemFactory<C : Any, out T : Any>(
 
     override fun invoke(
         configuration: C,
-        savedState: ParcelableContainer?,
+        savedState: SerializableContainer?,
         instanceKeeperDispatcher: InstanceKeeperDispatcher?
     ): ChildItem.Created<C, T> {
         val componentLifecycleRegistry = LifecycleRegistry()

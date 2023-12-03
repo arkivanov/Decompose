@@ -29,7 +29,7 @@ class ChildPagesSelectFirstTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_0_WHEN_selectFirst_THEN_selected_0() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 0))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 0))
 
         navigation.selectFirst()
 
@@ -38,7 +38,7 @@ class ChildPagesSelectFirstTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_2_WHEN_selectFirst_THEN_selected_0() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 2))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 2))
 
         navigation.selectFirst()
 
@@ -47,7 +47,7 @@ class ChildPagesSelectFirstTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_4_WHEN_selectFirst_THEN_selected_0() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 4))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 4))
 
         navigation.selectFirst()
 
