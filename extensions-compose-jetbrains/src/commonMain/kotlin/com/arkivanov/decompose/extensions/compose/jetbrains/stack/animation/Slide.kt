@@ -9,18 +9,6 @@ import androidx.compose.ui.layout.layout
 /**
  * A simple sliding animation. Children enter from one side and exit to another side.
  */
-@Deprecated(
-    message = "Please use the new slide StackAnimator with orientation specification",
-    level = DeprecationLevel.HIDDEN
-)
-fun slide(animationSpec: FiniteAnimationSpec<Float> = tween()): StackAnimator =
-    stackAnimator(animationSpec = animationSpec) { factor, _, content ->
-        content(Modifier.offsetXFactor(factor = factor))
-    }
-
-/**
- * A simple sliding animation. Children enter from one side and exit to another side.
- */
 fun slide(
     animationSpec: FiniteAnimationSpec<Float> = tween(),
     orientation: Orientation = Orientation.Horizontal,
