@@ -7,8 +7,6 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesComponent.Child
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesComponent.Child.Feature1Child
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesComponent.Child.Feature2Child
@@ -17,6 +15,7 @@ import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DynamicFeature
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.FeatureInstaller
 import com.arkivanov.sample.shared.dynamicfeatures.feature1.Feature1
 import com.arkivanov.sample.shared.dynamicfeatures.feature2.Feature2
+import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
 internal class DefaultDynamicFeaturesComponent(
@@ -29,6 +28,7 @@ internal class DefaultDynamicFeaturesComponent(
     private val stack =
         childStack(
             source = navigation,
+            serializer = Config.serializer(),
             initialConfiguration = Config.Feature1,
             handleBackButton = true,
             childFactory = ::child,
@@ -69,11 +69,12 @@ internal class DefaultDynamicFeaturesComponent(
             }
         )
 
-    private sealed interface Config : Parcelable {
-        @Parcelize
+    @Serializable
+    private sealed interface Config {
+        @Serializable
         data object Feature1 : Config
 
-        @Parcelize
+        @Serializable
         data class Feature2(val magicNumber: Int) : Config
     }
 }

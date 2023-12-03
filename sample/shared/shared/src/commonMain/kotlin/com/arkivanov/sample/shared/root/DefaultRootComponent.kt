@@ -8,8 +8,6 @@ import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.webhistory.WebHistoryController
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.sample.shared.cards.DefaultCardsComponent
 import com.arkivanov.sample.shared.counters.DefaultCountersComponent
 import com.arkivanov.sample.shared.customnavigation.DefaultCustomNavigationComponent
@@ -21,6 +19,7 @@ import com.arkivanov.sample.shared.root.RootComponent.Child.CountersChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
+import kotlinx.serialization.Serializable
 
 @OptIn(ExperimentalDecomposeApi::class)
 class DefaultRootComponent(
@@ -35,6 +34,7 @@ class DefaultRootComponent(
     private val stack =
         childStack(
             source = navigation,
+            serializer = Config.serializer(),
             initialStack = { getInitialStack(webHistoryPaths = webHistoryController?.historyPaths, deepLink = deepLink) },
             childFactory = ::child,
         )
@@ -118,20 +118,21 @@ class DefaultRootComponent(
             }
     }
 
-    private sealed interface Config : Parcelable {
-        @Parcelize
+    @Serializable
+    private sealed interface Config {
+        @Serializable
         data object Counters : Config
 
-        @Parcelize
+        @Serializable
         data object Cards : Config
 
-        @Parcelize
+        @Serializable
         data object MultiPane : Config
 
-        @Parcelize
+        @Serializable
         data object DynamicFeatures : Config
 
-        @Parcelize
+        @Serializable
         data object CustomNavigation : Config
     }
 

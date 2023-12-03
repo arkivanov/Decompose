@@ -12,8 +12,8 @@ public final class com/arkivanov/decompose/extensions/compose/jetbrains/pages/Co
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesKt {
-	public static final fun Pages (Landroidx/compose/runtime/State;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation;Lkotlin/jvm/functions/Function6;Lkotlin/jvm/functions/Function5;Landroidx/compose/runtime/Composer;II)V
-	public static final fun Pages (Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation;Lkotlin/jvm/functions/Function6;Lkotlin/jvm/functions/Function5;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Pages (Landroidx/compose/runtime/State;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation;Lkotlin/jvm/functions/Function6;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function5;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Pages (Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation;Lkotlin/jvm/functions/Function6;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function5;Landroidx/compose/runtime/Composer;II)V
 	public static final fun defaultHorizontalPager ()Lkotlin/jvm/functions/Function6;
 	public static final fun defaultVerticalPager ()Lkotlin/jvm/functions/Function6;
 }
@@ -30,11 +30,17 @@ public final class com/arkivanov/decompose/extensions/compose/jetbrains/pages/Pa
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation$Default : com/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation {
 	public static final field $stable I
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation$Default;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation$Disabled : com/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation {
 	public static final field $stable I
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/jetbrains/pages/PagesScrollAnimation$Disabled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/ChildrenKt {
@@ -71,11 +77,6 @@ public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/an
 	public static synthetic fun fade$default (Landroidx/compose/animation/core/FiniteAnimationSpec;FILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;
 }
 
-public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/PredictiveBackAnimationKt {
-	public static final fun predictiveBackAnimation (Lcom/arkivanov/essenty/backhandler/BackHandler;Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
-	public static synthetic fun predictiveBackAnimation$default (Lcom/arkivanov/essenty/backhandler/BackHandler;Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
-}
-
 public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/ScaleKt {
 	public static final fun scale (Landroidx/compose/animation/core/FiniteAnimationSpec;FF)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;
 	public static synthetic fun scale$default (Landroidx/compose/animation/core/FiniteAnimationSpec;FFILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;
@@ -109,5 +110,26 @@ public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/an
 	public static final fun plus (Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;
 	public static final fun stackAnimator (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function5;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;
 	public static synthetic fun stackAnimator$default (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function5;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimator;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/MaterialPredictiveBackAnimatableKt {
+	public static final fun materialPredictiveBackAnimatable (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/PredictiveBackAnimatable;
+	public static synthetic fun materialPredictiveBackAnimatable$default (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/PredictiveBackAnimatable;
+}
+
+public abstract interface class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/PredictiveBackAnimatable {
+	public abstract fun animate (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun finish (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getEnterModifier ()Landroidx/compose/ui/Modifier;
+	public abstract fun getExitModifier ()Landroidx/compose/ui/Modifier;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/PredictiveBackAnimatableKt {
+	public static final fun predictiveBackAnimatable (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/PredictiveBackAnimatable;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/predictiveback/PredictiveBackAnimationKt {
+	public static final fun predictiveBackAnimation (Lcom/arkivanov/essenty/backhandler/BackHandler;Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function0;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
+	public static synthetic fun predictiveBackAnimation$default (Lcom/arkivanov/essenty/backhandler/BackHandler;Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/jetbrains/stack/animation/StackAnimation;
 }
 
