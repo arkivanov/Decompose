@@ -65,7 +65,7 @@ fun <C : Any, T : Any, E : Any, N, S : Any> ComponentContext.children(
  * Initialised and manages a generic list of components. This is an API for custom navigation models.
  * Please consider the existing navigation models first:
  * [Child Stack][com.arkivanov.decompose.router.stack.childStack],
- * [Child Slot][com.arkivanov.decompose.router.overlay.childSlot].
+ * [Child Slot][com.arkivanov.decompose.router.slot.childSlot].
  *
  * The API is based around [NavState] and [ChildNavState] interfaces that should be implemented by
  * clients. [NavState] represents a persistent state of the navigation. It also holds a navigation
