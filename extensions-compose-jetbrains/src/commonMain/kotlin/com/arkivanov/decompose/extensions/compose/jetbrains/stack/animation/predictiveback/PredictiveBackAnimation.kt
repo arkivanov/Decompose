@@ -23,12 +23,12 @@ import com.arkivanov.essenty.backhandler.BackHandler
 import kotlinx.coroutines.launch
 
 /**
- * Wraps the provided [animation], handles the predictive back gesture and animates
+ * Wraps the provided [fallbackAnimation], handles the predictive back gesture and animates
  * the transition from the current [Child] to the previous one.
  * Calls [onBack] when the animation is finished.
  *
  * @param backHandler a source of the predictive back gesture events, see [BackHandler].
- * @param animation a [StackAnimation] for regular transitions.
+ * @param fallbackAnimation a [StackAnimation] for regular transitions.
  * @param selector a selector function that is called when the predictive back gesture begins,
  * returns [PredictiveBackAnimatable] responsible for animations.
  * @param onBack a callback that is called when the gesture is finished.
@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 @ExperimentalDecomposeApi
 fun <C : Any, T : Any> predictiveBackAnimation(
     backHandler: BackHandler,
-    animation: StackAnimation<C, T>? = null,
+    fallbackAnimation: StackAnimation<C, T>? = null,
     selector: (
         initialBackEvent: BackEvent,
         exitChild: Child.Created<C, T>,
@@ -48,7 +48,7 @@ fun <C : Any, T : Any> predictiveBackAnimation(
 ): StackAnimation<C, T> =
     PredictiveBackAnimation(
         backHandler = backHandler,
-        animation = animation ?: emptyStackAnimation(),
+        animation = fallbackAnimation ?: emptyStackAnimation(),
         selector = selector,
         onBack = onBack,
     )
