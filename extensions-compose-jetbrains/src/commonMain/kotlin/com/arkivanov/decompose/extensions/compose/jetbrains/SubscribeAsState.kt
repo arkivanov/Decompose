@@ -20,7 +20,7 @@ fun <T : Any> Value<T>.subscribeAsState(policy: SnapshotMutationPolicy<T> = stru
     val state = remember(this, policy) { mutableStateOf(value, policy) }
 
     DisposableEffect(this) {
-        val disposable = observe { state.value = it }
+        val disposable = subscribe { state.value = it }
         onDispose { disposable.cancel() }
     }
 

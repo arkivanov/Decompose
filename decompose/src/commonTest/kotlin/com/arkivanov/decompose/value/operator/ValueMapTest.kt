@@ -25,7 +25,7 @@ class ValueMapTest {
 
     @Test
     fun GIVEN_subscribed_WHEN_upstream_changed_THEN_value_mapped() {
-        mapped.observe {}
+        mapped.subscribe {}
         upstream.value = "abcd"
 
         val value = mapped.value
@@ -37,7 +37,7 @@ class ValueMapTest {
     fun WHEN_subscribe_THEN_current_value_emitted() {
         val values = ArrayList<Int>()
 
-        mapped.observe { values += it }
+        mapped.subscribe { values += it }
 
         assertContentEquals(listOf(3), values)
     }
@@ -47,7 +47,7 @@ class ValueMapTest {
         val values = List(10) { ArrayList<Int>() }
 
         repeat(10) { index ->
-            mapped.observe { values[index] += it }
+            mapped.subscribe { values[index] += it }
         }
 
         upstream.value = "abcd"
@@ -60,7 +60,7 @@ class ValueMapTest {
     @Test
     fun GIVEN_unsubscribed_WHEN_value_changed_THEN_not_emitted() {
         val values = ArrayList<Int>()
-        val cancellation = mapped.observe { values += it }
+        val cancellation = mapped.subscribe { values += it }
         cancellation.cancel()
         values.clear()
 
@@ -72,8 +72,8 @@ class ValueMapTest {
     @Test
     fun GIVEN_multiple_subscribes_and_one_unsubscribed_WHEN_value_changed_THEN_value_emitted_to_subscribed() {
         val values = ArrayList<Int>()
-        val cancellation = mapped.observe {}
-        mapped.observe { values += it }
+        val cancellation = mapped.subscribe {}
+        mapped.subscribe { values += it }
         cancellation.cancel()
         values.clear()
 
@@ -85,8 +85,8 @@ class ValueMapTest {
     @Test
     fun GIVEN_multiple_subscribes_and_one_unsubscribed_WHEN_value_changed_THEN_value_not_emitted_to_unsubscribed() {
         val values = ArrayList<Int>()
-        val cancellation = mapped.observe { values += it }
-        mapped.observe {}
+        val cancellation = mapped.subscribe { values += it }
+        mapped.subscribe {}
         cancellation.cancel()
         values.clear()
 
@@ -106,9 +106,9 @@ class ValueMapTest {
                     it.length
                 }
 
-        mapped.observe {}
-        mapped.observe {}
-        mapped.observe {}
+        mapped.subscribe {}
+        mapped.subscribe {}
+        mapped.subscribe {}
 
         assertEquals(1, count)
     }
@@ -124,9 +124,9 @@ class ValueMapTest {
                     it.length
                 }
 
-        mapped.observe {}
-        mapped.observe {}
-        mapped.observe {}
+        mapped.subscribe {}
+        mapped.subscribe {}
+        mapped.subscribe {}
         count = 0
 
         upstream.value = "abcd"
@@ -145,11 +145,11 @@ class ValueMapTest {
                     it.length
                 }
 
-        mapped.observe {}
-        mapped.observe {}
+        mapped.subscribe {}
+        mapped.subscribe {}
         upstream.value = "abcd"
         count = 0
-        mapped.observe {}
+        mapped.subscribe {}
 
 
         assertEquals(0, count)
@@ -166,8 +166,8 @@ class ValueMapTest {
                     it.length
                 }
 
-        mapped.observe {}
-        mapped.observe {}
+        mapped.subscribe {}
+        mapped.subscribe {}
         upstream.value = "abcd"
         count = 0
         requireNotNull(upstream.value)

@@ -1,12 +1,12 @@
 package com.arkivanov.decompose.value
 
+import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.Lock
 import com.arkivanov.decompose.synchronized
 
 /**
  * Returns a new instance of [MutableValue] initialized with the provided [initialValue].
  */
-@Suppress("FunctionName") // Factory function
 fun <T : Any> MutableValue(initialValue: T): MutableValue<T> = MutableValueImpl(initialValue)
 
 private class MutableValueImpl<T : Any>(initialValue: T) : MutableValue<T>() {
@@ -70,13 +70,13 @@ private class MutableValueImpl<T : Any>(initialValue: T) : MutableValue<T>() {
         }
     }
 
-    @Deprecated(
-        "Calling this method from Swift leaks the observer, " +
-            "because Kotlin wraps the function passed from Swift every time the method is called. " +
-            "Please use the new `observe` method which returns `Disposable`.",
-        level = DeprecationLevel.WARNING,
-    )
-    override fun subscribe(observer: (T) -> Unit) {
+    override fun subscribe(observer: (T) -> Unit): Cancellation {
+        subscribeObserver(observer)
+
+        return Cancellation { unsubscribeObserver(observer) }
+    }
+
+    private fun subscribeObserver(observer: (T) -> Unit) {
         lock.synchronized {
             if (observer in observers) {
                 return
@@ -103,13 +103,7 @@ private class MutableValueImpl<T : Any>(initialValue: T) : MutableValue<T>() {
         }
     }
 
-    @Deprecated(
-        "Calling this method from Swift doesn't have any effect, " +
-            "because Kotlin wraps the function passed from Swift every time the method is called. " +
-            "Please use the new `observe` method which returns `Disposable`.",
-        level = DeprecationLevel.WARNING,
-    )
-    override fun unsubscribe(observer: (T) -> Unit) {
+    private fun unsubscribeObserver(observer: (T) -> Unit) {
         lock.synchronized { observers -= observer }
     }
 }
