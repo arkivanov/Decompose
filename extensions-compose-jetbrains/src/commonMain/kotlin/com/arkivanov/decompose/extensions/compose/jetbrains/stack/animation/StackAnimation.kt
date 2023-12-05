@@ -23,7 +23,7 @@ fun interface StackAnimation<C : Any, T : Any> {
  * Creates an implementation of [StackAnimation] that allows different [StackAnimator]s.
  *
  * FaultyDecomposeApi. Please note that this API uses `movableContentOf` Compose API.
- * Even though `movableContentOf` is not marked as experimental, it is known to contain bugs,
+ * Even though `movableContentOf` is not marked as experimental, it was known to contain bugs,
  * e.g. https://issuetracker.google.com/issues/270656235, https://issuetracker.google.com/issues/290343159.
  *
  * @param disableInputDuringAnimation disables input and touch events while animating, default value is `true`.
