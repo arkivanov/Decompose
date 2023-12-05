@@ -88,9 +88,10 @@ public abstract interface class com/arkivanov/decompose/router/children/ChildNav
 }
 
 public final class com/arkivanov/decompose/router/children/ChildNavState$Status : java/lang/Enum {
-	public static final field ACTIVE Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+	public static final field CREATED Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
 	public static final field DESTROYED Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
-	public static final field INACTIVE Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+	public static final field RESUMED Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
+	public static final field STARTED Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
 	public static fun values ()[Lcom/arkivanov/decompose/router/children/ChildNavState$Status;

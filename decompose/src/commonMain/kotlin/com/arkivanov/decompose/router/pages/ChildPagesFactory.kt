@@ -25,8 +25,8 @@ import kotlinx.serialization.Serializable
  * @param key a key of the list, must be unique if there are multiple Child Pages used in
  * the same component.
  * @param pageStatus a function that returns a [Status] of a page at a given index.
- * By default, the currently selected page is [Status.ACTIVE], its two neighbours
- * are [Status.INACTIVE], and the rest are [Status.DESTROYED]. You can implement your own
+ * By default, the currently selected page is [Status.RESUMED], its two neighbours
+ * are [Status.CREATED], and the rest are [Status.DESTROYED]. You can implement your own
  * logic, for example with circular behaviour.
  * @param handleBackButton determines whether the previous component should be automatically
  * selected on back button press or not, default is `false`.
@@ -94,8 +94,8 @@ private class SerializablePages<out C : Any>(
  * @param key a key of the list, must be unique if there are multiple Child Pages used in
  * the same component.
  * @param pageStatus a function that returns a [Status] of a page at a given index.
- * By default, the currently selected page is [Status.ACTIVE], its two neighbours
- * are [Status.INACTIVE], and the rest are [Status.DESTROYED]. You can implement your own
+ * By default, the currently selected page is [Status.RESUMED], its two neighbours
+ * are [Status.CREATED], and the rest are [Status.DESTROYED]. You can implement your own
  * logic, for example with circular behaviour.
  * @param handleBackButton determines whether the previous component should be automatically
  * selected on back button press or not, default is `false`.
@@ -158,8 +158,8 @@ fun <C : Any, T : Any> ComponentContext.childPages(
 @PublishedApi
 internal fun getDefaultPageStatus(index: Int, pages: Pages<*>): Status =
     when (index) {
-        pages.selectedIndex -> Status.ACTIVE
-        in (pages.selectedIndex - 1)..(pages.selectedIndex + 1) -> Status.INACTIVE
+        pages.selectedIndex -> Status.RESUMED
+        in (pages.selectedIndex - 1)..(pages.selectedIndex + 1) -> Status.CREATED
         else -> Status.DESTROYED
     }
 

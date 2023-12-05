@@ -2,13 +2,16 @@ package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.router.children.ChildItem.Created
+import com.arkivanov.decompose.router.children.ChildItem.Destroyed
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.create
 import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.doOnDestroy
+import com.arkivanov.essenty.lifecycle.pause
 import com.arkivanov.essenty.lifecycle.resume
+import com.arkivanov.essenty.lifecycle.start
 import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 
@@ -54,7 +57,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
                         item.lifecycleRegistry.destroy()
                     }
 
-                    is ChildItem.Destroyed -> Unit
+                    is Destroyed -> Unit
                 }
             }
         }
@@ -66,41 +69,55 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
         navState.children.zip(savedStates).forEach { (childNavState, savedState) ->
             items +=
-                when (childNavState.status) {
-                    Status.DESTROYED -> ChildItem.Destroyed(configuration = childNavState.configuration, savedState = savedState)
-
-                    Status.INACTIVE -> {
+                restoreItem(
+                    status = childNavState.status,
+                    getDestroyedItem = { Destroyed(configuration = childNavState.configuration, savedState = savedState) },
+                    getCreatedItem = {
                         childItemFactory(
                             configuration = childNavState.configuration,
                             savedState = savedState,
                             instanceKeeperDispatcher = retainedChildren.remove(childNavState.configuration)?.instanceKeeperDispatcher,
                         ).also {
                             retainedInstance.items += it
-                            it.lifecycleRegistry.create()
                         }
                     }
-
-                    Status.ACTIVE ->
-                        childItemFactory(
-                            configuration = childNavState.configuration,
-                            savedState = savedState,
-                            instanceKeeperDispatcher = retainedChildren.remove(childNavState.configuration)?.instanceKeeperDispatcher,
-                        ).also {
-                            it.backHandler.start()
-                            retainedInstance.items += it
-                            it.lifecycleRegistry.resume()
-                        }
-                }
+                )
         }
 
         retainedChildren.values.forEach { it.instanceKeeperDispatcher.destroy() }
     }
 
+    private inline fun restoreItem(
+        status: Status,
+        getDestroyedItem: () -> Destroyed<C>,
+        getCreatedItem: () -> Created<C, T>,
+    ): ChildItem<C, T> =
+        when (status) {
+            Status.DESTROYED -> getDestroyedItem()
+
+            Status.CREATED ->
+                getCreatedItem().apply {
+                    lifecycleRegistry.create()
+                }
+
+            Status.STARTED ->
+                getCreatedItem().apply {
+                    backHandler.start()
+                    lifecycleRegistry.start()
+                }
+
+            Status.RESUMED ->
+                getCreatedItem().apply {
+                    backHandler.start()
+                    lifecycleRegistry.resume()
+                }
+        }
+
     fun saveChildState(): List<SerializableContainer?> =
         items.map { item ->
             when (item) {
                 is Created -> item.stateKeeperDispatcher.save()
-                is ChildItem.Destroyed -> item.savedState
+                is Destroyed -> item.savedState
             }
         }
 
@@ -130,41 +147,27 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
                 when (val child = oldItems[state.configuration]) {
                     is Created -> child to state.status
 
-                    is ChildItem.Destroyed ->
+                    is Destroyed ->
                         when (state.status) {
                             Status.DESTROYED -> child to state.status
 
-                            Status.INACTIVE ->
+                            Status.CREATED,
+                            Status.STARTED,
+                            Status.RESUMED ->
                                 Pair(
-                                    first = childItemFactory(
-                                        configuration = state.configuration,
-                                        savedState = child.savedState
-                                    ).apply { lifecycleRegistry.create() },
-                                    second = state.status,
-                                )
-
-                            Status.ACTIVE ->
-                                Pair(
-                                    first = childItemFactory(
-                                        configuration = state.configuration,
-                                        savedState = child.savedState,
-                                    ).apply { lifecycleRegistry.create() },
+                                    first = childItemFactory(configuration = state.configuration, savedState = child.savedState)
+                                        .apply { lifecycleRegistry.create() },
                                     second = state.status,
                                 )
                         }
 
                     null ->
                         when (state.status) {
-                            Status.DESTROYED -> ChildItem.Destroyed(configuration = state.configuration) to state.status
+                            Status.DESTROYED -> Destroyed(configuration = state.configuration) to state.status
 
-                            Status.INACTIVE ->
-                                Pair(
-                                    first = childItemFactory(configuration = state.configuration)
-                                        .apply { lifecycleRegistry.create() },
-                                    second = state.status,
-                                )
-
-                            Status.ACTIVE ->
+                            Status.CREATED,
+                            Status.STARTED,
+                            Status.RESUMED ->
                                 Pair(
                                     first = childItemFactory(configuration = state.configuration)
                                         .apply { lifecycleRegistry.create() },
@@ -196,44 +199,59 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         newItems.forEach { (item, status) ->
             items +=
                 when (item) {
-                    is Created -> {
-                        when (status) {
-                            Status.DESTROYED -> {
-                                val savedState = item.stateKeeperDispatcher.save()
-                                item.destroy()
-                                ChildItem.Destroyed(configuration = item.configuration, savedState = savedState)
-                            }
-
-                            Status.INACTIVE -> {
-                                retainedInstance.items += item
-
-                                item
-                                    .takeIf { it.lifecycleRegistry.state != Lifecycle.State.CREATED }
-                                    ?.apply {
-                                        backHandler.stop()
-                                        lifecycleRegistry.stop()
-                                    }
-                                    ?: item
-                            }
-
-                            Status.ACTIVE -> {
-                                retainedInstance.items += item
-
-                                item
-                                    .takeIf { it.lifecycleRegistry.state != Lifecycle.State.RESUMED }
-                                    ?.apply {
-                                        backHandler.start()
-                                        lifecycleRegistry.resume()
-                                    }
-                                    ?: item
-                            }
-                        }
-                    }
-
-                    is ChildItem.Destroyed -> item
+                    is Created -> processNewItem(item, status)
+                    is Destroyed -> item
                 }
         }
     }
+
+    private fun processNewItem(item: Created<C, T>, status: Status): ChildItem<C, T> =
+        when (status) {
+            Status.DESTROYED -> {
+                val savedState = item.stateKeeperDispatcher.save()
+                item.destroy()
+                Destroyed(configuration = item.configuration, savedState = savedState)
+            }
+
+            Status.CREATED -> {
+                retainedInstance.items += item
+
+                if (item.lifecycleRegistry.state != Lifecycle.State.CREATED) {
+                    item.backHandler.stop()
+                    item.lifecycleRegistry.stop()
+                }
+
+                item
+            }
+
+            Status.STARTED -> {
+                retainedInstance.items += item
+
+                when {
+                    item.lifecycleRegistry.state < Lifecycle.State.STARTED -> {
+                        item.backHandler.start()
+                        item.lifecycleRegistry.start()
+                    }
+
+                    item.lifecycleRegistry.state > Lifecycle.State.STARTED -> {
+                        item.lifecycleRegistry.pause()
+                    }
+                }
+
+                item
+            }
+
+            Status.RESUMED -> {
+                retainedInstance.items += item
+
+                if (item.lifecycleRegistry.state != Lifecycle.State.RESUMED) {
+                    item.backHandler.start()
+                    item.lifecycleRegistry.resume()
+                }
+
+                item
+            }
+        }
 
     private fun Created<*, *>.destroy() {
         backHandler.stop()

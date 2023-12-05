@@ -107,6 +107,6 @@ private data class SlotNavState<out C : Any>(
         if (configuration == null) {
             emptyList()
         } else {
-            listOf(SimpleChildNavState(configuration = configuration, status = Status.ACTIVE))
+            listOf(SimpleChildNavState(configuration = configuration, status = Status.RESUMED))
         }
 }
