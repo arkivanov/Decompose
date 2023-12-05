@@ -5,7 +5,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.layoutInflater
 import com.arkivanov.decompose.extensions.android.stack.StackRouterView
-import com.arkivanov.decompose.value.observe
+import com.arkivanov.decompose.value.subscribe
 import com.arkivanov.sample.shared.R
 import com.arkivanov.sample.shared.beginDelayedSlideTransition
 import com.arkivanov.sample.shared.counters.CountersView
@@ -64,7 +64,7 @@ fun ViewContext.RootView(component: RootComponent): View {
 
     navigationView.setOnNavigationItemSelectedListener(listener)
 
-    component.childStack.observe(lifecycle) { state ->
+    component.childStack.subscribe(lifecycle) { state ->
         navigationView.setOnNavigationItemSelectedListener(null)
 
         navigationView.selectedItemId =

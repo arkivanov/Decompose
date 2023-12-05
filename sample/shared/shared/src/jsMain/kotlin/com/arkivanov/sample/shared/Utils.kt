@@ -12,9 +12,8 @@ internal fun <T : Any> Value<T>.useAsState(): StateInstance<T> {
     val (_, set) = state
 
     useEffectOnce {
-        val observer: (T) -> Unit = { set(it) }
-        subscribe(observer)
-        cleanup { unsubscribe(observer) }
+        val cancellation = subscribe { set(it) }
+        cleanup { cancellation.cancel() }
     }
 
     return state

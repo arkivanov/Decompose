@@ -7,7 +7,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.context
 import com.arkivanov.decompose.extensions.android.layoutInflater
-import com.arkivanov.decompose.value.observe
+import com.arkivanov.decompose.value.subscribe
 import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.sample.shared.R
 import com.arkivanov.sample.shared.dialog.DialogComponent
@@ -28,7 +28,7 @@ internal fun ViewContext.CounterView(component: CounterComponent): View {
     nextButton.setOnClickListener { component.onNextClicked() }
     prevButton.setOnClickListener { component.onPrevClicked() }
 
-    component.model.observe(lifecycle) { model ->
+    component.model.subscribe(lifecycle) { model ->
         toolbar.title = model.title
 
         if (model.isBackEnabled) {
@@ -42,7 +42,7 @@ internal fun ViewContext.CounterView(component: CounterComponent): View {
     }
 
     var dialog: AlertDialog? = null
-    component.dialogSlot.observe(lifecycle) { model ->
+    component.dialogSlot.subscribe(lifecycle) { model ->
         val dialogComponent: DialogComponent? = model.child?.instance
         if ((dialogComponent != null) && (dialog == null)) {
             dialog = showDialog(component = dialogComponent)
