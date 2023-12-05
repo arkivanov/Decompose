@@ -1,55 +1,34 @@
 package com.arkivanov.decompose.statekeeper
 
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.ParcelableContainer
-import com.arkivanov.essenty.parcelable.consume
+import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
-import kotlin.reflect.KClass
-import kotlin.test.assertFalse
+import kotlinx.serialization.SerializationStrategy
 import kotlin.test.assertTrue
 
 class TestStateKeeperDispatcher(
-    val initialSavedState: ParcelableContainer? = null
-) : StateKeeperDispatcher {
+    private val initialSavedState: SerializableContainer? = null,
+    private val delegate: StateKeeperDispatcher = StateKeeperDispatcher(initialSavedState),
+) : StateKeeperDispatcher by delegate {
 
-    private val savedState: MutableMap<String, ParcelableContainer>? = initialSavedState?.consume<SavedState>()?.map
-    private val suppliers = HashMap<String, () -> Parcelable?>()
+    var lastSavedState: SerializableContainer? = null
+    private val registeredKeys = HashSet<String>()
 
-    var lastSavedState: ParcelableContainer? = null
+    override fun save(): SerializableContainer =
+        delegate.save().also {
+            lastSavedState = it
+        }
 
-    override fun save(): ParcelableContainer {
-        val state = TestParcelableContainer(SavedState(suppliers.mapValuesTo(HashMap()) { TestParcelableContainer(it.value()) }))
-        lastSavedState = state
-
-        return state
-    }
-
-    override fun <T : Parcelable> consume(key: String, clazz: KClass<out T>): T? =
-        savedState
-            ?.remove(key)
-            ?.consume(clazz)
-
-    override fun <T : Parcelable> register(key: String, supplier: () -> T?) {
-        check(key !in suppliers)
-        suppliers[key] = supplier
+    override fun <T : Any> register(key: String, strategy: SerializationStrategy<T>, supplier: () -> T?) {
+        registeredKeys += key
+        delegate.register(key = key, strategy = strategy, supplier = supplier)
     }
 
     override fun unregister(key: String) {
-        check(key in suppliers)
-        suppliers -= key
+        registeredKeys -= key
+        delegate.unregister(key = key)
     }
-
-    override fun isRegistered(key: String): Boolean = key in suppliers
 
     fun assertSupplierRegistered(key: String) {
-        assertTrue(key in suppliers)
+        assertTrue(key in registeredKeys)
     }
-
-    fun assertSupplierNotRegistered(key: String) {
-        assertFalse(key in suppliers)
-    }
-
-    private class SavedState(
-        val map: MutableMap<String, ParcelableContainer>
-    ) : Parcelable by ParcelableStub()
 }

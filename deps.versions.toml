@@ -2,8 +2,7 @@
 
 decompose = "2.2.0-compose-experimental"
 kotlin = "1.9.20"
-essenty = "1.3.0"
-parcelizeDarwin = "0.2.3"
+essenty = "2.0.0-dev01"
 reaktive = "1.2.3"
 junit = "4.13.2"
 jetbrainsCompose = "1.5.10"
@@ -32,9 +31,6 @@ essenty-lifecycle = { group = "com.arkivanov.essenty", name = "lifecycle", versi
 essenty-stateKeeper = { group = "com.arkivanov.essenty", name = "state-keeper", version.ref = "essenty" }
 essenty-instanceKeeper = { group = "com.arkivanov.essenty", name = "instance-keeper", version.ref = "essenty" }
 essenty-backHandler = { group = "com.arkivanov.essenty", name = "back-handler", version.ref = "essenty" }
-
-parcelizeDarwin-gradlePlug = { group = "com.arkivanov.parcelize.darwin", name = "gradle-plugin", version.ref = "parcelizeDarwin" }
-parcelizeDarwin-runtime = { group = "com.arkivanov.parcelize.darwin", name = "runtime", version.ref = "parcelizeDarwin" }
 
 reaktive-reaktive = { group = "com.badoo.reaktive", name = "reaktive", version.ref = "reaktive" }
 reaktive-reaktiveTesting = { group = "com.badoo.reaktive", name = "reaktive-testing", version.ref = "reaktive" }

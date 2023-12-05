@@ -5,7 +5,6 @@ import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.replaceCurrent
-import com.arkivanov.essenty.parcelable.Parcelable
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -437,5 +436,5 @@ class DefaultWebHistoryControllerTest {
 
     private fun isNode(): Boolean = jsTypeOf(kotlinx.browser.window) == "undefined"
 
-    private data class Config(val value: Int) : Parcelable
+    private data class Config(val value: Int)
 }

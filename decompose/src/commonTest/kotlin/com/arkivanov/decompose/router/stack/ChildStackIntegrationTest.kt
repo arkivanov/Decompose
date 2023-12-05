@@ -1,8 +1,9 @@
 package com.arkivanov.decompose.router.stack
 
-import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.consume
+import com.arkivanov.decompose.register
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.decompose.value.Value
@@ -14,9 +15,7 @@ import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
-import com.arkivanov.essenty.statekeeper.consume
+import kotlinx.serialization.Serializable
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -259,16 +258,16 @@ class ChildStackIntegrationTest {
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = true)
         oldStack.items.forEach { (configuration, instance) ->
-            instance.stateKeeper.register(key = "key") { Config(configuration.id) }
+            instance.stateKeeper.register(key = "key") { configuration.id }
         }
 
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
         val newStack by newContext.childStack()
-        val restoredStates = newStack.items.map { it.instance.stateKeeper.consume<Config>(key = "key") }
+        val restoredStates = newStack.items.map { it.instance.stateKeeper.consume<Int>(key = "key") }
 
-        assertContentEquals(listOf(Config(1), Config(2), Config(3)), restoredStates)
+        assertContentEquals(listOf(1, 2, 3), restoredStates)
     }
 
     @Test
@@ -277,22 +276,22 @@ class ChildStackIntegrationTest {
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = true)
         oldStack.items.forEach { (configuration, instance) ->
-            instance.stateKeeper.register(key = "key") { Config(configuration.id) }
+            instance.stateKeeper.register(key = "key") { configuration.id }
         }
 
         val savedState1 = oldStateKeeper.save()
         val newStateKeeper1 = TestStateKeeperDispatcher(savedState1)
         val newContext1 = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper1)
         val newStack1 by newContext1.childStack()
-        newStack1.items.forEach { it.instance.stateKeeper.consume<Config>(key = "key") }
+        newStack1.items.forEach { it.instance.stateKeeper.consume<Int>(key = "key") }
 
         val savedState2 = oldStateKeeper.save()
         val newStateKeeper2 = TestStateKeeperDispatcher(savedState2)
         val newContext2 = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper2)
         val newStack2 by newContext2.childStack()
-        val restoredStates = newStack2.items.map { it.instance.stateKeeper.consume<Config>(key = "key") }
+        val restoredStates = newStack2.items.map { it.instance.stateKeeper.consume<Int>(key = "key") }
 
-        assertContentEquals(listOf(Config(1), Config(2), Config(3)), restoredStates)
+        assertContentEquals(listOf(1, 2, 3), restoredStates)
     }
 
     @Test
@@ -301,14 +300,14 @@ class ChildStackIntegrationTest {
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = false)
         oldStack.items.forEach { (configuration, instance) ->
-            instance.stateKeeper.register(key = "key") { Config(configuration.id) }
+            instance.stateKeeper.register(key = "key") { configuration.id }
         }
 
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
         val newStack by newContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)))
-        val restoredStates = newStack.items.map { it.instance.stateKeeper.consume<Config>(key = "key") }
+        val restoredStates = newStack.items.map { it.instance.stateKeeper.consume<Int>(key = "key") }
 
         assertContentEquals(listOf(null, null, null), restoredStates)
     }
@@ -418,17 +417,14 @@ class ChildStackIntegrationTest {
     ): Value<ChildStack<Config, Component>> =
         childStack(
             source = navigation,
+            serializer = Config.serializer().takeIf { persistent },
             initialStack = { initialStack },
-            persistent = persistent,
             handleBackButton = true,
             childFactory = ::Component,
         )
 
     private val ChildStack<Config, Component>.children: List<Pair<Int, Int>>
         get() = items.map { child -> child.configuration.id to child.instance.id }
-
-    private fun ChildStack<Config, Component>.getById(id: Int): Child.Created<Config, Component> =
-        items.first { it.configuration.id == id }
 
     private fun ChildStack<Config, Component>.assertStack(vararg children: Pair<Int, Int>) {
         assertEquals(children.toList(), this.children)
@@ -440,17 +436,17 @@ class ChildStackIntegrationTest {
         )
     }
 
-    @Parcelize
+    @Serializable
     private data class Config(
         val id: Int,
         val routingParams: RoutingParams? = null,
-    ) : Parcelable
+    )
 
-    @Parcelize
+    @Serializable
     private data class RoutingParams(
         val initialStack: List<Config>,
         val handleButtonButton: Boolean = false
-    ) : Parcelable
+    )
 
     private class Component(
         config: Config,
@@ -465,6 +461,7 @@ class ChildStackIntegrationTest {
             config.routingParams?.let { params ->
                 childStack(
                     source = navigation,
+                    serializer = Config.serializer(),
                     initialStack = { params.initialStack },
                     handleBackButton = params.handleButtonButton,
                     childFactory = ::Component,

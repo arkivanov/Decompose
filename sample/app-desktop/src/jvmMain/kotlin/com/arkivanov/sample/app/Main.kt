@@ -23,25 +23,26 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.essenty.parcelable.ParcelableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DefaultFeatureInstaller
+import com.arkivanov.sample.shared.readSerializableContainer
 import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootContent
+import com.arkivanov.sample.shared.writeToFile
 import com.badoo.reaktive.coroutinesinterop.asScheduler
 import com.badoo.reaktive.scheduler.overrideSchedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.File
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+
+private const val SAVED_STATE_FILE_NAME = "saved_state.dat"
 
 @OptIn(ExperimentalDecomposeApi::class, ExperimentalCoroutinesApi::class)
 fun main() {
     overrideSchedulers(main = Dispatchers.Main::asScheduler)
 
     val lifecycle = LifecycleRegistry()
-    val stateKeeper = StateKeeperDispatcher(tryRestoreStateFromFile())
+    val stateKeeper = StateKeeperDispatcher(File(SAVED_STATE_FILE_NAME).readSerializableContainer())
 
     val root =
         runOnUiThread {
@@ -70,7 +71,7 @@ fun main() {
 
             if (isCloseRequested) {
                 SaveStateDialog(
-                    onSaveState = { saveStateToFile(stateKeeper.save()) },
+                    onSaveState = { stateKeeper.save().writeToFile(File(SAVED_STATE_FILE_NAME)) },
                     onExitApplication = ::exitApplication,
                     onDismiss = { isCloseRequested = false },
                 )
@@ -116,22 +117,3 @@ private fun SaveStateDialog(
         modifier = Modifier.width(400.dp),
     )
 }
-
-private const val SAVED_STATE_FILE_NAME = "saved_state.dat"
-
-private fun saveStateToFile(state: ParcelableContainer) {
-    ObjectOutputStream(File(SAVED_STATE_FILE_NAME).outputStream()).use { output ->
-        output.writeObject(state)
-    }
-}
-
-private fun tryRestoreStateFromFile(): ParcelableContainer? =
-    File(SAVED_STATE_FILE_NAME).takeIf(File::exists)?.let { file ->
-        try {
-            ObjectInputStream(file.inputStream()).use(ObjectInputStream::readObject) as ParcelableContainer
-        } catch (e: Exception) {
-            null
-        } finally {
-            file.delete()
-        }
-    }

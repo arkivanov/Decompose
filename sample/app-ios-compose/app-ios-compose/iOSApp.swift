@@ -31,17 +31,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     )
 
     func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
-        CodingKt.encodeParcelable(coder, value: stateKeeper.save(), key: "savedState")
+        StateKeeperUtilsKt.save(coder: coder, state: stateKeeper.save())
         return true
     }
     
     func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
-        do {
-            let savedState = try CodingKt.decodeParcelable(coder, key: "savedState") as! ParcelableParcelableContainer
-            stateKeeper = StateKeeperDispatcherKt.StateKeeperDispatcher(savedState: savedState)
-            return true
-        } catch {
-            return false
-        }
+        stateKeeper = StateKeeperDispatcherKt.StateKeeperDispatcher(savedState: StateKeeperUtilsKt.restore(coder: coder))
+        return true
     }
 }

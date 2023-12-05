@@ -75,7 +75,7 @@ internal class ChildrenBasicTest : ChildrenTestBase() {
         val destroyEvents = ArrayList<Int>()
 
         context.children(initialState = stateOf(1 by INACTIVE, 2 by INACTIVE, 3 by ACTIVE)) { config, componentContext ->
-            componentContext.lifecycle.doOnDestroy { destroyEvents += config.id }
+            componentContext.lifecycle.doOnDestroy { destroyEvents += config }
             Component(config = config, componentContext = componentContext)
         }
 
@@ -89,7 +89,7 @@ internal class ChildrenBasicTest : ChildrenTestBase() {
         val createEvents = ArrayList<Int>()
 
         context.children(initialState = stateOf(1 by INACTIVE, 2 by INACTIVE, 3 by ACTIVE)) { config, componentContext ->
-            createEvents += config.id
+            createEvents += config
             Component(config = config, componentContext = componentContext)
         }
 
@@ -108,7 +108,7 @@ internal class ChildrenBasicTest : ChildrenTestBase() {
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
         newContext.children { config, componentContext ->
-            createEvents += config.id
+            createEvents += config
             Component(config = config, componentContext = componentContext)
         }
 
@@ -119,7 +119,7 @@ internal class ChildrenBasicTest : ChildrenTestBase() {
     fun GIVEN_active_child_with_retained_instance_WHEN_child_removed_THEN_component_destroyed_before_instance() {
         val destroyEvents = ArrayList<String>()
         val children by context.children(initialState = stateOf(1 by INACTIVE, 2 by INACTIVE, 3 by ACTIVE))
-        val component = children.getById(id = 3).requireInstance()
+        val component = children.getByConfig(config = 3).requireInstance()
         val instance = component.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
         component.lifecycle.doOnDestroy { destroyEvents += "component" }
         instance.onDestroyed = { destroyEvents += "instance" }
@@ -133,7 +133,7 @@ internal class ChildrenBasicTest : ChildrenTestBase() {
     fun GIVEN_active_child_with_retained_instance_WHEN_child_switched_to_destroyed_THEN_component_destroyed_before_instance() {
         val destroyEvents = ArrayList<String>()
         val children by context.children(initialState = stateOf(1 by INACTIVE, 2 by INACTIVE, 3 by ACTIVE))
-        val component = children.getById(id = 3).requireInstance()
+        val component = children.getByConfig(config = 3).requireInstance()
         val instance = component.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
         component.lifecycle.doOnDestroy { destroyEvents += "component" }
         instance.onDestroyed = { destroyEvents += "instance" }

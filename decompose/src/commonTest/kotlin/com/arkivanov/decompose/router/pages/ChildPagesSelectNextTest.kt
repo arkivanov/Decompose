@@ -29,7 +29,7 @@ class ChildPagesSelectNextTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_0_WHEN_selectNext_THEN_selected_1() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 0))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 0))
 
         navigation.selectNext(circular = false)
 
@@ -38,7 +38,7 @@ class ChildPagesSelectNextTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_0_WHEN_selectNext_circular_THEN_selected_1() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 0))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 0))
 
         navigation.selectNext(circular = true)
 
@@ -47,7 +47,7 @@ class ChildPagesSelectNextTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_1_WHEN_selectNext_THEN_selected_2() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 1))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 1))
 
         navigation.selectNext(circular = false)
 
@@ -56,7 +56,7 @@ class ChildPagesSelectNextTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_1_WHEN_selectNext_circular_THEN_selected_2() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 1))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 1))
 
         navigation.selectNext(circular = true)
 
@@ -65,7 +65,7 @@ class ChildPagesSelectNextTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_4_WHEN_selectNext_THEN_selected_4() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 4))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 4))
 
         navigation.selectNext(circular = false)
 
@@ -74,7 +74,7 @@ class ChildPagesSelectNextTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_5_pages_and_selected_4_WHEN_selectNext_circular_THEN_selected_0() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 4))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 4))
 
         navigation.selectNext(circular = true)
 
