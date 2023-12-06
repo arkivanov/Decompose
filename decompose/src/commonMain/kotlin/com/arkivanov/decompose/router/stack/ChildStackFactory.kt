@@ -143,7 +143,7 @@ private data class StackNavState<out C : Any>(
         configurations.mapIndexed { index, configuration ->
             SimpleChildNavState(
                 configuration = configuration,
-                status = if (index == configurations.lastIndex) Status.ACTIVE else Status.INACTIVE,
+                status = if (index == configurations.lastIndex) Status.RESUMED else Status.CREATED,
             )
         }
 }

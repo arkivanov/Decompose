@@ -92,8 +92,8 @@ internal class DefaultMultiPaneComponent(
     ) : NavState<Config> {
         override val children: List<ChildNavState<Config>> by lazy {
             listOfNotNull(
-                SimpleChildNavState(Config.List, if (isMultiPane || (articleId == null)) Status.ACTIVE else Status.INACTIVE),
-                if (articleId != null) SimpleChildNavState(Config.Details(articleId), Status.ACTIVE) else null,
+                SimpleChildNavState(Config.List, if (isMultiPane || (articleId == null)) Status.RESUMED else Status.CREATED),
+                if (articleId != null) SimpleChildNavState(Config.Details(articleId), Status.RESUMED) else null,
             )
         }
     }
