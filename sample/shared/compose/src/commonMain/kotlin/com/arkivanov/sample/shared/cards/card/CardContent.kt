@@ -20,10 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
-import com.arkivanov.sample.shared.cards.card.CardComponent.Model
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 
 @Composable
 internal fun CardContent(component: CardComponent, modifier: Modifier = Modifier) {

@@ -27,7 +27,7 @@ pluginManagement {
 
 if (!startParameter.projectProperties.containsKey("check_publication")) {
     include(":decompose")
-    include(":extensions-compose-jetbrains")
+    include(":extensions-compose")
     include(":extensions-android")
     include(":sample:shared:shared")
     include(":sample:shared:compose")
