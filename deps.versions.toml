@@ -2,7 +2,7 @@
 
 decompose = "2.2.0-compose-experimental"
 kotlin = "1.9.20"
-essenty = "2.0.0-dev01"
+essenty = "2.0.0-dev02"
 reaktive = "1.2.3"
 junit = "4.13.2"
 jetbrainsCompose = "1.5.10"
@@ -12,6 +12,7 @@ jetbrainsKotlinxSerialization = "1.6.0"
 jetbrainsBinaryCompatibilityValidator = "0.13.2"
 jetpackCompose = "1.5.0"
 jetpackComposeCompiler = "1.5.4"
+robolectric = "4.9.1"
 androidGradle = "8.0.2"
 androidMaterial = "1.6.1"
 androidPlay = "1.10.3"
@@ -47,6 +48,8 @@ jetbrains-kotlinx-kotlinxCoroutinesSwing = { group = "org.jetbrains.kotlinx", na
 jetbrains-kotlin-serializationGradlePlug = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
 jetbrains-kotlinx-kotlinxSerializationCore = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "jetbrainsKotlinxSerialization" }
 jetbrains-kotlinx-kotlinxSerializationJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "jetbrainsKotlinxSerialization" }
+
+robolectric-robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 
 androidx-compose-runtime-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "jetpackCompose" }
 
