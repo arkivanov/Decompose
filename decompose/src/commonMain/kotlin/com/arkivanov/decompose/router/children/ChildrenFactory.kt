@@ -18,7 +18,7 @@ import kotlinx.serialization.Serializable
  * so it's automatically saved and restored. This method can be used if the custom save/restore logic
  * is not required.
  */
-fun <C : Any, T : Any, E : Any, N, S : Any> ComponentContext.children(
+fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.children(
     source: NavigationSource<E>,
     stateSerializer: KSerializer<N>?,
     initialState: () -> N,
@@ -29,7 +29,7 @@ fun <C : Any, T : Any, E : Any, N, S : Any> ComponentContext.children(
     onEventComplete: (event: E, newState: N, oldState: N) -> Unit = { _, _, _ -> },
     backTransformer: (state: N) -> (() -> N)? = { null },
     childFactory: (configuration: C, componentContext: ComponentContext) -> T,
-): Value<S> where N : NavState<C>, N : Any =
+): Value<S> =
     children(
         source = source,
         saveState = { state ->
