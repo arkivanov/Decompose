@@ -28,27 +28,6 @@ The `Child Stack` usually performs the navigation synchronously, which means tha
 
 There are `StackNavigator` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/StackNavigatorExt.kt) to simplify the navigation. Some of which were already used in the [Child Stack overview example](../overview#example).
 
-The preceding examples will utilize the following `sealed class` & `navigation` for showcasing the usage of the `StackNavigator` extensions.
-
-```kotlin
-sealed class Configuration : Parcelable {
-    
-    @Parcelize
-    data object A : Configuration()
-
-    @Parcelize
-    data object B : Configuration()
-
-    @Parcelize
-    data object C : Configuration()
-
-    @Parcelize
-    data object D : Configuration()
-}
-
-val navigation = StackNavigation<Configuration>()
-```
-
 ### push(configuration)
 
 Pushes the provided `Configuration` at the top of the stack. Decompose will throw an exception if the provided `Configuration` is already present in the stack.
