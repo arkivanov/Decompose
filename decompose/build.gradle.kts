@@ -58,5 +58,9 @@ kotlin {
             implementation(deps.androidx.fragment.fragmentKtx)
             implementation(deps.androidx.lifecycle.lifecycleCommonJava8)
         }
+
+        android.test.dependencies {
+            implementation(deps.robolectric.robolectric)
+        }
     }
 }
