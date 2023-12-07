@@ -46,13 +46,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.sample.shared.cards.card.CardComponent
 import com.arkivanov.sample.shared.cards.card.CardContent
-import com.arkivanov.sample.shared.cards.card.PreviewCardComponent
 import com.arkivanov.sample.shared.utils.toPx
 
 @Composable
