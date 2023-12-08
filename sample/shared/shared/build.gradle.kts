@@ -25,20 +25,22 @@ android {
 }
 
 kotlin {
-    targets
-        .filterIsInstance<KotlinNativeTarget>()
-        .filter { it.konanTarget.family == Family.IOS }
-        .forEach {
-            it.binaries {
-                framework {
-                    baseName = "Shared" // Used by app-ios
-                    export(project(":decompose"))
+    if ("XCODE_VERSION_MAJOR" in System.getenv().keys) {
+        targets
+            .filterIsInstance<KotlinNativeTarget>()
+            .filter { it.konanTarget.family == Family.IOS }
+            .forEach {
+                it.binaries {
+                    framework {
+                        baseName = "Shared" // Used by app-ios
+                        export(project(":decompose"))
 
-                    // Optional, only if you need state preservation on Darwin (Apple) targets
-                    export(deps.essenty.stateKeeper)
+                        // Optional, only if you need state preservation on Darwin (Apple) targets
+                        export(deps.essenty.stateKeeper)
+                    }
                 }
             }
-        }
+    }
 
     setupSourceSets {
         val android by bundle()
