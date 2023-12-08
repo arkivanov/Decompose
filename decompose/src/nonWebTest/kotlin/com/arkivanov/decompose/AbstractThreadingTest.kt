@@ -1,6 +1,7 @@
 package com.arkivanov.decompose
 
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
@@ -13,11 +14,11 @@ import kotlin.test.AfterTest
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 abstract class AbstractThreadingTest {
 
     protected open val threadCount: Int = 8
 
-    @OptIn(DelicateCoroutinesApi::class)
     private val dispatcher by lazy { newFixedThreadPoolContext(nThreads = threadCount, name = "AbstractThreadingTest pool") }
 
     @AfterTest

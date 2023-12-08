@@ -5,6 +5,7 @@ import com.arkivanov.gradle.setupBinaryCompatibilityValidator
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupPublication
 import com.arkivanov.gradle.setupSourceSets
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     id("kotlin-multiplatform")
@@ -27,10 +28,15 @@ kotlin {
         val darwin by bundle()
         val itvos by bundle()
         val js by bundle()
-        val nonJs by bundle()
+        val wasmJs by bundle()
+        val nonWeb by bundle()
+        val web by bundle()
 
         (darwin) dependsOn common
-        (allSet - js) dependsOn nonJs
+        nonWeb dependsOn common
+        (allSet - js - wasmJs) dependsOn nonWeb
+        web dependsOn common
+        (js + wasmJs) dependsOn web
         (iosSet + tvosSet) dependsOn itvos
         (darwinSet - iosSet - tvosSet + itvos) dependsOn darwin
 
@@ -51,6 +57,9 @@ kotlin {
 
         common.test.dependencies {
             implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesCore)
+
+            // Workaround: https://github.com/Kotlin/kotlinx.coroutines/issues/3968
+            implementation("org.jetbrains.kotlinx:atomicfu:0.23.1")
         }
 
         android.main.dependencies {
@@ -62,5 +71,11 @@ kotlin {
         android.test.dependencies {
             implementation(deps.robolectric.robolectric)
         }
+    }
+}
+
+tasks.named<KotlinCompilationTask<*>>("compileKotlinWasmJs").configure {
+    compilerOptions {
+        freeCompilerArgs.add("-Xwasm-kclass-fqn")
     }
 }

@@ -20,6 +20,7 @@ setupMultiplatform {
     macosCompat()
     iosCompat()
     js { browser() }
+    wasmJs { browser() }
 }
 
 setupPublication()
