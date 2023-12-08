@@ -28,7 +28,7 @@ internal class DefaultDynamicFeatureComponent<out T : Any>(
         childStack(
             source = navigation,
             serializer = Config.serializer(),
-            initialConfiguration = Config.Loading,
+            initialConfiguration = Config.LOADING,
             childFactory = ::child,
         )
 
@@ -36,9 +36,9 @@ internal class DefaultDynamicFeatureComponent<out T : Any>(
 
     private fun child(config: Config, componentContext: ComponentContext): Child<T> =
         when (config) {
-            is Config.Loading -> loading(componentContext)
-            is Config.Feature -> FeatureChild(factory(componentContext))
-            is Config.Error -> ErrorChild(name = name)
+            Config.LOADING -> loading(componentContext)
+            Config.FEATURE -> FeatureChild(factory(componentContext))
+            Config.ERROR -> ErrorChild(name = name)
         }
 
     private fun loading(componentContext: ComponentContext): LoadingChild {
@@ -55,22 +55,17 @@ internal class DefaultDynamicFeatureComponent<out T : Any>(
     private fun DisposableScope.loadFeature() {
         featureInstaller.install(name = name).subscribeScoped {
             when (it) {
-                is FeatureInstaller.Result.Installed -> navigation.replaceCurrent(Config.Feature)
+                is FeatureInstaller.Result.Installed -> navigation.replaceCurrent(Config.FEATURE)
                 is FeatureInstaller.Result.Cancelled,
-                is FeatureInstaller.Result.Error -> navigation.replaceCurrent(Config.Error)
+                is FeatureInstaller.Result.Error -> navigation.replaceCurrent(Config.ERROR)
             }.let {}
         }
     }
 
     @Serializable
-    private sealed interface Config {
-        @Serializable
-        data object Loading : Config
-
-        @Serializable
-        data object Feature : Config
-
-        @Serializable
-        data object Error : Config
+    private enum class Config {
+        LOADING,
+        FEATURE,
+        ERROR,
     }
 }

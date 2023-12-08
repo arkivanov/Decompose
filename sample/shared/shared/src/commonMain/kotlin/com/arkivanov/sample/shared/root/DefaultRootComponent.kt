@@ -52,31 +52,31 @@ class DefaultRootComponent(
 
     private fun child(config: Config, componentContext: ComponentContext): Child =
         when (config) {
-            is Config.Counters -> CountersChild(DefaultCountersComponent(componentContext))
-            is Config.Cards -> Child.CardsChild(DefaultCardsComponent(componentContext))
-            is Config.MultiPane -> MultiPaneChild(DefaultMultiPaneComponent(componentContext))
-            is Config.DynamicFeatures -> DynamicFeaturesChild(DefaultDynamicFeaturesComponent(componentContext, featureInstaller))
-            is Config.CustomNavigation -> CustomNavigationChild(DefaultCustomNavigationComponent(componentContext))
+            Config.COUNTERS -> CountersChild(DefaultCountersComponent(componentContext))
+            Config.CARDS -> Child.CardsChild(DefaultCardsComponent(componentContext))
+            Config.MULTI_PANE -> MultiPaneChild(DefaultMultiPaneComponent(componentContext))
+            Config.DYNAMIC_FEATURES -> DynamicFeaturesChild(DefaultDynamicFeaturesComponent(componentContext, featureInstaller))
+            Config.CUSTOM_NAVIGATION -> CustomNavigationChild(DefaultCustomNavigationComponent(componentContext))
         }
 
     override fun onCountersTabClicked() {
-        navigation.bringToFront(Config.Counters)
+        navigation.bringToFront(Config.COUNTERS)
     }
 
     override fun onCardsTabClicked() {
-        navigation.bringToFront(Config.Cards)
+        navigation.bringToFront(Config.CARDS)
     }
 
     override fun onMultiPaneTabClicked() {
-        navigation.bringToFront(Config.MultiPane)
+        navigation.bringToFront(Config.MULTI_PANE)
     }
 
     override fun onDynamicFeaturesTabClicked() {
-        navigation.bringToFront(Config.DynamicFeatures)
+        navigation.bringToFront(Config.DYNAMIC_FEATURES)
     }
 
     override fun onCustomNavigationTabClicked() {
-        navigation.bringToFront(Config.CustomNavigation)
+        navigation.bringToFront(Config.CUSTOM_NAVIGATION)
     }
 
     private companion object {
@@ -94,46 +94,37 @@ class DefaultRootComponent(
 
         private fun getInitialStack(deepLink: DeepLink): List<Config> =
             when (deepLink) {
-                is DeepLink.None -> listOf(Config.Counters)
+                is DeepLink.None -> listOf(Config.COUNTERS)
                 is DeepLink.Web -> listOf(getConfigForPath(deepLink.path))
             }
 
         private fun getPathForConfig(config: Config): String =
             when (config) {
-                Config.Counters -> "/$WEB_PATH_COUNTERS"
-                Config.Cards -> "/$WEB_PATH_CARDS"
-                Config.MultiPane -> "/$WEB_PATH_MULTI_PANE"
-                Config.DynamicFeatures -> "/$WEB_PATH_DYNAMIC_FEATURES"
-                Config.CustomNavigation -> "/$WEB_PATH_CUSTOM_NAVIGATION"
+                Config.COUNTERS -> "/$WEB_PATH_COUNTERS"
+                Config.CARDS -> "/$WEB_PATH_CARDS"
+                Config.MULTI_PANE -> "/$WEB_PATH_MULTI_PANE"
+                Config.DYNAMIC_FEATURES -> "/$WEB_PATH_DYNAMIC_FEATURES"
+                Config.CUSTOM_NAVIGATION -> "/$WEB_PATH_CUSTOM_NAVIGATION"
             }
 
         private fun getConfigForPath(path: String): Config =
             when (path.removePrefix("/")) {
-                WEB_PATH_COUNTERS -> Config.Counters
-                WEB_PATH_CARDS -> Config.Cards
-                WEB_PATH_MULTI_PANE -> Config.MultiPane
-                WEB_PATH_DYNAMIC_FEATURES -> Config.DynamicFeatures
-                WEB_PATH_CUSTOM_NAVIGATION -> Config.CustomNavigation
-                else -> Config.Counters
+                WEB_PATH_COUNTERS -> Config.COUNTERS
+                WEB_PATH_CARDS -> Config.CARDS
+                WEB_PATH_MULTI_PANE -> Config.MULTI_PANE
+                WEB_PATH_DYNAMIC_FEATURES -> Config.DYNAMIC_FEATURES
+                WEB_PATH_CUSTOM_NAVIGATION -> Config.CUSTOM_NAVIGATION
+                else -> Config.COUNTERS
             }
     }
 
     @Serializable
-    private sealed interface Config {
-        @Serializable
-        data object Counters : Config
-
-        @Serializable
-        data object Cards : Config
-
-        @Serializable
-        data object MultiPane : Config
-
-        @Serializable
-        data object DynamicFeatures : Config
-
-        @Serializable
-        data object CustomNavigation : Config
+    private enum class Config {
+        COUNTERS,
+        CARDS,
+        MULTI_PANE,
+        DYNAMIC_FEATURES,
+        CUSTOM_NAVIGATION,
     }
 
     sealed interface DeepLink {
