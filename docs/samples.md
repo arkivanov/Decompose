@@ -7,7 +7,7 @@ This sample demonstrates the following features:
 * Nested navigation
 * State preservation (using `StateKeeper`)
 * Retaining instances (using `InstanceKeeper`)
-* Pluggable UI (Android Views, Jetpack Compose, SwiftUI, JS React)
+* Pluggable UI (Android Views, Jetpack Compose, SwiftUI, Kotlin/React)
 * [Play Feature Delivery](https://developer.android.com/guide/playcore/feature-delivery) for Android
 * Tests, including UI tests (Jetpack Compose)
 

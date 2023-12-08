@@ -46,7 +46,7 @@ There are multiple ways of exposing an observable state from a component.
 
 ### Using Value from Decompose
 
-Decompose provides an observable state holder - `Value`. It offers great integration with various UI frameworks, such as Jetpack Compose, SwiftUI, React, etc. You can also convert Reaktive `Observable` or coroutines `Flow` to `Value`, if needed.
+Decompose provides an observable state holder - `Value`. It offers great integration with various UI frameworks, such as Jetpack Compose, SwiftUI, Kotlin/React, etc. You can also convert Reaktive `Observable` or coroutines `Flow` to `Value`, if needed.
 
 ```kotlin
 interface ListComponent {

@@ -2,7 +2,7 @@
 
 ## What is Decompose?
 
-Decompose is a Kotlin Multiplatform library for breaking down your code into lifecycle-aware business logic components (aka BLoC), with routing functionality and pluggable UI (Jetpack Compose, Android Views, SwiftUI, JS React, etc.).
+Decompose is a Kotlin Multiplatform library for breaking down your code into lifecycle-aware business logic components (aka BLoC), with routing functionality and pluggable UI (Jetpack Compose, Android Views, SwiftUI, Kotlin/React, etc.).
 
 ### Supported targets
 
@@ -18,7 +18,7 @@ Decompose is a Kotlin Multiplatform library for breaking down your code into lif
 
 - Decompose draws clear boundaries between UI and non-UI code, which gives the following benefits:
     - Better separation of concerns
-    - Pluggable platform-specific UI (Compose, SwiftUI, React, etc.)
+    - Pluggable platform-specific UI (Compose, SwiftUI, Kotlin/React, etc.)
     - Business logic code is testable with pure multiplatform unit tests
 - Proper dependency injection (DI) and inversion of control (IoC) via constructor, including but not limited to type-safe arguments.
 - Shared navigation logic
