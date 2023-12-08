@@ -20,7 +20,7 @@ Extensions for Android views are provided by the `extensions-android` module.
 
 ## Content
 
-Decompose is primarily designed for better integration with declarative UI frameworks, such as Jetpack/JetBrains Compose, SwiftUI, React, etc. However it still can be used with Android views. Because the main Decompose functionality is separate from UI, the latter has to be plugged externally. This module provides some essential extensions and utilities to improve the experience.
+Decompose is primarily designed for better integration with declarative UI frameworks, such as Jetpack/JetBrains Compose, SwiftUI, Kotlin/React, etc. However it still can be used with Android views. Because the main Decompose functionality is separate from UI, the latter has to be plugged externally. This module provides some essential extensions and utilities to improve the experience.
 
 ### ViewContext
 
