@@ -25,12 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.stack.Children
-import com.arkivanov.decompose.extensions.compose.stack.animation.Direction
-import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
-import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimator
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.stack.animation.isEnter
-import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.sample.shared.SwipeUp
@@ -68,10 +63,7 @@ private fun Children(component: RootComponent, modifier: Modifier = Modifier) {
     Children(
         stack = component.childStack,
         modifier = modifier,
-
-        // Workaround for https://issuetracker.google.com/issues/270656235
         animation = stackAnimation(fade()),
-//            animation = tabAnimation(),
     ) {
         when (val child = it.instance) {
             is CountersChild -> CountersContent(component = child.component, modifier = Modifier.fillMaxSize())
@@ -146,15 +138,6 @@ private fun BottomBar(component: RootComponent, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-private fun tabAnimation(): StackAnimation<Any, Child> =
-    stackAnimation { child, otherChild, direction ->
-        val index = child.instance.index
-        val otherIndex = otherChild.instance.index
-        val anim = slide()
-        if ((index > otherIndex) == direction.isEnter) anim else anim.flipSide()
-    }
-
 private val Child.index: Int
     get() =
         when (this) {
@@ -164,37 +147,6 @@ private val Child.index: Int
             is DynamicFeaturesChild -> 3
             is CustomNavigationChild -> 4
         }
-
-private fun StackAnimator.flipSide(): StackAnimator =
-    FlipSideStackAnimator(animator = this)
-
-/*
- * Can't be anonymous. See:
- * https://github.com/JetBrains/compose-jb/issues/2688
- * https://github.com/JetBrains/compose-jb/issues/2612
- */
-private class FlipSideStackAnimator(
-    private val animator: StackAnimator,
-) : StackAnimator {
-
-    @Composable
-    override fun invoke(direction: Direction, isInitial: Boolean, onFinished: () -> Unit, content: @Composable (Modifier) -> Unit) {
-        animator(
-            direction = direction.flipSide(),
-            isInitial = isInitial,
-            onFinished = onFinished,
-            content = content,
-        )
-    }
-}
-
-private fun Direction.flipSide(): Direction =
-    when (this) {
-        Direction.ENTER_FRONT -> Direction.ENTER_BACK
-        Direction.EXIT_FRONT -> Direction.EXIT_BACK
-        Direction.ENTER_BACK -> Direction.ENTER_FRONT
-        Direction.EXIT_BACK -> Direction.EXIT_FRONT
-    }
 
 @Preview
 @Composable
