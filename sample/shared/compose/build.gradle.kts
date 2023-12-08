@@ -25,27 +25,29 @@ android {
 }
 
 kotlin {
-    targets
-        .filterIsInstance<KotlinNativeTarget>()
-        .filter { it.konanTarget.family == Family.IOS }
-        .forEach {
-            it.binaries {
-                framework {
-                    baseName = "Shared" // Used by app-ios-compose
-                    export(project(":decompose"))
-                    export(project(":sample:shared:shared"))
+    if ("XCODE_VERSION_MAJOR" in System.getenv().keys) {
+        targets
+            .filterIsInstance<KotlinNativeTarget>()
+            .filter { it.konanTarget.family == Family.IOS }
+            .forEach {
+                it.binaries {
+                    framework {
+                        baseName = "Shared" // Used by app-ios-compose
+                        export(project(":decompose"))
+                        export(project(":sample:shared:shared"))
 
-                    // Optional, only if you need Predictive Back Gesture on Darwin (Apple) targets
-                    export(deps.essenty.backHandler)
+                        // Optional, only if you need Predictive Back Gesture on Darwin (Apple) targets
+                        export(deps.essenty.backHandler)
 
-                    // Optional, only if you need state preservation on Darwin (Apple) targets
-                    export(deps.essenty.stateKeeper)
+                        // Optional, only if you need state preservation on Darwin (Apple) targets
+                        export(deps.essenty.stateKeeper)
 
-                    // Optional, only if you need state preservation on Darwin (Apple) targets
-                    export(deps.parcelizeDarwin.runtime)
+                        // Optional, only if you need state preservation on Darwin (Apple) targets
+                        export(deps.parcelizeDarwin.runtime)
+                    }
                 }
             }
-        }
+    }
 
     setupSourceSets {
         val jvm by bundle()
