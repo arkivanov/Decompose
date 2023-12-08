@@ -33,6 +33,7 @@ setupDefaults(
         androidTarget()
         jvm()
         js { browser() }
+        wasmJs { browser() }
         iosCompat()
         watchosCompat()
         tvosCompat()
