@@ -1,12 +1,12 @@
 package com.arkivanov.sample.shared.dialog
 
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.sample.shared.utils.AlertDialog
 
 @Composable
 fun DialogContent(dialogComponent: DialogComponent) {
