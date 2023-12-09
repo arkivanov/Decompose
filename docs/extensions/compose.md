@@ -528,6 +528,6 @@ private fun Modifier.offsetXFactor(factor: Float): Modifier =
 
 <video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureIos.mp4" type="video/mp4"></video>
 
-## Samples for Compose for iOS and Web (JS/Canvas, not WASM)
+## Samples for Compose for iOS and Web (JS/Canvas, not Wasm)
 
 You can find samples in a separate branch - [compose-darwin/sample](https://github.com/arkivanov/Decompose/tree/compose-experimental/sample).
