@@ -1,14 +1,17 @@
 package com.arkivanov.decompose.router.stack.webhistory
 
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.router.findFirstDifferentIndex
+import com.arkivanov.decompose.Json
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigator
+import com.arkivanov.decompose.router.stack.findFirstDifferentIndex
 import com.arkivanov.decompose.router.stack.navigate
-import com.arkivanov.decompose.router.startsWith
-import com.arkivanov.decompose.router.subscribe
+import com.arkivanov.decompose.router.stack.startsWith
+import com.arkivanov.decompose.router.stack.subscribe
 import com.arkivanov.decompose.value.Value
-import org.w3c.dom.PopStateEvent
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 
 @ExperimentalDecomposeApi
 class DefaultWebHistoryController internal constructor(
@@ -16,36 +19,44 @@ class DefaultWebHistoryController internal constructor(
 ) : WebHistoryController {
 
     @Suppress("unused") // Public API
-    constructor() : this(WindowImpl())
+    constructor() : this(DefaultWebHistoryControllerWindow())
 
     override val historyPaths: List<String>
         get() = window.history.getItems().map(PageItem::path)
 
     private fun History.getItems(): List<PageItem> =
-        state?.unsafeCast<Array<PageItem>>()?.asList() ?: emptyList()
+        state?.let(::deserializeItems) ?: emptyList()
 
     private fun History.pushState(items: List<PageItem>) {
-        pushState(data = items.toTypedArray(), url = items.last().path)
+        pushState(data = serializeItems(items), url = items.last().path)
     }
 
     private fun History.replaceState(items: List<PageItem>) {
-        replaceState(data = items.toTypedArray(), url = items.last().path)
+        replaceState(data = serializeItems(items), url = items.last().path)
     }
+
+    private fun serializeItems(items: List<PageItem>): String =
+        Json.encodeToString(serializer = PageItem.listSerializer, value = items)
+
+    private fun deserializeItems(json: String): List<PageItem> =
+        Json.decodeFromString(deserializer = PageItem.listSerializer, string = json)
 
     override fun <C : Any> attach(
         navigator: StackNavigator<C>,
         stack: Value<ChildStack<C, *>>,
+        serializer: KSerializer<C>,
         getPath: (configuration: C) -> String,
         getConfiguration: (path: String) -> C,
     ) {
-        val impl = Impl(navigator, stack, getPath, getConfiguration)
+        val impl = Impl(navigator, stack, serializer, getPath, getConfiguration)
         impl.init()
-        window.onPopState = impl::onPopState
+        window.setOnPopStateListener(impl::onPopState)
     }
 
     private inner class Impl<in C : Any>(
         private val navigator: StackNavigator<C>,
         private val stack: Value<ChildStack<C, *>>,
+        private val serializer: KSerializer<C>,
         private val getPath: (C) -> String,
         private val getConfiguration: (String) -> C,
     ) {
@@ -105,8 +116,8 @@ class DefaultWebHistoryController internal constructor(
 
                 // Some configurations were popped, and one or more configurations were pushed
                 firstDifferentIndex > 0 -> {
-                    window.onPopState = {
-                        window.onPopState = ::onPopState
+                    window.setOnPopStateListener {
+                        window.setOnPopStateListener(::onPopState)
 
                         // Push new pages to the history
                         for (i in firstDifferentIndex..newConfigurationStack.lastIndex) {
@@ -120,8 +131,8 @@ class DefaultWebHistoryController internal constructor(
 
                 // All configurations were popped, and one or more configurations were pushed
                 else -> {
-                    window.onPopState = {
-                        window.onPopState = ::onPopState
+                    window.setOnPopStateListener {
+                        window.setOnPopStateListener(::onPopState)
 
                         // Replace the current page with a new one
                         window.history.replaceState(newConfigurationStack[firstDifferentIndex])
@@ -139,14 +150,14 @@ class DefaultWebHistoryController internal constructor(
             }
         }
 
-        fun onPopState(event: PopStateEvent) {
-            val newData = event.getData() ?: return
-            val newConfigurationKey = newData.last().configurationKey
+        fun onPopState(state: String?) {
+            val newData = state?.let(::deserializeItems) ?: return
+            val newConfiguration = deserializeConfiguration(json = newData.last().configurationJson)
 
             isStateObserverEnabled = false
 
             navigator.navigate { stack ->
-                val indexInStack = stack.indexOfLast { it.key() == newConfigurationKey }
+                val indexInStack = stack.indexOfLast { it == newConfiguration }
                 if (indexInStack >= 0) {
                     // History popped, pop from the Router
                     stack.take(indexInStack + 1)
@@ -175,49 +186,39 @@ class DefaultWebHistoryController internal constructor(
 
         private fun PageItem(configuration: C): PageItem =
             PageItem(
-                configurationKey = configuration.key(),
+                configurationJson = serializeConfiguration(configuration),
                 path = getPath(configuration),
             )
 
-        private fun PopStateEvent.getData(): Array<PageItem>? = state?.unsafeCast<Array<PageItem>>()
+        private fun serializeConfiguration(configuration: C): String =
+            Json.encodeToString(serializer = serializer, value = configuration)
+
+        private fun deserializeConfiguration(json: String): C =
+            Json.decodeFromString(deserializer = serializer, string = json)
     }
 
+    @Serializable
     private data class PageItem(
-        val configurationKey: String,
+        val configurationJson: String,
         val path: String,
-    )
+    ) {
+        companion object {
+            val listSerializer: KSerializer<List<PageItem>> =
+                ListSerializer(serializer())
+        }
+    }
 
     internal interface Window {
         val history: History
-        var onPopState: ((PopStateEvent) -> Unit)?
+
+        fun setOnPopStateListener(listener: (state: String?) -> Unit)
     }
 
     internal interface History {
-        val state: Any?
+        val state: String?
 
         fun go(delta: Int)
-        fun pushState(data: Any?, url: String?)
-        fun replaceState(data: Any?, url: String?)
-    }
-
-    private class WindowImpl : Window {
-        override val history: History = HistoryImpl()
-        override var onPopState: ((PopStateEvent) -> Unit)? by kotlinx.browser.window::onpopstate
-    }
-
-    private class HistoryImpl : History {
-        override val state: Any? by kotlinx.browser.window.history::state
-
-        override fun go(delta: Int) {
-            kotlinx.browser.window.history.go(delta = delta)
-        }
-
-        override fun pushState(data: Any?, url: String?) {
-            kotlinx.browser.window.history.pushState(data = data, title = "", url = url)
-        }
-
-        override fun replaceState(data: Any?, url: String?) {
-            kotlinx.browser.window.history.replaceState(data = data, title = "", url = url)
-        }
+        fun pushState(data: String, url: String?)
+        fun replaceState(data: String, url: String?)
     }
 }

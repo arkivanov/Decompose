@@ -1,10 +1,12 @@
 package com.arkivanov.decompose.router.stack.webhistory
 
+import com.arkivanov.decompose.isNodeJs
 import com.arkivanov.decompose.router.stack.TestStackRouter
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.replaceCurrent
+import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -23,7 +25,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_one_config_WHEN_attach_THEN_history_stack_is_correct() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -36,7 +38,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_two_configs_WHEN_attach_THEN_history_stack_is_correct() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -49,7 +51,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun WHEN_router_push_THEN_url_pushed_to_history() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -64,7 +66,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_two_configs_WHEN_router_pop_THEN_history_changed_to_previous_page() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -79,7 +81,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_push_WHEN_router_pop_THEN_history_changed_to_previous_page() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -96,7 +98,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_tree_configs_WHEN_router_pop_two_THEN_history_changed_to_previous_page() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -111,7 +113,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_push_two_WHEN_router_pop_two_THEN_history_changed_to_previous_page() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -128,7 +130,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_push_and_pop_WHEN_router_push_same_config_THEN_history_changed_to_next_page() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -147,7 +149,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_push_and_pop_WHEN_router_push_another_config_THEN_history_changed_to_next_page() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -166,7 +168,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_b_c_WHEN_navigate_to_a_d_THEN_history_is_a_d_and_d_is_active() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -181,7 +183,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_b_c_WHEN_navigate_to_a_d_e_THEN_history_is_a_d_e_and_e_is_active() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -196,7 +198,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_b_WHEN_navigate_to_a_c_THEN_history_is_a_c_and_c_is_active() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -211,7 +213,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_b_WHEN_navigate_to_a_c_d_THEN_history_is_a_c_d_and_d_is_active() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -226,7 +228,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_b_WHEN_navigate_to_c_THEN_history_is_c_b_and_c_is_active() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -242,7 +244,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_b_WHEN_navigate_to_c_d_THEN_history_is_c_d_and_d_is_active() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -257,7 +259,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_WHEN_navigate_to_b_THEN_history_is_b_and_b_is_active() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -272,7 +274,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_WHEN_navigate_to_b_c_THEN_history_is_b_c_and_c_is_active() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -289,7 +291,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_and_pushed_b_WHEN_go_back_THEN_stack_is_a() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -306,7 +308,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_and_pushed_b_and_go_back_WHEN_go_forward_THEN_history_is_a_b_and_b_is_active() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -325,7 +327,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_and_pushed_b_and_go_back_WHEN_go_forward_THEN_stack_is_a_b() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -344,7 +346,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_and_pushed_b_and_go_back_and_replace_current_with_c_WHEN_go_forward_THEN_history_is_c_b_and_b_is_active() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -365,7 +367,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_and_pushed_b_and_go_back_and_replace_current_with_c_WHEN_go_forward_THEN_stack_is_c_b() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -386,7 +388,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_b_and_navigate_to_c_WHEN_go_forward_THEN_stack_is_c_b() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -403,7 +405,7 @@ class DefaultWebHistoryControllerTest {
 
     @Test
     fun GIVEN_router_with_initial_stack_of_a_b_and_navigate_to_c_WHEN_go_forward_THEN_history_is_c_b_and_b_is_active() {
-        if (isNode()) {
+        if (isNodeJs()) {
             return
         }
 
@@ -422,6 +424,7 @@ class DefaultWebHistoryControllerTest {
         controller.attach(
             navigator = router,
             stack = router.stack,
+            serializer = Config.serializer(),
             getPath = { "/${it.value}" },
             getConfiguration = { Config(it.removePrefix("/").toInt()) },
         )
@@ -434,7 +437,6 @@ class DefaultWebHistoryControllerTest {
         assertEquals(urls.take(index + 1), controller.historyPaths)
     }
 
-    private fun isNode(): Boolean = jsTypeOf(kotlinx.browser.window) == "undefined"
-
+    @Serializable
     private data class Config(val value: Int)
 }

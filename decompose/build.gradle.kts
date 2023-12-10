@@ -71,6 +71,10 @@ kotlin {
         android.test.dependencies {
             implementation(deps.robolectric.robolectric)
         }
+
+        web.main.dependencies {
+            implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
+        }
     }
 }
 

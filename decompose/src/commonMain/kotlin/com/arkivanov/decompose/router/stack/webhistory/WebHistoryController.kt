@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigator
 import com.arkivanov.decompose.value.Value
+import kotlinx.serialization.KSerializer
 
 /**
  * Connects the child stack and the Web [History](https://developer.mozilla.org/en-US/docs/Web/API/History) API together.
@@ -23,14 +24,16 @@ interface WebHistoryController {
      * Listens for the [ChildStack] changes and updates the Web [History](https://developer.mozilla.org/en-US/docs/Web/API/History)
      * accordingly. Also listens for the `History` changes and manipulates the [StackNavigator].
      *
-     * @param navigator a [StackNavigator] that should be manipulated
-     * @param stack an observable [ChildStack]
-     * @param getPath a mapper from the configuration to a corresponding Web page path (starting from '/')
-     * @param getConfiguration a mapper from the Web page path (starting from '/') to a corresponding configuration
+     * @param navigator a [StackNavigator] that should be manipulated.
+     * @param stack an observable [ChildStack].
+     * @param serializer a [KSerializer] of configurations [C].
+     * @param getPath a mapper from the configuration to a corresponding Web page path (starting from '/').
+     * @param getConfiguration a mapper from the Web page path (starting from '/') to a corresponding configuration.
      */
     fun <C : Any> attach(
         navigator: StackNavigator<C>,
         stack: Value<ChildStack<C, *>>,
+        serializer: KSerializer<C>,
         getPath: (configuration: C) -> String,
         getConfiguration: (path: String) -> C,
     )
