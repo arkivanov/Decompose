@@ -44,6 +44,7 @@ class DefaultRootComponent(
     init {
         webHistoryController?.attach(
             navigator = navigation,
+            serializer = Config.serializer(),
             stack = stack,
             getPath = ::getPathForConfig,
             getConfiguration = ::getConfigForPath,

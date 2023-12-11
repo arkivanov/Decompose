@@ -1,4 +1,4 @@
-package com.arkivanov.decompose.router
+package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.value.Value
 import kotlin.math.min

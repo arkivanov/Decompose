@@ -1,18 +1,19 @@
 package com.arkivanov.decompose.router.stack.webhistory
 
-import org.w3c.dom.PopStateEvent
-
 class TestWindow : DefaultWebHistoryController.Window {
 
     private val pendingOperations = ArrayList<() -> Unit>()
-
-    override var onPopState: ((PopStateEvent) -> Unit)? = null
+    private var onPopStateListener: ((state: String?) -> Unit)? = null
 
     override val history: TestHistory =
         TestHistory(
             scheduleOperation = pendingOperations::add,
-            onPopState = { onPopState?.invoke(it) }
+            onPopState = { onPopStateListener?.invoke(it) },
         )
+
+    override fun setOnPopStateListener(listener: (state: String?) -> Unit) {
+        onPopStateListener = listener
+    }
 
     fun runPendingOperations() {
         val operations = pendingOperations.toList()
