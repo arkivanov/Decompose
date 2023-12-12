@@ -48,7 +48,7 @@ fun <C : Any, T : Any> predictiveBackAnimation(
 ): StackAnimation<C, T> =
     PredictiveBackAnimation(
         backHandler = backHandler,
-        animation = fallbackAnimation ?: LocalStackAnimation.current,
+        animation = fallbackAnimation,
         selector = selector,
         onBack = onBack,
     )
@@ -56,7 +56,7 @@ fun <C : Any, T : Any> predictiveBackAnimation(
 @OptIn(ExperimentalDecomposeApi::class)
 private class PredictiveBackAnimation<C : Any, T : Any>(
     private val backHandler: BackHandler,
-    private val animation: StackAnimation<C, T>,
+    private val animation: StackAnimation<C, T>?,
     private val selector: (BackEvent, exitChild: Child.Created<C, T>, enterChild: Child.Created<C, T>) -> PredictiveBackAnimatable,
     private val onBack: () -> Unit,
 ) : StackAnimation<C, T> {
@@ -64,6 +64,7 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
     @Composable
     override fun invoke(stack: ChildStack<C, T>, modifier: Modifier, content: @Composable (child: Child.Created<C, T>) -> Unit) {
         var activeConfigurations: Set<C> by remember { mutableStateOf(emptySet()) }
+        val fallBackAnimationOrDefault = animation ?: LocalStackAnimation.current.invoke()
 
         val childContent =
             remember(content) {
@@ -98,7 +99,7 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
         Box(modifier = modifier) {
             items.forEach { item ->
                 key(item.key) {
-                    animation(
+                    fallBackAnimationOrDefault(
                         stack = item.stack,
                         modifier = Modifier.fillMaxSize().then(item.modifier),
                         content = childContent,

@@ -25,7 +25,7 @@ fun <C : Any, T : Any> Children(
 
     holder.retainStates(stack.getConfigurations())
 
-    val anim = animation ?: LocalStackAnimation.current
+    val anim = animation ?: LocalStackAnimation.current.invoke()
 
     anim(stack = stack, modifier = modifier) { child ->
         holder.SaveableStateProvider(child.configuration.hashString()) {
