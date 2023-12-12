@@ -15,8 +15,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.stack.animation.LocalStackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
-import com.arkivanov.decompose.extensions.compose.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.essenty.backhandler.BackEvent
 import com.arkivanov.essenty.backhandler.BackHandler
@@ -48,7 +48,7 @@ fun <C : Any, T : Any> predictiveBackAnimation(
 ): StackAnimation<C, T> =
     PredictiveBackAnimation(
         backHandler = backHandler,
-        animation = fallbackAnimation ?: emptyStackAnimation(),
+        animation = fallbackAnimation ?: LocalStackAnimation.current,
         selector = selector,
         onBack = onBack,
     )

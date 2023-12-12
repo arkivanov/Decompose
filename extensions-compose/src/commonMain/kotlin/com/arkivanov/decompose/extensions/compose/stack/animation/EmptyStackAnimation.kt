@@ -2,13 +2,13 @@ package com.arkivanov.decompose.extensions.compose.stack.animation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.router.stack.ChildStack
 
-internal fun <C : Any, T : Any> emptyStackAnimation(): StackAnimation<C, T> =
-    EmptyStackAnimation()
 
+val LocalStackAnimation = compositionLocalOf<StackAnimation<Any, Any>> { EmptyStackAnimation() }
 /*
  * Can't be anonymous. See:
  * https://github.com/JetBrains/compose-jb/issues/2688

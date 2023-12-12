@@ -7,8 +7,8 @@ import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.extensions.compose.stack.animation.LocalStackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
-import com.arkivanov.decompose.extensions.compose.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.hashString
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -25,7 +25,7 @@ fun <C : Any, T : Any> Children(
 
     holder.retainStates(stack.getConfigurations())
 
-    val anim = animation ?: emptyStackAnimation()
+    val anim = animation ?: LocalStackAnimation.current
 
     anim(stack = stack, modifier = modifier) { child ->
         holder.SaveableStateProvider(child.configuration.hashString()) {
