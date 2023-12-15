@@ -8,13 +8,19 @@ import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popTo
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.sample.shared.attachDeepLinks
 import com.arkivanov.sample.shared.counters.counter.CounterComponent
 import com.arkivanov.sample.shared.counters.counter.DefaultCounterComponent
+import com.arkivanov.sample.shared.multipane.utils.disposableScope
+import com.badoo.reaktive.disposable.scope.DisposableScope
+import com.badoo.reaktive.subject.behavior.BehaviorObservable
+import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import kotlinx.serialization.Serializable
 
 internal class DefaultCountersComponent(
     componentContext: ComponentContext,
-) : CountersComponent, ComponentContext by componentContext {
+    private val deepLinkPath: BehaviorObservable<String?> = BehaviorSubject(null),
+) : CountersComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
     private val navigation = StackNavigation<Config>()
 
@@ -22,11 +28,17 @@ internal class DefaultCountersComponent(
         childStack(
             source = navigation,
             serializer = Config.serializer(),
-            initialConfiguration = Config(index = 0, isBackEnabled = false),
+            initialStack = { getStackForDeepLink(deepLinkPath = deepLinkPath.value) },
             childFactory = ::child,
         )
 
     override val childStack: Value<ChildStack<*, CounterComponent>> get() = _childStack
+
+    init {
+        attachDeepLinks(navigation = navigation, deepLinkPath = deepLinkPath) { path ->
+            getStackForDeepLink(deepLinkPath = path.removePrefix("/counters"))
+        }
+    }
 
     private fun child(
         config: Config,
@@ -53,4 +65,14 @@ internal class DefaultCountersComponent(
         val index: Int,
         val isBackEnabled: Boolean,
     )
+
+    private companion object {
+        private fun getStackForDeepLink(deepLinkPath: String?): List<Config> {
+            val targetIndex = deepLinkPath?.removePrefix("/")?.toIntOrNull() ?: 0
+
+            return List(targetIndex + 1) { index ->
+                Config(index = index, isBackEnabled = index > 0)
+            }
+        }
+    }
 }

@@ -37,4 +37,5 @@ dependencies {
     implementation(deps.androidx.appcompat.appcompat)
     implementation(deps.androidx.activity.activityCompose)
     implementation(deps.android.material.material)
+    implementation(deps.reaktive.reaktive)
 }
