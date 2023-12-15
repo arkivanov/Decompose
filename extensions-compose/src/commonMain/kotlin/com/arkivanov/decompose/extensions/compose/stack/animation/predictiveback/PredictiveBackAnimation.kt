@@ -15,8 +15,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.stack.animation.LocalStackAnimation
+import com.arkivanov.decompose.extensions.compose.stack.animation.LocalStackAnimationProvider
 import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
+import com.arkivanov.decompose.extensions.compose.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.essenty.backhandler.BackEvent
 import com.arkivanov.essenty.backhandler.BackHandler
@@ -64,7 +65,8 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
     @Composable
     override fun invoke(stack: ChildStack<C, T>, modifier: Modifier, content: @Composable (child: Child.Created<C, T>) -> Unit) {
         var activeConfigurations: Set<C> by remember { mutableStateOf(emptySet()) }
-        val fallBackAnimationOrDefault = animation ?: LocalStackAnimation.current.invoke()
+        val animationProvider = LocalStackAnimationProvider.current
+        val fallBackAnimation = animation ?: remember(animationProvider, animationProvider::provide) ?: emptyStackAnimation()
 
         val childContent =
             remember(content) {
@@ -99,7 +101,7 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
         Box(modifier = modifier) {
             items.forEach { item ->
                 key(item.key) {
-                    fallBackAnimationOrDefault(
+                    fallBackAnimation(
                         stack = item.stack,
                         modifier = Modifier.fillMaxSize().then(item.modifier),
                         content = childContent,

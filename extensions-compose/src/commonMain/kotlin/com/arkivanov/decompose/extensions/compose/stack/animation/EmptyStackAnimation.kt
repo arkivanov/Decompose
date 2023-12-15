@@ -7,19 +7,7 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.router.stack.ChildStack
 
-
-val LocalStackAnimation = compositionLocalOf<DefaultStackAnimationProvider> {
-    object : DefaultStackAnimationProvider {
-        override fun <C : Any, T : Any> invoke(): StackAnimation<C, T> =
-            emptyStackAnimation()
-    }
-}
-
-interface DefaultStackAnimationProvider {
-    operator fun <C : Any, T : Any> invoke(): StackAnimation<C, T>
-}
-
-private fun <C : Any, T : Any> emptyStackAnimation(): StackAnimation<C, T> =
+internal fun <C : Any, T : Any> emptyStackAnimation(): StackAnimation<C, T> =
     EmptyStackAnimation()
 
 /*
