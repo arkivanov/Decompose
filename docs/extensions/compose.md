@@ -276,6 +276,24 @@ fun RootContent(component: RootComponent) {
 }
 ```
 
+### Default stack animations
+
+By default, the `Children` function (and all other functions with stack animations) does not animate stack changes, the change is performed instantly. The default stack animation is configurable, so that it's possible to avoid specifying the same animation multiple times.
+
+```kotlin
+@Composable
+fun App() {
+    CompositionLocalProvider(LocalStackAnimationProvider provides DefaultStackAnimationProvider) {
+        // The rest of the code
+    }
+}
+
+private object DefaultStackAnimationProvider : StackAnimationProvider {
+    override fun <C : Any, T : Any> provide(): StackAnimation<C, T> =
+        stackAnimation(slide() + scale())
+}
+```
+
 ### Custom animations
 
 It is also possible to define custom animations.
