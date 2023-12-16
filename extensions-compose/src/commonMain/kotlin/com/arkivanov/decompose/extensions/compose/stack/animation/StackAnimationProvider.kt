@@ -8,8 +8,7 @@ interface StackAnimationProvider {
 
 val LocalStackAnimationProvider = compositionLocalOf<StackAnimationProvider> {
     object : StackAnimationProvider {
-        override fun <C : Any, T : Any> provide(): StackAnimation<C, T> =
-            emptyStackAnimation()
+        override fun <C : Any, T : Any> provide(): StackAnimation<C, T>? = null
     }
 }
 
