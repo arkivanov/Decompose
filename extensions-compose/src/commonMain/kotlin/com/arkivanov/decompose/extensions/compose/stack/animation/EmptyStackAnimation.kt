@@ -2,6 +2,7 @@ package com.arkivanov.decompose.extensions.compose.stack.animation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.router.stack.ChildStack

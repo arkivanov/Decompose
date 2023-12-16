@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.stack.animation.LocalStackAnimationProvider
 import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -48,7 +49,7 @@ fun <C : Any, T : Any> predictiveBackAnimation(
 ): StackAnimation<C, T> =
     PredictiveBackAnimation(
         backHandler = backHandler,
-        animation = fallbackAnimation ?: emptyStackAnimation(),
+        animation = fallbackAnimation,
         selector = selector,
         onBack = onBack,
     )
@@ -56,7 +57,7 @@ fun <C : Any, T : Any> predictiveBackAnimation(
 @OptIn(ExperimentalDecomposeApi::class)
 private class PredictiveBackAnimation<C : Any, T : Any>(
     private val backHandler: BackHandler,
-    private val animation: StackAnimation<C, T>,
+    private val animation: StackAnimation<C, T>?,
     private val selector: (BackEvent, exitChild: Child.Created<C, T>, enterChild: Child.Created<C, T>) -> PredictiveBackAnimatable,
     private val onBack: () -> Unit,
 ) : StackAnimation<C, T> {
@@ -64,6 +65,8 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
     @Composable
     override fun invoke(stack: ChildStack<C, T>, modifier: Modifier, content: @Composable (child: Child.Created<C, T>) -> Unit) {
         var activeConfigurations: Set<C> by remember { mutableStateOf(emptySet()) }
+        val animationProvider = LocalStackAnimationProvider.current
+        val fallBackAnimation = animation ?: remember(animationProvider, animationProvider::provide) ?: emptyStackAnimation()
 
         val childContent =
             remember(content) {
@@ -98,7 +101,7 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
         Box(modifier = modifier) {
             items.forEach { item ->
                 key(item.key) {
-                    animation(
+                    fallBackAnimation(
                         stack = item.stack,
                         modifier = Modifier.fillMaxSize().then(item.modifier),
                         content = childContent,

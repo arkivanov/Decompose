@@ -105,6 +105,14 @@ public final class com/arkivanov/decompose/extensions/compose/stack/animation/St
 	public static synthetic fun stackAnimation$default (ZLkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimation;
 }
 
+public abstract interface class com/arkivanov/decompose/extensions/compose/stack/animation/StackAnimationProvider {
+	public abstract fun provide ()Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimation;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/stack/animation/StackAnimationProviderKt {
+	public static final fun getLocalStackAnimationProvider ()Landroidx/compose/runtime/ProvidableCompositionLocal;
+}
+
 public abstract interface class com/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator {
 	public abstract fun invoke (Lcom/arkivanov/decompose/extensions/compose/stack/animation/Direction;ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
 }
