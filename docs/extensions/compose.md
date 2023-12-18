@@ -288,7 +288,7 @@ fun App() {
     }
 }
 
-private object DefaultStackAnimationProvider : StackAnimationProvider {
+private val DefaultStackAnimationProvider = object : StackAnimationProvider {
     override fun <C : Any, T : Any> provide(): StackAnimation<C, T> =
         stackAnimation(slide() + scale())
 }
