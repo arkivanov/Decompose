@@ -81,7 +81,7 @@ fun <C : Any, T : Any> Pages(
         }
     }
 
-    DisposableEffect(state.currentPage, state.targetPage) {
+    DisposableEffect(state.currentPage) {
         if (state.currentPage == state.targetPage) {
             onPageSelected(state.currentPage)
         }
