@@ -32,14 +32,14 @@ Some functionality is actually provided by [Essenty](https://github.com/arkivano
 Compose is currently published in two separate variants:
     
 - The one developed and maintained by Google is Android only, called [Jetpack Compose](https://developer.android.com/jetpack/compose).
-- The Kotlin Multiplatform variant of Jetpack Compose maintained by both JetBrains and Google, called it [Multiplatform Compose](https://github.com/JetBrains/compose-multiplatform).
+- The Kotlin Multiplatform variant of Jetpack Compose maintained by both JetBrains and Google, called [Multiplatform Compose](https://github.com/JetBrains/compose-multiplatform).
 
 === "Before v3.0.0-alpha01"
 
     Due to this fragmentation Decompose provides two separate extension modules for Compose:
     
-    - `extensions-compose-jetpack` - Android library for Jetpack Compose
-    - `extensions-compose-jetbrains` - Kotlin Multiplatform library for JetBrains Compose, supports `android` and `jvm` targets
+    - `extensions-compose-jetpack` - Android library for Jetpack Compose.
+    - `extensions-compose-jetbrains` - Kotlin Multiplatform library for Multiplatform Compose.
     
     Both modules are used to connect Compose with Decompose components. Please see the corresponding [documentation page](/Decompose/extensions/compose/).
 

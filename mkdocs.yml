@@ -2,7 +2,7 @@ site_name: Decompose
 site_url: https://arkivanov.github.io/Decompose
 site_author: Arkadii Ivanov
 site_description: >-
-  Kotlin Multiplatform lifecycle-aware business logic components (aka BLoCs) with routing functionality and pluggable UI (Jetpack Compose, SwiftUI, JS React, etc.)
+  Kotlin Multiplatform lifecycle-aware business logic components (aka BLoCs) with routing functionality and pluggable UI (Compose, SwiftUI, JS React, etc.)
 
 # Repository
 repo_name: arkivanov/Decompose

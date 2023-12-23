@@ -18,7 +18,7 @@ interface RootComponent
 class DefaultRootComponent : RootComponent
 ```
 
-It's often useful to extract an interface for a component. It makes it possible to create test doubles for integration tests (e.g. testing navigation in a container component), or fake implementations for UI previews (e.g. for Jetpack Compose or SwiftUI).
+It's often useful to extract an interface for a component. It makes it possible to create test doubles for integration tests (e.g. testing navigation in a container component), or fake implementations for UI previews (e.g. for Compose or SwiftUI).
 
 ## ComponentContext
 
@@ -46,7 +46,7 @@ There are multiple ways of exposing an observable state from a component.
 
 ### Using Value from Decompose
 
-Decompose provides an observable state holder - `Value`. It offers great integration with various UI frameworks, such as Jetpack Compose, SwiftUI, Kotlin/React, etc. You can also convert Reaktive `Observable` or coroutines `Flow` to `Value`, if needed.
+Decompose provides an observable state holder - `Value`. It offers great integration with various UI frameworks, such as Compose, SwiftUI, Kotlin/React, etc. You can also convert Reaktive `Observable` or coroutines `Flow` to `Value`, if needed.
 
 ```kotlin
 interface ListComponent {
@@ -72,9 +72,9 @@ class DefaultListComponent(
 }
 ```
 
-### Observing Value in Jetpack Compose 
+### Observing Value in Compose 
 
-Observing `Value` in Jetpack Compose is easy, just use the `subscribeAsState` extension function.
+Observing `Value` in Compose is easy, just use the `subscribeAsState` extension function.
 
 ```kotlin
 @Composable
@@ -275,7 +275,7 @@ Each child component is represented by a persistent configuration class. A confi
     }
     ```
 
-### Child Stack with Jetpack Compose
+### Child Stack with Compose
 
 ```kotlin
 @Composable
@@ -332,7 +332,7 @@ Please refer to [samples](/Decompose/samples/) for integrations with other UI fr
 
 ## Initializing a root component
 
-### Android with Jetpack Compose
+### Android with Compose
 
 Use `defaultComponentContext` extension function to create the root `ComponentContext` in an `Activity` or a `Fragment`.
 
@@ -358,7 +358,7 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-### Desktop with Jetpack Compose
+### Desktop with Compose
 
 Use `LifecycleController` to bind the root lifecycle with the main window state. See an example of `runOnUiThread` function here - [Utils.kt](https://github.com/arkivanov/Decompose/blob/master/sample/app-desktop/src/jvmMain/kotlin/com/arkivanov/sample/app/Utils.kt).
 
