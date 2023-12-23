@@ -10,14 +10,6 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Twitter URL](https://img.shields.io/badge/Twitter-@arkann1985-blue.svg?style=social&logo=twitter)](https://twitter.com/arkann1985)
 
-![badge][badge-android]
-![badge][badge-ios]
-![badge][badge-js]
-![badge][badge-jvm]
-![badge][badge-mac]
-![badge][badge-tvos]
-![badge][badge-watchos]
-
 ---
 
 Decompose is a Kotlin Multiplatform library for breaking down your code into tree-structured lifecycle-aware business logic components (aka BLoC), with routing functionality and pluggable UI (Jetpack/Multiplatform Compose, Android Views, SwiftUI, Kotlin/React, etc.).
@@ -65,6 +57,10 @@ Additional resources:
 ## Setup
 
 Please check the [Installation](https://arkivanov.github.io/Decompose/getting-started/installation/) section of the documentation.
+
+### Supported platforms
+
+In general, Decompose supports the following targets: `android`, `jvm`, `ios`, `watchos`, `tvos`, `macos`, `wasmJs`, `js`. However, some modules do not support all targets or the support depends on the Decompose version. Please see the Installation docs for details.
 
 ## Overview
 
@@ -120,11 +116,3 @@ Check out the [template repository](https://github.com/arkivanov/decompose-multi
 Twitter: [@arkann1985](https://twitter.com/arkann1985)
 
 If you like this project you can always <a href="https://www.buymeacoffee.com/arkivanov" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" height=32></a> ;-)
-
-[badge-android]: http://img.shields.io/badge/platform-android-6EDB8D.svg?style=flat
-[badge-ios]: http://img.shields.io/badge/platform-ios-CDCDCD.svg?style=flat
-[badge-js]: http://img.shields.io/badge/platform-js-F8DB5D.svg?style=flat
-[badge-jvm]: http://img.shields.io/badge/platform-jvm-DB413D.svg?style=flat
-[badge-mac]: http://img.shields.io/badge/platform-macos-111111.svg?style=flat
-[badge-tvos]: http://img.shields.io/badge/platform-tvos-808080.svg?style=flat
-[badge-watchos]: http://img.shields.io/badge/platform-watchos-C0C0C0.svg?style=flat
