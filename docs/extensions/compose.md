@@ -1,6 +1,6 @@
 # Extensions for Jetpack/JetBrains Compose
 
-Extensions and utilities for easier integration of Decompose with Jetpack/JetBrains Compose.
+Extensions and utilities for easier integration of Decompose with Jetpack and Multiplatform Compose.
 
 ## Setup
 
@@ -276,6 +276,24 @@ fun RootContent(component: RootComponent) {
 }
 ```
 
+### Default stack animations
+
+By default, the `Children` function (and all other functions with stack animations) does not animate stack changes, the change is performed instantly. The default stack animation is configurable, so that it's possible to avoid specifying the same animation multiple times.
+
+```kotlin
+@Composable
+fun App() {
+    CompositionLocalProvider(LocalStackAnimationProvider provides DefaultStackAnimationProvider) {
+        // The rest of the code
+    }
+}
+
+private object DefaultStackAnimationProvider : StackAnimationProvider {
+    override fun <C : Any, T : Any> provide(): StackAnimation<C, T> =
+        stackAnimation(slide() + scale())
+}
+```
+
 ### Custom animations
 
 It is also possible to define custom animations.
@@ -396,6 +414,9 @@ fun RootContent(component: RootComponent) {
     }
 }
 ```
+
+!!! note
+    Since Decompose version `3.0.0-alpha01` the `animation` argument is renamed to `fallbackAnimation`.
 
 ### Predictive Back Gesture on Android
 
@@ -525,26 +546,6 @@ private fun Modifier.offsetXFactor(factor: Float): Modifier =
 
 <video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureIos.mp4" type="video/mp4"></video>
 
-## Compose for iOS, macOS and Web (Canvas)
+## Samples for Compose for iOS and Web (JS/Canvas, not Wasm)
 
-Compose for iOS, macOS and Web (Canvas) is still work in progress and was not officially announced. However, Decompose already supports it. The support is also **experimental** and is not part of the main branch - see [#74](https://github.com/arkivanov/Decompose/issues/74) for more information.
-
-If you want to use Decompose with Compose for iOS/macOS/Web, you have to use special versions of both `decompose` and `extensions-compose-jetbrains` modules.
-
-=== "Groovy"
-
-    ``` groovy
-    implementation "com.arkivanov.decompose:decompose:<version>-compose-experimental"
-    implementation "com.arkivanov.decompose:extensions-compose-jetbrains:<version>-compose-experimental"
-    ```
-
-=== "Kotlin"
-
-    ``` kotlin
-    implementation("com.arkivanov.decompose:decompose:<version>-compose-experimental")
-    implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>-compose-experimental")
-    ```
-
-### Samples
-
-You can find samples in a separate branch - [compose-darwin/sample/app-darwin-compose](https://github.com/arkivanov/Decompose/tree/compose-experimental/sample).
+You can find samples in a separate branch - [compose-darwin/sample](https://github.com/arkivanov/Decompose/tree/compose-experimental/sample).
