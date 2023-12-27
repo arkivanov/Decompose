@@ -4,16 +4,26 @@ Due to the fact that components are lifecycle-aware, it is very easy to manage c
 
 ## Creating a CoroutineScope in a component
 
+!!! note "Extensions for CoroutineScope and Lifecycle"
+
+    === "Before Essenty 2.0.0-alpha01"
+    
+        ```kotlin
+        fun CoroutineScope(context: CoroutineContext, lifecycle: Lifecycle): CoroutineScope {
+            val scope = CoroutineScope(context)
+            lifecycle.doOnDestroy(scope::cancel)
+            return scope
+        }
+        
+        fun LifecycleOwner.coroutineScope(context: CoroutineContext): CoroutineScope =
+            CoroutineScope(context, lifecycle)
+        ```
+    
+    === "Since Essenty 2.0.0-alpha01"
+    
+        Since Essenty version `2.0.0-alpha01` extensions for `CoroutineScope` and `Lifecycle` are [provided](https://github.com/arkivanov/Essenty?tab=readme-ov-file#coroutines-extensions) by Essenty.
+
 ```kotlin
-fun CoroutineScope(context: CoroutineContext, lifecycle: Lifecycle): CoroutineScope {
-    val scope = CoroutineScope(context)
-    lifecycle.doOnDestroy(scope::cancel)
-    return scope
-}
-
-fun LifecycleOwner.coroutineScope(context: CoroutineContext): CoroutineScope =
-    CoroutineScope(context, lifecycle)
-
 class SomeComponent(
     componentContext: ComponentContext,
     mainContext: CoroutineContext,
@@ -65,16 +75,26 @@ class SomeComponent(
 
 ## Creating a Reaktive DisposableScope in a component
 
+!!! note "Extensions for DisposableScope and Lifecycle"
+
+    === "Before Essenty 2.0.0-alpha01"
+    
+        ```kotlin
+        fun DisposableScope(lifecycle: Lifecycle): DisposableScope {
+            val scope = DisposableScope()
+            lifecycle.doOnDestroy(scope::dispose)
+            return scope
+        }
+        
+        fun LifecycleOwner.disposableScope(): DisposableScope =
+            DisposableScope(lifecycle)
+        ```
+    
+    === "Since Essenty 2.0.0-alpha01"
+    
+        Since Essenty version `2.0.0-alpha01` extensions for `DisposableScope` and `Lifecycle` are [provided](https://github.com/arkivanov/Essenty?tab=readme-ov-file#reaktive-extensions) by Essenty.
+
 ```kotlin
-fun DisposableScope(lifecycle: Lifecycle): DisposableScope {
-    val scope = DisposableScope()
-    lifecycle.doOnDestroy(scope::dispose)
-    return scope
-}
-
-fun LifecycleOwner.disposableScope(): DisposableScope =
-    DisposableScope(lifecycle)
-
 class SomeComponent(
     componentContext: ComponentContext,
 ) : ComponentContext by componentContext,
