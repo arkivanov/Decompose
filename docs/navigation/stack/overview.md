@@ -15,7 +15,7 @@ The `Child Stack` navigation consists of two main entities:
 
 ### Component Configurations
 
-Each component created and managed by the `Child Stack` has a configuration, please read the documentation about [child configurations](/Decompose/navigation/overview/#component-configurations-and-child-factories).
+Each component created and managed by the `Child Stack` has a configuration, please read the documentation about [child configurations](../overview.md#component-configurations-and-child-factories).
 
 `Child Stack` adds one additional requirement for child configurations:
 

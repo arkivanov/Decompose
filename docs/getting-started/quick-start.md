@@ -8,7 +8,7 @@ Please see the [template repository](https://github.com/arkivanov/decompose-mult
 class RootComponent
 ```
 
-Yes, a simplest component is just a normal class. No need to extend a class from the library, or implement an interface.
+Yes, the simplest component is just a normal class. No need to extend a class from the library, or implement an interface.
 
 ## Extracting an interface
 
@@ -22,7 +22,7 @@ It's often useful to extract an interface for a component. It makes it possible 
 
 ## ComponentContext
 
-[ComponentContext](/Decompose/component/overview/#componentcontext) is probably the most important concept of Decompose. It is an interface that provides access to various tools, like lifecycle, state preservation, instance retaining (aka Android ViewModel), back button handling, etc. Each component has its own `ComponentContext` provided by Decompose.
+[ComponentContext](../component/overview.md#componentcontext) is probably the most important concept of Decompose. It is an interface that provides access to various tools, like lifecycle, state preservation, instance retaining (aka Android ViewModel), back button handling, etc. Each component has its own `ComponentContext` provided by Decompose.
 
 If your component requires `ComponentContext`, just pass it via constructor. You can also use the delegation pattern to add `ComponentContext` to `this` scope.
 
@@ -122,7 +122,7 @@ struct DetailsView: View {
 
 ### Observing Value in other UI Frameworks
 
-Please refer to the [docs](/Decompose/component/overview/) for information about other platforms and UI frameworks.
+Please refer to the [docs](../component/overview.md) for information about other platforms and UI frameworks.
 
 ### Using Reaktive or coroutines
 
@@ -130,7 +130,7 @@ The state can be also exposed using Reaktive `Observable` or coroutines `Flow`, 
 
 ## Navigation
 
-Decompose provides various ways to navigate, you can find more information in the [docs](/Decompose/navigation/overview/). The most common navigation pattern is [Child Stack](/Decompose/navigation/stack/overview/).
+Decompose provides various ways to navigate, you can find more information in the [docs](../navigation/overview.md). The most common navigation pattern is [Child Stack](../navigation/stack/overview.md).
 
 ### Component configurations
 
@@ -328,7 +328,7 @@ struct RootView: View {
 
 ### Child Stack with other UI Frameworks
 
-Please refer to [samples](/Decompose/samples/) for integrations with other UI frameworks.
+Please refer to [samples](../samples.md) for integrations with other UI frameworks.
 
 ## Initializing a root component
 
@@ -538,4 +538,4 @@ private val Document.visibilityState: String
 
 ### Other platforms and UI frameworks
 
-Please refer to [samples](/Decompose/samples/) for integrations with other platforms and UI frameworks. 
+Please refer to [samples](../samples.md) for integrations with other platforms and UI frameworks. 

@@ -5,8 +5,7 @@ Decompose provides ability to organize components as trees, so each parent compo
 There are two common ways to work with child components:
 
 - Navigation - when you need to dynamically switch child components. Please head to
-  the [Navigation](/Decompose/navigation/overview/) documentation page for more
-  information.
+  the [Navigation](../navigation/overview.md) documentation page for more information.
 - Manually - when you need to add a permanent child component, or to manually control its `Lifecycle`.
 
 ## Adding a child component manually

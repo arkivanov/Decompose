@@ -4,7 +4,7 @@ Extensions and utilities for easier integration of Decompose with Jetpack and Mu
 
 ## Setup
 
-Please see the corresponding [Installation docs section](/Decompose/getting-started/installation/#extensions-for-jetpackjetbrains-compose).
+Please see the corresponding [Installation docs section](../getting-started/installation.md#extensions-for-jetpack-and-multiplatform-compose).
 
 ### ProGuard rules for Compose for Desktop (JVM)
 
@@ -63,7 +63,7 @@ fun main() {
 
 ## Navigating between Composable components
 
-The [Child Stack](/Decompose/navigation/stack/overview/) navigation model provides [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) as `Value<ChildStack>` that can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `ChildStack` changes.
+The [Child Stack](../navigation/stack/overview.md) navigation model provides [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) as `Value<ChildStack>` that can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `ChildStack` changes.
 
 Both Compose extension modules provide the [Children(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-jetbrains/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/jetbrains/stack/Children.kt) function which has the following features:
 
@@ -158,7 +158,7 @@ fun DialogContent(component: DialogComponent) {
 !!!warning
     This navigation model is experimental, the API is subject to change.
 
-The [Child Pages](/Decompose/navigation/pages/overview/) navigation model provides [ChildPages](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/pages/ChildPages.kt) as `Value<ChildPages>` that can be observed in a `Composable` component.
+The [Child Pages](../navigation/pages/overview.md) navigation model provides [ChildPages](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/pages/ChildPages.kt) as `Value<ChildPages>` that can be observed in a `Composable` component.
 
 Both Compose extension modules provide the [Pages(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-jetbrains/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/jetbrains/pages/Pages.kt) function which has the following features:
 

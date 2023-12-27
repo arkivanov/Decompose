@@ -6,7 +6,7 @@ Some devices (e.g. Android) have hardware back buttons. A very common use case i
 
 `Child Stack` and `Child Pages` can automatically navigate back when the back button is pressed. All you need to do is to supply the `handleBackButton=true` argument when you initialize a navigation model.
 
-Similarly, `Child Slot` can automatically dismiss the child component when the back button is pressed. see the [Child Slot](/Decompose/navigation/slot/overview/) documentation page for more information.
+Similarly, `Child Slot` can automatically dismiss the child component when the back button is pressed. See the [Child Slot](../navigation/slot/overview.md) documentation page for more information.
 
 ## Manual back button handling
 
@@ -51,4 +51,4 @@ private val backCallback = BackCallback(priority = Int.MIN_VALUE) { ... }
 
 ## Predictive Back Gesture
 
-Decompose experimentally supports the new [Android Predictive Back Gesture](https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture), not only on Android. The UI part is covered by Compose extensions, please see the [related docs](../../extensions/compose#predictive-back-gesture).
+Decompose experimentally supports the new [Android Predictive Back Gesture](https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture), not only on Android. The UI part is covered by Compose extensions, please see the [related docs](../extensions/compose.md#predictive-back-gesture).

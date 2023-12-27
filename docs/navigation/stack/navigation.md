@@ -26,7 +26,7 @@ The `Child Stack` usually performs the navigation synchronously, which means tha
 
 ## StackNavigator extension functions
 
-There are `StackNavigator` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/StackNavigatorExt.kt) to simplify the navigation. Some of which were already used in the [Child Stack overview example](../overview#example).
+There are `StackNavigator` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/StackNavigatorExt.kt) to simplify the navigation. Some of which were already used in the [Child Stack Overview example](overview.md#example).
 
 ### push(configuration)
 

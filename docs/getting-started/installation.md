@@ -4,7 +4,7 @@ Decompose provides a number of modules, they are all published to Maven Central 
 
 ## The main Decompose module
 
-The main functionality is provided by the `decompose` module. It contains some core features like [ComponentContext](/Decompose/component/overview/#componentcontext), [Child Stack](/Decompose/navigation/stack/overview/), etc.
+The main functionality is provided by the `decompose` module. It contains some core features like [ComponentContext](../component/overview.md#componentcontext), [Child Stack](../navigation/stack/overview.md), etc.
 
 ### Gradle setup
 
@@ -41,7 +41,7 @@ Compose is currently published in two separate variants:
     - `extensions-compose-jetpack` - Android library for Jetpack Compose.
     - `extensions-compose-jetbrains` - Kotlin Multiplatform library for Multiplatform Compose.
     
-    Both modules are used to connect Compose with Decompose components. Please see the corresponding [documentation page](/Decompose/extensions/compose/).
+    Both modules are used to connect Compose with Decompose components. Please see the corresponding [documentation page](../extensions/compose.md).
 
 === "Since v3.0.0-alpha01"
 
@@ -49,7 +49,7 @@ Compose is currently published in two separate variants:
 
     - `extensions-compose` - compatible with both Jetpack Compose and Multiplatform Compose.
 
-    The module is used to connect Compose with Decompose components. Please see the corresponding [documentation page](/Decompose/extensions/compose/).
+    The module is used to connect Compose with Decompose components. Please see the corresponding [documentation page](../extensions/compose.md).
 
 ### Gradle setup
 
@@ -116,7 +116,7 @@ Compose is currently published in two separate variants:
 
 ## Extensions for Android views
 
-The `extensions-android` module provides extensions to connect Android views based UI to Decompose components. Please head to the corresponding [documentation page](/Decompose/extensions/android/) for more information.
+The `extensions-android` module provides extensions to connect Android views based UI to Decompose components. Please head to the corresponding [documentation page](../extensions/android.md) for more information.
 
 ### Gradle setup
 

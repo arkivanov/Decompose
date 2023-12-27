@@ -23,7 +23,7 @@ The `Child Pages` navigation model consists of two main entities:
 
 ### Component Configurations
 
-Similarly to `Child Stack`, each component created and managed by the `Child Pages` has a configuration, please read the documentation about [child configurations](/Decompose/navigation/overview/#component-configurations-and-child-factories).
+Similarly to `Child Stack`, each component created and managed by the `Child Pages` has a configuration, please read the documentation about [child configurations](../overview.md#component-configurations-and-child-factories).
 
 `Child Pages` adds one additional requirement for child configurations:
 
