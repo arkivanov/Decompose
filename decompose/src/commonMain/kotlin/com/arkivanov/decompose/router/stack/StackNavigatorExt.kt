@@ -45,6 +45,26 @@ fun <C : Any> StackNavigator<C>.pushNew(
 }
 
 /**
+ * Pushes the provided [configuration] to the top of the stack,
+ * removing the [configuration] from the back stack, if any.
+ *
+ * This API works similar to [bringToFront], except it compares configurations
+ * by equality rather than by configuration class.
+ *
+ * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
+ */
+@ExperimentalDecomposeApi
+fun <C : Any> StackNavigator<C>.pushToFront(
+    configuration: C,
+    onComplete: () -> Unit = {},
+) {
+    navigate(
+        transformer = { stack -> stack - configuration + configuration },
+        onComplete = { _, _ -> onComplete() },
+    )
+}
+
+/**
  * Pops the latest configuration at the top of the stack.
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
