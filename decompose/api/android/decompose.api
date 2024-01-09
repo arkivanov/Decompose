@@ -70,10 +70,10 @@ public abstract interface annotation class com/arkivanov/decompose/InternalDecom
 }
 
 public final class com/arkivanov/decompose/RetainedComponentKt {
-	public static final fun retainedComponent (Landroidx/activity/ComponentActivity;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final fun retainedComponent (Landroidx/fragment/app/Fragment;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static synthetic fun retainedComponent$default (Landroidx/activity/ComponentActivity;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
-	public static synthetic fun retainedComponent$default (Landroidx/fragment/app/Fragment;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun retainedComponent (Landroidx/activity/ComponentActivity;Ljava/lang/String;ZZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun retainedComponent (Landroidx/fragment/app/Fragment;Ljava/lang/String;ZZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static synthetic fun retainedComponent$default (Landroidx/activity/ComponentActivity;Ljava/lang/String;ZZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun retainedComponent$default (Landroidx/fragment/app/Fragment;Ljava/lang/String;ZZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class com/arkivanov/decompose/UtilsKt {
