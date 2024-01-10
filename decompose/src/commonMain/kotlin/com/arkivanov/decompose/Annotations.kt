@@ -22,3 +22,10 @@ annotation class ExperimentalDecomposeApi
 @RequiresOptIn(level = RequiresOptIn.Level.WARNING)
 @Retention(AnnotationRetention.BINARY)
 annotation class FaultyDecomposeApi
+
+/**
+ * Marks Decompose API that is for external use only, e.g. to be consumed from JavaScript.
+ */
+@RequiresOptIn(level = RequiresOptIn.Level.ERROR)
+@Retention(AnnotationRetention.BINARY)
+annotation class ExportedDecomposeApi

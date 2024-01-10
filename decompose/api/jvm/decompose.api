@@ -54,6 +54,9 @@ public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivan
 public abstract interface annotation class com/arkivanov/decompose/ExperimentalDecomposeApi : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class com/arkivanov/decompose/ExportedDecomposeApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class com/arkivanov/decompose/FaultyDecomposeApi : java/lang/annotation/Annotation {
 }
 
@@ -128,6 +131,7 @@ public final class com/arkivanov/decompose/router/pages/ChildPages {
 	public static synthetic fun copy$default (Lcom/arkivanov/decompose/router/pages/ChildPages;Ljava/util/List;IILjava/lang/Object;)Lcom/arkivanov/decompose/router/pages/ChildPages;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getItems ()Ljava/util/List;
+	public final fun getItemsArray ()[Lcom/arkivanov/decompose/Child;
 	public final fun getSelectedIndex ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -256,7 +260,9 @@ public final class com/arkivanov/decompose/router/stack/ChildStack {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getActive ()Lcom/arkivanov/decompose/Child$Created;
 	public final fun getBackStack ()Ljava/util/List;
+	public final fun getBackStackArray ()[Lcom/arkivanov/decompose/Child$Created;
 	public final fun getItems ()Ljava/util/List;
+	public final fun getItemsArray ()[Lcom/arkivanov/decompose/Child$Created;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

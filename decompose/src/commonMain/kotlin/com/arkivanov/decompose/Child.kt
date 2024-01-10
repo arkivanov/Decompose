@@ -1,5 +1,6 @@
 package com.arkivanov.decompose
 
+@JsExportCompat
 sealed class Child<out C : Any, out T : Any> {
 
     abstract val configuration: C
