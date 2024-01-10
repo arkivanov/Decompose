@@ -25,6 +25,7 @@ import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import com.arkivanov.essenty.statekeeper.stateKeeper
+import kotlinx.serialization.builtins.serializer
 
 /**
  * Returns (creating if needed) a component that is retained over configuration changes.
@@ -34,17 +35,26 @@ import com.arkivanov.essenty.statekeeper.stateKeeper
  *
  * @param key a key of the component, must be unique within the `Activity`.
  * @param handleBackButton a flag that determines whether back button handling is enabled or not, default is `true`.
+ * @param discardSavedState a flag indicating whether any previously saved state should be discarded or not,
+ * default value is `false`. Can be useful for handling deep links in `onCreate`, so that the navigation state
+ * is not restored and initial state from the deep link is applied instead.
+ * @param isStateSavingAllowed called before saving the state. When `true` then the state will be saved,
+ * otherwise it won't. Default value is `true`.
  * @param factory a function that returns a new instance of the component.
  */
 @ExperimentalDecomposeApi
 fun <T> ComponentActivity.retainedComponent(
     key: String = "RootRetainedComponent",
     handleBackButton: Boolean = true,
+    discardSavedState: Boolean = false,
+    isStateSavingAllowed: () -> Boolean = { true },
     factory: (ComponentContext) -> T,
 ): T =
     retainedComponent(
         key = key,
         onBackPressedDispatcher = if (handleBackButton) onBackPressedDispatcher else null,
+        discardSavedState = discardSavedState,
+        isStateSavingAllowed = isStateSavingAllowed,
         isChangingConfigurations = ::isChangingConfigurations,
         factory = factory,
     )
@@ -57,30 +67,43 @@ fun <T> ComponentActivity.retainedComponent(
  *
  * @param key a key of the component, must be unique within the `Fragment`.
  * @param handleBackButton a flag that determines whether back button handling is enabled or not, default is `true`.
+ * @param discardSavedState a flag indicating whether any previously saved state should be discarded or not,
+ * default value is `false`. Can be useful for handling deep links in `onCreate`, so that the navigation state
+ * is not restored and initial state from the deep link is applied instead.
+ * @param isStateSavingAllowed called before saving the state. When `true` then the state will be saved,
+ * otherwise it won't. Default value is `true`.
  * @param factory a function that returns a new instance of the component.
  */
 @ExperimentalDecomposeApi
 fun <T> Fragment.retainedComponent(
     key: String = "RootRetainedComponent",
     handleBackButton: Boolean = true,
+    discardSavedState: Boolean = false,
+    isStateSavingAllowed: () -> Boolean = { true },
     factory: (ComponentContext) -> T,
 ): T =
     retainedComponent(
         key = key,
         onBackPressedDispatcher = if (handleBackButton) requireActivity().onBackPressedDispatcher else null,
+        discardSavedState = discardSavedState,
+        isStateSavingAllowed = isStateSavingAllowed,
         isChangingConfigurations = { activity?.isChangingConfigurations ?: false },
         factory = factory,
     )
 
-private fun <T, O> O.retainedComponent(
+internal fun <T, O> O.retainedComponent(
     key: String,
     onBackPressedDispatcher: OnBackPressedDispatcher?,
+    discardSavedState: Boolean,
+    isStateSavingAllowed: () -> Boolean,
     isChangingConfigurations: () -> Boolean,
     factory: (ComponentContext) -> T,
 ): T where O : LifecycleOwner, O : SavedStateRegistryOwner, O : ViewModelStoreOwner {
     val lifecycle = essentyLifecycle()
-    val stateKeeper = stateKeeper()
-    val instanceKeeper = instanceKeeper()
+    val stateKeeper = stateKeeper(discardSavedState = discardSavedState, isSavingAllowed = isStateSavingAllowed)
+    val marker = stateKeeper.consume(key = KEY_STATE_MARKER, strategy = String.serializer())
+    stateKeeper.register(key = KEY_STATE_MARKER, strategy = String.serializer()) { "marker" }
+    val instanceKeeper = instanceKeeper(discardRetainedInstances = marker == null)
 
     check(!stateKeeper.isRegistered(key = key)) { "Another retained component is already registered with the key: $key" }
 
@@ -123,6 +146,8 @@ private fun <T, O> O.retainedComponent(
 
     return holder.component
 }
+
+private const val KEY_STATE_MARKER = "RetainedComponent_state_marker"
 
 private class DelegateOnBackPressedCallback(
     private val dispatcher: OnBackPressedDispatcher,
