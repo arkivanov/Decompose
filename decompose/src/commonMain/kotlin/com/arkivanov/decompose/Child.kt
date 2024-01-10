@@ -1,5 +1,8 @@
 package com.arkivanov.decompose
 
+import kotlin.js.JsName
+
+@JsExportCompat
 sealed class Child<out C : Any, out T : Any> {
 
     abstract val configuration: C
@@ -15,12 +18,14 @@ sealed class Child<out C : Any, out T : Any> {
         @property:ExperimentalDecomposeApi
         override val key: Any,
     ) : Child<C, T>() {
+        @JsName("create")
         constructor(configuration: C, instance: T) : this(
             configuration = configuration,
             instance = instance,
             key = configuration,
         )
 
+        @JsName("copyDeprecated1")
         @Deprecated(message = "For binary compatibility", level = DeprecationLevel.HIDDEN)
         fun copy(configuration: @UnsafeVariance C, instance: @UnsafeVariance T): Child<C, T> =
             copy(configuration = configuration, instance = instance)
@@ -32,6 +37,7 @@ sealed class Child<out C : Any, out T : Any> {
         @property:ExperimentalDecomposeApi
         override val key: Any,
     ) : Child<C, Nothing>() {
+        @JsName("create")
         constructor(configuration: C) : this(
             configuration = configuration,
             key = configuration,
@@ -39,6 +45,7 @@ sealed class Child<out C : Any, out T : Any> {
 
         override val instance: Nothing? = null
 
+        @JsName("copyDeprecated1")
         @Deprecated(message = "For binary compatibility", level = DeprecationLevel.HIDDEN)
         fun copy(configuration: @UnsafeVariance C): Child<C, Nothing> =
             copy(configuration = configuration)

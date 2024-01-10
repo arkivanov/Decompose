@@ -2,6 +2,8 @@ package com.arkivanov.decompose.router.pages
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.JsExportCompat
+import kotlin.js.JsName
 
 /**
  * A state holder for Child Pages.
@@ -10,6 +12,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
  * @param selectedIndex an index of the selected child component.
  * Must be within the range of [items] indices if [items] is not empty, otherwise can be any number.
  */
+@JsExportCompat
 @ExperimentalDecomposeApi
 data class ChildPages<out C : Any, out T : Any>(
     val items: List<Child<C, T>>,
@@ -19,6 +22,7 @@ data class ChildPages<out C : Any, out T : Any>(
     /**
      * Creates empty [ChildPages].
      */
+    @JsName("create")
     constructor() : this(items = emptyList(), selectedIndex = -1)
 
     init {

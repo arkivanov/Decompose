@@ -1,10 +1,13 @@
 package com.arkivanov.decompose.value
 
+import com.arkivanov.decompose.JsExportCompat
+
 /**
  * A mutable variant of [Value].
  *
  * @see Value
  */
+@JsExportCompat
 abstract class MutableValue<T : Any> : Value<T>() {
 
     /**
