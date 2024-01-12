@@ -36,6 +36,10 @@ Although discouraged, it is still possible to have all components retained over 
 !!!warning
     Pay attention when supplying dependencies to a retained component to avoid leaking the hosting `Activity` or `Fragment`.
 
+!!! warning
+
+    The `retainedComponent` function must only be called once during the lifetime of the host Activity or Fragment, typically in `onCreate`. Calling it a second time will result in a crash.
+
 ```kotlin
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

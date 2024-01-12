@@ -7,7 +7,7 @@ root component and then down the tree to all the required components.
 Parsing deep links on the platform side is beyond this documentation. This information should be available in the platform's specific
 documentation. For example here is the [related documentation](https://developer.android.com/training/app-links/deep-linking) for Android.
 
-### Handling deep links
+## Handling deep links
 
 Given the basic example from the [Child Stack Overview](../overview.md) page, we can easily handle deep
 links. Let's say we have a link like `http://myitems.com?itemId=3`. When the user clicks on it, we want to open the details screen of the
@@ -17,7 +17,7 @@ parsed data from the deep link to a component responsible for navigation, in our
 ```kotlin
 class RootComponent(
     componentContext: ComponentContext,
-    initialItemId: Long? = null
+    initialItemId: Long? = null, // It can be any other type, e.g. a sealed class with all possible destinations
 ) : Root, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
@@ -41,3 +41,103 @@ class RootComponent(
 
 Now, if the `initialItemId` is supplied, the initial screen will be the `ItemDetails` component. The `ItemList` component will be in the
 back stack, so the user will be able to go back.
+
+### Handling deep links on Android
+
+The first step is to configure your Android app so that it can handle deep links. Please follow the [official documentation](https://developer.android.com/training/app-links/deep-linking).
+
+Once the app is configured, the deeplink `Intent` can arrive via one of the two methods: `Activity#onCreate` and `Activity#onNewIntent`.
+
+#### Handling deep links since v3.0.0-alpha01
+
+```kotlin
+class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val initialItemId = intent.data?.extractInitialItemId()
+
+        val root =
+            RootComponent(
+                componentContext = defaultComponentContext(
+                    discardSavedState = initialItemId != null, // Discard any saved state if there is a deep link
+                ), 
+                initialItemId = initialItemId,
+            )
+
+        if (initialItemId != null) {
+            intent = Intent(intent).setData(null) // The deep link has been handled, clear the Intent data
+        }
+
+        setContent {
+            // Omitted code
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        if (intent.data?.extractInitialItemId() != null) {
+            setIntent(intent)
+            recreate()
+        }
+    }
+
+    private fun Uri.extractInitialItemId(): Long? =
+        TODO("Extract the initial item id from the deep link")
+}
+```
+
+#### Alternative way
+
+```kotlin
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var root: RootComponent
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val initialItemId = intent.data?.extractInitialItemId()
+
+        root =
+            RootComponent(
+                componentContext = defaultComponentContext(),
+                initialItemId = initialItemId,
+            )
+
+        if (initialItemId != null) {
+            intent = Intent(intent).setData(null) // The deep link has been handled, clear the Intent data
+        }
+
+        setContent {
+            // Omitted code
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        val initialItemId = intent.data?.extractInitialItemId() ?: return
+        root.onDeepLink(initialItemId)
+    }
+
+    private fun Uri.extractInitialItemId(): Long? =
+        TODO("Extract the initial item id from the deep link")
+}
+
+class RootComponent(
+    componentContext: ComponentContext,
+    initialItemId: Long? = null,
+) {
+
+    // Omitted code
+
+    fun onDeepLink(initialItemId: Long) {
+        navigation.replaceAll(Config.List, Config.Details(itemId = initialItemId))
+    }
+    
+    // Omitted code
+}
+```
