@@ -336,6 +336,10 @@ Please refer to [samples](../samples.md) for integrations with other UI framewor
 
 Use `defaultComponentContext` extension function to create the root `ComponentContext` in an `Activity` or a `Fragment`.
 
+!!! warning
+
+    The `defaultComponentContext` function must only be called once during the lifetime of the host Activity or Fragment, typically in `onCreate`. Calling it a second time will result in a crash.
+
 ```kotlin
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

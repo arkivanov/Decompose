@@ -51,6 +51,10 @@ Decompose provides a few handy [helper functions](https://github.com/arkivanov/D
 
 For this case Decompose provides `defaultComponentContext()` extension function, which can be called in scope of an `Activity`.
 
+!!! warning
+
+    The `defaultComponentContext` function must only be called once during the lifetime of the host Activity or Fragment, typically in `onCreate`. Calling it a second time will result in a crash.
+
 ```kotlin
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
