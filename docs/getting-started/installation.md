@@ -4,9 +4,21 @@ Decompose provides a number of modules, they are all published to Maven Central 
 
 ## The main Decompose module
 
-The main functionality is provided by the `decompose` module. It contains some core features like [ComponentContext](../component/overview.md#componentcontext), [Child Stack](../navigation/stack/overview.md), etc.
+The main functionality is provided by the `decompose` module. It contains some core features like:
 
-### Gradle setup
+- [ComponentContext](../component/overview.md#componentcontext) needed to allow custom components
+to manage lifecycle, state saving,...
+- [Value](../component/overview.md/#value-and-mutablevalue-state-holders) allowing UI code to observe value changes
+- [Child Stack](../navigation/stack/overview.md) navigation model
+- [defaultComponentContext](../getting-started/quick-start.md/#android-with-compose) function for generating root component context
+that is needed in UI code
+- and many other important things
+
+This module should be imported into build.gradle.kts for shared application module
+at ```kotlin.sourceSets.commonMain.dependencies```
+
+If you are having Android module (androidApp or composeApp if using KMP Wizard) this dependency also needs to be
+added into build.gradle.kts for Android module at ```android.dependencies``` to allow Android code access to above functionality
 
 === "Groovy"
 
@@ -38,54 +50,42 @@ Compose is currently published in two separate variants:
 
     Due to this fragmentation Decompose provides two separate extension modules for Compose:
     
-    - `extensions-compose-jetpack` - Android library for Jetpack Compose.
-    - `extensions-compose-jetbrains` - Kotlin Multiplatform library for Multiplatform Compose.
-    
-    Both modules are used to connect Compose with Decompose components. Please see the corresponding [documentation page](../extensions/compose.md).
-
-=== "Since v3.0.0-alpha01"
-
-    Since Decompose version v3.0.0-alpha01 there is just one extension module for Compose:
-
-    - `extensions-compose` - compatible with both Jetpack Compose and Multiplatform Compose.
-
-    The module is used to connect Compose with Decompose components. Please see the corresponding [documentation page](../extensions/compose.md).
-
-### Gradle setup
-
-=== "Before v3.0.0-alpha01"
-
-    Typically only one module should be selected, depending on the Compose variant being used.
-    
     === "Groovy"
-    
+
         ``` groovy
         implementation "com.arkivanov.decompose:extensions-compose-jetpack:<version>"
         // or
         implementation "com.arkivanov.decompose:extensions-compose-jetbrains:<version>"
         ```
-    
+
     === "Kotlin"
-    
+
         ``` kotlin
         implementation("com.arkivanov.decompose:extensions-compose-jetpack:<version>")
         // or
         implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>")
         ```
+    Both modules are used to connect Compose with Decompose components. Please see the corresponding [documentation page](../extensions/compose.md).
+    Typically only one module should be selected, depending on the Compose variant being used.
+
 
 === "Since v3.0.0-alpha01"
 
+    Since Decompose version v3.0.0-alpha01 there is just one extension module for Compose - compatible with both Jetpack Compose and Multiplatform Compose.
+
     === "Groovy"
-    
+
         ``` groovy
         implementation "com.arkivanov.decompose:extensions-compose:<version>"
         ```
-    
     === "Kotlin"
     
         ``` kotlin
         implementation("com.arkivanov.decompose:extensions-compose:<version>")
         ```
+
+    The module is used to connect Compose with Decompose components. Please see the corresponding [documentation page](../extensions/compose.md).
+
 
 #### Support for Compose for iOS and Web (JS/Canvas and Wasm)
 
@@ -109,14 +109,17 @@ Compose is currently published in two separate variants:
 
 === "Since v3.0.0-alpha01"
 
-    All Compose variants (Android, JVM/Desktop, Native/iOS, Native/macOS, JS/Canvas, Wasm) are published from the main branch, please add dependencies as usual (no version suffixes required).
+    All Compose variants (Android, JVM/Desktop, Native/iOS, Native/macOS, JS/Canvas, Wasm) are published from the main branch,
+    please add dependencies as usual (no version suffixes required).
 
 !!!warning
     Wasm target is not yet supported. Please follow [issue #74](https://github.com/arkivanov/Decompose/issues/74) for more information and updates.
 
 ## Extensions for Android views
 
-The `extensions-android` module provides extensions to connect Android views based UI to Decompose components. Please head to the corresponding [documentation page](../extensions/android.md) for more information.
+The `extensions-android` module provides extensions to connect
+Android views (older alternative to Compose UI) to Decompose components.
+Please head to the corresponding [documentation page](../extensions/android.md) for more information.
 
 ### Gradle setup
 
