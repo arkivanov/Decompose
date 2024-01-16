@@ -12,11 +12,9 @@ The main functionality is provided by the `decompose` module. It contains some c
 - [defaultComponentContext](../getting-started/quick-start.md/#android-with-compose) - creates a default `ComponentContext` attached to an Activity or Fragment on Android.
 - And many other important APIs.
 
-This module should be imported into build.gradle.kts for shared application module
-at ```kotlin.sourceSets.commonMain.dependencies```
+This module should be imported into build.gradle.kts for shared application module at `kotlin.sourceSets.commonMain.dependencies`.
 
-If you are having Android module (androidApp or composeApp if using KMP Wizard) this dependency also needs to be
-added into build.gradle.kts for Android module at ```android.dependencies``` to allow Android code access to above functionality
+If you are having Android module (androidApp or composeApp if using KMP Wizard) this dependency also needs to be added into build.gradle.kts for Android module at ```android.dependencies``` to allow Android code access to above functionality
 
 === "Groovy"
 
@@ -63,8 +61,7 @@ Compose is currently published in two separate variants:
         // or
         implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>")
         ```
-    Both modules are used to connect Compose with Decompose components. Please see the corresponding [documentation page](../extensions/compose.md).
-    Typically only one module should be selected, depending on the Compose variant being used.
+    Both modules are used to connect Compose with Decompose components. Please see the corresponding [documentation page](../extensions/compose.md). Typically only one module should be selected, depending on the Compose variant being used.
 
 
 === "Since v3.0.0-alpha01"
@@ -83,8 +80,6 @@ Compose is currently published in two separate variants:
         ```
 
     The module is used to connect Compose with Decompose components. Please see the corresponding [documentation page](../extensions/compose.md).
-
-
 #### Support for Compose for iOS and Web (JS/Canvas and Wasm)
 
 === "Before v3.0.0-alpha01"
