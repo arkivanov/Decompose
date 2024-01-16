@@ -7,7 +7,7 @@ Decompose provides a number of modules, they are all published to Maven Central 
 The main functionality is provided by the `decompose` module. It contains some core features like:
 
 - [ComponentContext](../component/overview.md#componentcontext) - provides API for components to manage lifecycle, state saving, etc.
-- [Value](../component/overview.md/#value-and-mutablevalue-state-holders) allowing UI code to observe value changes
+- [Value](../component/overview.md/#value-and-mutablevalue-state-holders) - Multiplatform (Swift-friendly) observable state holder (allows observing state changes in the UI).
 - [Child Stack](../navigation/stack/overview.md) navigation model
 - [defaultComponentContext](../getting-started/quick-start.md/#android-with-compose) function for generating root component context
 that is needed in UI code
