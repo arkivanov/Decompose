@@ -11,6 +11,11 @@ Since Decompose `v2.2.0-alpha01` the recommended way is to use [kotlinx-serializ
 === "Before v2.2.0-alpha01"
 
     ```kotlin title="Saving state in a component"
+    import com.arkivanov.decompose.ComponentContext
+    import com.arkivanov.essenty.parcelable.Parcelable
+    import com.arkivanov.essenty.parcelable.Parcelize
+    import com.arkivanov.essenty.statekeeper.consume
+    
     class SomeComponent(
         componentContext: ComponentContext
     ) : ComponentContext by componentContext {
@@ -29,6 +34,9 @@ Since Decompose `v2.2.0-alpha01` the recommended way is to use [kotlinx-serializ
 === "After v2.2.0-alpha01"
 
     ```kotlin title="Saving state in a component"
+    import com.arkivanov.decompose.ComponentContext
+    import kotlinx.serialization.Serializable
+    
     class SomeComponent(
         componentContext: ComponentContext
     ) : ComponentContext by componentContext {
@@ -47,6 +55,15 @@ Since Decompose `v2.2.0-alpha01` the recommended way is to use [kotlinx-serializ
 === "Before v3.0.0-alpha01"
 
     ```kotlin title="Saving state of a retained instance"
+    import com.arkivanov.decompose.ComponentContext
+    import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+    import com.arkivanov.essenty.instancekeeper.getOrCreate
+    import com.arkivanov.essenty.parcelable.Parcelable
+    import com.arkivanov.essenty.parcelable.ParcelableContainer
+    import com.arkivanov.essenty.parcelable.Parcelize
+    import com.arkivanov.essenty.parcelable.consume
+    import com.arkivanov.essenty.statekeeper.consume
+    
     class SomeComponent(
         componentContext: ComponentContext
     ) : ComponentContext by componentContext {
@@ -75,47 +92,53 @@ Since Decompose `v2.2.0-alpha01` the recommended way is to use [kotlinx-serializ
     
         @Parcelize
         data class State(val someValue: Int = 0) : Parcelable
-    }
+    } 
     ```
 
 === "Since v3.0.0-alpha01"
 
-    ```kotlin title="Saving state of a retained instance"
-    class SomeComponent(
-        componentContext: ComponentContext
-    ) : ComponentContext by componentContext {
-    
-        private val statefulEntity =
-            instanceKeeper.getOrCreate {
-                SomeStatefulEntity(savedState = stateKeeper.consume(key = "SAVED_STATE", strategy = SerializableContainer.serializer()))
-            }
-    
-        init {
-            stateKeeper.register(
-                key = "SAVED_STATE",
-                strategy = SerializableContainer.serializer(),
-                supplier = statefulEntity::saveState,
-            )
+```kotlin title="Saving state of a retained instance"
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.instancekeeper.getOrCreate
+import com.arkivanov.essenty.statekeeper.SerializableContainer
+import kotlinx.serialization.Serializable
+
+class SomeComponent(
+    componentContext: ComponentContext
+) : ComponentContext by componentContext {
+
+    private val statefulEntity =
+        instanceKeeper.getOrCreate {
+            SomeStatefulEntity(savedState = stateKeeper.consume(key = "SAVED_STATE", strategy = SerializableContainer.serializer()))
         }
+
+    init {
+        stateKeeper.register(
+            key = "SAVED_STATE",
+            strategy = SerializableContainer.serializer(),
+            supplier = statefulEntity::saveState,
+        )
     }
-    
-    
-    class SomeStatefulEntity(
-        savedState: SerializableContainer?,
-    ) : InstanceKeeper.Instance {
-    
-        var state: State = savedState?.consume(strategy = State.serializer()) ?: State()
-            private set
-    
-        fun saveState(): SerializableContainer =
-            SerializableContainer(value = state, strategy = State.serializer())
-    
-        override fun onDestroy() {}
-    
-        @Serializable
-        data class State(val someValue: Int = 0)
-    } 
-    ```
+}
+
+
+class SomeStatefulEntity(
+    savedState: SerializableContainer?,
+) : InstanceKeeper.Instance {
+
+    var state: State = savedState?.consume(strategy = State.serializer()) ?: State()
+        private set
+
+    fun saveState(): SerializableContainer =
+        SerializableContainer(value = state, strategy = State.serializer())
+
+    override fun onDestroy() {}
+
+    @Serializable
+    data class State(val someValue: Int = 0)
+} 
+```
 
 ## Darwin (Apple) targets support (before v3.0.0)
 

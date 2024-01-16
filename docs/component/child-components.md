@@ -20,6 +20,9 @@ A child `ComponentContext` can be created using the following extension function
 `ComponentContext.childContext(key: String, lifecycle: Lifecycle? = null): ComponentContext`
 
 ```kotlin title="Example of a child component without lifecycle control"
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.childContext
+
 class SomeParent(componentContext: ComponentContext) : ComponentContext by componentContext {
 
     val counter: Counter = Counter(childContext(key = "Counter"))
@@ -27,6 +30,12 @@ class SomeParent(componentContext: ComponentContext) : ComponentContext by compo
 ```
 
 ```kotlin title="Example of a child component with lifecycle control"
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.childContext
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.lifecycle.resume
+import com.arkivanov.essenty.lifecycle.stop
+
 class SomeParent(componentContext: ComponentContext) : ComponentContext by componentContext {
 
     // Never destroy the lifecycle of a permanent child component! 
@@ -37,7 +46,7 @@ class SomeParent(componentContext: ComponentContext) : ComponentContext by compo
     private fun resumeCounter() {
         counterLifecycle.resume()
     }
-   
+
     private fun stopCounter() {
         counterLifecycle.stop()
     }
