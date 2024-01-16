@@ -10,7 +10,7 @@ The main functionality is provided by the `decompose` module. It contains some c
 - [Value](../component/overview.md/#value-and-mutablevalue-state-holders) - Multiplatform (Swift-friendly) observable state holder (allows observing state changes in the UI).
 - [Child Stack](../navigation/stack/overview.md) - stack navigation model.
 - [defaultComponentContext](../getting-started/quick-start.md/#android-with-compose) - creates a default `ComponentContext` attached to an Activity or Fragment on Android.
-- and many other important things
+- And many other important APIs.
 
 This module should be imported into build.gradle.kts for shared application module
 at ```kotlin.sourceSets.commonMain.dependencies```
