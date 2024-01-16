@@ -41,11 +41,15 @@ Although discouraged, it is still possible to have all components retained over 
     The `retainedComponent` function must only be called once during the lifetime of the host Activity or Fragment, typically in `onCreate`. Calling it a second time will result in a crash.
 
 ```kotlin
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.arkivanov.decompose.retainedComponent
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val root = 
+        val root =
             retainedComponent { componentContext ->
                 DefaultRootComponent(componentContext)
             }
