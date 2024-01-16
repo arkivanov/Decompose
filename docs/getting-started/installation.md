@@ -107,17 +107,14 @@ Compose is currently published in two separate variants:
 
 === "Since v3.0.0-alpha01"
 
-    All Compose variants (Android, JVM/Desktop, Native/iOS, Native/macOS, JS/Canvas, Wasm) are published from the main branch,
-    please add dependencies as usual (no version suffixes required).
+    All Compose variants (Android, JVM/Desktop, Native/iOS, Native/macOS, JS/Canvas, Wasm) are published from the main branch, please add dependencies as usual (no version suffixes required).
 
 !!!warning
     Wasm target is not yet supported. Please follow [issue #74](https://github.com/arkivanov/Decompose/issues/74) for more information and updates.
 
 ## Extensions for Android views
 
-The `extensions-android` module provides extensions to connect
-Android views (older alternative to Compose UI) to Decompose components.
-Please head to the corresponding [documentation page](../extensions/android.md) for more information.
+The `extensions-android` module provides extensions to connect Android views (older alternative to Compose UI) to Decompose components. Please head to the corresponding [documentation page](../extensions/android.md) for more information.
 
 ### Gradle setup
 
