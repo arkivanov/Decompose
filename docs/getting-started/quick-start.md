@@ -24,7 +24,7 @@ It's often useful to extract an interface for a component. It makes it possible 
 
 [ComponentContext](../component/overview.md#componentcontext) is probably the most important concept of Decompose. It is an interface that provides access to various tools, like lifecycle, state preservation, instance retaining (aka Android ViewModel), back button handling, etc. Each component has its own `ComponentContext` provided by Decompose.
 
-If your component requires `ComponentContext`, just pass it via constructor. You can also use the delegation pattern to add `ComponentContext` to `this` scope.
+If your component requires `ComponentContext`, just pass it via constructor. You can also use the [delegation pattern](https://kotlinlang.org/docs/delegation.html) to add `ComponentContext` to `this` scope.
 
 ```kotlin
 import com.arkivanov.decompose.ComponentContext
@@ -70,8 +70,8 @@ class DefaultListComponent(
     componentContext: ComponentContext,
     private val onItemSelected: (item: String) -> Unit,
 ) : ListComponent {
-    override val model: Value<Model> =
-        MutableValue(Model(items = List(100) { "Item $it" }))
+    override val model: Value<ListComponent.Model> =
+        MutableValue(ListComponent.Model(items = List(100) { "Item $it" }))
 
     override fun onItemClicked(item: String) {
         onItemSelected(item)
