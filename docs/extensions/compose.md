@@ -53,8 +53,6 @@ import androidx.compose.ui.window.rememberWindowState
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.sample.shared.root.DefaultRootComponent
-import com.arkivanov.sample.shared.root.RootContent
 
 fun main() {
     val lifecycle = LifecycleRegistry()
@@ -99,8 +97,8 @@ import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.sample.shared.RootComponent.Child.DetailsChild
-import com.arkivanov.sample.shared.RootComponent.Child.MainChild
+import com.sample.shared.RootComponent.Child.DetailsChild
+import com.sample.shared.RootComponent.Child.MainChild
 
 // Root
 
