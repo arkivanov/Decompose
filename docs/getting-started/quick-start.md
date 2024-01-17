@@ -70,8 +70,8 @@ class DefaultListComponent(
     componentContext: ComponentContext,
     private val onItemSelected: (item: String) -> Unit,
 ) : ListComponent {
-    override val model: Value<ListComponent.Model> =
-        MutableValue(ListComponent.Model(items = List(100) { "Item $it" }))
+    override val model: Value<Model> =
+        MutableValue(Model(items = List(100) { "Item $it" }))
 
     override fun onItemClicked(item: String) {
         onItemSelected(item)
@@ -81,7 +81,7 @@ class DefaultListComponent(
 
 ### Observing Value in Compose 
 
-Observing `Value` in Compose is easy, just use the `subscribeAsState` extension function.
+When developing UI views with Compose, observing `Value` is easy, just use the `subscribeAsState` extension function.
 
 ```kotlin
 import androidx.compose.foundation.clickable
