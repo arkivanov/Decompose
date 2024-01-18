@@ -4,6 +4,10 @@ Due to the fact that components are lifecycle-aware, it is very easy to manage c
 
 ## Creating a CoroutineScope in a component
 
+For easier access to CoroutineScope that is scoped to the life cycle of component, you can create this file in your project and use CoroutineScope function instead of kotlinx.coroutines.CoroutineScope or via extension `coroutineScope` on LifecycleOwner.
+
+// TODO: Create sample for usage of this function
+
 !!! note "Extensions for CoroutineScope and Lifecycle"
 
     === "Before Essenty 2.0.0-alpha01"
