@@ -42,6 +42,8 @@ There are three steps to initialize `Child Pages`:
 Here is a very basic example of a pager-like navigation:
 
 ```kotlin title="PageComponent"
+import com.arkivanov.decompose.ComponentContext
+
 interface PageComponent {
     val data: String
 }
@@ -55,6 +57,16 @@ class DefaultPageComponent(
 === "Before v2.2.0-alpha01"
 
     ```kotlin title="PagesComponent"
+    import com.arkivanov.decompose.ComponentContext
+    import com.arkivanov.decompose.router.pages.ChildPages
+    import com.arkivanov.decompose.router.pages.Pages
+    import com.arkivanov.decompose.router.pages.PagesNavigation
+    import com.arkivanov.decompose.router.pages.childPages
+    import com.arkivanov.decompose.router.pages.select
+    import com.arkivanov.decompose.value.Value
+    import com.arkivanov.essenty.parcelable.Parcelable
+    import com.arkivanov.essenty.parcelable.Parcelize
+    
     interface PagesComponent {
         val pages: Value<ChildPages<*, PageComponent>>
     
@@ -89,12 +101,21 @@ class DefaultPageComponent(
     
         @Parcelize // kotlin-parcelize plugin must be applied if you are targetting Android
         private data class Config(val data: String) : Parcelable
-    }
+    }    
     ```
 
 === "Since v2.2.0-alpha01"
 
     ```kotlin title="PagesComponent"
+    import com.arkivanov.decompose.ComponentContext
+    import com.arkivanov.decompose.router.pages.ChildPages
+    import com.arkivanov.decompose.router.pages.Pages
+    import com.arkivanov.decompose.router.pages.PagesNavigation
+    import com.arkivanov.decompose.router.pages.childPages
+    import com.arkivanov.decompose.router.pages.select
+    import com.arkivanov.decompose.value.Value
+    import kotlinx.serialization.Serializable
+    
     interface PagesComponent {
         val pages: Value<ChildPages<*, PageComponent>>
     
