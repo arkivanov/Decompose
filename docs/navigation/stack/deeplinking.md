@@ -15,13 +15,18 @@ item with the provided `id`. When the user closes the details screen, they shoul
 parsed data from the deep link to a component responsible for navigation, in our case it is the `Root` component.
 
 ```kotlin
-class RootComponent(
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import kotlinx.serialization.Serializable
+
+class DefaultRootComponent(
     componentContext: ComponentContext,
     initialItemId: Long? = null, // It can be any other type, e.g. a sealed class with all possible destinations
-) : Root, ComponentContext by componentContext {
+) : RootComponent, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
-    
+
     private val stack =
         childStack(
             source = navigation,
@@ -36,6 +41,15 @@ class RootComponent(
         )
 
     // Omitted code
+
+    @Serializable
+    private sealed class Config {
+        @Serializable
+        data object List : Config()
+
+        @Serializable
+        data class Details(val itemId: Long) : Config()
+    }
 }
 ```
 
@@ -51,6 +65,13 @@ Once the app is configured, the deeplink `Intent` can arrive via one of the two 
 #### Handling deep links since v3.0.0-alpha01
 
 ```kotlin
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
+import com.arkivanov.decompose.defaultComponentContext
+
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,13 +79,12 @@ class MainActivity : AppCompatActivity() {
 
         val initialItemId = intent.data?.extractInitialItemId()
 
-        val root =
-            RootComponent(
-                componentContext = defaultComponentContext(
-                    discardSavedState = initialItemId != null, // Discard any saved state if there is a deep link
-                ), 
-                initialItemId = initialItemId,
-            )
+        val root = DefaultRootComponent(
+            componentContext = defaultComponentContext(
+                discardSavedState = initialItemId != null, // Discard any saved state if there is a deep link
+            ),
+            initialItemId = initialItemId,
+        )
 
         if (initialItemId != null) {
             intent = Intent(intent).setData(null) // The deep link has been handled, clear the Intent data
@@ -84,14 +104,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun Uri.extractInitialItemId(): Long? =
-        TODO("Extract the initial item id from the deep link")
+    private fun Uri.extractInitialItemId(): Long = TODO("Extract the initial item id from the deep link")
 }
 ```
 
 #### Alternative way
 
 ```kotlin
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.defaultComponentContext
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var root: RootComponent
@@ -102,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         val initialItemId = intent.data?.extractInitialItemId()
 
         root =
-            RootComponent(
+            DefaultRootComponent(
                 componentContext = defaultComponentContext(),
                 initialItemId = initialItemId,
             )
@@ -127,17 +154,17 @@ class MainActivity : AppCompatActivity() {
         TODO("Extract the initial item id from the deep link")
 }
 
-class RootComponent(
+class DefaultRootComponent(
     componentContext: ComponentContext,
     initialItemId: Long? = null,
-) {
+) : RootComponent, ComponentContext by componentContext {
 
     // Omitted code
 
     fun onDeepLink(initialItemId: Long) {
         navigation.replaceAll(Config.List, Config.Details(itemId = initialItemId))
     }
-    
+
     // Omitted code
 }
 ```

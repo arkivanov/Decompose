@@ -34,6 +34,8 @@ There are three steps to initialize the `Child Stack`:
 Here is a very basic example of navigation between two child components:
 
 ```kotlin title="ItemList component"
+import com.arkivanov.decompose.ComponentContext
+
 interface ItemListComponent {
 
     // Omitted code
@@ -55,6 +57,8 @@ class DefaultItemListComponent(
 ```
 
 ```kotlin title="ItemDetails component"
+import com.arkivanov.decompose.ComponentContext
+
 interface ItemDetailsComponent {
 
     // Omitted code
@@ -78,63 +82,86 @@ class DefaultItemDetailsComponent(
 
 === "Before v2.2.0-alpha01"
 
-    ```kotlin title="Root component"
-    interface RootComponent {
-    
-        val childStack: Value<ChildStack<*, Child>>
-    
-        sealed class Child {
-            class ListChild(val component: ItemListComponent) : Child()
-            class DetailsChild(val component: ItemDetailsComponent) : Child()
-        }
-    }
-    
-    class DefaultRootComponent(
-        componentContext: ComponentContext
-    ) : RootComponent, ComponentContext by componentContext {
-    
-        private val navigation = StackNavigation<Config>()
-    
-        override val childStack: Value<ChildStack<*, RootComponent.Child>> =
-            childStack(
-                source = navigation,
-                initialConfiguration = Config.List,
-                handleBackButton = true, // Pop the back stack on back button press
-                childFactory = ::createChild,
-            )
-    
-        private fun createChild(config: Config, componentContext: ComponentContext): RootComponent.Child =
-            when (config) {
-                is Config.List -> ListChild(itemList(componentContext))
-                is Config.Details -> DetailsChild(itemDetails(componentContext, config))
-            }
-    
-        private fun itemList(componentContext: ComponentContext): ItemListComponent =
-            DefaultItemListComponent(
-                componentContext = componentContext,
-                onItemSelected = { navigation.push(Config.Details(itemId = it)) }
-            )
-    
-        private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetailsComponent =
-            DefaultItemDetailsComponent(
-                componentContext = componentContext,
-                itemId = config.itemId,
-                onFinished = { navigation.pop() }
-            )
-    
-        private sealed class Config : Parcelable {
-            @Parcelize
-            data object List : Config()
-    
-            @Parcelize
-            data class Details(val itemId: Long) : Config()
-        }
-    }
-    ```
+  ```kotlin title="Root component"
+  import com.arkivanov.decompose.ComponentContext
+  import com.arkivanov.decompose.router.stack.ChildStack
+  import com.arkivanov.decompose.router.stack.StackNavigation
+  import com.arkivanov.decompose.router.stack.childStack
+  import com.arkivanov.decompose.router.stack.pop
+  import com.arkivanov.decompose.router.stack.push
+  import com.arkivanov.decompose.value.Value
+  import com.arkivanov.essenty.parcelable.Parcelable
+  import com.arkivanov.essenty.parcelable.Parcelize
+  import com.arkivanov.sample.shared.RootComponent.Child.DetailsChild
+  import com.arkivanov.sample.shared.RootComponent.Child.ListChild
+  
+  interface RootComponent {
+  
+      val childStack: Value<ChildStack<*, Child>>
+  
+      sealed class Child {
+          class ListChild(val component: ItemListComponent) : Child()
+          class DetailsChild(val component: ItemDetailsComponent) : Child()
+      }
+  }
+  
+  class DefaultRootComponent(
+      componentContext: ComponentContext
+  ) : RootComponent, ComponentContext by componentContext {
+  
+      private val navigation = StackNavigation<Config>()
+  
+      override val childStack: Value<ChildStack<*, RootComponent.Child>> =
+          childStack(
+              source = navigation,
+              initialConfiguration = Config.List,
+              handleBackButton = true, // Pop the back stack on back button press
+              childFactory = ::createChild,
+          )
+  
+      private fun createChild(config: Config, componentContext: ComponentContext): RootComponent.Child =
+          when (config) {
+              is Config.List -> ListChild(itemList(componentContext))
+              is Config.Details -> DetailsChild(itemDetails(componentContext, config))
+          }
+  
+      private fun itemList(componentContext: ComponentContext): ItemListComponent =
+          DefaultItemListComponent(
+              componentContext = componentContext,
+              onItemSelected = { navigation.push(Config.Details(itemId = it)) }
+          )
+  
+      private fun itemDetails(componentContext: ComponentContext, config: Config.Details): ItemDetailsComponent =
+          DefaultItemDetailsComponent(
+              componentContext = componentContext,
+              itemId = config.itemId,
+              onFinished = navigation::pop,
+          )
+  
+      private sealed class Config : Parcelable {
+          @Parcelize
+          data object List : Config()
+  
+          @Parcelize
+          data class Details(val itemId: Long) : Config()
+      }
+  }
+  ```
 
 === "Since v2.2.0-alpha01"
 
     ```kotlin title="Root component"
+    import com.arkivanov.decompose.ComponentContext
+    import com.arkivanov.decompose.router.stack.ChildStack
+    import com.arkivanov.decompose.router.stack.StackNavigation
+    import com.arkivanov.decompose.router.stack.childStack
+    import com.arkivanov.decompose.router.stack.pop
+    import com.arkivanov.decompose.router.stack.push
+    import com.arkivanov.decompose.value.Value
+    import com.arkivanov.sample.shared.RootComponent.Child.DetailsChild
+    import com.arkivanov.sample.shared.RootComponent.Child.ListChild
+    import kotlinx.serialization.Serializable
+    
     interface RootComponent {
     
         val childStack: Value<ChildStack<*, Child>>
@@ -212,17 +239,12 @@ To deliver a result from one component to another:
 - When the callback is invoked, perform the navigation, e.g. by using `navigation.pop { ... }`.
 - After the navigation is performed, call a method on the `first` component with the `result`.
 
-```kotlin
+```kotlin title="Child components"
 interface ItemListComponent {
 
     fun onItemClicked(id: Long)
 
     fun onItemDeleted(id: Long)
-}
-
-interface ItemDetailsComponent {
-
-    fun onDeleteClicked()
 }
 
 class DefaultItemListComponent(
@@ -239,6 +261,11 @@ class DefaultItemListComponent(
     }
 }
 
+interface ItemDetailsComponent {
+
+    fun onDeleteClicked()
+}
+
 class DefaultItemDetailsComponent(
     componentContext: ComponentContext,
     private val itemId: Long,
@@ -247,9 +274,15 @@ class DefaultItemDetailsComponent(
 
     override fun onDeleteClicked() {
         // TODO: Delete the item
-        onDeleted(itemId = itemId)
+        onDeleted(itemId)
     }
 }
+```
+
+```kotlin title="Root component"
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
 
 class DefaultRootComponent(
     componentContext: ComponentContext

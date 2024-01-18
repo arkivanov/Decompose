@@ -28,6 +28,8 @@ There are three steps to initialize the `Child Slot`:
 Here is a very basic example of a child slot:
 
 ```kotlin title="Dialog component"
+import com.arkivanov.decompose.ComponentContext
+
 interface DialogComponent {
 
     fun onDismissClicked()
@@ -48,6 +50,16 @@ class DefaultDialogComponent(
 === "Before v2.2.0-alpha01"
 
     ```kotlin title="Root component"
+    import com.arkivanov.decompose.ComponentContext
+    import com.arkivanov.decompose.router.slot.ChildSlot
+    import com.arkivanov.decompose.router.slot.SlotNavigation
+    import com.arkivanov.decompose.router.slot.activate
+    import com.arkivanov.decompose.router.slot.childSlot
+    import com.arkivanov.decompose.router.slot.dismiss
+    import com.arkivanov.decompose.value.Value
+    import com.arkivanov.essenty.parcelable.Parcelable
+    import com.arkivanov.essenty.parcelable.Parcelize
+    
     interface RootComponent {
     
         val dialog: Value<ChildSlot<*, DialogComponent>>
@@ -76,7 +88,7 @@ class DefaultDialogComponent(
             dialogNavigation.activate(DialogConfig(message = message))
         }
     
-        @Parcelize // kotlin-parcelize plugin must be applied if you are targetting Android
+        @Parcelize // kotlin-parcelize plugin must be applied if you are targeting Android
         private data class DialogConfig(
             val message: String,
         ) : Parcelable
@@ -86,6 +98,15 @@ class DefaultDialogComponent(
 === "Since v2.2.0-alpha01"
 
     ```kotlin title="Root component"
+    import com.arkivanov.decompose.ComponentContext
+    import com.arkivanov.decompose.router.slot.ChildSlot
+    import com.arkivanov.decompose.router.slot.SlotNavigation
+    import com.arkivanov.decompose.router.slot.activate
+    import com.arkivanov.decompose.router.slot.childSlot
+    import com.arkivanov.decompose.router.slot.dismiss
+    import com.arkivanov.decompose.value.Value
+    import kotlinx.serialization.Serializable
+    
     interface RootComponent {
     
         val dialog: Value<ChildSlot<*, DialogComponent>>
@@ -126,12 +147,16 @@ class DefaultDialogComponent(
 When multiple `Child Slots` are used in one component, each such `Child Slot` must have a unique key associated. The keys are required to be unique only within the parent (hosting) component, so it is ok for different components to have `Child Slots` with same keys. An exception will be thrown if multiple `Child Slots` with the same key are detected in a component.
 
 ```kotlin title="Two Child Slots in one component"
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.childSlot
+
 class Root(
     componentContext: ComponentContext
 ) : ComponentContext by componentContext {
 
     private val topNavigation = SlotNavigation<TopConfig>()
-    
+
     private val topSlot =
         childSlot<TopConfig, TopChild>(
             source = topNavigation,
@@ -140,7 +165,7 @@ class Root(
         )
 
     private val bottomNavigation = SlotNavigation<BottomConfig>()
-    
+
     private val bottomSlot =
         childSlot<BottomConfig, BottomChild>(
             source = bottomNavigation,

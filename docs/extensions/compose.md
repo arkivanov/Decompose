@@ -78,7 +78,7 @@ fun main() {
 
 !!! note
 
-    You can find the `runOnUiThread` method [here]([Utils.kt](https://github.com/arkivanov/Decompose/blob/master/sample/app-desktop/src/jvmMain/kotlin/com/arkivanov/sample/app/Utils.kt)).
+    You can find the `runOnUiThread` method [here](https://github.com/arkivanov/Decompose/blob/master/sample/app-desktop/src/jvmMain/kotlin/com/arkivanov/sample/app/Utils.kt).
 
 ## Navigating between Composable components
 
