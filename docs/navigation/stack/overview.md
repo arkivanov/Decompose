@@ -190,6 +190,30 @@ class DefaultItemDetailsComponent(
     }
     ```
 
+
+```kotlin title="RootContent - Compose view"
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import com.sample.shared.RootComponent.Child.ListChild
+import com.sample.shared.RootComponent.Child.DetailsChild
+
+@Composable
+fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
+    Children(
+    stack = component.stack,
+    modifier = modifier,
+    animation = stackAnimation(fade()),
+    ) {
+        when (val child = it.instance) {
+            is ListChild -> ListContent(component = child.component)
+            is DetailsChild -> DetailsContent(component = child.component)
+        }
+    }
+}
+```
 ## Components in the back stack
 
 `Child Stack` can not be empty, there is always one active (resumed) child component. Components in the back stack are always stopped. When `Child Stack` is first initialized or recreated after e.g. process death, all components are automatically created and the active component is resumed.
