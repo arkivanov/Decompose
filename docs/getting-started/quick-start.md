@@ -81,7 +81,7 @@ class DefaultListComponent(
 
 ### Observing Value in Compose 
 
-When developing UI views with Compose, observing `Value` is easy, just use the `subscribeAsState` extension function.
+Observing `Value` in Compose is easy, just use the `subscribeAsState` extension function.
 
 ```kotlin
 import androidx.compose.foundation.clickable

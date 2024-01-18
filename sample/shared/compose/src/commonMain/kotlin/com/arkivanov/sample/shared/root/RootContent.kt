@@ -56,7 +56,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
                     .fillMaxSize()
                     .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)),
             ) {
-                Children(component = component, modifier = Modifier.weight(1F))
+                RenderChildren(component = component, modifier = Modifier.weight(1F))
                 BottomBar(component = component, modifier = Modifier.fillMaxWidth())
             }
         }
@@ -64,7 +64,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun Children(component: RootComponent, modifier: Modifier = Modifier) {
+private fun RenderChildren(component: RootComponent, modifier: Modifier = Modifier) {
     Children(
         stack = component.childStack,
         modifier = modifier,
