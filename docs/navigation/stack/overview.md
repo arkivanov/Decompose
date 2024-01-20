@@ -29,6 +29,10 @@ There are three steps to initialize the `Child Stack`:
 - Initialize the `Child Stack` using the `ComponentContext#childStack` extension function and pass `StackNavigation` into it along with other arguments.
 - The `childStack` function returns `Value<ChildStack>` that can be observed in the UI. Assign the returned `Value` to another property or a variable.
 
+### Displaying the stack with Compose
+
+`Child Stack` state can be observed and displayed in Compose by using the `Children` `Composable` function from the Compose extensions module provided by Decompose. Please see the [related documentation](../../extensions/compose.md#navigating-between-composable-components) for more information.
+
 ## Example
 
 Here is a very basic example of navigation between two child components:

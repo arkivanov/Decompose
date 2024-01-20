@@ -80,6 +80,22 @@ fun main() {
 
     You can find the `runOnUiThread` method [here](https://github.com/arkivanov/Decompose/blob/master/sample/app-desktop/src/jvmMain/kotlin/com/arkivanov/sample/app/Utils.kt).
 
+## Observing the navigation state manually
+
+In most of the cases there is no need to manually observe the navigation state. One of the ways described in the sections below can be used instead. For instance, it's advised to use the `Children` function to display a stack of components. However, in some cases observing the navigation state manually can be useful. Every navigation model exposes its state as `Value<T>`, which makes it possible to observe the navigation state in Compose just as any other state.
+
+```kotlin
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+
+@Composable
+fun RootContent(component: RootComponent) {
+    val stack by component.childStack.subscribeAsState()
+    // Use the stack variable here
+}
+```
+
 ## Navigating between Composable components
 
 The [Child Stack](../navigation/stack/overview.md) navigation model provides [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) as `Value<ChildStack>` that can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `ChildStack` changes.

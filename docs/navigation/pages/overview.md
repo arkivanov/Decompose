@@ -37,6 +37,10 @@ There are three steps to initialize `Child Pages`:
 - Initialize the `Child Pages` navigation model using the `ComponentContext#childPages` extension function and pass `PagesNavigation` into it along with other arguments.
 - The `childPages` function returns `Value<ChildPages>` that can be observed in the UI. Assign the returned `Value` to another property or a variable.
 
+### Displaying pages with Compose
+
+`Child Pages` state can be observed and displayed in Compose by using the `Pager` `Composable` function from the Compose extensions module provided by Decompose. Please see the [related documentation](../../extensions/compose.md#pager-like-navigation) for more information.
+
 ## Example
 
 Here is a very basic example of a pager-like navigation:
