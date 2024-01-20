@@ -223,7 +223,7 @@ class DefaultItemDetailsComponent(
 
 ## Screen recreation and process death on (not only) Android
 
-`Child Stack` automatically preserves the stack when a configuration change or process death occurs. Use the `persistent` argument to disable stack preservation completely. When disabled, the stack is reset to the initial state when recreated.
+`Child Stack` automatically preserves the stack when a configuration change or process death occurs. Use the `persistent` argument to disable stack preservation completely. When disabled, the stack is reset to the initial state when recreated. Note: since version `v2.2.0-alpha01`, the `persistent` argument is deprecated, you can pass `serializer = null` to disable state saving.
 
 Components are created in their order. E.g. the first component in the back stack is created first, then the next component in the back stack is created, and so on. The active component is the latest component created.
 

@@ -156,7 +156,7 @@ class DefaultPageComponent(
 
 ## Screen recreation and process death on (not only) Android
 
-`Child Pages` automatically preserves the state when a configuration change or process death occurs. Use the `persistent` argument to disable state preservation completely. When disabled, the state is reset to the initial state when recreated.
+`Child Pages` automatically preserves the state when a configuration change or process death occurs. Use the `persistent` argument to disable state preservation completely. When disabled, the state is reset to the initial state when recreated. Note: since version `v2.2.0-alpha01`, the `persistent` argument is deprecated, you can pass `serializer = null` to disable state saving.
 
 Components are created in their order. E.g. the first component in the list is created first, then the next component in the list is created, and so on. Components are destroyed in reverse order.
 
