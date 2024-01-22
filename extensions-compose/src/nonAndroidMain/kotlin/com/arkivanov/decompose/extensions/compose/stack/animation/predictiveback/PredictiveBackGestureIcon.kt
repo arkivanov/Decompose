@@ -1,4 +1,4 @@
-package com.arkivanov.decompose.extensions.compose
+package com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
