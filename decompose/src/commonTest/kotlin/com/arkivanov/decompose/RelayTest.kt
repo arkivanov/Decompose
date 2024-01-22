@@ -38,8 +38,7 @@ class RelayTest {
         val relay = Relay<Int>()
         var isEmitted = false
         val observer: (Int) -> Unit = { isEmitted = true }
-        relay.subscribe(observer)
-        relay.unsubscribe(observer)
+        relay.subscribe(observer).cancel()
 
         relay.accept(1)
 

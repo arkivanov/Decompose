@@ -95,8 +95,7 @@ public abstract interface class com/arkivanov/decompose/router/children/NavState
 }
 
 public abstract interface class com/arkivanov/decompose/router/children/NavigationSource {
-	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/Cancellation;
 }
 
 public final class com/arkivanov/decompose/router/children/SimpleChildNavState : com/arkivanov/decompose/router/children/ChildNavState {
@@ -115,8 +114,7 @@ public final class com/arkivanov/decompose/router/children/SimpleChildNavState :
 public final class com/arkivanov/decompose/router/children/SimpleNavigation : com/arkivanov/decompose/router/children/NavigationSource {
 	public fun <init> ()V
 	public final fun navigate (Ljava/lang/Object;)V
-	public fun subscribe (Lkotlin/jvm/functions/Function1;)V
-	public fun unsubscribe (Lkotlin/jvm/functions/Function1;)V
+	public fun subscribe (Lkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/Cancellation;
 }
 
 public final class com/arkivanov/decompose/router/pages/ChildPages {

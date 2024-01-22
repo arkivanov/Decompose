@@ -50,11 +50,11 @@ internal class Relay<T>(
         }
     }
 
-    fun subscribe(observer: (T) -> Unit) {
+    fun subscribe(observer: (T) -> Unit): Cancellation {
         lock.synchronized { observers += observer }
-    }
 
-    fun unsubscribe(observer: (T) -> Unit) {
-        lock.synchronized { observers -= observer }
+        return Cancellation {
+            lock.synchronized { observers -= observer }
+        }
     }
 }

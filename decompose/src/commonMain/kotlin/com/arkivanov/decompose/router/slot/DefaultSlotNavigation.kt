@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.router.slot
 
+import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.Relay
 import com.arkivanov.decompose.router.slot.SlotNavigationSource.Event
 
@@ -14,11 +15,6 @@ internal class DefaultSlotNavigation<C : Any> : SlotNavigation<C> {
         relay.accept(Event(transformer, onComplete))
     }
 
-    override fun subscribe(observer: (Event<C>) -> Unit) {
+    override fun subscribe(observer: (Event<C>) -> Unit): Cancellation =
         relay.subscribe(observer)
-    }
-
-    override fun unsubscribe(observer: (Event<C>) -> Unit) {
-        relay.unsubscribe(observer)
-    }
 }

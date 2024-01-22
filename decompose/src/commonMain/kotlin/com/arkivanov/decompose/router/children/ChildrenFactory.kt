@@ -166,8 +166,8 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
 
     mainBackHandler.register(backCallback)
 
-    val eventObserver: (E) -> Unit =
-        { event ->
+    val cancellation =
+        source.subscribe { event ->
             val oldState = navigator.navState
             navigator.navigate(navState = navTransformer(navigator.navState, event))
             val newState = navigator.navState
@@ -175,10 +175,8 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
             onEventComplete(event, newState, oldState)
         }
 
-    source.subscribe(eventObserver)
-
     lifecycle.doOnDestroy {
-        source.unsubscribe(eventObserver)
+        cancellation.cancel()
         stateKeeper.unregister(key = key)
         mainBackHandler.unregister(backCallback)
     }

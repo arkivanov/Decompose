@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.router.children
 
+import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.Relay
 
 /**
@@ -10,13 +11,8 @@ class SimpleNavigation<T : Any> : NavigationSource<T> {
 
     private val relay = Relay<T>(isMainThreadCheckEnabled = true)
 
-    override fun subscribe(observer: (T) -> Unit) {
+    override fun subscribe(observer: (T) -> Unit): Cancellation =
         relay.subscribe(observer)
-    }
-
-    override fun unsubscribe(observer: (T) -> Unit) {
-        relay.unsubscribe(observer)
-    }
 
     /**
      * Broadcasts the navigation event to every subscribed observer.
