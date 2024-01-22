@@ -55,6 +55,11 @@ nav:
     - Extensions for Android views: extensions/android.md
 
   - Samples: samples.md
+
+  - Tips and Tricks:
+    - Overview: tips-tricks/overview.md
+    - Calling Composable functions with ViewModels: tips-tricks/composable-viewmodel.md
+
   - Community: community.md
 
   # Configuration
