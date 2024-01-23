@@ -80,6 +80,54 @@ This can be useful when pushing a component on button click, to avoid pushing th
     [A, B, C*]
     ```
 
+### pushToFront(configuration) (since v3.0.0-alpha05)
+
+Pushes the provided configuration to the top of the stack, removing the configuration from the back stack, if any.
+
+This API works similar to `bringToFront`, except it compares configurations by equality rather than by configuration class.
+
+!!! note "Illustration 1"
+
+    ```title="Before"
+    [A(1), B(1)*]
+    ```
+    
+    ```kotlin
+    navigation.pushToFront(Configuration.A(2))
+    ```
+    
+    ```title="After"
+    [A(1), B(1), A(2)*]
+    ```
+
+!!! note "Illustration 2"
+
+    ```title="Before"
+    [A(1), B(1), A(2)]
+    ```
+    
+    ```kotlin
+    navigation.pushToFront(Configuration.A(1))
+    ```
+    
+    ```title="After"
+    [B(1), A(2), A(1)*]
+    ```
+
+!!! note "Illustration 3"
+
+    ```title="Before"
+    [A(1), B(1), A(2)]
+    ```
+    
+    ```kotlin
+    navigation.pushToFront(Configuration.A(2))
+    ```
+    
+    ```title="After"
+    [A(1), B(1), A(2)*]
+    ```
+
 ### pop
 
 Pops the latest configuration at the top of the stack.
