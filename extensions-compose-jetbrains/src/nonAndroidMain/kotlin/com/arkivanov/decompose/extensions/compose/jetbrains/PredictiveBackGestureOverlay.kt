@@ -38,9 +38,9 @@ import com.arkivanov.essenty.backhandler.BackEvent.SwipeEdge
  * using [PredictiveBackGestureIcon].
  * @param modifier a [Modifier] to applied to the overlay.
  * @param startEdgeEnabled controls whether the start edge is enabled or not,
- * left in RTL mode and right in LTR mode.
+ * left in LTR mode and right in RTL mode.
  * @param endEdgeEnabled controls whether the end edge is enabled or not,
- * right in RTL mode and left in LTR mode.
+ * right in LTR mode and left in RTL mode.
  * @param onClose If supplied, then the back gesture is also handled when there are no other enabled back
  * callbacks registered in [backDispatcher], can be used to close the application.
  * @param content a content to be shown under the overlay.
