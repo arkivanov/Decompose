@@ -122,6 +122,7 @@ public final class com/arkivanov/decompose/extensions/compose/stack/animation/pr
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable {
 	public abstract fun animate (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun cancel (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun finish (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getEnterModifier ()Landroidx/compose/ui/Modifier;
 	public abstract fun getExitModifier ()Landroidx/compose/ui/Modifier;

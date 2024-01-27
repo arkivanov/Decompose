@@ -126,7 +126,10 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
                         scope.launch { data.animatable?.animate(it) }
                     },
                     onBackCancelled = {
-                        data = data.copy(animatable = null)
+                        scope.launch {
+                            data.animatable?.cancel()
+                            data = data.copy(animatable = null)
+                        }
                     },
                     onBack = {
                         if (data.animatable == null) {
@@ -134,7 +137,9 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
                         } else {
                             scope.launch {
                                 data.animatable?.finish()
-                                onBack()
+                                if (data.animatable != null) {
+                                    onBack()
+                                }
                             }
                         }
                     }

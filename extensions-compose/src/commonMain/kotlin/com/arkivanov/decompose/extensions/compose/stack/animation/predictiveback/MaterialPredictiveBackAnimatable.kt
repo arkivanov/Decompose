@@ -131,4 +131,8 @@ private class MaterialPredictiveBackAnimatable(
             )
         }
     }
+
+    override suspend fun cancel() {
+        progressAnimatable.animateTo(targetValue = 0F)
+    }
 }
