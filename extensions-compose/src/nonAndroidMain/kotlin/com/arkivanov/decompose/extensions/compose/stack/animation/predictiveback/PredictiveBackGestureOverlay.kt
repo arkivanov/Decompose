@@ -19,6 +19,7 @@ import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -41,7 +42,13 @@ import com.arkivanov.essenty.backhandler.BackEvent.SwipeEdge
  * left in RTL mode and right in LTR mode.
  * @param endEdgeEnabled controls whether the end edge is enabled or not,
  * right in RTL mode and left in LTR mode.
- * @param onClose If supplied, then the back gesture is also handled when there are no other enabled back
+ * @param edgeWidth the width in [Dp] from the screen edge where the gesture first down touch is recognized.
+ * @param activationOffsetThreshold a distance threshold in [Dp] from the initial touch point in the direction
+ * of gesture. The gesture is initiated once this threshold is surpassed.
+ * @param confirmationProgressThreshold a threshold of progress that needs to be reached for the gesture
+ * to be confirmed once the touch is completed. The gesture is cancelled if the touch is completed without
+ * reaching the threshold.
+ * @param onClose if supplied, then the back gesture is also handled when there are no other enabled back
  * callbacks registered in [backDispatcher], can be used to close the application.
  * @param content a content to be shown under the overlay.
  */
@@ -53,6 +60,9 @@ fun PredictiveBackGestureOverlay(
     modifier: Modifier = Modifier,
     startEdgeEnabled: Boolean = true,
     endEdgeEnabled: Boolean = true,
+    edgeWidth: Dp = 16.dp,
+    activationOffsetThreshold: Dp = 16.dp,
+    confirmationProgressThreshold: Float = 0.2F,
     onClose: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
@@ -70,6 +80,9 @@ fun PredictiveBackGestureOverlay(
                 LayoutDirection.Ltr -> endEdgeEnabled
                 LayoutDirection.Rtl -> startEdgeEnabled
             },
+            edgeWidth = edgeWidth,
+            activationOffsetThreshold = activationOffsetThreshold,
+            confirmationProgressThreshold = confirmationProgressThreshold,
             onIconMoved = { position, progress, edge ->
                 iconState.value =
                     IconState(
@@ -110,6 +123,9 @@ private fun Modifier.handleBackGestures(
     backDispatcher: BackDispatcher,
     leftEdgeEnabled: Boolean,
     rightEdgeEnabled: Boolean,
+    edgeWidth: Dp,
+    activationOffsetThreshold: Dp,
+    confirmationProgressThreshold: Float,
     onIconMoved: (position: Offset, progress: Float, BackGestureHandler.Edge) -> Unit,
     onIconHidden: () -> Unit,
 ): Modifier =
@@ -120,8 +136,8 @@ private fun Modifier.handleBackGestures(
             val down = awaitFirstDown(pass = PointerEventPass.Initial)
             val startPosition = down.position
 
-            val isLeftInvalid = !leftEdgeEnabled || (startPosition.x > 16.dp.toPx())
-            val isRightInvalid = !rightEdgeEnabled || (startPosition.x < size.width - 16.dp.toPx())
+            val isLeftInvalid = !leftEdgeEnabled || (startPosition.x > edgeWidth.toPx())
+            val isRightInvalid = !rightEdgeEnabled || (startPosition.x < size.width - edgeWidth.toPx())
 
             if (isLeftInvalid && isRightInvalid) {
                 return@awaitEachGesture
@@ -131,8 +147,9 @@ private fun Modifier.handleBackGestures(
                 BackGestureHandler(
                     startPosition = startPosition,
                     size = size,
-                    cancelYOffset = 16.dp.toPx(),
-                    startXOffset = 16.dp.toPx(),
+                    offsetIgnoreThreshold = 16.dp.toPx(),
+                    activationOffsetThreshold = activationOffsetThreshold.toPx(),
+                    progressConfirmationThreshold = confirmationProgressThreshold,
                     backDispatcher = backDispatcher,
                     onIconMoved = onIconMoved,
                 )
@@ -168,8 +185,9 @@ private data class IconState(
 private class BackGestureHandler(
     private val startPosition: Offset,
     private val size: IntSize,
-    private val cancelYOffset: Float,
-    private val startXOffset: Float,
+    private val offsetIgnoreThreshold: Float,
+    private val activationOffsetThreshold: Float,
+    private val progressConfirmationThreshold: Float,
     private val backDispatcher: BackDispatcher,
     private val onIconMoved: (position: Offset, progress: Float, Edge) -> Unit,
 ) {
@@ -198,18 +216,18 @@ private class BackGestureHandler(
             val change = awaitChange()
             val position = change.position
 
-            if ((position.y < startPosition.y - cancelYOffset) || (position.y > startPosition.y + cancelYOffset)) {
+            if ((position.y < startPosition.y - offsetIgnoreThreshold) || (position.y > startPosition.y + offsetIgnoreThreshold)) {
                 return null
             }
 
             when (edge) {
                 Edge.LEFT ->
-                    if (position.x > startPosition.x + startXOffset) {
+                    if (position.x > startPosition.x + activationOffsetThreshold) {
                         return change
                     }
 
                 Edge.RIGHT ->
-                    if (position.x < startPosition.x - startXOffset) {
+                    if (position.x < startPosition.x - activationOffsetThreshold) {
                         return change
                     }
             }
@@ -252,8 +270,9 @@ private class BackGestureHandler(
                 )
             )
 
+            println("Progress: $progress")
             if (!change.pressed) {
-                if (progress > 0.2F) {
+                if (progress > progressConfirmationThreshold) {
                     dispatcher.finish()
                 } else {
                     dispatcher.cancel()
@@ -269,12 +288,12 @@ private class BackGestureHandler(
     private fun getProgress(position: Offset): Float =
         when (edge) {
             Edge.LEFT -> {
-                val startX = startPosition.x + startXOffset
+                val startX = startPosition.x + activationOffsetThreshold
                 (position.x - startX) / (size.width - startX)
             }
 
             Edge.RIGHT -> {
-                val startX = startPosition.x - startXOffset
+                val startX = startPosition.x - activationOffsetThreshold
                 (startX - position.x) / startX
             }
         }.coerceIn(0F, 1F)
