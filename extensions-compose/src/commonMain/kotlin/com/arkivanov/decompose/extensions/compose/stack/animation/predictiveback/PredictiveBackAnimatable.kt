@@ -39,6 +39,14 @@ interface PredictiveBackAnimatable {
      * @see androidx.compose.animation.core.Animatable
      */
     suspend fun finish()
+
+    /**
+     * Animates both [exitModifier] and [enterModifier] towards the initial state.
+     * Any previous animation must be cancelled.
+     *
+     * @see androidx.compose.animation.core.Animatable
+     */
+    suspend fun cancel()
 }
 
 /**

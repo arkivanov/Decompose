@@ -28,4 +28,8 @@ internal class DefaultPredictiveBackAnimatable(
     override suspend fun finish() {
         progressAnimatable.animateTo(targetValue = 1F)
     }
+
+    override suspend fun cancel() {
+        progressAnimatable.animateTo(targetValue = 0F)
+    }
 }
