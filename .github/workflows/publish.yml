@@ -22,7 +22,7 @@ jobs:
           base_url: https://oss.sonatype.org/service/local/
   publish:
     name: Publish
-    runs-on: macos-latest
+    runs-on: macos-14
     needs: create-staging-repository
     steps:
       - name: Checkout
