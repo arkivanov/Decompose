@@ -53,22 +53,29 @@ You can find an example of using this extension module in the [Counter](https://
 Initializing the root in `Activity`:
 
 ```kotlin
-override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.arkivanov.decompose.defaultComponentContext
+import com.arkivanov.decompose.extensions.android.DefaultViewContext
+import com.arkivanov.essenty.lifecycle.essentyLifecycle
 
-    setContentView(R.layout.main_activity)
+class MainActivity : AppCompatActivity() {
 
-    val root = CounterRootComponent(defaultComponentContext())
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    val viewContext =
-        DefaultViewContext(
-            parent = findViewById(R.id.content),
-            lifecycle = essentyLifecycle()
-        )
+        setContentView(R.layout.main_activity)
 
-    viewContext.apply {
-        child(parent) {
-            CounterRootView(root)
+        val root = DefaultCounterComponent(defaultComponentContext())
+
+        val viewContext =
+            DefaultViewContext(
+                parent = findViewById(R.id.content),
+                lifecycle = essentyLifecycle()
+            )
+
+        viewContext.apply {
+            parent.addView(CounterView(root))
         }
     }
 }
@@ -77,7 +84,13 @@ override fun onCreate(savedInstanceState: Bundle?) {
 A simple child view:
 
 ```kotlin
-fun ViewContext.CounterView(counter: Counter): View {
+import android.view.View
+import android.widget.TextView
+import com.arkivanov.decompose.extensions.android.ViewContext
+import com.arkivanov.decompose.extensions.android.layoutInflater
+import com.arkivanov.decompose.value.observe
+
+fun ViewContext.CounterView(component: CounterComponent): View {
     // Inflate the layout without adding it to the parent
     val layout = layoutInflater.inflate(R.layout.counter, parent, false)
 
@@ -85,7 +98,7 @@ fun ViewContext.CounterView(counter: Counter): View {
     val counterText: TextView = layout.findViewById(R.id.text_count)
 
     // Observe Counter models and update the view
-    counter.model.observe(lifecycle) { data ->
+    component.model.observe(lifecycle) { data ->
         counterText.text = data.text
     }
 
@@ -96,21 +109,27 @@ fun ViewContext.CounterView(counter: Counter): View {
 `StackRouterView` example:
 
 ```kotlin
-fun ViewContext.CounterRootView(counterRoot: CounterRoot): View {
+import android.view.View
+import com.arkivanov.decompose.extensions.android.ViewContext
+import com.arkivanov.decompose.extensions.android.child
+import com.arkivanov.decompose.extensions.android.layoutInflater
+import com.arkivanov.decompose.extensions.android.stack.StackRouterView
+
+fun ViewContext.RootView(component: RootComponent): View {
     val layout = layoutInflater.inflate(R.layout.counter_root, parent, false)
     val nextButton: View = layout.findViewById(R.id.button_next)
     val routerView: StackRouterView = layout.findViewById(R.id.router)
 
     nextButton.setOnClickListener { counterRoot.onNextChild() }
 
-    // Create a child `ViewContext` for the `CounterView`
+    // Create a child `ViewContext` for the permanent `CounterView`
     child(layout.findViewById(R.id.container_counter)) {
         // Reuse the `CounterView`
-        CounterView(counterRoot.counter)
+        CounterView(component.counter)
     }
 
     // Subscribe the `StackRouterView` to the `ChildStack` changes
-    routerView.children(counterRoot.childStack, lifecycle) { parent, newStack, _ ->
+    routerView.children(component.childStack, lifecycle) { parent, newStack, _ ->
         // Remove all existing views
         parent.removeAllViews()
 

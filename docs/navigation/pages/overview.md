@@ -23,7 +23,7 @@ The `Child Pages` navigation model consists of two main entities:
 
 ### Component Configurations
 
-Similarly to `Child Stack`, each component created and managed by the `Child Pages` has a configuration, please read the documentation about [child configurations](/Decompose/navigation/overview/#component-configurations-and-child-factories).
+Similarly to `Child Stack`, each component created and managed by the `Child Pages` has a configuration, please read the documentation about [child configurations](../overview.md#component-configurations-and-child-factories).
 
 `Child Pages` adds one additional requirement for child configurations:
 
@@ -37,11 +37,17 @@ There are three steps to initialize `Child Pages`:
 - Initialize the `Child Pages` navigation model using the `ComponentContext#childPages` extension function and pass `PagesNavigation` into it along with other arguments.
 - The `childPages` function returns `Value<ChildPages>` that can be observed in the UI. Assign the returned `Value` to another property or a variable.
 
+### Displaying pages with Compose
+
+`Child Pages` state can be observed and displayed in Compose by using the `Pager` `Composable` function from the Compose extensions module provided by Decompose. Please see the [related documentation](../../extensions/compose.md#pager-like-navigation) for more information.
+
 ## Example
 
 Here is a very basic example of a pager-like navigation:
 
 ```kotlin title="PageComponent"
+import com.arkivanov.decompose.ComponentContext
+
 interface PageComponent {
     val data: String
 }
@@ -55,6 +61,16 @@ class DefaultPageComponent(
 === "Before v2.2.0-alpha01"
 
     ```kotlin title="PagesComponent"
+    import com.arkivanov.decompose.ComponentContext
+    import com.arkivanov.decompose.router.pages.ChildPages
+    import com.arkivanov.decompose.router.pages.Pages
+    import com.arkivanov.decompose.router.pages.PagesNavigation
+    import com.arkivanov.decompose.router.pages.childPages
+    import com.arkivanov.decompose.router.pages.select
+    import com.arkivanov.decompose.value.Value
+    import com.arkivanov.essenty.parcelable.Parcelable
+    import com.arkivanov.essenty.parcelable.Parcelize
+    
     interface PagesComponent {
         val pages: Value<ChildPages<*, PageComponent>>
     
@@ -89,12 +105,21 @@ class DefaultPageComponent(
     
         @Parcelize // kotlin-parcelize plugin must be applied if you are targetting Android
         private data class Config(val data: String) : Parcelable
-    }
+    }    
     ```
 
 === "Since v2.2.0-alpha01"
 
     ```kotlin title="PagesComponent"
+    import com.arkivanov.decompose.ComponentContext
+    import com.arkivanov.decompose.router.pages.ChildPages
+    import com.arkivanov.decompose.router.pages.Pages
+    import com.arkivanov.decompose.router.pages.PagesNavigation
+    import com.arkivanov.decompose.router.pages.childPages
+    import com.arkivanov.decompose.router.pages.select
+    import com.arkivanov.decompose.value.Value
+    import kotlinx.serialization.Serializable
+    
     interface PagesComponent {
         val pages: Value<ChildPages<*, PageComponent>>
     
@@ -135,7 +160,7 @@ class DefaultPageComponent(
 
 ## Screen recreation and process death on (not only) Android
 
-`Child Pages` automatically preserves the state when a configuration change or process death occurs. Use the `persistent` argument to disable state preservation completely. When disabled, the state is reset to the initial state when recreated.
+`Child Pages` automatically preserves the state when a configuration change or process death occurs. Use the `persistent` argument to disable state preservation completely. When disabled, the state is reset to the initial state when recreated. Note: since version `v2.2.0-alpha01`, the `persistent` argument is deprecated, you can pass `serializer = null` to disable state saving.
 
 Components are created in their order. E.g. the first component in the list is created first, then the next component in the list is created, and so on. Components are destroyed in reverse order.
 

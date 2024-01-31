@@ -1,12 +1,12 @@
 # Navigation overview
 
-Decompose provides the ability to create [permanent child components](/Decompose/navigation/stack/overview/) using the `childStack` extension function. But if you need to dynamically switch child components, then navigation comes in handy.
+Decompose provides the ability to create [permanent child components](../navigation/stack/overview.md) using the `childStack` extension function. But if you need to dynamically switch child components, then navigation comes in handy.
 
 Currently, Decompose provides two predefined navigation models:
 
-- [Child Stack](/Decompose/navigation/stack/overview/) - prefer this way if you need to organize child components in a stack and navigate between them.
-- [Child Slot](/Decompose/navigation/slot/overview/) - prefer this way if you need to activate-dismiss one child component at a time.
-- [Child Pages](/Decompose/navigation/pages/overview/) - prefer this way if you need to organize child components in a list with one selected component.
+- [Child Stack](../navigation/stack/overview.md) - prefer this way if you need to organize child components in a stack and navigate between them.
+- [Child Slot](../navigation/slot/overview.md) - prefer this way if you need to activate-dismiss one child component at a time.
+- [Child Pages](../navigation/pages/overview.md) - prefer this way if you need to organize child components in a list with one selected component.
 
 If none of this fit your needs, Decompose introduces [Generic Navigation](https://arkivanov.github.io/Decompose/navigation/children/overview/) that can be used to create your own custom navigation models.
 It offers a flexible API and allows you to create almost any kind of navigation.
@@ -15,9 +15,9 @@ It is possible to have more than one navigation model in a parent component. Mak
 
 ## Component configurations and child factories
 
-The term `Configuration` is widely used in Decompose navigation. A configuration is a persistent class that represents a child component and contains all its arguments (not dependencies). Decompose automatically persists child configurations using [StateKeeper](/Decompose/component/state-preservation/), so child components are automatically recreated on events like Android configuration changes, process death, etc.
+The term `Configuration` is widely used in Decompose navigation. A configuration is a persistent class that represents a child component and contains all its arguments (not dependencies). Decompose automatically persists child configurations using [StateKeeper](../component/state-preservation.md), so child components are automatically recreated on events like Android configuration changes, process death, etc.
 
-Usually, you initialize a navigation by supplying a child factory function to Decompose. The function accepts a child configuration and `ComponentContext` and returns a new instance of the corresponding child component - `(Config, ComponentContext) -> Child`. When you need to navigate, you call a navigation method and pass a configuration there. Decompose automatically creates and manages a [ComponentContext](/Decompose/component/overview/#componentcontext) for every child component, and calls the provided factory function when a new instance of a child component is required. This is where you should instantiate child components and supply dependencies, the configuration only provides persistent arguments and is used to distinguish which component to create. 
+Usually, you initialize a navigation by supplying a child factory function to Decompose. The function accepts a child configuration and `ComponentContext` and returns a new instance of the corresponding child component - `(Config, ComponentContext) -> Child`. When you need to navigate, you call a navigation method and pass a configuration there. Decompose automatically creates and manages a [ComponentContext](../component/overview.md#componentcontext) for every child component, and calls the provided factory function when a new instance of a child component is required. This is where you should instantiate child components and supply dependencies, the configuration only provides persistent arguments and is used to distinguish which component to create. 
 
 ### Configuration requirements
 

@@ -39,9 +39,9 @@ import com.arkivanov.essenty.backhandler.BackEvent.SwipeEdge
  * using [PredictiveBackGestureIcon].
  * @param modifier a [Modifier] to applied to the overlay.
  * @param startEdgeEnabled controls whether the start edge is enabled or not,
- * left in RTL mode and right in LTR mode.
+ * left in LTR mode and right in RTL mode.
  * @param endEdgeEnabled controls whether the end edge is enabled or not,
- * right in RTL mode and left in LTR mode.
+ * right in LTR mode and left in RTL mode.
  * @param edgeWidth the width in [Dp] from the screen edge where the gesture first down touch is recognized.
  * @param activationOffsetThreshold a distance threshold in [Dp] from the initial touch point in the direction
  * of gesture. The gesture is initiated once this threshold is surpassed.
