@@ -4,7 +4,7 @@ Extensions and utilities for easier integration of Decompose with Jetpack and Mu
 
 ## Setup
 
-Please see the corresponding [Installation docs section](/Decompose/getting-started/installation/#extensions-for-jetpackjetbrains-compose).
+Please see the corresponding [Installation docs section](../getting-started/installation.md#extensions-for-jetpack-and-multiplatform-compose).
 
 ### ProGuard rules for Compose for Desktop (JVM)
 
@@ -19,6 +19,12 @@ If you support Compose for Desktop, you will need to add the following rule for 
 To convert Decompose [Value](https://github.com/arkivanov/Decompose/tree/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/value) to Compose `State` use `Value<T>.subscribeAsState(): State<T>` extension function:
 
 ```kotlin
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.decompose.value.Value
+
 interface SomeComponent {
     val model: Value<Model>
 
@@ -27,32 +33,41 @@ interface SomeComponent {
 
 @Composable
 fun SomeContent(component: SomeComponent) {
-    val model: State<Model> by component.model.subscribeAsState()
+    val model: State<SomeComponent.Model> = component.model.subscribeAsState()
+
+    // Or use the delegation pattern
+    val model by component.model.subscribeAsState()
 }
 ```
 
 ## Controlling the Lifecycle on Desktop
 
-When using JetBrains Compose, you can have a `LifecycleRegistry` react to changes in the window state using the `LifecycleController()` composable. This will trigger appropriate lifecycle events when the window is minimized, restored or closed.
+When using JetBrains Compose, you can have the `LifecycleRegistry` react to changes in the window state using the `LifecycleController()` composable. This will trigger appropriate lifecycle events when the window is minimized, restored or closed.
 
 It is also possible to manually start the lifecycle using `LifecycleRegistry.resume()` when the instance is created.
 
 ```kotlin
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+
 fun main() {
     val lifecycle = LifecycleRegistry()
-    val root = RootComponent(DefaultComponentContext(lifecycle))
-    
-    // Alternative: manually start the lifecycle (no reaction to window state)
-    // lifecycle.resume()
-    
+
+    val root =
+        runOnUiThread {
+            DefaultRootComponent(DefaultComponentContext(lifecycle))
+        }
+
     application {
         val windowState = rememberWindowState()
-        
-        // Bind the registry to the life cycle of the window
         LifecycleController(lifecycle, windowState)
-        
-        Window(state = windowState, ...) {
-            // The rest of your content
+
+        Window(onCloseRequest = ::exitApplication, state = windowState) {
+            RootContent(root)
         }
     }
 }
@@ -61,9 +76,29 @@ fun main() {
 !!!warning
     When using Compose in desktop platforms, make sure to always use one of the methods above, or your components might not receive lifecycle events correctly.
 
+!!! note
+
+    You can find the `runOnUiThread` method [here](https://github.com/arkivanov/Decompose/blob/master/sample/app-desktop/src/jvmMain/kotlin/com/arkivanov/sample/app/Utils.kt).
+
+## Observing the navigation state manually
+
+In most of the cases there is no need to manually observe the navigation state. One of the ways described in the sections below can be used instead. For instance, it's advised to use the `Children` function to display a stack of components. However, in some cases observing the navigation state manually can be useful. Every navigation model exposes its state as `Value<T>`, which makes it possible to observe the navigation state in Compose just as any other state.
+
+```kotlin
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+
+@Composable
+fun RootContent(component: RootComponent) {
+    val stack by component.childStack.subscribeAsState()
+    // Use the stack variable here
+}
+```
+
 ## Navigating between Composable components
 
-The [Child Stack](/Decompose/navigation/stack/overview/) navigation model provides [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) as `Value<ChildStack>` that can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `ChildStack` changes.
+The [Child Stack](../navigation/stack/overview.md) navigation model provides [ChildStack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStack.kt) as `Value<ChildStack>` that can be observed in a `Composable` component. This makes it possible to switch child `Composable` components following the `ChildStack` changes.
 
 Both Compose extension modules provide the [Children(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-jetbrains/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/jetbrains/stack/Children.kt) function which has the following features:
 
@@ -74,6 +109,13 @@ Both Compose extension modules provide the [Children(...)](https://github.com/ar
 Here is an example of switching child components on navigation:
 
 ```kotlin
+import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.value.Value
+import com.sample.shared.RootComponent.Child.DetailsChild
+import com.sample.shared.RootComponent.Child.MainChild
+
 // Root
 
 interface RootComponent {
@@ -117,6 +159,18 @@ fun DetailsContent(component: DetailsComponent) {
 Child Slot navigation model can be used for different purposes. It can be used to just show/hide a certain part of UI, or to present a dialog, or a sheet (like Material Bottom Sheet). Although Decompose doesn't provide any special Compose API for Child Slot, it's pretty easy to do it manually.
 
 ```kotlin title="AlertDialog example"
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.value.Value
+
 interface RootComponent {
     val dialog: Value<ChildSlot<*, DialogComponent>>
 }
@@ -158,7 +212,7 @@ fun DialogContent(component: DialogComponent) {
 !!!warning
     This navigation model is experimental, the API is subject to change.
 
-The [Child Pages](/Decompose/navigation/pages/overview/) navigation model provides [ChildPages](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/pages/ChildPages.kt) as `Value<ChildPages>` that can be observed in a `Composable` component.
+The [Child Pages](../navigation/pages/overview.md) navigation model provides [ChildPages](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/pages/ChildPages.kt) as `Value<ChildPages>` that can be observed in a `Composable` component.
 
 Both Compose extension modules provide the [Pages(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-jetbrains/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/jetbrains/pages/Pages.kt) function which has the following features:
 
@@ -166,6 +220,10 @@ Both Compose extension modules provide the [Pages(...)](https://github.com/arkiv
 - It animates page changes if there is an `animation` spec provided.
 
 ```kotlin title="Example"
+import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.extensions.compose.jetbrains.pages.Pages
+import com.arkivanov.decompose.extensions.compose.jetbrains.pages.PagesScrollAnimation
+
 @Composable
 fun PagesContent(component: PagesComponent) {
     Pages(
@@ -190,6 +248,11 @@ Decompose provides [Child Animation API](https://github.com/arkivanov/Decompose/
 ### Fade animation
 
 ```kotlin
+import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+
 @Composable
 fun RootContent(component: RootComponent) {
     Children(
@@ -206,6 +269,11 @@ fun RootContent(component: RootComponent) {
 ### Slide animation
 
 ```kotlin
+import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+
 @Composable
 fun RootContent(component: RootComponent) {
     Children(
@@ -224,6 +292,13 @@ fun RootContent(component: RootComponent) {
 It is also possible to combine animators using the `plus` operator. Please note that the order matters - the right animator is applied after the left animator.
 
 ```kotlin
+import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+
 @Composable
 fun RootContent(component: RootComponent) {
     Children(
@@ -242,6 +317,14 @@ fun RootContent(component: RootComponent) {
 Previous examples demonstrate simple cases, when all children have the same animation. But it is also possible to specify separate animations for children.
 
 ```kotlin
+import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+
 @Composable
 fun RootContent(component: RootComponent) {
     Children(
@@ -263,6 +346,10 @@ fun RootContent(component: RootComponent) {
 It is also possible to take into account the other child and the animation direction when selecting the animation.
 
 ```kotlin
+import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+
 @Composable
 fun RootContent(component: RootComponent) {
     Children(
@@ -276,11 +363,21 @@ fun RootContent(component: RootComponent) {
 }
 ```
 
-### Default stack animations
+### Default stack animations (since version 3.0.0-alpha03)
 
 By default, the `Children` function (and all other functions with stack animations) does not animate stack changes, the change is performed instantly. The default stack animation is configurable, so that it's possible to avoid specifying the same animation multiple times.
 
 ```kotlin
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import com.arkivanov.decompose.extensions.compose.stack.animation.LocalStackAnimationProvider
+import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
+import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimationProvider
+import com.arkivanov.decompose.extensions.compose.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.stack.animation.slide
+import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
+
 @Composable
 fun App() {
     CompositionLocalProvider(LocalStackAnimationProvider provides DefaultStackAnimationProvider) {
@@ -303,10 +400,17 @@ It is also possible to define custom animations.
 This is the most flexible low-level API. The animation block receives the current `ChildStack` and animates children using the provided `content` slot.
 
 ```kotlin
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation
+import com.arkivanov.decompose.router.stack.ChildStack
+
 @Composable
 fun RootContent(component: RootComponent) {
     Children(
-        stack = rootComponent.childStack,
+        stack = component.childStack,
         animation = someAnimation(),
     ) {
         // Omitted code
@@ -326,6 +430,13 @@ fun <C : Any, T : Any> someAnimation(): StackAnimation<C, T> =
 The `stackAnimation` function takes care of tracking the `ChildStack` changes. `StackAnimator` is only responsible for manipulating the `Modifier` in the given `direction`, and calling `onFinished` at the end.
 
 ```kotlin
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.Direction
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimator
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+
 @Composable
 fun RootContent(component: RootComponent) {
     Children(
@@ -343,6 +454,7 @@ fun someAnimator(): StackAnimator =
                     content: @Composable (Modifier) -> Unit ->
         // Manipulate the Modifier in the given direction and call onFinished at the end
     }
+
 ```
 
 #### Using `stackAnimator` function
@@ -350,6 +462,14 @@ fun someAnimator(): StackAnimator =
 This is the simplest, but less powerful way. The `stackAnimator` function takes care of running the animation. Its block has a very limited responsibility - to render the current frame using the provided `factor` and `direction`.
 
 ```kotlin
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.Direction
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimator
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimator
+
 @Composable
 fun RootContent(component: RootComponent) {
     Children(
@@ -380,8 +500,14 @@ Please refer to the predefined animators (`fade`, `slide`, etc.) for implementat
 To enable the gesture, first implement `BackHandlerOwner` interface in your component with `Child Stack`, then just pass `predictiveBackAnimation` to the `Children` function.
 
 ```kotlin title="RootComponent"
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.backhandler.BackHandlerOwner
+
 interface RootComponent : BackHandlerOwner {
-    val stack: Value<ChildStack<...>>
+    val childStack: Value<ChildStack<...>>
 
     fun onBackClicked()
 }
@@ -389,6 +515,8 @@ interface RootComponent : BackHandlerOwner {
 class DefaultRootComponent(
     componentContext: ComponentContext,
 ) : ComponentContext by componentContext, BackHandlerOwner {
+    private val navigation = StackNavigation<Config>()
+
     // ComponentContext already implements BackHandlerOwner, no need to implement it separately
 
     // Omitted body
@@ -397,13 +525,22 @@ class DefaultRootComponent(
         navigation.pop()
     }
 }
+
 ```
 
 ```kotlin title="RootContent"
+import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.predictiveback.predictiveBackAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+
 @Composable
 fun RootContent(component: RootComponent) {
     Children(
-        stack = rootComponent.childStack,
+        stack = component.childStack,
         animation = predictiveBackAnimation(
             backHandler = component.backHandler,
             animation = stackAnimation(fade() + scale()), // Your usual animation here
@@ -428,35 +565,36 @@ On Android, the predictive back gesture only works starting with Android T. On A
 
 On all other platforms, the predictive back gesture can be enabled by showing a special overlay that automatically handles the gesture and manipulates `BackDispatcher` as needed.
 
-```kotlin title="Initialising the root component"
-val lifecycle = LifecycleRegistry()
-val backDispatcher = BackDispatcher()
+1. Create `BackDispatcher` and assign it to a variable.
+2. Create the root `DefaultComponentContext` and pass the previously created `BackDispatcher` as `backHandler` argument.
+3. Pass the **same** `BackDispatcher` to `PredictiveBackGestureOverlay`.
 
-val componentContext = 
-    DefaultComponentContext(
-        lifecycle = lifecycle,
-        backHandler = backDispatcher, // Pass BackDispatcher here
-    )
-    
-val root = DefaultRootComponent(componentContext = componentContext)
-```
+```kotlin title="Using Composable PredictiveBackGestureOverlay on iOS"
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.ComposeUIViewController
+import com.arkivanov.decompose.extensions.compose.PredictiveBackGestureIcon
+import com.arkivanov.decompose.extensions.compose.PredictiveBackGestureOverlay
+import com.arkivanov.essenty.backhandler.BackDispatcher
+import platform.UIKit.UIViewController
 
-```kotlin title="Using Composable PredictiveBackGestureOverlay"
-PredictiveBackGestureOverlay(
-    backDispatcher = backDispatcher, // Use the same BackDispatcher as above
-    backIcon = { progress, _ ->
-        PredictiveBackGestureIcon(
-            imageVector = Icons.Default.ArrowBack,
-            progress = progress,
-        )
-    },
-    modifier = Modifier.fillMaxSize(),
-) {
-    RootContent(
-        component = root,
-        modifier = Modifier.fillMaxSize(),
-    )
-}
+fun rootViewController(root: RootComponent, backDispatcher: BackDispatcher): UIViewController =
+    ComposeUIViewController {
+        PredictiveBackGestureOverlay(
+            backDispatcher = backDispatcher,
+            backIcon = { progress, _ ->
+                PredictiveBackGestureIcon(
+                    imageVector = Icons.Default.ArrowBack,
+                    progress = progress,
+                )
+            },
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            RootContent(component = root, modifier = Modifier.fillMaxSize())
+        }
+    }
 ```
 
 ### Predictive Back Gesture on iOS
@@ -464,12 +602,17 @@ PredictiveBackGestureOverlay(
 It is possible to customize the predictive back gesture, so it looks native-ish on iOS.
 
 ```kotlin title="In commonMain source set"
+import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation
+import com.arkivanov.essenty.backhandler.BackHandler
+
 @Composable
 fun RootContent(component: RootComponent) {
     Children(
-        stack = rootComponent.childStack,
+        stack = component.childStack,
         animation = backAnimation(
-            backHandler = component.backHandler, 
+            backHandler = component.backHandler,
             onBack = component::onBackClicked,
         ),
     ) {
@@ -484,18 +627,39 @@ expect fun <C : Any, T : Any> backAnimation(
 ```
 
 ```kotlin title="In androidMain source set"
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.predictiveback.predictiveBackAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import com.arkivanov.essenty.backhandler.BackHandler
+
 actual fun <C : Any, T : Any> backAnimation(
     backHandler: BackHandler,
     onBack: () -> Unit,
 ): StackAnimation<C, T> =
     predictiveBackAnimation(
         backHandler = backHandler,
-        animation = stackAnimation(fade() + scale()),
+        animation = stackAnimation(fade()),
         onBack = onBack,
     )
 ```
 
 ```kotlin title="In iosMain source set"
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimator
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.isFront
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.predictiveback.predictiveBackAnimatable
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.predictiveback.predictiveBackAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimator
+import com.arkivanov.essenty.backhandler.BackHandler
+
 actual fun <C : Any, T : Any> backAnimation(
     backHandler: BackHandler,
     onBack: () -> Unit,

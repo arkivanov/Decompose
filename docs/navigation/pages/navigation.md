@@ -23,7 +23,7 @@ The navigation is usually performed synchronously, which means that by the time 
 
 ## PagesNavigator extension functions
 
-There are `PagesNavigator` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/pages/PagesNavigatorExt.kt) to simplify the navigation. Some of which were already used in the [Child Pages overview example](../overview#example).
+There are `PagesNavigator` [extension functions](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/pages/PagesNavigatorExt.kt) to simplify the navigation. Some of which were already used in the [Child Pages Overview example](overview.md#example).
 
 ### selectNext
 

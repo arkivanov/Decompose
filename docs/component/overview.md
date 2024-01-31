@@ -1,6 +1,6 @@
 # Component Overview
 
-A component is just a normal class that encapsulates some logic and possibly another (child) components. Every component has its own lifecycle, which is automatically managed by Decompose. So everything encapsulated by a component is scoped. Please head to the [Lifecycle documentation page](/Decompose/component/lifecycle/) for more information.
+A component is just a normal class that encapsulates some logic and possibly another (child) components. Every component has its own lifecycle, which is automatically managed by Decompose. So everything encapsulated by a component is scoped. Please head to the [Lifecycle documentation page](lifecycle.md) for more information.
 
 UI is optional and is pluggable from outside of components. Components do not depend on UI, the UI depends on components.
 
@@ -28,11 +28,28 @@ Each component has an associated [`ComponentContext`](https://github.com/arkivan
 So if a component requires any of the above features, just pass the `ComponentContext` via the component's constructor. You can use the delegation pattern to add the `ComponentContext` to `this` scope:
 
 ```kotlin
-class Counter(
+import com.arkivanov.decompose.ComponentContext
+
+class RootComponent(
     componentContext: ComponentContext
 ) : ComponentContext by componentContext {
 
-    // The rest of the code
+    // Some code here
+}
+```
+
+It may also be useful to extract an interface, e.g. for creating separate implementations for Compose/SwiftUI previews, or writing test doubles.
+
+```kotlin
+import com.arkivanov.decompose.ComponentContext
+
+interface RootComponent
+
+class DefaultRootComponent(
+    componentContext: ComponentContext
+) : RootComponent, ComponentContext by componentContext {
+
+    // Some code here
 }
 ```
 
@@ -51,7 +68,15 @@ Decompose provides a few handy [helper functions](https://github.com/arkivanov/D
 
 For this case Decompose provides `defaultComponentContext()` extension function, which can be called in scope of an `Activity`.
 
+!!! warning
+
+    The `defaultComponentContext` function must only be called once during the lifetime of the host Activity or Fragment, typically in `onCreate`. Calling it a second time will result in a crash.
+
 ```kotlin
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.arkivanov.decompose.defaultComponentContext
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +91,10 @@ class MainActivity : AppCompatActivity() {
 Use `defaultComponentContext(OnBackPressedDispatcher?)` extension function, which can be called in scope of `Fragment`.
 
 ```kotlin
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import com.arkivanov.decompose.defaultComponentContext
+
 class SomeFragment : Fragment() {
     private lateinit var root: RootComponent
 
@@ -94,6 +123,11 @@ It is advised to not create the root `ComponentContext` (and a root component) d
 Prefer creating the root `ComponentContext` (and a root component) before starting Compose, e.g. in an `Activity` or a `Fragment`.
 
 ```kotlin
+import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
+import com.arkivanov.decompose.defaultComponentContext
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,6 +148,9 @@ class MainActivity : AppCompatActivity() {
 Make sure you always create the root component on the UI thread. Please refer to samples for an example of [runOnUiThread](https://github.com/arkivanov/Decompose/blob/master/sample/app-desktop/src/jvmMain/kotlin/com/arkivanov/sample/app/Utils.kt) function .
 
 ```kotlin
+import androidx.compose.ui.window.application
+import com.arkivanov.decompose.DefaultComponentContext
+
 fun main() {
     // Create the root component on the UI thread before starting Compose
     val root = runOnUiThread { DefaultRootComponent(componentContext = DefaultComponentContext(...)) }
@@ -130,6 +167,9 @@ fun main() {
 Prefer creating the root `ComponentContext` (and a root component) before starting Compose, e.g. in directly in the `main` function.
 
 ```kotlin
+import androidx.compose.ui.window.application
+import com.arkivanov.decompose.DefaultComponentContext
+
 fun main() {
     // Create the root component before starting Compose.
     // Make sure that this happens on the UI thread.
@@ -148,7 +188,7 @@ fun main() {
 
 Using `Value` is not mandatory, you can use any other state holders, e.g. [StateFlow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-state-flow/), [State](https://developer.android.com/jetpack/compose/state), [Observable](https://github.com/badoo/Reaktive), [LiveData](https://developer.android.com/topic/libraries/architecture/livedata), etc.
 
-If you are using Jetpack/JetBrains Compose, `Value` can be observed in Composable functions using one of the Compose [extension modules](/Decompose/extensions/compose/).
+If you are using Jetpack/JetBrains Compose, `Value` can be observed in Composable functions using one of the Compose [extension modules](../extensions/compose.md).
 
 !!!warning
     Even though both `Value` and `MutableValue` are thread-safe, it's recommended to subscribe and update it only on the main thread.
@@ -164,6 +204,10 @@ Decompose uses `Value` to avoid dependency on Kotlin coroutines. One may prefer 
 Here is an example of simple Counter component:
 
 ```kotlin
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.update
+
 class Counter {
     private val _state = MutableValue(State())
     val state: Value<State> = _state
@@ -179,8 +223,15 @@ class Counter {
 ### Jetpack/JetBrains Compose UI Example
 
 ```kotlin
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+
 @Composable
-fun CounterUi(counter: Counter) {
+fun CounterContent(counter: Counter) {
     val state by counter.state.subscribeAsState()
 
     Column {
