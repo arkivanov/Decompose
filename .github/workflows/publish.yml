@@ -53,7 +53,7 @@ jobs:
           close_only: 'true'
   check-publication:
     name: Check publication
-    runs-on: macos-latest
+    runs-on: macos-14
     needs: close-staging-repository
     steps:
       - name: Checkout
