@@ -4,6 +4,7 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
+import com.arkivanov.decompose.router.children.NavigationSource
 import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.children
 import com.arkivanov.decompose.value.Value
@@ -27,7 +28,7 @@ import kotlinx.serialization.KSerializer
  * @return an observable [Value] of [ChildSlot].
  */
 fun <C : Any, T : Any> ComponentContext.childSlot(
-    source: SlotNavigationSource<C>,
+    source: NavigationSource<SlotNavigation.Event<C>>,
     serializer: KSerializer<C>?,
     initialConfiguration: () -> C? = { null },
     key: String = "DefaultChildSlot",
@@ -72,7 +73,7 @@ fun <C : Any, T : Any> ComponentContext.childSlot(
  * @return an observable [Value] of [ChildSlot].
  */
 fun <C : Any, T : Any> ComponentContext.childSlot(
-    source: SlotNavigationSource<C>,
+    source: NavigationSource<SlotNavigation.Event<C>>,
     saveConfiguration: (C?) -> SerializableContainer?,
     restoreConfiguration: (SerializableContainer) -> C?,
     key: String = "DefaultChildSlot",
