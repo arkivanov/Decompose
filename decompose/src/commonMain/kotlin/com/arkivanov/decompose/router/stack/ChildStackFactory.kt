@@ -4,6 +4,7 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
+import com.arkivanov.decompose.router.children.NavigationSource
 import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.children
 import com.arkivanov.decompose.value.Value
@@ -27,7 +28,7 @@ import kotlinx.serialization.builtins.ListSerializer
  * @return an observable [Value] of [ChildStack].
  */
 fun <C : Any, T : Any> ComponentContext.childStack(
-    source: StackNavigationSource<C>,
+    source: NavigationSource<StackNavigation.Event<C>>,
     serializer: KSerializer<C>?,
     initialStack: () -> List<C>,
     key: String = "DefaultChildStack",
@@ -60,7 +61,7 @@ fun <C : Any, T : Any> ComponentContext.childStack(
  * A convenience extension function for [ComponentContext.childStack].
  */
 fun <C : Any, T : Any> ComponentContext.childStack(
-    source: StackNavigationSource<C>,
+    source: NavigationSource<StackNavigation.Event<C>>,
     serializer: KSerializer<C>?,
     initialConfiguration: C,
     key: String = "DefaultChildStack",
@@ -94,7 +95,7 @@ fun <C : Any, T : Any> ComponentContext.childStack(
  * @return an observable [Value] of [ChildStack].
  */
 fun <C : Any, T : Any> ComponentContext.childStack(
-    source: StackNavigationSource<C>,
+    source: NavigationSource<StackNavigation.Event<C>>,
     initialStack: () -> List<C>,
     saveStack: (List<C>) -> SerializableContainer?,
     restoreStack: (SerializableContainer) -> List<C>?,

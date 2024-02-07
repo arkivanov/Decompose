@@ -2,7 +2,7 @@ package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.Relay
-import com.arkivanov.decompose.router.stack.StackNavigationSource.Event
+import com.arkivanov.decompose.router.stack.StackNavigation.Event
 
 internal class DefaultStackNavigation<C : Any> : StackNavigation<C> {
 

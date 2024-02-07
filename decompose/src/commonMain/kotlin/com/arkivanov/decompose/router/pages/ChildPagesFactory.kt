@@ -5,6 +5,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.children.ChildNavState
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
+import com.arkivanov.decompose.router.children.NavigationSource
 import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.children
 import com.arkivanov.decompose.value.Value
@@ -35,7 +36,7 @@ import kotlinx.serialization.Serializable
  */
 @ExperimentalDecomposeApi
 fun <C : Any, T : Any> ComponentContext.childPages(
-    source: PagesNavigationSource<C>,
+    source: NavigationSource<PagesNavigation.Event<C>>,
     serializer: KSerializer<C>?,
     initialPages: () -> Pages<C> = { Pages() },
     key: String = "DefaultChildPages",
@@ -104,7 +105,7 @@ private class SerializablePages<out C : Any>(
  */
 @ExperimentalDecomposeApi
 fun <C : Any, T : Any> ComponentContext.childPages(
-    source: PagesNavigationSource<C>,
+    source: NavigationSource<PagesNavigation.Event<C>>,
     initialPages: () -> Pages<C>,
     savePages: (Pages<C>) -> SerializableContainer?,
     restorePages: (SerializableContainer) -> Pages<C>?,

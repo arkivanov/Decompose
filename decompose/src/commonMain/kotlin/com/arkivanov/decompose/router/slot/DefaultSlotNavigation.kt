@@ -2,7 +2,7 @@ package com.arkivanov.decompose.router.slot
 
 import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.Relay
-import com.arkivanov.decompose.router.slot.SlotNavigationSource.Event
+import com.arkivanov.decompose.router.slot.SlotNavigation.Event
 
 internal class DefaultSlotNavigation<C : Any> : SlotNavigation<C> {
 

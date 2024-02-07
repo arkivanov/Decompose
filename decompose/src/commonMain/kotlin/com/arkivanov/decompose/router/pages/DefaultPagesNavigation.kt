@@ -2,7 +2,7 @@ package com.arkivanov.decompose.router.pages
 
 import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.Relay
-import com.arkivanov.decompose.router.pages.PagesNavigationSource.Event
+import com.arkivanov.decompose.router.pages.PagesNavigation.Event
 
 internal class DefaultPagesNavigation<C : Any> : PagesNavigation<C> {
 
