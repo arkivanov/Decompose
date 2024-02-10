@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.Ref
 import com.arkivanov.decompose.extensions.compose.stack.animation.LocalStackAnimationProvider
 import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.animation.emptyStackAnimation
@@ -116,22 +117,30 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
         if (isBackEnabled) {
             if (isBackGestureEnabled) {
                 val scope = rememberCoroutineScope()
+                val initialBackEventRef = remember { Ref<BackEvent?>(null) }
 
                 BackGestureHandler(
                     backHandler = backHandler,
-                    onBackStarted = {
-                        data = data.copy(animatable = selector(it, data.stack.active, data.stack.backStack.last()))
-                    },
+                    onBackStarted = { initialBackEventRef.value = it },
                     onBackProgressed = {
+                        initialBackEventRef.value?.also { initialBackEvent ->
+                            data = data.copy(animatable = selector(initialBackEvent, data.stack.active, data.stack.backStack.last()))
+                            initialBackEventRef.value = null
+                        }
+
                         scope.launch { data.animatable?.animate(it) }
                     },
                     onBackCancelled = {
+                        initialBackEventRef.value = null
+
                         scope.launch {
                             data.animatable?.cancel()
                             data = data.copy(animatable = null)
                         }
                     },
                     onBack = {
+                        initialBackEventRef.value = null
+
                         if (data.animatable == null) {
                             onBack()
                         } else {
