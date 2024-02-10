@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.backhandler.BackDispatcher
-import com.arkivanov.essenty.backhandler.BackDispatcher.PredictiveBackDispatcher
 import com.arkivanov.essenty.backhandler.BackEvent
 import com.arkivanov.essenty.backhandler.BackEvent.SwipeEdge
 
@@ -207,8 +206,9 @@ private class BackGestureHandler(
     }
 
     suspend fun AwaitPointerEventScope.handleGesture() {
-        val dispatcher: PredictiveBackDispatcher = awaitStart() ?: return
-        processGesture(dispatcher)
+        if (awaitStart()) {
+            processGesture()
+        }
     }
 
     private suspend fun AwaitPointerEventScope.awaitStartChange(): PointerInputChange? {
@@ -234,26 +234,22 @@ private class BackGestureHandler(
         }
     }
 
-    private suspend fun AwaitPointerEventScope.awaitStart(): PredictiveBackDispatcher? {
-        val change = awaitStartChange() ?: return null
+    private suspend fun AwaitPointerEventScope.awaitStart(): Boolean {
+        val change = awaitStartChange() ?: return false
+        change.consume()
         val position = change.position
 
-        val dispatcher =
-            backDispatcher.startPredictiveBack(
-                BackEvent(
-                    progress = getProgress(position = position),
-                    swipeEdge = edge.toSwipeEdge(),
-                    touchX = position.x,
-                    touchY = position.y,
-                )
-            ) ?: return null
-
-        change.consume()
-
-        return dispatcher
+        return backDispatcher.startPredictiveBack(
+            BackEvent(
+                progress = getProgress(position = position),
+                swipeEdge = edge.toSwipeEdge(),
+                touchX = position.x,
+                touchY = position.y,
+            )
+        )
     }
 
-    private suspend fun AwaitPointerEventScope.processGesture(dispatcher: PredictiveBackDispatcher) {
+    private suspend fun AwaitPointerEventScope.processGesture() {
         while (true) {
             val change = awaitChange()
             val position = change.position
@@ -261,7 +257,7 @@ private class BackGestureHandler(
 
             val progress = getProgress(position = position)
 
-            dispatcher.progress(
+            backDispatcher.progressPredictiveBack(
                 BackEvent(
                     progress = progress,
                     swipeEdge = edge.toSwipeEdge(),
@@ -270,12 +266,11 @@ private class BackGestureHandler(
                 )
             )
 
-            println("Progress: $progress")
             if (!change.pressed) {
                 if (progress > progressConfirmationThreshold) {
-                    dispatcher.finish()
+                    backDispatcher.back()
                 } else {
-                    dispatcher.cancel()
+                    backDispatcher.cancelPredictiveBack()
                 }
 
                 return
