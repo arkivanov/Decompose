@@ -8,7 +8,7 @@ This section may be useful when migrating from the official [navigation-compose]
 
 !!!warning
 
-    The `navigation-compose` library provides only two scopes for a screen: the `Composable` function of the scren and the `ViewModel` scope. There is no such a scope that is also destroyed on configuration change. So the only scope where we can host Decompose components is the `ViewModel` scope. This means we should take extra care to not leak any objects (e.g. don't pass `NavController` into component).
+    The `navigation-compose` library provides only two scopes for a screen: the `Composable` function of the scren and the `ViewModel` scope. There is no such a scope that is also destroyed on configuration change. So the only scope where we can host Decompose components is the `ViewModel` scope. This means we should take extra care to not leak any objects - don't pass `NavController` (or any other objects with a narrower scope), don't pass lamdas or callbacks capturing those objects, etc.
 
 Here is a function that allows hosting a Decompose component in a `navigation-compose` screen.
 
