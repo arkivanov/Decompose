@@ -2,6 +2,10 @@
 
 This section may be useful when migrating from the official [navigation-compose](https://developer.android.com/jetpack/compose/navigation) library to Decompose. We can convert screens to Decompose gradually (one by one), keeping the navigation untouched until every screen is converted. This section describes how we can host a Decompose component (or a tree of components) in a `Composable` screen managed by `navigation-compose` library.
 
+!!!note
+
+    This section implies minimum Decompose version `3.0.0-alpha06`.
+
 !!!warning
 
     The `navigation-compose` library provides only two scopes for a screen: the `Composable` function of the scren and the `ViewModel` scope. There is no such a scope that is also destroyed on configuration change. So the only scope where we can host Decompose components is the `ViewModel` scope. This means we should take extra care to not leak any objects (e.g. don't pass `NavController` into component).
