@@ -59,6 +59,7 @@ nav:
   - Tips and Tricks:
     - Overview: tips-tricks/overview.md
     - Calling Composable functions with ViewModels: tips-tricks/composable-viewmodel.md
+    - Hosting a component in navigation-compose: tips-tricks/navigation-compose-component.md
 
   - Community: community.md
 
