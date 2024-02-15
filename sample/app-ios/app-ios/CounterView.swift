@@ -8,41 +8,47 @@
 import SwiftUI
 import Shared
 
-struct CounterView: View {
-    private let counter: CounterComponent
+struct CounterView: UIViewControllerRepresentable {
+     let counter: CounterComponent
     
-    @StateValue
-    private var model: CounterComponentModel
-    
-    @StateValue
-    private var dialogSlot: ChildSlot<AnyObject, DialogComponent>
-    
-    init(_ counter: CounterComponent) {
-        self.counter = counter
-        _model = StateValue(counter.model)
-        _dialogSlot = StateValue(counter.dialogSlot)
+    func makeUIViewController(context: Context) -> UIViewController {
+        return CounterControllerKt.CounterController(component: counter)
     }
+
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
     
-    var body: some View {
-        VStack(alignment: .center, spacing: 8) {
-            Text(model.text)
-
-            Button("Info", action: counter.onInfoClicked)
-
-            Button("Next", action: counter.onNextClicked)
-
-            Button("Prev", action: counter.onPrevClicked)
-                .disabled(!model.isBackEnabled)
-        }
-        .navigationBarTitle(model.title, displayMode: .inline)
-        .alert(
-            item: dialogSlot.child?.instance,
-            onDismiss: { $0.onDismissClicked() },
-            title: { Text($0.title) },
-            message: { Text($0.message) },
-            actions: { _ in Button("OK", action: {}) }
-        )
-    }
+//    @StateValue
+//    private var model: CounterComponentModel
+//    
+//    @StateValue
+//    private var dialogSlot: ChildSlot<AnyObject, DialogComponent>
+//    
+//    init(_ counter: CounterComponent) {
+//        self.counter = counter
+//        _model = StateValue(counter.model)
+//        _dialogSlot = StateValue(counter.dialogSlot)
+//    }
+//    
+//    var body: some View {
+//        VStack(alignment: .center, spacing: 8) {
+//            Text(model.text)
+//
+//            Button("Info", action: counter.onInfoClicked)
+//
+//            Button("Next", action: counter.onNextClicked)
+//
+//            Button("Prev", action: counter.onPrevClicked)
+//                .disabled(!model.isBackEnabled)
+//        }
+////        .navigationBarTitle(model.title, displayMode: .inline)
+//        .alert(
+//            item: dialogSlot.child?.instance,
+//            onDismiss: { $0.onDismissClicked() },
+//            title: { Text($0.title) },
+//            message: { Text($0.message) },
+//            actions: { _ in Button("OK", action: {}) }
+//        )
+//    }
 }
 
 extension View {
@@ -68,6 +74,6 @@ extension View {
 
 struct CounterView_Previews: PreviewProvider {
     static var previews: some View {
-        CounterView(PreviewCounterComponent())
+        CounterView(counter:PreviewCounterComponent())
     }
 }

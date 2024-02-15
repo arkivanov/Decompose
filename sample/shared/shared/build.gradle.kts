@@ -11,6 +11,7 @@ plugins {
     id("com.android.library")
     id("kotlinx-serialization")
     id("com.arkivanov.gradle.setup")
+    id("org.jetbrains.compose")
 }
 
 setupMultiplatform {
@@ -55,6 +56,14 @@ kotlin {
 
         common.main.dependencies {
             api(project(":decompose"))
+
+            implementation(project(":extensions-compose"))
+
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material)
+            implementation(compose.ui)
+
             implementation(project(":sample:shared:dynamic-features:api"))
             api(deps.essenty.lifecycle)
             api(deps.essenty.stateKeeper)
