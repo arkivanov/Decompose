@@ -25,4 +25,13 @@ class RouterPopWhileTest {
 
         assertTrue(isCalled)
     }
+
+    @Test
+    fun WHEN_popWhile_all_THEN_first_child_not_removed() {
+        val navigator = TestStackNavigator(listOf(1, 2, 3, 4))
+
+        navigator.popWhile { true }
+
+        assertEquals(listOf(1), navigator.configurations)
+    }
 }

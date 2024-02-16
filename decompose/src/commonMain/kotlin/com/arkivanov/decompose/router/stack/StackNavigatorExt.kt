@@ -80,13 +80,17 @@ fun <C : Any> StackNavigator<C>.pop(onComplete: (isSuccess: Boolean) -> Unit = {
 
 /**
  * Drops the configurations at the top of the stack while the [predicate] returns `true`.
+ * If the [predicate] returns `true` for every configuration, then the first (oldest) configuration
+ * remains in the stack.
  */
 inline fun <C : Any> StackNavigator<C>.popWhile(crossinline predicate: (C) -> Boolean) {
     popWhile(predicate = predicate, onComplete = {})
 }
 
 /**
- * Drops the configurations at the top of the stack while the [predicate] returns true
+ * Drops the configurations at the top of the stack while the [predicate] returns true.
+ * If the [predicate] returns `true` for every configuration, then the first (oldest) configuration
+ * remains in the stack.
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  * The `isSuccess` argument is `true` if at least one component has been popped.
@@ -96,7 +100,7 @@ inline fun <C : Any> StackNavigator<C>.popWhile(
     crossinline onComplete: (isSuccess: Boolean) -> Unit,
 ) {
     navigate(
-        transformer = { stack -> stack.dropLastWhile(predicate) },
+        transformer = { stack -> stack.dropLastWhile(predicate).takeUnless(List<*>::isEmpty) ?: stack.take(1) },
         onComplete = { newStack, oldStack -> onComplete(newStack.size < oldStack.size) },
     )
 }
