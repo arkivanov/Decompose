@@ -78,9 +78,24 @@ class RouterBringToFrontTest {
         assertEquals(listOf(Config.A, Config.B, Config.C(1)), navigator.configurations)
     }
 
+    @Test
+    fun WHEN_bringToFront_base_class_THEN_pushed() {
+        val baseConfig = BaseConfig()
+        val navigator = TestStackNavigator(listOf(BaseConfig.A, BaseConfig.B))
+
+        navigator.bringToFront(baseConfig)
+
+        assertEquals(listOf(BaseConfig.A, BaseConfig.B, baseConfig), navigator.configurations)
+    }
+
     private sealed class Config {
         data object A : Config()
         data object B : Config()
         data class C(val value: Int) : Config()
+    }
+
+    private open class BaseConfig {
+        data object A : BaseConfig()
+        data object B : BaseConfig()
     }
 }
