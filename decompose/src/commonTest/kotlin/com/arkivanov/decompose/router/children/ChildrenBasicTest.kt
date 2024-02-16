@@ -2,9 +2,10 @@ package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.TestInstance
-import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
-import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
+import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
+import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
+import com.arkivanov.decompose.router.children.ChildNavState.Status.STARTED
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.decompose.value.getValue
 import com.arkivanov.essenty.instancekeeper.getOrCreate
@@ -12,9 +13,10 @@ import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
+import kotlin.test.assertFalse
 
 @Suppress("TestFunctionName")
-internal class ChildrenBasicTest : ChildrenTestBase() {
+class ChildrenBasicTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_navigate_THEN_onEventComplete_called() {
@@ -141,5 +143,77 @@ internal class ChildrenBasicTest : ChildrenTestBase() {
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by DESTROYED) }
 
         assertContentEquals(listOf("component", "instance"), destroyEvents)
+    }
+
+    @Test
+    fun WHEN_navigate_and_navigate_recursively_THEN_childFactory_not_called_recursively() {
+        var isNavigating = false
+        var isCalledRecursively = false
+        context.children(initialState = stateOf(1 by CREATED)) { config, ctx ->
+            if (isNavigating) {
+                isCalledRecursively = true
+            }
+
+            if (config == 2) {
+                isNavigating = true
+                navigate { it + (3 by RESUMED) }
+                isNavigating = false
+            }
+
+            Component(config, ctx)
+        }
+
+        navigate { it + listOf(2 by STARTED) }
+
+        assertFalse(isCalledRecursively)
+    }
+
+    @Test
+    fun WHEN_navigate_and_navigate_recursively_THEN_state_updated() {
+        val children = context.children(initialState = stateOf(1 by CREATED)) { config, ctx ->
+            if (config == 2) {
+                navigate { it + (3 by RESUMED) }
+            }
+
+            Component(config, ctx)
+        }
+
+        navigate { it + (2 by STARTED) }
+
+        children.value.assertChildren(1 to 1, 2 to 2, 3 to 3)
+    }
+
+    @Test
+    fun WHEN_navigate_recursively_during_init_THEN_childFactory_not_called_recursively() {
+        var isNavigating = false
+        var isCalledRecursively = false
+        context.children(initialState = stateOf(1 by CREATED)) { config, ctx ->
+            if (isNavigating) {
+                isCalledRecursively = true
+            }
+
+            if (config == 1) {
+                isNavigating = true
+                navigate { it + listOf(2 by RESUMED) }
+                isNavigating = false
+            }
+
+            Component(config, ctx)
+        }
+
+        assertFalse(isCalledRecursively)
+    }
+
+    @Test
+    fun WHEN_navigate_recursively_during_init_THEN_state_updated() {
+        val children by context.children(initialState = stateOf(1 by CREATED)) { config, ctx ->
+            if (config == 1) {
+                navigate { it + (2 by RESUMED) }
+            }
+
+            Component(config, ctx)
+        }
+
+        children.assertChildren(1 to 1, 2 to 2)
     }
 }

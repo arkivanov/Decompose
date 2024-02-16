@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
 import kotlin.test.BeforeTest
 import kotlin.test.assertContentEquals
 
-internal open class ChildrenTestBase {
+open class ChildrenTestBase {
 
     private val navigation = SimpleNavigation<(TestNavState) -> TestNavState>()
     protected val lifecycle = LifecycleRegistry()

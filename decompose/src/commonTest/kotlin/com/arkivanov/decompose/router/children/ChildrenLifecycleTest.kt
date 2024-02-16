@@ -12,7 +12,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @Suppress("TestFunctionName")
-internal class ChildrenLifecycleTest : ChildrenTestBase() {
+class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_created_THEN_initial_state() {

@@ -1,8 +1,8 @@
 package com.arkivanov.decompose.router.children
 
-import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
-import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
+import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
+import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.STARTED
 import com.arkivanov.decompose.value.getValue
 import com.arkivanov.essenty.backhandler.BackCallback
@@ -12,7 +12,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @Suppress("TestFunctionName")
-internal class ChildrenBackPressedTest : ChildrenTestBase() {
+class ChildrenBackPressedTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_children_created_with_resumed_child_and_enabled_callback_registered_WHEN_back_THEN_callback_called() {
@@ -340,5 +340,49 @@ internal class ChildrenBackPressedTest : ChildrenTestBase() {
         backDispatcher.back()
 
         assertContentEquals(listOf(stateOf() to stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED)), results)
+    }
+
+    @Test
+    fun WHEN_back_and_navigate_recursively_THEN_childFactory_not_called_recursively() {
+        var isNavigating = false
+        var isCalledRecursively = false
+        context.children(
+            initialState = stateOf(1 by DESTROYED, 2 by RESUMED),
+            backTransformer = { { stateOf(1 by RESUMED) } },
+        ) { config, ctx ->
+            if (isNavigating) {
+                isCalledRecursively = true
+            }
+
+            if (config == 1) {
+                isNavigating = true
+                navigate { it + (3 by RESUMED) }
+                isNavigating = false
+            }
+
+            Component(config, ctx)
+        }
+
+        backDispatcher.back()
+
+        assertFalse(isCalledRecursively)
+    }
+
+    @Test
+    fun WHEN_back_and_navigate_recursively_THEN_state_updated() {
+        val children by context.children(
+            initialState = stateOf(1 by DESTROYED, 2 by RESUMED),
+            backTransformer = { { stateOf(1 by RESUMED) } },
+        ) { config, ctx ->
+            if (config == 1) {
+                navigate { it + (3 by RESUMED) }
+            }
+
+            Component(config, ctx)
+        }
+
+        backDispatcher.back()
+
+        children.assertChildren(1 to 1, 3 to 3)
     }
 }
