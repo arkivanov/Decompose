@@ -151,7 +151,7 @@ class PagesTest {
     ) {
         composeRule.setContent {
             Pages(
-                pages = pages,
+                pages = pages.value,
                 onPageSelected = onPageSelected,
                 scrollAnimation = scrollAnimation,
             ) { index, page ->

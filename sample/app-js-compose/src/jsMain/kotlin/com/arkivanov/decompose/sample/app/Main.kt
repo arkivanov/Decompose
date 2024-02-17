@@ -1,8 +1,9 @@
 package com.arkivanov.decompose.sample.app
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.CanvasBasedWindow
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.webhistory.DefaultWebHistoryController
@@ -18,7 +19,7 @@ import web.dom.DocumentVisibilityState
 import web.dom.document
 import web.events.EventType
 
-@OptIn(ExperimentalDecomposeApi::class)
+@OptIn(ExperimentalDecomposeApi::class, ExperimentalComposeUiApi::class)
 fun main() {
     val lifecycle = LifecycleRegistry()
 
@@ -33,7 +34,7 @@ fun main() {
     lifecycle.attachToDocument()
 
     onWasmReady {
-        Window("Decompose Sample") {
+        CanvasBasedWindow(title = "Decompose Sample") {
             RootContent(component = root, modifier = Modifier.fillMaxSize())
         }
     }

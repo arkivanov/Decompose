@@ -48,6 +48,9 @@ kotlin {
         common.main.dependencies {
             implementation(project(":decompose"))
             implementation(compose.foundation)
+
+            // Required due to https://github.com/JetBrains/compose-multiplatform/issues/4326
+            implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesCore)
         }
 
         android.main.dependencies {

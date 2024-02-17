@@ -1,17 +1,15 @@
 [versions]
 
 decompose = "3.0.0-alpha06"
-kotlin = "1.9.21"
+kotlin = "1.9.22"
 essenty = "2.0.0-alpha06"
 reaktive = "1.2.3"
 junit = "4.13.2"
-jetbrainsCompose = "1.6.0-alpha01"
+jetbrainsCompose = "1.6.0-rc02"
 jetbrainsKotlinWrappers = "1.0.0-pre.608"
-jetbrainsKotlinxCoroutines = "1.8.0-RC"
+jetbrainsKotlinxCoroutines = "1.8.0"
 jetbrainsKotlinxSerialization = "1.6.2"
 jetbrainsBinaryCompatibilityValidator = "0.13.2"
-jetpackCompose = "1.5.0"
-jetpackComposeCompiler = "1.5.6"
 robolectric = "4.9.1"
 androidGradle = "8.0.2"
 androidMaterial = "1.6.1"
@@ -50,8 +48,6 @@ jetbrains-kotlinx-kotlinxSerializationCore = { group = "org.jetbrains.kotlinx", 
 jetbrains-kotlinx-kotlinxSerializationJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "jetbrainsKotlinxSerialization" }
 
 robolectric-robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
-
-androidx-compose-runtime-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "jetpackCompose" }
 
 android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradle" }
 android-material-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
