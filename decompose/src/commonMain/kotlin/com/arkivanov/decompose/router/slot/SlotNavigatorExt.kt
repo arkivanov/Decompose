@@ -14,7 +14,7 @@ fun <C : Any> SlotNavigator<C>.navigate(transformer: (configuration: C?) -> C?) 
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
-fun <C : Any> SlotNavigator<C>.activate(configuration: C, onComplete: () -> Unit = {}) {
+inline fun <C : Any> SlotNavigator<C>.activate(configuration: C, crossinline onComplete: () -> Unit = {}) {
     navigate(transformer = { configuration }, onComplete = { _, _ -> onComplete() })
 }
 
@@ -24,7 +24,7 @@ fun <C : Any> SlotNavigator<C>.activate(configuration: C, onComplete: () -> Unit
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  * The `isSuccess` argument is `true` if there was an active child component, `false` otherwise.
  */
-fun SlotNavigator<*>.dismiss(onComplete: (isSuccess: Boolean) -> Unit = {}) {
+inline fun SlotNavigator<*>.dismiss(crossinline onComplete: (isSuccess: Boolean) -> Unit = {}) {
     navigate(
         transformer = { null },
         onComplete = { _, oldConfiguration -> onComplete(oldConfiguration != null) },
