@@ -36,7 +36,7 @@ fun <C : Any, T : Any> Pages(
     key: (Child<C, T>) -> Any = { it.configuration.hashString() },
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
-    val state = pages.subscribeAsState()
+    val state by pages.subscribeAsState()
 
     Pages(
         pages = state,
@@ -56,7 +56,7 @@ fun <C : Any, T : Any> Pages(
 @ExperimentalDecomposeApi
 @Composable
 fun <C : Any, T : Any> Pages(
-    pages: State<ChildPages<C, T>>,
+    pages: ChildPages<C, T>,
     onPageSelected: (index: Int) -> Unit,
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
@@ -64,11 +64,10 @@ fun <C : Any, T : Any> Pages(
     key: (Child<C, T>) -> Any = { it.configuration.hashString() },
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
-    val childPages by pages
-    val selectedIndex = childPages.selectedIndex
+    val selectedIndex = pages.selectedIndex
     val state = rememberPagerState(
         initialPage = selectedIndex,
-        pageCount = { childPages.items.size },
+        pageCount = { pages.items.size },
     )
 
     LaunchedEffect(selectedIndex) {
@@ -92,9 +91,9 @@ fun <C : Any, T : Any> Pages(
     pager(
         modifier,
         state,
-        { key(childPages.items[it]) },
+        { key(pages.items[it]) },
     ) { pageIndex ->
-        val item = childPages.items[pageIndex]
+        val item = pages.items[pageIndex]
 
         val pageRef = remember(item.configuration) { Ref(item.instance) }
         if (item.instance != null) {
