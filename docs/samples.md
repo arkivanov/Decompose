@@ -5,6 +5,7 @@ This sample demonstrates the following features:
 * Nested reusable components
 * Bottom navigation
 * Nested navigation
+* Various navigation models: Child Stack, Child Slot, Child Pages, Generic Navigation
 * State preservation (using `StateKeeper`)
 * Retaining instances (using `InstanceKeeper`)
 * Pluggable UI (Android Views, Compose, SwiftUI, Kotlin/React)
@@ -24,8 +25,10 @@ Content:
     * [MultiPane](https://github.com/arkivanov/Decompose/tree/master/sample/shared/shared/src/commonMain/kotlin/com/arkivanov/sample/shared/multipane) - the Multi-Pane tab, it displays `ArticleListComponent` and `ArticleDetailsComponent` components either in a stack (one on top of another) or side by side. **Please note that this sample is for advanced single-pane/multi-pane navigation and layout, for generic master-detail navigation please refer to the Sample Todo List App described below.**
         * [ArticleListComponent](https://github.com/arkivanov/Decompose/tree/master/sample/shared/shared/src/commonMain/kotlin/com/arkivanov/sample/shared/multipane/list) - displays a random list of articles. Clicking on an item triggers the `ArticleDetails` component.
         * [ArticleDetailsComponent](https://github.com/arkivanov/Decompose/tree/master/sample/shared/shared/src/commonMain/kotlin/com/arkivanov/sample/shared/multipane/details) - displays the content of the selected article.
-    * [DynamicFeatures](https://github.com/arkivanov/Decompose/tree/master/sample/shared/shared/src/commonMain/kotlin/com/arkivanov/sample/shared/dynamicfeatures) - the Dynamic Features tab, it demonstrates the usage of [Play Feature Delivery](https://developer.android.com/guide/playcore/feature-delivery) on Android, while using classing integration on other platforms. There are two simple feature components - `Feature1` and `Feature2` - they are located in separate modules described below.
+    * [DynamicFeatures](https://github.com/arkivanov/Decompose/tree/master/sample/shared/shared/src/commonMain/kotlin/com/arkivanov/sample/shared/dynamicfeatures) - the Dynamic Features tab, it demonstrates the usage of [Play Feature Delivery](https://developer.android.com/guide/playcore/feature-delivery) on Android, while using classic integration on other platforms. There are two simple feature components - `Feature1` and `Feature2` - they are located in separate modules described below.
         * [DynamicFeature](https://github.com/arkivanov/Decompose/tree/master/sample/shared/shared/src/commonMain/kotlin/com/arkivanov/sample/shared/dynamicfeatures/dynamicfeature) - a helper component responsible for loading dynamic feature components.
+    * [CustomNavigation](https://github.com/arkivanov/Decompose/tree/master/sample/shared/shared/src/commonMain/kotlin/com/arkivanov/sample/shared/customnavigation) - the Custom Navigation tab that demonstrates the usage of the Generic Navigation model.
+    * [Pages](https://github.com/arkivanov/Decompose/tree/master/sample/shared/shared/src/commonMain/kotlin/com/arkivanov/sample/shared/pages) - the Pages tab that demonstrates the usage of the Child Pages navigation model.
 * [compose](https://github.com/arkivanov/Decompose/tree/master/sample/shared/compose) - this module contains Compose UI.
 * [dynamic-features/api](https://github.com/arkivanov/Decompose/tree/master/sample/shared/dynamic-features/api) - this module contains only API for dynamic feature components.
 * [dynamic-features/compose-api](https://github.com/arkivanov/Decompose/tree/master/sample/shared/dynamic-features/compose-api) - this module contains only Compose API for dynamic feature components.
