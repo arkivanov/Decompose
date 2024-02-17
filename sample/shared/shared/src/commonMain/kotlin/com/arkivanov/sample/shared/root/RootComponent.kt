@@ -7,6 +7,7 @@ import com.arkivanov.sample.shared.counters.CountersComponent
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesComponent
 import com.arkivanov.sample.shared.multipane.MultiPaneComponent
+import com.arkivanov.sample.shared.pages.PagesComponent
 
 interface RootComponent {
 
@@ -17,6 +18,7 @@ interface RootComponent {
     fun onMultiPaneTabClicked()
     fun onDynamicFeaturesTabClicked()
     fun onCustomNavigationTabClicked()
+    fun onPagesTabClicked()
 
     sealed class Child {
         class CountersChild(val component: CountersComponent) : Child()
@@ -24,5 +26,6 @@ interface RootComponent {
         class MultiPaneChild(val component: MultiPaneComponent) : Child()
         class DynamicFeaturesChild(val component: DynamicFeaturesComponent) : Child()
         class CustomNavigationChild(val component: CustomNavigationComponent) : Child()
+        class PagesChild(val component: PagesComponent) : Child()
     }
 }

@@ -22,4 +22,5 @@ class PreviewRootComponent : RootComponent {
     override fun onMultiPaneTabClicked() {}
     override fun onDynamicFeaturesTabClicked() {}
     override fun onCustomNavigationTabClicked() {}
+    override fun onPagesTabClicked() {}
 }

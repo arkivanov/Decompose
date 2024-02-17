@@ -20,10 +20,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.Direction
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation
@@ -40,12 +42,15 @@ import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationContent
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesContent
 import com.arkivanov.sample.shared.multipane.MultiPaneContent
+import com.arkivanov.sample.shared.pages.PagesComponent
+import com.arkivanov.sample.shared.pages.PagesContent
 import com.arkivanov.sample.shared.root.RootComponent.Child
 import com.arkivanov.sample.shared.root.RootComponent.Child.CardsChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.CountersChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
 
 @Composable
 fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
@@ -78,7 +83,8 @@ private fun Children(component: RootComponent, modifier: Modifier = Modifier) {
             is CardsChild -> CardsContent(component = child.component, modifier = Modifier.fillMaxSize())
             is MultiPaneChild -> MultiPaneContent(component = child.component, modifier = Modifier.fillMaxSize())
             is DynamicFeaturesChild -> DynamicFeaturesContent(component = child.component, modifier = Modifier.fillMaxSize())
-            is CustomNavigationChild -> CustomNavigationContent(component = child.component, Modifier.fillMaxSize())
+            is CustomNavigationChild -> CustomNavigationContent(component = child.component, modifier = Modifier.fillMaxSize())
+            is PagesChild -> PagesContent(component = child.component, modifier = Modifier.fillMaxSize())
         }
     }
 }
@@ -143,6 +149,18 @@ private fun BottomBar(component: RootComponent, modifier: Modifier = Modifier) {
                 )
             },
         )
+
+        BottomNavigationItem(
+            selected = activeComponent is PagesComponent,
+            onClick = component::onPagesTabClicked,
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = "Pages",
+                    modifier = Modifier.rotate(90F),
+                )
+            },
+        )
     }
 }
 
@@ -163,6 +181,7 @@ private val Child.index: Int
             is MultiPaneChild -> 2
             is DynamicFeaturesChild -> 3
             is CustomNavigationChild -> 4
+            is PagesChild -> 5
         }
 
 private fun StackAnimator.flipSide(): StackAnimator =
