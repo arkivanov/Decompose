@@ -14,6 +14,7 @@ import com.arkivanov.sample.shared.root.RootComponent.Child.CountersChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 @ExperimentalDecomposeApi
@@ -28,10 +29,12 @@ fun ViewContext.RootView(component: RootComponent): View {
         val newView: View =
             when (val child = newStack.active.instance) {
                 is CountersChild -> CountersView(child.component)
+
                 is CardsChild,
                 is MultiPaneChild,
                 is DynamicFeaturesChild,
-                is CustomNavigationChild -> NotImplementedView()
+                is CustomNavigationChild,
+                is PagesChild -> NotImplementedView()
             }
 
         if ((oldView != null) && (oldStack != null)) {
@@ -74,6 +77,7 @@ fun ViewContext.RootView(component: RootComponent): View {
                 is MultiPaneChild -> R.id.tab_multipane
                 is DynamicFeaturesChild -> R.id.tab_dynamic_features
                 is CustomNavigationChild -> R.id.tab_custom_navigation
+                is PagesChild -> error("Unsupported tab")
             }
 
         navigationView.setOnNavigationItemSelectedListener(listener)
@@ -90,4 +94,5 @@ private val RootComponent.Child.index: Int
             is MultiPaneChild -> 2
             is DynamicFeaturesChild -> 3
             is CustomNavigationChild -> 4
+            is PagesChild -> 5
         }
