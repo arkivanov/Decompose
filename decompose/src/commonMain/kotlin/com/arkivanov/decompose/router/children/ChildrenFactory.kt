@@ -2,6 +2,7 @@ package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.Relay
 import com.arkivanov.decompose.backhandler.child
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -114,7 +115,115 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
     childFactory: (configuration: C, componentContext: ComponentContext) -> T,
 ): Value<S> {
     val mainBackHandler = backHandler.child()
+    val relay = Relay<NavEvent<E>>()
+    val cancellation = source.subscribe { relay.accept(NavEvent.Event(it)) }
+    val backCallback = BackCallback { relay.accept(NavEvent.Back) }
 
+    val eventProcessor = EventProcessor<E>()
+    relay.subscribe(eventProcessor::process)
+
+    val holder =
+        Holder(
+            navigator = childrenNavigator(
+                key = key,
+                initialState = initialState,
+                saveState = saveState,
+                restoreState = restoreState,
+                childFactory = childFactory,
+            ),
+            stateMapper = stateMapper,
+            navTransformer = navTransformer,
+            onStateChanged = { newState, oldState, isBackEnabled ->
+                backCallback.isEnabled = isBackEnabled
+                onStateChanged(newState, oldState)
+            },
+            onEventComplete = onEventComplete,
+            backTransformer = backTransformer,
+        )
+
+    relay.accept(NavEvent.Init(holder))
+    mainBackHandler.register(backCallback)
+    lifecycle.doOnDestroy(cancellation::cancel)
+
+    return holder.state
+}
+
+private class EventProcessor<in E : Any> {
+    private val pendingEvents = ArrayList<E>()
+    private var holder: Holder<*, *, E, *, *>? = null
+
+    fun process(event: NavEvent<E>) {
+        when (event) {
+            is NavEvent.Event -> {
+                if (holder != null) {
+                    holder?.navigate(event.event)
+                } else {
+                    pendingEvents += event.event
+                }
+            }
+
+            is NavEvent.Back -> holder?.back()
+
+            is NavEvent.Init -> {
+                holder = event.holder
+                pendingEvents.forEach(event.holder::navigate)
+                pendingEvents.clear()
+            }
+        }
+    }
+}
+
+private sealed interface NavEvent<out E : Any> {
+    class Init<E : Any>(val holder: Holder<*, *, E, *, *>) : NavEvent<E>
+    class Event<out E : Any>(val event: E) : NavEvent<E>
+    data object Back : NavEvent<Nothing>
+}
+
+private class Holder<out C : Any, T : Any, in E : Any, N : NavState<C>, S : Any>(
+    private val navigator: ChildrenNavigator<C, T, N>,
+    private val stateMapper: (state: N, children: List<Child<C, T>>) -> S,
+    private val navTransformer: (state: N, event: E) -> N,
+    private val onStateChanged: (newState: N, oldState: N?, isBackEnabled: Boolean) -> Unit,
+    private val onEventComplete: (event: E, newState: N, oldState: N) -> Unit,
+    private val backTransformer: (state: N) -> (() -> N)?,
+) {
+    val state: MutableValue<S> = MutableValue(stateMapper(navigator.navState, navigator.children))
+    private var bt: (() -> N)? = backTransformer(navigator.navState)
+
+    init {
+        onStateChanged(navigator.navState, null, bt != null)
+    }
+
+    fun navigate(event: E) {
+        val oldState = navigator.navState
+        navigator.navigate(navState = navTransformer(navigator.navState, event))
+        val newState = navigator.navState
+        onAfterNavigate(newState, oldState)
+        onEventComplete(event, newState, oldState)
+    }
+
+    fun back() {
+        val state = bt?.invoke() ?: return
+        val oldState = navigator.navState
+        navigator.navigate(navState = state)
+        val newState = navigator.navState
+        onAfterNavigate(newState, oldState)
+    }
+
+    private fun onAfterNavigate(newState: N, oldState: N) {
+        bt = backTransformer(newState)
+        state.value = stateMapper(newState, navigator.children)
+        onStateChanged(newState, oldState, bt != null)
+    }
+}
+
+private fun <C : Any, T : Any, N : NavState<C>> ComponentContext.childrenNavigator(
+    key: String,
+    initialState: () -> N,
+    saveState: (state: N) -> SerializableContainer?,
+    restoreState: (container: SerializableContainer) -> N?,
+    childFactory: (configuration: C, componentContext: ComponentContext) -> T,
+): ChildrenNavigator<C, T, N> {
     val navigator =
         stateKeeper.consume(key = key, strategy = SavedState.serializer()).let { savedState ->
             val restoredNavState: N? = savedState?.navState?.let(restoreState)
@@ -141,49 +250,7 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
         }
     }
 
-    val state = MutableValue(stateMapper(navigator.navState, navigator.children))
-
-    var bt: (() -> N)? = backTransformer(navigator.navState)
-
-    lateinit var backCallback: BackCallback
-
-    fun onAfterNavigate(newState: N, oldState: N) {
-        bt = backTransformer(newState)
-        backCallback.isEnabled = bt != null
-        state.value = stateMapper(newState, navigator.children)
-        onStateChanged(newState, oldState)
-    }
-
-    backCallback =
-        BackCallback(isEnabled = bt != null) {
-            bt?.invoke()?.also { state ->
-                val oldState = navigator.navState
-                navigator.navigate(navState = state)
-                val newState = navigator.navState
-                onAfterNavigate(newState, oldState)
-            }
-        }
-
-    mainBackHandler.register(backCallback)
-
-    val cancellation =
-        source.subscribe { event ->
-            val oldState = navigator.navState
-            navigator.navigate(navState = navTransformer(navigator.navState, event))
-            val newState = navigator.navState
-            onAfterNavigate(newState, oldState)
-            onEventComplete(event, newState, oldState)
-        }
-
-    lifecycle.doOnDestroy {
-        cancellation.cancel()
-        stateKeeper.unregister(key = key)
-        mainBackHandler.unregister(backCallback)
-    }
-
-    onStateChanged(navigator.navState, null)
-
-    return state
+    return navigator
 }
 
 @Serializable

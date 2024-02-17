@@ -17,7 +17,7 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 @Suppress("TestFunctionName")
-internal class ChildrenRetainedInstanceTest : ChildrenTestBase() {
+class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_child_switched_from_created_to_destroyed_THEN_instance_destroyed() {

@@ -16,7 +16,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @Suppress("TestFunctionName")
-internal class ChildrenSavedStateTest : ChildrenTestBase() {
+class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_child_switched_from_resumed_to_started_THEN_state_not_saved() {
