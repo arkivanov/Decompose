@@ -16,7 +16,7 @@ fun <C : Any> StackNavigator<C>.navigate(transformer: (stack: List<C>) -> List<C
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
-fun <C : Any> StackNavigator<C>.push(configuration: C, onComplete: () -> Unit = {}) {
+inline fun <C : Any> StackNavigator<C>.push(configuration: C, crossinline onComplete: () -> Unit = {}) {
     navigate(transformer = { it + configuration }, onComplete = { _, _ -> onComplete() })
 }
 
@@ -34,9 +34,9 @@ fun <C : Any> StackNavigator<C>.push(configuration: C, onComplete: () -> Unit = 
  * The `isSuccess` argument is `true` if the component was pushed, `false` otherwise.
  */
 @ExperimentalDecomposeApi
-fun <C : Any> StackNavigator<C>.pushNew(
+inline fun <C : Any> StackNavigator<C>.pushNew(
     configuration: C,
-    onComplete: (isSuccess: Boolean) -> Unit = {},
+    crossinline onComplete: (isSuccess: Boolean) -> Unit = {},
 ) {
     navigate(
         transformer = { stack -> if (stack.last() == configuration) stack else stack + configuration },
@@ -54,9 +54,9 @@ fun <C : Any> StackNavigator<C>.pushNew(
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
 @ExperimentalDecomposeApi
-fun <C : Any> StackNavigator<C>.pushToFront(
+inline fun <C : Any> StackNavigator<C>.pushToFront(
     configuration: C,
-    onComplete: () -> Unit = {},
+    crossinline onComplete: () -> Unit = {},
 ) {
     navigate(
         transformer = { stack -> stack - configuration + configuration },
@@ -71,7 +71,7 @@ fun <C : Any> StackNavigator<C>.pushToFront(
  * The `isSuccess` argument is `true` if the stack size was greater than 1 and a component was popped,
  * `false` otherwise.
  */
-fun <C : Any> StackNavigator<C>.pop(onComplete: (isSuccess: Boolean) -> Unit = {}) {
+inline fun <C : Any> StackNavigator<C>.pop(crossinline onComplete: (isSuccess: Boolean) -> Unit = {}) {
     navigate(
         transformer = { stack -> stack.takeIf { it.size > 1 }?.dropLast(1) ?: stack },
         onComplete = { newStack, oldStack -> onComplete(newStack.size < oldStack.size) },
@@ -129,7 +129,7 @@ inline fun <C : Any> StackNavigator<C>.popTo(
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
-fun <C : Any> StackNavigator<C>.replaceCurrent(configuration: C, onComplete: () -> Unit = {}) {
+inline fun <C : Any> StackNavigator<C>.replaceCurrent(configuration: C, crossinline onComplete: () -> Unit = {}) {
     navigate(
         transformer = { it.dropLast(1) + configuration },
         onComplete = { _, _ -> onComplete() },
@@ -141,7 +141,7 @@ fun <C : Any> StackNavigator<C>.replaceCurrent(configuration: C, onComplete: () 
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
-fun <C : Any> StackNavigator<C>.replaceAll(vararg configurations: C, onComplete: () -> Unit = { }) {
+inline fun <C : Any> StackNavigator<C>.replaceAll(vararg configurations: C, crossinline onComplete: () -> Unit = { }) {
     navigate(transformer = { configurations.toList() }, onComplete = { _, _ -> onComplete() })
 }
 
@@ -149,7 +149,7 @@ fun <C : Any> StackNavigator<C>.replaceAll(vararg configurations: C, onComplete:
  * Removes all components with configurations of [configuration]'s class, and adds the provided [configuration] to the top of the stack.
  * The operation is performed as one transaction. If there is already a component with the same configuration, it will not be recreated.
  */
-fun <C : Any> StackNavigator<C>.bringToFront(configuration: C, onComplete: () -> Unit = {}) {
+inline fun <C : Any> StackNavigator<C>.bringToFront(configuration: C, crossinline onComplete: () -> Unit = {}) {
     navigate(
         transformer = { stack -> stack.filterNot { it::class == configuration::class } + configuration },
         onComplete = { _, _ -> onComplete() },
