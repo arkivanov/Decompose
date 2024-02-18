@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -17,3 +18,14 @@ internal data class LayoutCorner(
     val radius: Dp = 16.dp,
     val isFixed: Boolean = true,
 )
+
+internal fun LayoutCorners.toShape(progress: Float): RoundedCornerShape =
+    RoundedCornerShape(
+        topStart = topStart.getProgressRadius(progress),
+        topEnd = topEnd.getProgressRadius(progress),
+        bottomEnd = bottomEnd.getProgressRadius(progress),
+        bottomStart = bottomStart.getProgressRadius(progress),
+    )
+
+private fun LayoutCorner.getProgressRadius(progress: Float): Dp =
+    if (isFixed) radius else radius * progress
