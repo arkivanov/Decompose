@@ -37,13 +37,13 @@ fun materialPredictiveBackAnimatable(
 ): PredictiveBackAnimatable =
     MaterialPredictiveBackAnimatable(
         initialEvent = initialBackEvent,
-        shape = shape,
+        exitShape = shape,
     )
 
 @ExperimentalDecomposeApi
 private class MaterialPredictiveBackAnimatable(
     private val initialEvent: BackEvent,
-    private val shape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
+    private val exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
 ) : PredictiveBackAnimatable {
 
     private val finishProgressAnimatable = Animatable(initialValue = 1F)
@@ -55,13 +55,13 @@ private class MaterialPredictiveBackAnimatable(
 
     override val exitModifier: Modifier
         get() =
-            if (shape == null) {
+            if (exitShape == null) {
                 Modifier.withLayoutCorners { corners ->
                     graphicsLayer { setupExitGraphicLayer(corners.toShape()) }
                 }
             } else {
                 Modifier.graphicsLayer {
-                    setupExitGraphicLayer(this@MaterialPredictiveBackAnimatable.shape.invoke(progress, edge))
+                    setupExitGraphicLayer(exitShape.invoke(progress, edge))
                 }
             }
 
