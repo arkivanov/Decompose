@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.movableContentOf
@@ -20,8 +19,10 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.LocalStackAnim
 import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.backhandler.BackEvent
 import com.arkivanov.essenty.backhandler.BackHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
@@ -65,7 +66,8 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
 
     @Composable
     override fun invoke(stack: ChildStack<C, T>, modifier: Modifier, content: @Composable (child: Child.Created<C, T>) -> Unit) {
-        var activeConfigurations: Set<C> by remember { mutableStateOf(emptySet()) }
+        val activeConfigurations = remember { HashSet<C>() }
+        val handler = rememberHandler(stack = stack, isGestureEnabled = { activeConfigurations.size == 1 })
         val animationProvider = LocalStackAnimationProvider.current
         val fallBackAnimation = animation ?: remember(animationProvider, animationProvider::provide) ?: emptyStackAnimation()
 
@@ -83,24 +85,8 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
                 }
             }
 
-        var data: Data<C, T> by rememberMutableStateWithLatest(key = stack) { latestData ->
-            Data(stack = stack, key = latestData?.nextKey ?: 0)
-        }
-
-        val (dataStack, dataKey, dataAnimatable) = data
-
-        val items =
-            if (dataAnimatable == null) {
-                listOf(Item(stack = dataStack, key = dataKey, modifier = Modifier))
-            } else {
-                listOf(
-                    Item(stack = dataStack.dropLast(), key = dataKey + 1, modifier = dataAnimatable.enterModifier),
-                    Item(stack = dataStack, key = dataKey, modifier = dataAnimatable.exitModifier),
-                )
-            }
-
         Box(modifier = modifier) {
-            items.forEach { item ->
+            handler.items.forEach { item ->
                 key(item.key) {
                     fallBackAnimation(
                         stack = item.stack,
@@ -111,75 +97,38 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
             }
         }
 
-        val isBackEnabled = dataStack.backStack.isNotEmpty()
-        val isBackGestureEnabled = isBackEnabled && ((dataAnimatable != null) || (activeConfigurations.size == 1))
-
-        if (isBackEnabled) {
-            if (isBackGestureEnabled) {
-                val scope = rememberCoroutineScope()
-                val initialBackEventRef = remember { Ref<BackEvent?>(null) }
-
-                BackGestureHandler(
-                    backHandler = backHandler,
-                    onBackStarted = { initialBackEventRef.value = it },
-                    onBackProgressed = {
-                        initialBackEventRef.value?.also { initialBackEvent ->
-                            data = data.copy(animatable = selector(initialBackEvent, data.stack.active, data.stack.backStack.last()))
-                            initialBackEventRef.value = null
-                        }
-
-                        scope.launch { data.animatable?.animate(it) }
-                    },
-                    onBackCancelled = {
-                        initialBackEventRef.value = null
-
-                        scope.launch {
-                            data.animatable?.cancel()
-                            data = data.copy(animatable = null)
-                        }
-                    },
-                    onBack = {
-                        initialBackEventRef.value = null
-
-                        if (data.animatable == null) {
-                            onBack()
-                        } else {
-                            scope.launch {
-                                data.animatable?.finish()
-                                if (data.animatable != null) {
-                                    onBack()
-                                }
-                            }
-                        }
-                    }
-                )
-            } else {
-                BackGestureHandler(backHandler = backHandler, onBack = onBack)
+        if (stack.backStack.isNotEmpty()) {
+            DisposableEffect(handler) {
+                backHandler.register(handler)
+                onDispose { backHandler.unregister(handler) }
             }
         }
     }
 
-    @Composable
-    private fun <T : Any> rememberMutableStateWithLatest(
-        key: Any,
-        getValue: (latestValue: T?) -> T,
-    ): MutableState<T> {
-        val latestValue: Holder<T?> = remember { Holder(value = null) }
-        val state = remember(key) { mutableStateOf(getValue(latestValue.value)) }
-        latestValue.value = state.value
 
-        return state
+    @Composable
+    private fun rememberHandler(stack: ChildStack<C, T>, isGestureEnabled: () -> Boolean): Handler<C, T> {
+        val scope = key(stack) { rememberCoroutineScope() }
+
+        return rememberWithLatest(stack) { previousHandler ->
+            Handler(
+                stack = stack,
+                scope = scope,
+                isGestureEnabled = isGestureEnabled,
+                key = previousHandler?.items?.maxOf { it.key } ?: 0,
+                selector = selector,
+                onBack = onBack,
+            )
+        }
     }
 
-    private fun <C : Any, T : Any> ChildStack<C, T>.dropLast(): ChildStack<C, T> =
-        ChildStack(active = backStack.last(), backStack = backStack.dropLast(1))
+    @Composable
+    private fun <T> rememberWithLatest(key: Any, supplier: (T?) -> T): T {
+        val ref = remember { Ref<T?>(null) }
+        val v = remember(key) { supplier(ref.value) }
+        ref.value = v
 
-    private data class Data<out C : Any, out T : Any>(
-        val stack: ChildStack<C, T>,
-        val key: Int,
-        val animatable: PredictiveBackAnimatable? = null,
-    ) {
-        val nextKey: Int get() = if (animatable == null) key else key + 1
+        return v
     }
 
     private data class Item<out C : Any, out T : Any>(
@@ -188,5 +137,62 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
         val modifier: Modifier,
     )
 
-    private class Holder<T>(var value: T)
+    private class Handler<C : Any, T : Any>(
+        private val stack: ChildStack<C, T>,
+        private val scope: CoroutineScope,
+        private val isGestureEnabled: () -> Boolean,
+        private val key: Int,
+        private val selector: (BackEvent, exitChild: Child.Created<C, T>, enterChild: Child.Created<C, T>) -> PredictiveBackAnimatable,
+        private val onBack: () -> Unit,
+    ) : BackCallback() {
+        var items: List<Item<C, T>> by mutableStateOf(listOf(Item(stack = stack, key = key, modifier = Modifier)))
+            private set
+
+        private var animatable: PredictiveBackAnimatable? = null
+        private var initialBackEvent: BackEvent? = null
+
+        override fun onBackStarted(backEvent: BackEvent) {
+            initialBackEvent = backEvent
+        }
+
+        override fun onBackProgressed(backEvent: BackEvent) {
+            val initialBackEvent = initialBackEvent
+            if ((initialBackEvent != null) && isGestureEnabled()) {
+                val animatable = selector(initialBackEvent, stack.active, stack.backStack.last())
+                this.animatable = animatable
+                this.initialBackEvent = null
+
+                items =
+                    listOf(
+                        Item(stack = stack.dropLast(), key = key + 1, modifier = animatable.enterModifier),
+                        Item(stack = stack, key = key, modifier = animatable.exitModifier),
+                    )
+            }
+
+            scope.launch { animatable?.animate(backEvent) }
+        }
+
+        private fun <C : Any, T : Any> ChildStack<C, T>.dropLast(): ChildStack<C, T> =
+            ChildStack(active = backStack.last(), backStack = backStack.dropLast(1))
+
+        override fun onBack() {
+            if (animatable == null) {
+                onBack.invoke()
+            } else {
+                scope.launch {
+                    animatable?.finish()
+                    animatable = null
+                    onBack.invoke()
+                }
+            }
+        }
+
+        override fun onBackCancelled() {
+            scope.launch {
+                animatable?.cancel()
+                animatable = null
+                items = listOf(Item(stack = stack, key = key, modifier = Modifier))
+            }
+        }
+    }
 }
