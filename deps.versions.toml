@@ -2,7 +2,7 @@
 
 decompose = "3.0.0-alpha06"
 kotlin = "1.9.22"
-essenty = "2.0.0-alpha06"
+essenty = "2.0.0-alpha07"
 reaktive = "1.2.3"
 junit = "4.13.2"
 jetbrainsCompose = "1.6.0-rc02"
