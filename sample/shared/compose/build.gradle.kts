@@ -35,6 +35,7 @@ kotlin {
                         baseName = "Shared" // Used by app-ios-compose
                         export(project(":decompose"))
                         export(project(":sample:shared:shared"))
+                        export(deps.essenty.lifecycle)
 
                         // Optional, only if you need Predictive Back Gesture on Darwin (Apple) targets
                         export(deps.essenty.backHandler)
