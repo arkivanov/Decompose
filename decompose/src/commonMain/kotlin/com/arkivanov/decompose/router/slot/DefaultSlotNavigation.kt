@@ -6,7 +6,7 @@ import com.arkivanov.decompose.router.slot.SlotNavigation.Event
 
 internal class DefaultSlotNavigation<C : Any> : SlotNavigation<C> {
 
-    private val relay = Relay<Event<C>>(isMainThreadCheckEnabled = true)
+    private val relay = Relay<Event<C>>()
 
     override fun navigate(
         transformer: (configuration: C?) -> C?,
