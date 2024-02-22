@@ -4,6 +4,7 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.Relay
 import com.arkivanov.decompose.backhandler.child
+import com.arkivanov.decompose.mainthread.checkMainThread
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
@@ -153,6 +154,8 @@ private class EventProcessor<in E : Any> {
     private var holder: Holder<*, *, E, *, *>? = null
 
     fun process(event: NavEvent<E>) {
+        checkMainThread()
+
         when (event) {
             is NavEvent.Event -> {
                 if (holder != null) {

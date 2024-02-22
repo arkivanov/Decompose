@@ -9,7 +9,7 @@ import com.arkivanov.decompose.Relay
  */
 class SimpleNavigation<T : Any> : NavigationSource<T> {
 
-    private val relay = Relay<T>(isMainThreadCheckEnabled = true)
+    private val relay = Relay<T>()
 
     override fun subscribe(observer: (T) -> Unit): Cancellation =
         relay.subscribe(observer)
