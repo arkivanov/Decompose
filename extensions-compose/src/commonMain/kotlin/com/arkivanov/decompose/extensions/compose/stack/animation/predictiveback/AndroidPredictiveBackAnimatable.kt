@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
  * some Android devices (e.g. in system settings on Pixel phones).
  *
  * @param initialBackEvent an initial [BackEvent] of the predictive back gesture.
+ * @param switchProgressThreshold a progress threshold where the exiting screen switches to the entering one and back.
  * @param exitShape an optional clipping shape of the child being removed (the currently active child).
  * If not supplied then a [RoundedCornerShape][androidx.compose.foundation.shape.RoundedCornerShape] will be applied.
  * @param enterShape an optional clipping shape of the child being shown (the previous child).
@@ -30,11 +31,13 @@ import kotlinx.coroutines.launch
 @ExperimentalDecomposeApi
 fun androidPredictiveBackAnimatable(
     initialBackEvent: BackEvent,
+    switchProgressThreshold: Float = 0.05F,
     exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
     enterShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
 ): PredictiveBackAnimatable =
     AndroidPredictiveBackAnimatable(
         initialEvent = initialBackEvent,
+        switchProgressThreshold = switchProgressThreshold,
         exitShape = exitShape,
         enterShape = enterShape,
     )
@@ -42,8 +45,9 @@ fun androidPredictiveBackAnimatable(
 @ExperimentalDecomposeApi
 private class AndroidPredictiveBackAnimatable(
     initialEvent: BackEvent,
-    private val exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
-    private val enterShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
+    private val switchProgressThreshold: Float,
+    private val exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)?,
+    private val enterShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)?,
 ) : PredictiveBackAnimatable {
 
     private val exitProgressAnimatable = Animatable(initialValue = initialEvent.progress.exitProgress())
@@ -92,17 +96,14 @@ private class AndroidPredictiveBackAnimatable(
     }
 
     private fun GraphicsLayerScope.setupEnterGraphicLayer(layoutShape: (progress: Float, edge: BackEvent.SwipeEdge) -> Shape) {
-        val totalProgress = enterProgress.plusFinishProgress(enterFinishProgress)
+        val totalProgress = lerp(start = enterProgress, stop = 1F, fraction = enterFinishProgress)
         alpha = totalProgress
-        scaleX = lerp(start = 0.95F, stop = 0.90F, fraction = enterProgress).plusFinishProgress(enterFinishProgress)
+        scaleX = lerp(start = lerp(start = 0.95F, stop = 0.90F, fraction = enterProgress), stop = 1F, fraction = enterFinishProgress)
         scaleY = scaleX
         translationX = lerp(start = -size.width * 0.15F, stop = 0F, fraction = totalProgress)
         shape = layoutShape(totalProgress, edge)
         clip = true
     }
-
-    private fun Float.plusFinishProgress(progress: Float): Float =
-        (this + (1F - this) * progress).coerceIn(0F, 1F)
 
     override suspend fun animate(event: BackEvent) {
         edge = event.swipeEdge
@@ -134,16 +135,12 @@ private class AndroidPredictiveBackAnimatable(
     }
 
     private fun Float.exitProgress(): Float =
-        if (this < PROGRESS_THRESHOLD) this else 1F
+        if (this < switchProgressThreshold) this else 1F
 
     private fun Float.enterProgress(): Float =
-        if (this < PROGRESS_THRESHOLD) {
+        if (this < switchProgressThreshold) {
             0F
         } else {
-            1F - 0.6F * (1F - this) / (1F - PROGRESS_THRESHOLD)
+            lerp(start = 0.4F, stop = 1F, fraction = (this - switchProgressThreshold) / (1F - switchProgressThreshold))
         }
-
-    private companion object {
-        private const val PROGRESS_THRESHOLD = 0.05F
-    }
 }
