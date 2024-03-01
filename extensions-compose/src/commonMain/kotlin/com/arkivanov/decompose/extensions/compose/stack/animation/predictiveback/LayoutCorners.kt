@@ -16,7 +16,7 @@ internal data class LayoutCorners(
 
 internal data class LayoutCorner(
     val radius: Dp = 16.dp,
-    val isFixed: Boolean = true,
+    val isFixed: Boolean = false,
 )
 
 internal fun LayoutCorners.toShape(progress: Float): RoundedCornerShape =
