@@ -1,7 +1,6 @@
 package com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -14,7 +13,6 @@ import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
@@ -57,7 +55,7 @@ private class MaterialPredictiveBackAnimatable(
         get() =
             if (exitShape == null) {
                 Modifier.withLayoutCorners { corners ->
-                    graphicsLayer { setupExitGraphicLayer(corners.toShape()) }
+                    graphicsLayer { setupExitGraphicLayer(corners.toShape(progress)) }
                 }
             } else {
                 Modifier.graphicsLayer {
@@ -103,17 +101,6 @@ private class MaterialPredictiveBackAnimatable(
         shape = layoutShape
         clip = true
     }
-
-    private fun LayoutCorners.toShape(): RoundedCornerShape =
-        RoundedCornerShape(
-            topStart = topStart.getProgressRadius(),
-            topEnd = topEnd.getProgressRadius(),
-            bottomEnd = bottomEnd.getProgressRadius(),
-            bottomStart = bottomStart.getProgressRadius(),
-        )
-
-    private fun LayoutCorner.getProgressRadius(): Dp =
-        if (isFixed) radius else radius * progress
 
     override suspend fun animate(event: BackEvent) {
         edge = event.swipeEdge
