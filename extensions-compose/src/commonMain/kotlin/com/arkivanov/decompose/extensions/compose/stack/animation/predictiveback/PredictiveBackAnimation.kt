@@ -69,7 +69,7 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
         val activeConfigurations = remember { HashSet<C>() }
         val handler = rememberHandler(stack = stack, isGestureEnabled = { activeConfigurations.size == 1 })
         val animationProvider = LocalStackAnimationProvider.current
-        val fallBackAnimation = animation ?: remember(animationProvider, animationProvider::provide) ?: emptyStackAnimation()
+        val anim = animation ?: remember(animationProvider, animationProvider::provide) ?: emptyStackAnimation()
 
         val childContent =
             remember(content) {
@@ -88,9 +88,9 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
         Box(modifier = modifier) {
             handler.items.forEach { item ->
                 key(item.key) {
-                    fallBackAnimation(
+                    anim(
                         stack = item.stack,
-                        modifier = Modifier.fillMaxSize().then(item.modifier),
+                        modifier = Modifier.fillMaxSize().then(item.modifier()),
                         content = childContent,
                     )
                 }
@@ -134,7 +134,7 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
     private data class Item<out C : Any, out T : Any>(
         val stack: ChildStack<C, T>,
         val key: Int,
-        val modifier: Modifier,
+        val modifier: () -> Modifier = { Modifier },
     )
 
     private class Handler<C : Any, T : Any>(
@@ -145,7 +145,7 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
         private val selector: (BackEvent, exitChild: Child.Created<C, T>, enterChild: Child.Created<C, T>) -> PredictiveBackAnimatable,
         private val onBack: () -> Unit,
     ) : BackCallback() {
-        var items: List<Item<C, T>> by mutableStateOf(listOf(Item(stack = stack, key = key, modifier = Modifier)))
+        var items: List<Item<C, T>> by mutableStateOf(listOf(Item(stack = stack, key = key)))
             private set
 
         private var animatable: PredictiveBackAnimatable? = null
@@ -164,8 +164,8 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
 
                 items =
                     listOf(
-                        Item(stack = stack.dropLast(), key = key + 1, modifier = animatable.enterModifier),
-                        Item(stack = stack, key = key, modifier = animatable.exitModifier),
+                        Item(stack = stack.dropLast(), key = key + 1, modifier = animatable::enterModifier),
+                        Item(stack = stack, key = key, modifier = animatable::exitModifier),
                     )
             }
 
@@ -191,7 +191,7 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
             scope.launch {
                 animatable?.cancel()
                 animatable = null
-                items = listOf(Item(stack = stack, key = key, modifier = Modifier))
+                items = listOf(Item(stack = stack, key = key))
             }
         }
     }
