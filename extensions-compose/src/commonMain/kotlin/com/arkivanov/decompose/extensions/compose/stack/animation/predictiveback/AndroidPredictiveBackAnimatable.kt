@@ -24,8 +24,10 @@ import kotlinx.coroutines.launch
  * @param initialBackEvent an initial [BackEvent] of the predictive back gesture.
  * @param exitShape an optional clipping shape of the child being removed (the currently active child).
  * If not supplied then a [RoundedCornerShape][androidx.compose.foundation.shape.RoundedCornerShape] will be applied.
+ * The `progress` argument is animating from 0 to 1 when the gesture is confirmed.
  * @param enterShape an optional clipping shape of the child being shown (the previous child).
  * If not supplied then a [RoundedCornerShape][androidx.compose.foundation.shape.RoundedCornerShape] will be applied.
+ * The `progress` argument is animating between 0 and 1 while the gesture is being performed.
  */
 @ExperimentalDecomposeApi
 fun androidPredictiveBackAnimatable(
@@ -73,7 +75,7 @@ private class AndroidPredictiveBackAnimatable(
             if (enterShape == null) {
                 Modifier.withLayoutCorners { corners ->
                     graphicsLayer {
-                        setupEnterGraphicLayer { progress, _ -> corners.toShape(progress) }
+                        setupEnterGraphicLayer { progress, _ -> corners.toShape(1F - progress) }
                     }
                 }
             } else {
@@ -97,7 +99,7 @@ private class AndroidPredictiveBackAnimatable(
         scaleX = lerp(start = 0.95F, stop = 0.90F, fraction = enterProgress).plusFinishProgress(enterFinishProgress)
         scaleY = scaleX
         translationX = lerp(start = -size.width * 0.15F, stop = 0F, fraction = totalProgress)
-        shape = layoutShape(totalProgress, edge)
+        shape = layoutShape(enterFinishProgress, edge)
         clip = true
     }
 
