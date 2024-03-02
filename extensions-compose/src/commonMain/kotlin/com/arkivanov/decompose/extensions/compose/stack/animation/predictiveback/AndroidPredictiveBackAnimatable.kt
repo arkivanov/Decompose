@@ -52,8 +52,8 @@ private class AndroidPredictiveBackAnimatable(
     private val exitProgress: Float by derivedStateOf { exitProgressAnimatable.value }
     private val enterProgressAnimatable = Animatable(initialValue = initialEvent.progress.enterProgress())
     private val enterProgress: Float by derivedStateOf { enterProgressAnimatable.value }
-    private val enterFinishProgressAnimatable = Animatable(initialValue = 0F)
-    private val enterFinishProgress: Float by derivedStateOf { enterFinishProgressAnimatable.value }
+    private val finishProgressAnimatable = Animatable(initialValue = 0F)
+    private val finishProgress: Float by derivedStateOf { finishProgressAnimatable.value }
     private var edge by mutableStateOf(initialEvent.swipeEdge)
 
     override val exitModifier: Modifier
@@ -94,17 +94,14 @@ private class AndroidPredictiveBackAnimatable(
     }
 
     private fun GraphicsLayerScope.setupEnterGraphicLayer(layoutShape: (progress: Float, edge: BackEvent.SwipeEdge) -> Shape) {
-        val totalProgress = enterProgress.plusFinishProgress(enterFinishProgress)
+        val totalProgress = lerp(start = enterProgress, stop = 1F, fraction = finishProgress)
         alpha = totalProgress
-        scaleX = lerp(start = 0.95F, stop = 0.90F, fraction = enterProgress).plusFinishProgress(enterFinishProgress)
+        scaleX = lerp(start = lerp(start = 0.95F, stop = 0.90F, fraction = enterProgress), stop = 1F, fraction = finishProgress)
         scaleY = scaleX
         translationX = lerp(start = -size.width * 0.15F, stop = 0F, fraction = totalProgress)
-        shape = layoutShape(enterFinishProgress, edge)
+        shape = layoutShape(finishProgress, edge)
         clip = true
     }
-
-    private fun Float.plusFinishProgress(progress: Float): Float =
-        (this + (1F - this) * progress).coerceIn(0F, 1F)
 
     override suspend fun animate(event: BackEvent) {
         edge = event.swipeEdge
@@ -118,7 +115,7 @@ private class AndroidPredictiveBackAnimatable(
     override suspend fun finish() {
         awaitAll(
             { exitProgressAnimatable.animateTo(targetValue = 1F) },
-            { enterFinishProgressAnimatable.animateTo(targetValue = 1F) },
+            { finishProgressAnimatable.animateTo(targetValue = 1F) },
         )
     }
 
@@ -142,7 +139,7 @@ private class AndroidPredictiveBackAnimatable(
         if (this < PROGRESS_THRESHOLD) {
             0F
         } else {
-            1F - 0.6F * (1F - this) / (1F - PROGRESS_THRESHOLD)
+            lerp(start = 0.4F, stop = 1F, fraction = (this - PROGRESS_THRESHOLD) / (1F - PROGRESS_THRESHOLD))
         }
 
     private companion object {
