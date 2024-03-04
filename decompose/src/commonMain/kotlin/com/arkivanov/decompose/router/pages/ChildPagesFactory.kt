@@ -2,6 +2,7 @@ package com.arkivanov.decompose.router.pages
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
@@ -35,14 +36,14 @@ import kotlinx.serialization.Serializable
  * @return an observable [Value] of [ChildPages].
  */
 @ExperimentalDecomposeApi
-fun <C : Any, T : Any> ComponentContext.childPages(
+fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childPages(
     source: NavigationSource<PagesNavigation.Event<C>>,
     serializer: KSerializer<C>?,
     initialPages: () -> Pages<C> = { Pages() },
     key: String = "DefaultChildPages",
     pageStatus: (index: Int, Pages<C>) -> Status = ::getDefaultPageStatus,
     handleBackButton: Boolean = false,
-    childFactory: (configuration: C, ComponentContext) -> T,
+    childFactory: (configuration: C, Ctx) -> T,
 ): Value<ChildPages<C, T>> =
     childPages(
         source = source,
@@ -104,7 +105,7 @@ private class SerializablePages<out C : Any>(
  * @return an observable [Value] of [ChildPages].
  */
 @ExperimentalDecomposeApi
-fun <C : Any, T : Any> ComponentContext.childPages(
+fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childPages(
     source: NavigationSource<PagesNavigation.Event<C>>,
     initialPages: () -> Pages<C>,
     savePages: (Pages<C>) -> SerializableContainer?,
@@ -112,7 +113,7 @@ fun <C : Any, T : Any> ComponentContext.childPages(
     key: String = "DefaultChildPages",
     pageStatus: (index: Int, Pages<C>) -> Status = ::getDefaultPageStatus,
     handleBackButton: Boolean = false,
-    childFactory: (configuration: C, ComponentContext) -> T,
+    childFactory: (configuration: C, Ctx) -> T,
 ): Value<ChildPages<C, T>> =
     children(
         source = source,

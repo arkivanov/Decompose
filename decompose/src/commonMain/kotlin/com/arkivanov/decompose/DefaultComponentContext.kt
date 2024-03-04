@@ -19,6 +19,7 @@ class DefaultComponentContext(
     override val stateKeeper: StateKeeper = stateKeeper ?: StateKeeperDispatcher()
     override val instanceKeeper: InstanceKeeper = instanceKeeper ?: InstanceKeeperDispatcher().attachTo(lifecycle)
     override val backHandler: BackHandler = backHandler ?: BackDispatcher()
+    override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
 
     constructor(lifecycle: Lifecycle) : this(
         lifecycle = lifecycle,

@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.router.children
 
-import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.ComponentContextFactory
+import com.arkivanov.decompose.CoreComponentContext
 import com.arkivanov.decompose.backhandler.childBackHandler
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
 import com.arkivanov.essenty.backhandler.BackHandler
@@ -11,10 +11,11 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
-internal class DefaultChildItemFactory<C : Any, out T : Any>(
+internal class DefaultChildItemFactory<out Ctx : CoreComponentContext, C : Any, out T : Any>(
+    private val contextFactory: ComponentContextFactory<Ctx>,
     private val lifecycle: Lifecycle,
     private val backHandler: BackHandler,
-    private val childFactory: (configuration: C, ComponentContext) -> T,
+    private val childFactory: (configuration: C, Ctx) -> T,
 ) : ChildItemFactory<C, T> {
 
     override fun invoke(
@@ -31,7 +32,7 @@ internal class DefaultChildItemFactory<C : Any, out T : Any>(
         val component =
             childFactory(
                 configuration,
-                DefaultComponentContext(
+                contextFactory(
                     lifecycle = mergedLifecycle,
                     stateKeeper = stateKeeperDispatcher,
                     instanceKeeper = instanceKeeperRegistry,

@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.Relay
 import com.arkivanov.decompose.backhandler.child
 import com.arkivanov.decompose.mainthread.checkMainThread
@@ -20,7 +20,7 @@ import kotlinx.serialization.Serializable
  * so it's automatically saved and restored. This method can be used if the custom save/restore logic
  * is not required.
  */
-fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.children(
+fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState<C>, S : Any> Ctx.children(
     source: NavigationSource<E>,
     stateSerializer: KSerializer<N>?,
     initialState: () -> N,
@@ -30,7 +30,7 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
     onStateChanged: (newState: N, oldState: N?) -> Unit = { _, _ -> },
     onEventComplete: (event: E, newState: N, oldState: N) -> Unit = { _, _, _ -> },
     backTransformer: (state: N) -> (() -> N)? = { null },
-    childFactory: (configuration: C, componentContext: ComponentContext) -> T,
+    childFactory: (configuration: C, componentContext: Ctx) -> T,
 ): Value<S> =
     children(
         source = source,
@@ -102,7 +102,7 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
  * @param childFactory a factory function that creates new child component instances.
  * @return an observable [Value] of the resulting children state.
  */
-fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.children(
+fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState<C>, S : Any> Ctx.children(
     source: NavigationSource<E>,
     key: String,
     initialState: () -> N,
@@ -113,7 +113,7 @@ fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.child
     onStateChanged: (newState: N, oldState: N?) -> Unit = { _, _ -> },
     onEventComplete: (event: E, newState: N, oldState: N) -> Unit = { _, _, _ -> },
     backTransformer: (state: N) -> (() -> N)? = { null },
-    childFactory: (configuration: C, componentContext: ComponentContext) -> T,
+    childFactory: (configuration: C, componentContext: Ctx) -> T,
 ): Value<S> {
     val mainBackHandler = backHandler.child()
     val relay = Relay<NavEvent<E>>()
@@ -220,13 +220,14 @@ private class Holder<out C : Any, T : Any, in E : Any, N : NavState<C>, S : Any>
     }
 }
 
-private fun <C : Any, T : Any, N : NavState<C>> ComponentContext.childrenNavigator(
+private fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, N : NavState<C>> Ctx.childrenNavigator(
     key: String,
     initialState: () -> N,
     saveState: (state: N) -> SerializableContainer?,
     restoreState: (container: SerializableContainer) -> N?,
-    childFactory: (configuration: C, componentContext: ComponentContext) -> T,
+    childFactory: (configuration: C, componentContext: Ctx) -> T,
 ): ChildrenNavigator<C, T, N> {
+
     val navigator =
         stateKeeper.consume(key = key, strategy = SavedState.serializer()).let { savedState ->
             val restoredNavState: N? = savedState?.navState?.let(restoreState)
@@ -235,6 +236,7 @@ private fun <C : Any, T : Any, N : NavState<C>> ComponentContext.childrenNavigat
                 lifecycle = lifecycle,
                 retainedInstanceSupplier = { factory -> instanceKeeper.getOrCreate(key = key, factory = factory) },
                 childItemFactory = DefaultChildItemFactory(
+                    contextFactory = componentContextFactory,
                     lifecycle = lifecycle,
                     backHandler = backHandler.child(priority = BackCallback.PRIORITY_DEFAULT + 1),
                     childFactory = childFactory,

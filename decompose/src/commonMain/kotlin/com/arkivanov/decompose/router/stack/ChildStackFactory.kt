@@ -2,6 +2,7 @@ package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
 import com.arkivanov.decompose.router.children.NavigationSource
@@ -27,13 +28,13 @@ import kotlinx.serialization.builtins.ListSerializer
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildStack].
  */
-fun <C : Any, T : Any> ComponentContext.childStack(
+fun <Ctx: GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
     source: NavigationSource<StackNavigation.Event<C>>,
     serializer: KSerializer<C>?,
     initialStack: () -> List<C>,
     key: String = "DefaultChildStack",
     handleBackButton: Boolean = false,
-    childFactory: (configuration: C, ComponentContext) -> T,
+    childFactory: (configuration: C, Ctx) -> T,
 ): Value<ChildStack<C, T>> =
     childStack(
         source = source,
@@ -60,13 +61,13 @@ fun <C : Any, T : Any> ComponentContext.childStack(
 /**
  * A convenience extension function for [ComponentContext.childStack].
  */
-fun <C : Any, T : Any> ComponentContext.childStack(
+fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
     source: NavigationSource<StackNavigation.Event<C>>,
     serializer: KSerializer<C>?,
     initialConfiguration: C,
     key: String = "DefaultChildStack",
     handleBackButton: Boolean = false,
-    childFactory: (configuration: C, ComponentContext) -> T
+    childFactory: (configuration: C, Ctx) -> T
 ): Value<ChildStack<C, T>> =
     childStack(
         source = source,
@@ -94,14 +95,14 @@ fun <C : Any, T : Any> ComponentContext.childStack(
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildStack].
  */
-fun <C : Any, T : Any> ComponentContext.childStack(
+fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
     source: NavigationSource<StackNavigation.Event<C>>,
     initialStack: () -> List<C>,
     saveStack: (List<C>) -> SerializableContainer?,
     restoreStack: (SerializableContainer) -> List<C>?,
     key: String = "DefaultChildStack",
     handleBackButton: Boolean = false,
-    childFactory: (configuration: C, ComponentContext) -> T,
+    childFactory: (configuration: C, Ctx) -> T,
 ): Value<ChildStack<C, T>> =
     children(
         source = source,
