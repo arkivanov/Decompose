@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.router.slot
 
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
 import com.arkivanov.decompose.router.children.NavigationSource
@@ -27,13 +27,13 @@ import kotlinx.serialization.KSerializer
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildSlot].
  */
-fun <C : Any, T : Any> ComponentContext.childSlot(
+fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childSlot(
     source: NavigationSource<SlotNavigation.Event<C>>,
     serializer: KSerializer<C>?,
     initialConfiguration: () -> C? = { null },
     key: String = "DefaultChildSlot",
     handleBackButton: Boolean = false,
-    childFactory: (configuration: C, ComponentContext) -> T,
+    childFactory: (configuration: C, Ctx) -> T,
 ): Value<ChildSlot<C, T>> =
     childSlot(
         source = source,
@@ -72,14 +72,14 @@ fun <C : Any, T : Any> ComponentContext.childSlot(
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildSlot].
  */
-fun <C : Any, T : Any> ComponentContext.childSlot(
+fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childSlot(
     source: NavigationSource<SlotNavigation.Event<C>>,
     saveConfiguration: (C?) -> SerializableContainer?,
     restoreConfiguration: (SerializableContainer) -> C?,
     key: String = "DefaultChildSlot",
     initialConfiguration: () -> C? = { null },
     handleBackButton: Boolean = false,
-    childFactory: (configuration: C, ComponentContext) -> T,
+    childFactory: (configuration: C, Ctx) -> T,
 ): Value<ChildSlot<C, T>> =
     children(
         source = source,

@@ -9,6 +9,10 @@ import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
+/**
+ * A default implementation of the [ComponentContext] interface.
+ * Can be also used in tests.
+ */
 class DefaultComponentContext(
     override val lifecycle: Lifecycle,
     stateKeeper: StateKeeper? = null,
@@ -19,6 +23,7 @@ class DefaultComponentContext(
     override val stateKeeper: StateKeeper = stateKeeper ?: StateKeeperDispatcher()
     override val instanceKeeper: InstanceKeeper = instanceKeeper ?: InstanceKeeperDispatcher().attachTo(lifecycle)
     override val backHandler: BackHandler = backHandler ?: BackDispatcher()
+    override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
 
     constructor(lifecycle: Lifecycle) : this(
         lifecycle = lifecycle,
