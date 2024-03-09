@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -57,9 +58,6 @@ fun main() {
 
     application {
         val windowState = rememberWindowState()
-
-        LifecycleController(lifecycle, windowState)
-
         var isCloseRequested by remember { mutableStateOf(false) }
 
         Window(
@@ -67,6 +65,12 @@ fun main() {
             state = windowState,
             title = "Decompose Sample"
         ) {
+            LifecycleController(
+                lifecycleRegistry = lifecycle,
+                windowState = windowState,
+                windowInfo = LocalWindowInfo.current,
+            )
+
             RootContent(root)
 
             if (isCloseRequested) {
