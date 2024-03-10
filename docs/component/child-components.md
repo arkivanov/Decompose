@@ -13,7 +13,8 @@ There are two common ways to work with child components:
 A permanent child component should be always instantiated during the initialisation of the parent, and it is automatically destroyed at the end of the parent's lifecycle. It is possible to manually control the lifecycle of a permanent child component, e.g. resume it, pause or stop. But permanent child components must never be destroyed manually.
 
 !!!warning
-    Every child component needs its own `ComponentContext`. Never pass parent's `ComponentContext` to children, always use either the navigation or the `childContext(...)` function.
+
+    Every child component needs its own `ComponentContext`. Never pass parent's `ComponentContext` to children, always use either navigation or the `childContext(...)` function. There may be a runtime crash if the same component context is passed to multiple components and they use same keys for `StateKeeper`, `InstanceKeeper` or navigation.
 
 A child `ComponentContext` can be created using the following extension function:
 
