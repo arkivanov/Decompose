@@ -52,3 +52,70 @@ private val backCallback = BackCallback(priority = Int.MIN_VALUE) { ... }
 ## Predictive Back Gesture
 
 Decompose experimentally supports the new [Android Predictive Back Gesture](https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture), not only on Android. The UI part is covered by Compose extensions, please see the [related docs](../extensions/compose.md#predictive-back-gesture).
+
+## Back button handling in Compose
+
+By default, Decompose doesn't propagate `LocalOnBackPressedDispatcherOwner` from Jetpack `activity-compose` library. Therefore, using `BackHandler {}` Composable API from `activity-compose` will register the callback in the root `OnBackPressedDispatcher`. This will cause the Composable handler to always intercept the back button, regardless of the component hierarchy.
+
+If you are using `BackHandler` from Jetpack `activity-compose` library, make sure that it's enabled only when needed. This can be done by supplying the `enabled` argument. See the [official docs](https://developer.android.com/jetpack/compose/libraries#handling_the_system_back_button) for more information.
+
+Another approach is to use the `BackHandler` provided by Essenty library and implemented for you by Decompose. Expose `BackHandler` from your component and register/unregister the callback in your Composable function.
+
+```kotlin title="The component interface"
+import com.arkivanov.essenty.backhandler.BackHandlerOwner
+
+interface SomeComponent : BackHandlerOwner {
+    // Omitted code
+}
+```
+
+```kotlin title="Implementing the component"
+class DefaultSomeComponent(
+    componentContext: ComponentContext,
+) : ComponentContext by componentContext {
+    // No need to implement BackHandlerOwner interface, already implemented by ComponentContext
+}
+```
+
+```kotlin title="Custom BackHandler Composable API"
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import com.arkivanov.essenty.backhandler.BackCallback
+import com.arkivanov.essenty.backhandler.BackHandler
+
+@Composable
+fun BackHandler(backHandler: BackHandler, isEnabled: Boolean = true, onBack: () -> Unit) {
+    val currentOnBack by rememberUpdatedState(onBack)
+
+    val callback =
+        remember {
+            BackCallback(isEnabled = isEnabled) {
+                currentOnBack()
+            }
+        }
+
+    SideEffect { callback.isEnabled = isEnabled }
+
+    DisposableEffect(backHandler) {
+        backHandler.register(callback)
+        onDispose { backHandler.unregister(callback) }
+    }
+}
+```
+
+Now we can use the newly created `BackHandler` Composable API similarly to the one provided by Jetpack.
+
+```kotlin
+import androidx.compose.runtime.Composable
+
+@Composable
+fun SomeContent(component: SomeComponent) {
+    BackHandler(backHandler = component.backHandler) {
+        // Handle the back button here
+    }
+}
+```
