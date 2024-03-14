@@ -64,9 +64,7 @@ kotlin {
         }
 
         android.main.dependencies {
-            implementation(deps.androidx.activity.activityKtx)
             implementation(deps.androidx.fragment.fragmentKtx)
-            implementation(deps.androidx.lifecycle.lifecycleCommonJava8)
         }
 
         android.test.dependencies {

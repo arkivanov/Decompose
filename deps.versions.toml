@@ -1,11 +1,11 @@
 [versions]
 
 decompose = "3.0.0-alpha08"
-kotlin = "1.9.22"
+kotlin = "1.9.23"
 essenty = "2.0.0-alpha07"
 reaktive = "1.2.3"
 junit = "4.13.2"
-jetbrainsCompose = "1.6.0-rc02"
+jetbrainsCompose = "1.6.1"
 jetbrainsKotlinWrappers = "1.0.0-pre.608"
 jetbrainsKotlinxCoroutines = "1.8.0"
 jetbrainsKotlinxSerialization = "1.6.2"
@@ -16,10 +16,8 @@ androidMaterial = "1.6.1"
 androidPlay = "1.10.3"
 androidxCore = "1.9.0"
 androidxAppcompat = "1.6.0"
-androidxLifecycle = "2.5.1"
-androidxActivity = "1.6.1"
-androidxFragment = "1.1.0"
-androidxTestCore = "1.5.0"
+androidxActivity = "1.8.2"
+androidxFragment = "1.6.2"
 
 [libraries]
 
@@ -55,8 +53,5 @@ android-play-core = { group = "com.google.android.play", name = "core", version.
 
 androidx-core-coreKtx  = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 androidx-appcompat-appcompat  = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppcompat" }
-androidx-lifecycle-lifecycleCommonJava8 = { group = "androidx.lifecycle", name = "lifecycle-common-java8", version.ref = "androidxLifecycle" }
-androidx-activity-activityKtx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivity" }
 androidx-activity-activityCompose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-fragment-fragmentKtx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragment" }
-androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }

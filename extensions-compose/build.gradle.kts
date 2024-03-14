@@ -53,10 +53,6 @@ kotlin {
             implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesCore)
         }
 
-        android.main.dependencies {
-            implementation(deps.androidx.activity.activityKtx)
-        }
-
         jvm.test.dependencies {
             implementation(deps.jetbrains.compose.ui.uiTestJunit4)
             implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesSwing)
