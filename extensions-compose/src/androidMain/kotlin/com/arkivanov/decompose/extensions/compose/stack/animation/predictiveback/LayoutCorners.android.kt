@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.core.content.ContextCompat.getSystemService
 
 internal actual fun Modifier.withLayoutCorners(block: Modifier.(LayoutCorners) -> Modifier): Modifier =
     composed {
@@ -48,7 +47,7 @@ private fun Context.getScreenInfo(density: Density): ScreenInfo? {
         return null
     }
 
-    val windowMetrics = requireNotNull(getSystemService(this, WindowManager::class.java)).maximumWindowMetrics
+    val windowMetrics = getSystemService(WindowManager::class.java)?.maximumWindowMetrics ?: return null
     val insets = windowMetrics.windowInsets
 
     return with(density) {
