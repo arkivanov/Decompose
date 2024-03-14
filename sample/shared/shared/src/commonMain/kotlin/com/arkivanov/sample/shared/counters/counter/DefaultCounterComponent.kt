@@ -43,7 +43,7 @@ internal class DefaultCounterComponent(
     private val dialogNavigation = SlotNavigation<DialogConfig>()
 
     private val _dialogSlot =
-        childSlot<DialogConfig, DialogComponent>(
+        childSlot(
             source = dialogNavigation,
             serializer = null,
             handleBackButton = true,

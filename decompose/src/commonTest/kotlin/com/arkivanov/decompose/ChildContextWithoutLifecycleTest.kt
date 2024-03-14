@@ -156,5 +156,6 @@ class ChildContextWithoutLifecycleTest {
         override val lifecycle: LifecycleRegistry = LifecycleRegistry()
         override val stateKeeper: TestStateKeeperDispatcher = TestStateKeeperDispatcher(savedState)
         override val backHandler: BackDispatcher = BackDispatcher()
+        override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
     }
 }

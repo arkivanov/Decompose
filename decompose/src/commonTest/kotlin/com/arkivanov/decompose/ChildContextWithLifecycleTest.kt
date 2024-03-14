@@ -245,5 +245,6 @@ class ChildContextWithLifecycleTest {
         override val lifecycle: LifecycleRegistry = LifecycleRegistry()
         override val stateKeeper: TestStateKeeperDispatcher = TestStateKeeperDispatcher(savedState)
         override val backHandler: TestBackDispatcher = TestBackDispatcher()
+        override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
     }
 }
