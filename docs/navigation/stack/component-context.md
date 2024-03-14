@@ -1,4 +1,8 @@
-# Child Stack with custom `ComponentContext`
+# Child Stack with custom `ComponentContext` (before v3.0.0-alpha09)
+
+!!!info "Not required since version 3.0.0-alpha09"
+
+    This section is only relevant for Decompose versions before `3.0.0-alpha09`. Since that version, Child Stack can be created the usual way - using the `childStack` extension function.
 
 Custom `ComponentContext` allows passing extra data and functionality to every child component. See [Custom ComponentContext](../../component/custom-component-context.md) page for more information about creating custom `AppComponentContext`.
 
