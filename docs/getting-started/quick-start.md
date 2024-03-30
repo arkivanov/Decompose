@@ -469,6 +469,10 @@ fun main() {
 
 ### IOS with SwiftUI (with the experimental ApplicationLifecycle)
 
+!!!warning
+
+    Use this approach only if your root component lives in the app scope (e.g. have only one UIViewController holding the root component).
+
 1. Declare a simple `AppDelegate` containing the `RootComponent`.
 
 ```swift
