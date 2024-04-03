@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.AwaitPointerEventScope
 import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.BackGestureHandler.Edge
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.backhandler.BackEvent
@@ -125,7 +127,7 @@ private fun Modifier.handleBackGestures(
     edgeWidth: Dp,
     activationOffsetThreshold: Dp,
     confirmationProgressThreshold: Float,
-    onIconMoved: (position: Offset, progress: Float, BackGestureHandler.Edge) -> Unit,
+    onIconMoved: (position: Offset, progress: Float, Edge) -> Unit,
     onIconHidden: () -> Unit,
 ): Modifier =
     pointerInput(backDispatcher, leftEdgeEnabled, rightEdgeEnabled) {
@@ -135,18 +137,24 @@ private fun Modifier.handleBackGestures(
             val down = awaitFirstDown(pass = PointerEventPass.Initial)
             val startPosition = down.position
 
-            val isLeftInvalid = !leftEdgeEnabled || (startPosition.x > edgeWidth.toPx())
-            val isRightInvalid = !rightEdgeEnabled || (startPosition.x < size.width - edgeWidth.toPx())
+            val isLeftEdge = leftEdgeEnabled && (startPosition.x < edgeWidth.toPx())
+            val isRightEdge = rightEdgeEnabled && (startPosition.x > size.width - edgeWidth.toPx())
 
-            if (isLeftInvalid && isRightInvalid) {
-                return@awaitEachGesture
-            }
+            val edge =
+                when {
+                    isLeftEdge && isRightEdge -> if (startPosition.x < size.width / 2F) Edge.LEFT else Edge.RIGHT
+                    isLeftEdge -> Edge.LEFT
+                    isRightEdge -> Edge.RIGHT
+                    else -> return@awaitEachGesture
+                }
 
             val handler =
                 BackGestureHandler(
+                    pointerId = down.id,
                     startPosition = startPosition,
                     size = size,
-                    offsetIgnoreThreshold = 16.dp.toPx(),
+                    edge = edge,
+                    ignoreOffsetThreshold = 16.dp.toPx(),
                     activationOffsetThreshold = activationOffsetThreshold.toPx(),
                     progressConfirmationThreshold = confirmationProgressThreshold,
                     backDispatcher = backDispatcher,
@@ -168,41 +176,46 @@ private fun Modifier.backIconOffset(position: Offset): Modifier =
         }
     }
 
-private fun BackGestureHandler.Edge.toSwipeEdge(): SwipeEdge =
+private fun Edge.toSwipeEdge(): SwipeEdge =
     when (this) {
-        BackGestureHandler.Edge.LEFT -> SwipeEdge.LEFT
-        BackGestureHandler.Edge.RIGHT -> SwipeEdge.RIGHT
+        Edge.LEFT -> SwipeEdge.LEFT
+        Edge.RIGHT -> SwipeEdge.RIGHT
     }
 
 private data class IconState(
     val position: Offset = Offset.Zero,
     val progress: Float = 0F,
-    val edge: BackGestureHandler.Edge = BackGestureHandler.Edge.RIGHT,
+    val edge: Edge = Edge.RIGHT,
     val isVisible: Boolean = false,
 )
 
 private class BackGestureHandler(
+    private val pointerId: PointerId,
     private val startPosition: Offset,
     private val size: IntSize,
-    private val offsetIgnoreThreshold: Float,
+    private val edge: Edge,
+    private val ignoreOffsetThreshold: Float,
     private val activationOffsetThreshold: Float,
     private val progressConfirmationThreshold: Float,
     private val backDispatcher: BackDispatcher,
     private val onIconMoved: (position: Offset, progress: Float, Edge) -> Unit,
 ) {
 
-    private val edge = if (startPosition.x < size.width / 2F) Edge.LEFT else Edge.RIGHT
     private var changesIterator: Iterator<PointerInputChange>? = null
 
     private suspend fun AwaitPointerEventScope.awaitChange(): PointerInputChange {
-        var iterator = changesIterator
+        while (true) {
+            var iterator = changesIterator
 
-        if ((iterator == null) || !iterator.hasNext()) {
-            iterator = awaitPointerEvent(pass = PointerEventPass.Initial).changes.iterator()
-            changesIterator = iterator
+            while ((iterator == null) || !iterator.hasNext()) {
+                iterator = awaitPointerEvent(pass = PointerEventPass.Initial).changes.iterator()
+                changesIterator = iterator
+            }
+
+            iterator.next().takeIf { it.id == pointerId }?.also {
+                return it
+            }
         }
-
-        return iterator.next()
     }
 
     suspend fun AwaitPointerEventScope.handleGesture() {
@@ -216,19 +229,24 @@ private class BackGestureHandler(
             val change = awaitChange()
             val position = change.position
 
-            if ((position.y < startPosition.y - offsetIgnoreThreshold) || (position.y > startPosition.y + offsetIgnoreThreshold)) {
+            if (!change.pressed ||
+                (position.y < startPosition.y - ignoreOffsetThreshold) ||
+                (position.y > startPosition.y + ignoreOffsetThreshold)
+            ) {
                 return null
             }
 
             when (edge) {
                 Edge.LEFT ->
-                    if (position.x > startPosition.x + activationOffsetThreshold) {
-                        return change
+                    when {
+                        position.x < startPosition.x - ignoreOffsetThreshold -> return null
+                        position.x > startPosition.x + activationOffsetThreshold -> return change
                     }
 
                 Edge.RIGHT ->
-                    if (position.x < startPosition.x - activationOffsetThreshold) {
-                        return change
+                    when {
+                        position.x > startPosition.x + ignoreOffsetThreshold -> return null
+                        position.x < startPosition.x - activationOffsetThreshold -> return change
                     }
             }
         }
