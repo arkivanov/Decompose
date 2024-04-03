@@ -128,7 +128,9 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
     private fun switch(newStates: List<ChildNavState<C>>) {
         val newConfigurations = newStates.mapTo(HashSet(), ChildNavState<C>::configuration)
-        check(newConfigurations.size == newStates.size) { "Configurations must be unique" }
+        check(newConfigurations.size == newStates.size) {
+            "Configurations must be unique: ${newStates.map(ChildNavState<C>::configuration)}."
+        }
 
         val oldItems = items.associateBy(ChildItem<C, *>::configuration)
         val newItems = prepareNewItems(newStates = newStates, oldItems = oldItems)
