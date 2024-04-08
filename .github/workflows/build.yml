@@ -45,3 +45,18 @@ jobs:
         run: xcodebuild -project sample/app-ios/app-ios.xcodeproj -scheme app-ios -sdk iphonesimulator -arch x86_64 build
       - name: Build iOS Compose sample
         run: xcodebuild -project sample/app-ios-compose/app-ios-compose.xcodeproj -scheme app-ios-compose -sdk iphonesimulator -arch x86_64 build
+  check-binary-compatibility:
+    name: Check binary compatibility
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 17
+      - name: Check binary compatibility
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: apiCheck
