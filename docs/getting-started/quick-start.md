@@ -467,13 +467,13 @@ fun main() {
 }
 ```
 
-### IOS with SwiftUI (with the experimental ApplicationLifecycle)
+### iOS with Compose or SwiftUI (with the experimental ApplicationLifecycle)
 
 !!!warning
 
     Use this approach only if your root component lives in the app scope (e.g. have only one UIViewController holding the root component).
 
-1. Declare a simple `AppDelegate` containing the `RootComponent`.
+Step 1. In your Xcode project declare a simple `AppDelegate` containing the `RootComponent`.
 
 ```swift
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -483,7 +483,32 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 }
 ```
 
-2. Use `AppDelegate` in your `App` entrypoint.
+Step 2. *If using Compose*, create a Kotlin file named `RootViewController.kt` in your shared module in `iosMain` source set with the following content. Then create `RootView` displaying `RootViewController`.
+
+```kotlin
+import androidx.compose.ui.window.ComposeUIViewController
+import platform.UIKit.UIViewController
+
+fun rootViewController(root: RootComponent): UIViewController =
+    ComposeUIViewController {
+        // Render the UI here
+    }
+```
+
+```swift
+struct RootView: UIViewControllerRepresentable {
+    let root: RootComponent
+
+    func makeUIViewController(context: Context) -> UIViewController {
+        return RootViewControllerKt.rootViewController(root: root)
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+    }
+}
+```
+
+Step 3. Use `AppDelegate` in your application entrypoint.
 
 ```swift
 @main
@@ -499,9 +524,9 @@ struct iOSApp: App {
 }
 ```
 
-### IOS with SwiftUI (without the experimental ApplicationLifecycle)
+### iOS with Compose or SwiftUI (without the experimental ApplicationLifecycle)
 
-1. Create `RootHolder` class that holds the root component and its lifecycle.
+Step 1. Create `RootHolder` class that holds the root component and its lifecycle.
 
 ```swift
 class RootHolder : ObservableObject {
@@ -525,7 +550,7 @@ class RootHolder : ObservableObject {
 }
 ```
 
-2. Declare a simple `AppDelegate` containing `RootHolder`
+Step 2. Declare a simple `AppDelegate` containing `RootHolder`
 
 ```swift
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -533,7 +558,32 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 }
 ```
 
-3. Use `AppDelegate` in your `App` entrypoint.
+Step 3. *If using Compose*, create a Kotlin file named `RootViewController.kt` in your shared module in `iosMain` source set with the following content. Then create `RootView` displaying `RootViewController`.
+
+```kotlin
+import androidx.compose.ui.window.ComposeUIViewController
+import platform.UIKit.UIViewController
+
+fun rootViewController(root: RootComponent): UIViewController =
+    ComposeUIViewController {
+        // Render the UI here
+    }
+```
+
+```swift
+struct RootView: UIViewControllerRepresentable {
+    let root: RootComponent
+
+    func makeUIViewController(context: Context) -> UIViewController {
+        return RootViewControllerKt.rootViewController(root: root)
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+    }
+}
+```
+
+Step 4. Use `AppDelegate` in your `App` entrypoint.
 
 ```swift
 @main
