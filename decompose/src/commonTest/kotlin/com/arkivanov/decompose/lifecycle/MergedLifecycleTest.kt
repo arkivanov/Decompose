@@ -408,7 +408,6 @@ class MergedLifecycleTest {
         lifecycle1.create()
         lifecycle1.destroy()
 
-        toString()
         val merged = MergedLifecycle(lifecycle1, lifecycle2)
 
         assertEquals(Lifecycle.State.DESTROYED, merged.state)
@@ -456,9 +455,41 @@ class MergedLifecycleTest {
         lifecycle2.assertNoSubscribers()
     }
 
+    @Test
+    fun GIVEN_lifecycle1_resumed_and_not_emitting_on_subscribe_and_lifecycle2_initialized_WHEN_lifecycle2_and_lifecycle1_resumed_THEN_onCreate_onStart_onResume_called() {
+        val callbacks = TestLifecycleCallbacks()
+        val lifecycle1 = TestLifecycleRegistry(getState = { Lifecycle.State.RESUMED })
+        val merged = MergedLifecycle(lifecycle1, lifecycle2)
+        merged.subscribe(callbacks)
+
+        lifecycle2.resume()
+        lifecycle1.onCreate()
+        lifecycle1.onStart()
+        lifecycle1.onResume()
+
+        callbacks.assertEvents(Event.ON_CREATE, Event.ON_START, Event.ON_RESUME)
+    }
+
+    @Test
+    fun GIVEN_lifecycle2_resumed_and_not_emitting_on_subscribe_and_lifecycle1_initialized_WHEN_lifecycle1_and_lifecycle2_resumed_THEN_onCreate_onStart_onResume_called() {
+        val callbacks = TestLifecycleCallbacks()
+        val lifecycle2 = TestLifecycleRegistry(getState = { Lifecycle.State.RESUMED })
+        val merged = MergedLifecycle(lifecycle1, lifecycle2)
+        merged.subscribe(callbacks)
+
+        lifecycle1.resume()
+        lifecycle2.onCreate()
+        lifecycle2.onStart()
+        lifecycle2.onResume()
+
+        callbacks.assertEvents(Event.ON_CREATE, Event.ON_START, Event.ON_RESUME)
+    }
+
     private class TestLifecycleRegistry(
-        private val registry: LifecycleRegistry = LifecycleRegistry()
+        private val registry: LifecycleRegistry = LifecycleRegistry(),
+        private val getState: () -> Lifecycle.State = registry::state,
     ) : LifecycleRegistry by registry {
+        override val state: Lifecycle.State get() = getState.invoke()
         private val callbacks = HashSet<Lifecycle.Callbacks>()
 
         override fun subscribe(callbacks: Lifecycle.Callbacks) {
