@@ -2,6 +2,7 @@ package com.arkivanov.decompose.lifecycle
 
 import com.arkivanov.decompose.InternalDecomposeApi
 import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.Lifecycle.State
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.create
 import com.arkivanov.essenty.lifecycle.destroy
@@ -21,11 +22,23 @@ class MergedLifecycle private constructor(
     constructor(lifecycle1: Lifecycle, lifecycle2: Lifecycle) : this(LifecycleRegistry(), lifecycle1, lifecycle2)
 
     init {
-        moveTo(minOf(lifecycle1.state, lifecycle2.state))
+        var state1 = if (lifecycle1.state == State.DESTROYED) State.DESTROYED else State.INITIALIZED
+        var state2 = if (lifecycle2.state == State.DESTROYED) State.DESTROYED else State.INITIALIZED
 
-        if ((lifecycle1.state != Lifecycle.State.DESTROYED) && (lifecycle2.state != Lifecycle.State.DESTROYED)) {
-            val observer1 = CallbacksImpl { state -> moveTo(minOf(state, lifecycle2.state)) }
-            val observer2 = CallbacksImpl { state -> moveTo(minOf(state, lifecycle1.state)) }
+        moveTo(minOf(state1, state2))
+
+        if ((state1 != State.DESTROYED) && (state2 != State.DESTROYED)) {
+            val observer1 =
+                CallbacksImpl { state ->
+                    state1 = state
+                    moveTo(minOf(state, state2))
+                }
+
+            val observer2 =
+                CallbacksImpl { state ->
+                    state2 = state
+                    moveTo(minOf(state, state1))
+                }
 
             lifecycle1.subscribe(observer1)
             lifecycle2.subscribe(observer2)
@@ -37,91 +50,91 @@ class MergedLifecycle private constructor(
         }
     }
 
-    private fun moveTo(state: Lifecycle.State) {
+    private fun moveTo(state: State) {
         when (state) {
-            Lifecycle.State.DESTROYED -> moveToDestroyed()
-            Lifecycle.State.INITIALIZED -> Unit
-            Lifecycle.State.CREATED -> moveToCreated()
-            Lifecycle.State.STARTED -> moveToStarted()
-            Lifecycle.State.RESUMED -> moveToResumed()
+            State.DESTROYED -> moveToDestroyed()
+            State.INITIALIZED -> Unit
+            State.CREATED -> moveToCreated()
+            State.STARTED -> moveToStarted()
+            State.RESUMED -> moveToResumed()
         }
     }
 
     private fun moveToDestroyed() {
         when (registry.state) {
-            Lifecycle.State.DESTROYED -> Unit
+            State.DESTROYED -> Unit
 
-            Lifecycle.State.INITIALIZED -> {
+            State.INITIALIZED -> {
                 registry.create()
                 registry.destroy()
             }
 
-            Lifecycle.State.CREATED,
-            Lifecycle.State.STARTED,
-            Lifecycle.State.RESUMED -> registry.destroy()
+            State.CREATED,
+            State.STARTED,
+            State.RESUMED -> registry.destroy()
         }
     }
 
     private fun moveToCreated() {
         when (registry.state) {
-            Lifecycle.State.DESTROYED -> Unit
-            Lifecycle.State.INITIALIZED -> registry.create()
+            State.DESTROYED -> Unit
+            State.INITIALIZED -> registry.create()
 
-            Lifecycle.State.CREATED -> Unit
+            State.CREATED -> Unit
 
-            Lifecycle.State.STARTED,
-            Lifecycle.State.RESUMED -> registry.stop()
+            State.STARTED,
+            State.RESUMED -> registry.stop()
         }
     }
 
     private fun moveToStarted() {
         when (registry.state) {
-            Lifecycle.State.INITIALIZED,
-            Lifecycle.State.CREATED -> registry.start()
+            State.INITIALIZED,
+            State.CREATED -> registry.start()
 
-            Lifecycle.State.RESUMED -> registry.pause()
+            State.RESUMED -> registry.pause()
 
-            Lifecycle.State.DESTROYED,
-            Lifecycle.State.STARTED -> Unit
+            State.DESTROYED,
+            State.STARTED -> Unit
         }
     }
 
     private fun moveToResumed() {
         when (registry.state) {
-            Lifecycle.State.INITIALIZED,
-            Lifecycle.State.CREATED,
-            Lifecycle.State.STARTED -> registry.resume()
+            State.INITIALIZED,
+            State.CREATED,
+            State.STARTED -> registry.resume()
 
-            Lifecycle.State.RESUMED,
-            Lifecycle.State.DESTROYED -> Unit
+            State.RESUMED,
+            State.DESTROYED -> Unit
         }
     }
 
     private class CallbacksImpl(
-        private val onStateChanged: (Lifecycle.State) -> Unit,
+        private val onStateChanged: (State) -> Unit,
     ) : Lifecycle.Callbacks {
         override fun onCreate() {
-            onStateChanged(Lifecycle.State.CREATED)
+            onStateChanged(State.CREATED)
         }
 
         override fun onStart() {
-            onStateChanged(Lifecycle.State.STARTED)
+            onStateChanged(State.STARTED)
         }
 
         override fun onResume() {
-            onStateChanged(Lifecycle.State.RESUMED)
+            onStateChanged(State.RESUMED)
         }
 
         override fun onPause() {
-            onStateChanged(Lifecycle.State.STARTED)
+            onStateChanged(State.STARTED)
         }
 
         override fun onStop() {
-            onStateChanged(Lifecycle.State.CREATED)
+            onStateChanged(State.CREATED)
         }
 
         override fun onDestroy() {
-            onStateChanged(Lifecycle.State.DESTROYED)
+            onStateChanged(State.DESTROYED)
         }
     }
 }
