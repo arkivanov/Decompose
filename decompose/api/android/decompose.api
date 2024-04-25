@@ -49,6 +49,10 @@ public abstract interface class com/arkivanov/decompose/ComponentContextFactoryO
 	public abstract fun getComponentContextFactory ()Lcom/arkivanov/decompose/ComponentContextFactory;
 }
 
+public final class com/arkivanov/decompose/DeeplinkUtilsKt {
+	public static final fun withDeepLink (Landroid/app/Activity;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+
 public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivanov/decompose/ComponentContext {
 	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;)V
 	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Lcom/arkivanov/essenty/backhandler/BackHandler;)V
