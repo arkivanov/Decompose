@@ -125,9 +125,114 @@ This is a convenience function similar to the one described above. It accepts an
 
 ## Examples
 
+### A stack that can be empty
+
+[Child Stack](../stack/overview.md) provided by Decompose can not be empty. Here is an example of using the Generic Navigation for creating an API for a stack that can be empty.
+
+```kotlin
+import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.children.ChildNavState
+import com.arkivanov.decompose.router.children.ChildNavState.Status
+import com.arkivanov.decompose.router.children.NavState
+import com.arkivanov.decompose.router.children.NavigationSource
+import com.arkivanov.decompose.router.children.SimpleChildNavState
+import com.arkivanov.decompose.router.children.children
+import com.arkivanov.decompose.value.Value
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+
+data class Stack<out C : Any, out T : Any>(
+    val items: List<Child.Created<C, T>>,
+)
+
+typealias StackNavEvent<C> = (List<C>) -> List<C>
+
+fun <C : Any, T : Any> ComponentContext.stack(
+    source: NavigationSource<StackNavEvent<C>>,
+    serializer: KSerializer<C>,
+    initialStack: () -> List<C> = ::emptyList,
+    key: String = "Stack",
+    childFactory: (configuration: C, componentContext: ComponentContext) -> T,
+): Value<Stack<C, T>> =
+    children(
+        source = source,
+        stateSerializer = StackNavState.serializer(serializer),
+        initialState = { StackNavState(initialStack()) },
+        key = key,
+        navTransformer = { state, event -> StackNavState(event(state.items)) },
+        stateMapper = { _, children -> Stack(children as List<Child.Created<C, T>>) },
+        backTransformer = { state ->
+            state.items.takeUnless(List<*>::isEmpty)?.let { items ->
+                { StackNavState(items.dropLast(1)) }
+            }
+        },
+        childFactory = childFactory,
+    )
+
+@Serializable
+private data class StackNavState<out C : Any>(
+    val items: List<C>,
+) : NavState<C> {
+    @Transient
+    override val children: List<ChildNavState<C>> =
+        items.mapIndexed { index, config ->
+            SimpleChildNavState(
+                configuration = config,
+                status = if (index == items.lastIndex) Status.RESUMED else Status.CREATED,
+            )
+        }
+}
+```
+
+And here is the usage example.
+
+```kotlin
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.children.SimpleNavigation
+import com.arkivanov.decompose.value.Value
+import kotlinx.serialization.Serializable
+
+class PhotoComponent(url: String) {
+    // Some code here
+}
+
+interface GalleryComponent {
+    val stack: Value<Stack<*, PhotoComponent>>
+}
+
+class DefaultGalleryComponent(
+    componentContext: ComponentContext,
+) : GalleryComponent, ComponentContext by componentContext {
+
+    private val nav = SimpleNavigation<StackNavEvent<Config>>()
+
+    override val stack: Value<Stack<*, PhotoComponent>> =
+        stack(
+            source = nav,
+            serializer = Config.serializer(),
+            childFactory = { config, ctx -> PhotoComponent(url = config.url) },
+        )
+
+    private fun pushPhoto(url: String) {
+        nav.navigate { it + Config(url) }
+    }
+
+    private fun popPhoto() {
+        nav.navigate { it.dropLast(1) }
+    }
+
+    @Serializable
+    private data class Config(val url: String)
+}
+```
+
+### More samples
+
 All existing navigation models (like [Child Stack](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/stack/ChildStackFactory.kt)) are implemented using the `Generic Navigation`. Please refer to their source code for implementation details.
 
-### Sample project
+#### Sample project
 
 See the sample project has the [CustomNavigationComponent](https://github.com/arkivanov/Decompose/blob/master/sample/shared/shared/src/commonMain/kotlin/com/arkivanov/sample/shared/customnavigation/DefaultCustomNavigationComponent.kt), which demonstrates how to use the `Generic Navigation`.
 

@@ -10,6 +10,7 @@ import com.arkivanov.sample.shared.root.RootComponent.Child.CountersChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
 import com.arkivanov.sample.shared.useAsState
 import mui.material.BottomNavigation
 import mui.material.BottomNavigationAction
@@ -58,6 +59,7 @@ var RootContent: FC<RProps<RootComponent>> = FC { props ->
                 is MultiPaneChild -> componentContent(component = child.component, content = MultiPaneContent)
                 is DynamicFeaturesChild -> componentContent(component = child.component, content = DynamicFeaturesContent)
                 is CustomNavigationChild -> NotImplementedContent()
+                is PagesChild -> NotImplementedContent()
             }.let {}
         }
 
@@ -75,6 +77,7 @@ var RootContent: FC<RProps<RootComponent>> = FC { props ->
                 is MultiPaneChild -> TabItem.MULTI_PANE
                 is DynamicFeaturesChild -> TabItem.DYNAMIC_FEATURES
                 is CustomNavigationChild -> TabItem.CUSTOM_NAVIGATION
+                is PagesChild -> TabItem.PAGES
             }
 
             onChange = { _, newValue ->
@@ -84,6 +87,7 @@ var RootContent: FC<RProps<RootComponent>> = FC { props ->
                     TabItem.MULTI_PANE -> props.component.onMultiPaneTabClicked()
                     TabItem.DYNAMIC_FEATURES -> props.component.onDynamicFeaturesTabClicked()
                     TabItem.CUSTOM_NAVIGATION -> props.component.onCustomNavigationTabClicked()
+                    TabItem.PAGES -> props.component.onPagesTabClicked()
                 }
             }
 
@@ -96,7 +100,7 @@ var RootContent: FC<RProps<RootComponent>> = FC { props ->
             BottomNavigationAction {
                 value = TabItem.CARDS
                 label = ReactNode("Cards")
-                icon = Icon.create { +"swipe_up" }
+                icon = Icon.create { +"note_stack" }
             }
 
             BottomNavigationAction {
@@ -116,6 +120,12 @@ var RootContent: FC<RProps<RootComponent>> = FC { props ->
                 label = ReactNode("Custom Navigation")
                 icon = Icon.create { +"location_on" }
             }
+
+            BottomNavigationAction {
+                value = TabItem.CUSTOM_NAVIGATION
+                label = ReactNode("Pages")
+                icon = Icon.create { +"swipe" }
+            }
         }
     }
 }
@@ -126,4 +136,5 @@ private enum class TabItem {
     MULTI_PANE,
     DYNAMIC_FEATURES,
     CUSTOM_NAVIGATION,
+    PAGES,
 }

@@ -555,11 +555,47 @@ fun RootContent(component: RootComponent) {
 !!! note
     Since Decompose version `3.0.0-alpha01` the `animation` argument is renamed to `fallbackAnimation`.
 
+### Predefined animations
+
+By default, the gesture animation resembles the [predictive back design for Android](https://developer.android.com/design/ui/mobile/guides/patterns/predictive-back) on all platforms.
+
+<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureMaterial.mp4" type="video/mp4"></video>
+
+#### Standard Android-like system animation (since v3.0.0-alpha07)
+
+The `androidPredictiveBackAnimatable` API resembles the standard back gesture animation used on some Android devices (e.g. in system settings on Pixel phones). It's available since Decompose version `3.0.0-alpha07`.
+
+```kotlin
+import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.androidPredictiveBackAnimatable
+import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.predictiveBackAnimation
+import com.arkivanov.decompose.extensions.compose.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
+
+@Composable
+fun RootContent(component: RootComponent) {
+    Children(
+        stack = component.childStack,
+        animation = predictiveBackAnimation(
+            backHandler = component.backHandler,
+            animation = stackAnimation(fade() + scale()),
+            selector = selector = { backEvent, _, _ -> androidPredictiveBackAnimatable(backEvent) },
+            onBack = component::onBackClicked,
+        ),
+    ) {
+        // Omitted code
+    }
+}
+```
+
+<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureAndroid.mp4" type="video/mp4"></video>
+
 ### Predictive Back Gesture on Android
 
 On Android, the predictive back gesture only works starting with Android T. On Android T, it works only between Activities, if enabled in the system settings. Starting with Android U, the predictive back gesture can be enabled between `Child Stack` screens inside a single Activity.
-
-<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureAndroid.mp4" type="video/mp4"></video>
 
 ### Predictive Back Gesture on other platforms
 

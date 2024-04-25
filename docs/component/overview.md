@@ -4,6 +4,10 @@ A component is just a normal class that encapsulates some logic and possibly ano
 
 UI is optional and is pluggable from outside of components. Components do not depend on UI, the UI depends on components.
 
+Unlike the traditional approach with `ViewModels` and navigation from UI (when a `ViewModel` is passed to a Composable function or a SwiftUI View, etc.), Decompose uses the Component concept for navigation. So the UI is only responsible for displaying the information, and everything else is behind the component boundary. This allows more code to be shared between platforms while keeping the UI layer thinner.
+
+Additionally, this approach significantly simplifies testing. A component can be tested by a unit or integration test, often without instrumentation, which is fast and reliable. Plus, various tools can be used for UI testing, including but not limited to screenshot testing.
+
 ## Component hierarchy
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/ComponentHierarchy.png" width="512">

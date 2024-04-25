@@ -84,7 +84,7 @@ Compose is currently published in two separate variants:
 
 === "Before v3.0.0-alpha01"
 
-    Compose for iOS and Web (JS/Canvas, not Wasm) are supported and published from a separate branch: `compose-experimental`. This means that a special version suffix for all Decompose modules is required when configuring dependencies.
+    Compose for iOS and Web (JS/Canvas, not Wasm) are supported and published from a separate branch: `compose-experimental`. This means that a special version suffix for all Decompose modules is required when configuring dependencies. Please note that Wasm target is not supported on versions older than v3.0.0-alpha01.
     
     === "Groovy"
     
@@ -103,9 +103,6 @@ Compose is currently published in two separate variants:
 === "Since v3.0.0-alpha01"
 
     All Compose variants (Android, JVM/Desktop, Native/iOS, Native/macOS, JS/Canvas, Wasm) are published from the main branch, please add dependencies as usual (no version suffixes required).
-
-!!!warning
-    Wasm target is not yet supported. Please follow [issue #74](https://github.com/arkivanov/Decompose/issues/74) for more information and updates.
 
 ## Extensions for Android views
 

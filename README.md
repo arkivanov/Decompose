@@ -51,7 +51,7 @@ Additional resources:
 * Shared navigation logic
 * Lifecycle-aware components
 * Components in the back stack are not destroyed, they continue working in background without UI
-* State preservation (on Android and experimentally on Apple targets)
+* State preservation (automatically on Android, manually on all other targets via `kotlinx-serialization`)
 * Instances retaining (aka ViewModels) over configuration changes (mostly useful in Android)
 
 ## Setup
