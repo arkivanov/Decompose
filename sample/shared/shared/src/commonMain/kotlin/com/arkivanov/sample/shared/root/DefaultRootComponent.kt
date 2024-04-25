@@ -14,11 +14,13 @@ import com.arkivanov.sample.shared.customnavigation.DefaultCustomNavigationCompo
 import com.arkivanov.sample.shared.dynamicfeatures.DefaultDynamicFeaturesComponent
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.FeatureInstaller
 import com.arkivanov.sample.shared.multipane.DefaultMultiPaneComponent
+import com.arkivanov.sample.shared.pages.DefaultPagesComponent
 import com.arkivanov.sample.shared.root.RootComponent.Child
 import com.arkivanov.sample.shared.root.RootComponent.Child.CountersChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
 import kotlinx.serialization.Serializable
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -58,6 +60,7 @@ class DefaultRootComponent(
             is Config.MultiPane -> MultiPaneChild(DefaultMultiPaneComponent(componentContext))
             is Config.DynamicFeatures -> DynamicFeaturesChild(DefaultDynamicFeaturesComponent(componentContext, featureInstaller))
             is Config.CustomNavigation -> CustomNavigationChild(DefaultCustomNavigationComponent(componentContext))
+            is Config.Pages -> PagesChild(DefaultPagesComponent(componentContext))
         }
 
     override fun onCountersTabClicked() {
@@ -80,12 +83,17 @@ class DefaultRootComponent(
         navigation.bringToFront(Config.CustomNavigation)
     }
 
+    override fun onPagesTabClicked() {
+        navigation.bringToFront(Config.Pages)
+    }
+
     private companion object {
         private const val WEB_PATH_COUNTERS = "counters"
         private const val WEB_PATH_CARDS = "cards"
         private const val WEB_PATH_MULTI_PANE = "multi-pane"
         private const val WEB_PATH_DYNAMIC_FEATURES = "dynamic-features"
         private const val WEB_PATH_CUSTOM_NAVIGATION = "custom-navigation"
+        private const val WEB_PATH_PAGES = "pages"
 
         private fun getInitialStack(webHistoryPaths: List<String>?, deepLink: DeepLink): List<Config> =
             webHistoryPaths
@@ -106,6 +114,7 @@ class DefaultRootComponent(
                 Config.MultiPane -> "/$WEB_PATH_MULTI_PANE"
                 Config.DynamicFeatures -> "/$WEB_PATH_DYNAMIC_FEATURES"
                 Config.CustomNavigation -> "/$WEB_PATH_CUSTOM_NAVIGATION"
+                Config.Pages -> "/$WEB_PATH_PAGES"
             }
 
         private fun getConfigForPath(path: String): Config =
@@ -115,6 +124,7 @@ class DefaultRootComponent(
                 WEB_PATH_MULTI_PANE -> Config.MultiPane
                 WEB_PATH_DYNAMIC_FEATURES -> Config.DynamicFeatures
                 WEB_PATH_CUSTOM_NAVIGATION -> Config.CustomNavigation
+                WEB_PATH_PAGES -> Config.Pages
                 else -> Config.Counters
             }
     }
@@ -135,6 +145,9 @@ class DefaultRootComponent(
 
         @Serializable
         data object CustomNavigation : Config
+
+        @Serializable
+        data object Pages : Config
     }
 
     sealed interface DeepLink {
