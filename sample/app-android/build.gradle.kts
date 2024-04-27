@@ -3,7 +3,7 @@ import com.arkivanov.gradle.setupAndroidApp
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-parcelize")
+    id("kotlinx-serialization")
     id("org.jetbrains.compose")
     id("com.arkivanov.gradle.setup")
 }
@@ -28,6 +28,7 @@ android {
 dependencies {
     implementation(project(":decompose"))
     implementation(project(":extensions-android"))
+    implementation(project(":extensions-compose"))
     implementation(project(":sample:shared:shared"))
     implementation(project(":sample:shared:compose"))
     implementation(compose.runtime)
@@ -37,4 +38,7 @@ dependencies {
     implementation(deps.androidx.appcompat.appcompat)
     implementation(deps.androidx.activity.activityCompose)
     implementation(deps.android.material.material)
+
+    implementation("androidx.compose.foundation:foundation:1.7.0-alpha07")
+    implementation("io.coil-kt:coil-compose:2.6.0")
 }
