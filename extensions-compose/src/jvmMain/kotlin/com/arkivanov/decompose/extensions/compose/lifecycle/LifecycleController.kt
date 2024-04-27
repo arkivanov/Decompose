@@ -6,7 +6,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.platform.WindowInfo
 import androidx.compose.ui.window.WindowState
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.create
@@ -30,7 +29,6 @@ import kotlinx.coroutines.flow.combine
  * @param windowInfo an optional [WindowInfo] providing the window focused state, see [WindowInfo.isWindowFocused].
  * If not provided, the window is always considered focused.
  */
-@ExperimentalDecomposeApi
 @Composable
 fun LifecycleController(
     lifecycleRegistry: LifecycleRegistry,
