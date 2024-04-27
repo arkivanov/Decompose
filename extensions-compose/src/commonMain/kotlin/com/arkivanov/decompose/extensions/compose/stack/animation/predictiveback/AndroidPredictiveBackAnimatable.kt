@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.util.lerp
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
@@ -29,7 +28,6 @@ import kotlinx.coroutines.launch
  * If not supplied then a [RoundedCornerShape][androidx.compose.foundation.shape.RoundedCornerShape] will be applied.
  * The `progress` argument is animating between 0 and 1 while the gesture is being performed.
  */
-@ExperimentalDecomposeApi
 fun androidPredictiveBackAnimatable(
     initialBackEvent: BackEvent,
     exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
@@ -41,7 +39,6 @@ fun androidPredictiveBackAnimatable(
         enterShape = enterShape,
     )
 
-@ExperimentalDecomposeApi
 private class AndroidPredictiveBackAnimatable(
     initialEvent: BackEvent,
     private val exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,

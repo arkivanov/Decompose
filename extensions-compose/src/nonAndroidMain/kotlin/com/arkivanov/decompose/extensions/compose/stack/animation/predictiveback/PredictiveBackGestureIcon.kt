@@ -10,13 +10,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.utils.IconCompat
 
 /**
  * Default icon for predictive back gesture.
  */
-@ExperimentalDecomposeApi
 @Composable
 fun PredictiveBackGestureIcon(
     imageVector: ImageVector,

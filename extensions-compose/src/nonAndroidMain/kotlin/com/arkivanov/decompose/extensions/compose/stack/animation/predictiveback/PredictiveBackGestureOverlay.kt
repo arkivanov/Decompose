@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.BackGestureHandler.Edge
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.backhandler.BackDispatcher
@@ -53,7 +52,6 @@ import com.arkivanov.essenty.backhandler.BackEvent.SwipeEdge
  * callbacks registered in [backDispatcher], can be used to close the application.
  * @param content a content to be shown under the overlay.
  */
-@ExperimentalDecomposeApi
 @Composable
 fun PredictiveBackGestureOverlay(
     backDispatcher: BackDispatcher,
