@@ -42,7 +42,6 @@ import kotlinx.serialization.builtins.serializer
  * otherwise it won't. Default value is `true`.
  * @param factory a function that returns a new instance of the component.
  */
-@ExperimentalDecomposeApi
 fun <T> ComponentActivity.retainedComponent(
     key: String = "RootRetainedComponent",
     handleBackButton: Boolean = true,
@@ -74,7 +73,6 @@ fun <T> ComponentActivity.retainedComponent(
  * otherwise it won't. Default value is `true`.
  * @param factory a function that returns a new instance of the component.
  */
-@ExperimentalDecomposeApi
 fun <T> Fragment.retainedComponent(
     key: String = "RootRetainedComponent",
     handleBackButton: Boolean = true,

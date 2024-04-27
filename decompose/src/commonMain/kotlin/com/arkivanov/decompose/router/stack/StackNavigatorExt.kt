@@ -1,7 +1,5 @@
 package com.arkivanov.decompose.router.stack
 
-import com.arkivanov.decompose.ExperimentalDecomposeApi
-
 /**
  * A convenience method for [StackNavigator.navigate].
  */
@@ -33,7 +31,6 @@ inline fun <C : Any> StackNavigator<C>.push(configuration: C, crossinline onComp
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  * The `isSuccess` argument is `true` if the component was pushed, `false` otherwise.
  */
-@ExperimentalDecomposeApi
 inline fun <C : Any> StackNavigator<C>.pushNew(
     configuration: C,
     crossinline onComplete: (isSuccess: Boolean) -> Unit = {},
@@ -53,7 +50,6 @@ inline fun <C : Any> StackNavigator<C>.pushNew(
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
-@ExperimentalDecomposeApi
 inline fun <C : Any> StackNavigator<C>.pushToFront(
     configuration: C,
     crossinline onComplete: () -> Unit = {},
