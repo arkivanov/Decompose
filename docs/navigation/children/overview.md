@@ -10,27 +10,15 @@ The navigation is performed by transforming the current `NavState` to a new one.
 
 `ChildNavState` represents a state of a child component. It holds a `Configuration` that works as a key of the child component, and a `Status` that represents the required lifecycle status of the child component. As mentioned earlier, the `Configuration` must unique within the `NavState`.
 
-=== "Before v3.0.0-alpha01"
+The `Status` can be one of the following:
 
-    The `Status` can be one of the following:
-    
-    * `ACTIVE` - the child component is instantiated and active. Its maximum lifecycle state is `RESUMED`, depending on the parent's lifecycle state. An active component can handle back button presses. The state of the component is saved when it switches from `ACTIVE` to any other status.
-    
-    * `INACTIVE` - the child component is instantiated and inactive. Its maximum lifecycle state is `CREATED`, depending on the parent's lifecycle state. An inactive component cannot handle back button presses.
-    
-    * `DESTROYED` - the child component is destroyed but still managed, e.g. it's state may be saved and restored later.
+* `RESUMED` - The child component is instantiated and its maximum lifecycle state is `RESUMED`, depending on the parent's lifecycle state. A `RESUMED` component can handle back button presses.
 
-=== "Since v3.0.0-alpha01"
+* `STARTED` - The child component is instantiated and its maximum lifecycle state is `STARTED`, depending on the parent's lifecycle state. A `STARTED` component can handle back button presses.
 
-    The `Status` can be one of the following:
-    
-    * `RESUMED` - The child component is instantiated and its maximum lifecycle state is `RESUMED`, depending on the parent's lifecycle state. A `RESUMED` component can handle back button presses.
+* `CREATED` - The child component is instantiated and its maximum lifecycle state is `CREATED`, depending on the parent's lifecycle state. A `CREATED` component cannot handle back button presses.
 
-    * `STARTED` - The child component is instantiated and its maximum lifecycle state is `STARTED`, depending on the parent's lifecycle state. A `STARTED` component can handle back button presses.
-
-    * `CREATED` - The child component is instantiated and its maximum lifecycle state is `CREATED`, depending on the parent's lifecycle state. A `CREATED` component cannot handle back button presses.
-    
-    * `DESTROYED` - The child component is destroyed but still managed, e.g. it's state may be saved and restored later. The state of the component is saved when it switches from any status to `DESTROYED`.
+* `DESTROYED` - The child component is destroyed but still managed, e.g. it's state may be saved and restored later. The state of the component is saved when it switches from any status to `DESTROYED`.
 
 If you want to completely remove the child component from the navigation, you should remove its `ChildNavState` from the `NavState` altogether.
 
@@ -42,41 +30,21 @@ Using the `Generic Navigation` is pretty similar to any other navigation model, 
 
 ### Saving and restoring the navigation state manually
 
-=== "Before v3.0.0-alpha01"
-
-    ```kotlin
-    fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.children(
-        source: NavigationSource<E>,
-        key: String,
-        initialState: () -> N,
-        saveState: (state: N) -> ParcelableContainer?,
-        restoreState: (container: ParcelableContainer) -> N?,
-        navTransformer: (state: N, event: E) -> N,
-        stateMapper: (state: N, children: List<Child<C, T>>) -> S,
-        onStateChanged: (newState: N, oldState: N?) -> Unit = { _, _ -> },
-        onEventComplete: (event: E, newState: N, oldState: N) -> Unit = { _, _, _ -> },
-        backTransformer: (state: N) -> (() -> N)? = { null },
-        childFactory: (configuration: C, componentContext: ComponentContext) -> T,
-    ): Value<S>
-    ```
-
-=== "Since v3.0.0-alpha01"
-
-    ```kotlin
-    fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.children(
-        source: NavigationSource<E>,
-        key: String,
-        initialState: () -> N,
-        saveState: (state: N) -> SerializableContainer?,
-        restoreState: (container: SerializableContainer) -> N?,
-        navTransformer: (state: N, event: E) -> N,
-        stateMapper: (state: N, children: List<Child<C, T>>) -> S,
-        onStateChanged: (newState: N, oldState: N?) -> Unit = { _, _ -> },
-        onEventComplete: (event: E, newState: N, oldState: N) -> Unit = { _, _, _ -> },
-        backTransformer: (state: N) -> (() -> N)? = { null },
-        childFactory: (configuration: C, componentContext: ComponentContext) -> T,
-    ): Value<S>
-    ```
+```kotlin
+fun <C : Any, T : Any, E : Any, N : NavState<C>, S : Any> ComponentContext.children(
+    source: NavigationSource<E>,
+    key: String,
+    initialState: () -> N,
+    saveState: (state: N) -> SerializableContainer?,
+    restoreState: (container: SerializableContainer) -> N?,
+    navTransformer: (state: N, event: E) -> N,
+    stateMapper: (state: N, children: List<Child<C, T>>) -> S,
+    onStateChanged: (newState: N, oldState: N?) -> Unit = { _, _ -> },
+    onEventComplete: (event: E, newState: N, oldState: N) -> Unit = { _, _, _ -> },
+    backTransformer: (state: N) -> (() -> N)? = { null },
+    childFactory: (configuration: C, componentContext: ComponentContext) -> T,
+): Value<S>
+```
 
 The `children` function has the following type parameters:
 
@@ -91,10 +59,8 @@ The `children` function accepts the following arguments:
 - `source: NavigationSource<E>` - an observable source of navigation events, the `Generic Navigation` subscribes to the source and performs the navigation. The [SimpleNavigation](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/children/SimpleNavigation.kt) class can be used in simple cases when custom implementation is not required.
 - `key: String` - a key of the navigation, must be unique if there are multiple `children` used in the same component.
 - `initialState: () -> N` - an initial navigation state that should be used if there is no previously saved state.
-- `saveState: (state: N) -> ParcelableContainer` (before `v3.0.0-alpha01`) - a function that saves the provided navigation state into `ParcelableContainer`, called when the hosting component goes to background.
-- `saveState: (state: N) -> SerializableContainer` (since `v3.0.0-alpha01`) - a function that saves the provided navigation state into `SerializableContainer`, called when the hosting component goes to background.
-- `restoreState: (container: ParcelableContainer) -> N` (before `v3.0.0-alpha01`) - a function that restores the navigation state from the provided `ParcelableContainer`. The restored navigation state must have the same amount of child configurations and in the same order. The restored child `Statuses` can be any, e.g. a previously active child may become destroyed, etc.
-- `restoreState: (container: SerializableContainer) -> N` (since `v3.0.0-alpha01`) - a function that restores the navigation state from the provided `SerializableContainer`. The restored navigation state must have the same amount of child configurations and in the same order. The restored child `Statuses` can be any, e.g. a previously active child may become destroyed, etc.
+- `saveState: (state: N) -> SerializableContainer` - a function that saves the provided navigation state into `SerializableContainer`, called when the hosting component goes to background.
+- `restoreState: (container: SerializableContainer) -> N` - a function that restores the navigation state from the provided `SerializableContainer`. The restored navigation state must have the same amount of child configurations and in the same order. The restored child `Statuses` can be any, e.g. a previously active child may become destroyed, etc.
 - `navTransformer: (state: N, event: E) -> N` - a function that transforms the current navigation state to a new one using the provided navigation event. The implementation diffs both navigation states and manipulates child components as needed.
 - `stateMapper: (state: N, children: List<Child<C, T>>) -> S` - combines the provided navigation state and list of child components to a resulting custom state.
 - `onStateChanged: (newState: N, oldState: N?) -> Unit` - called every time the navigation state changes, `oldState` is `null` when called first time during initialisation. 

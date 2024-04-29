@@ -29,7 +29,7 @@ class SomeComponent(
 }
 ```
 
-## Retained components (since v2.1.0-alpha-03)
+## Retained components
 
 Although discouraged, it is still possible to have all components retained over configuration changes on Android. On the one hand, this makes `InstanceKeeper` no longer required. But on the other hand, this prevents from supplying dependencies that capture the hosting `Activity` or `Fragment`.
 

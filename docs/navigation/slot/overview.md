@@ -47,100 +47,50 @@ class DefaultDialogComponent(
 }
 ```
 
-=== "Before v2.2.0-alpha01"
+```kotlin title="Root component"
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
+import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.slot.dismiss
+import com.arkivanov.decompose.value.Value
+import kotlinx.serialization.Serializable
 
-    ```kotlin title="Root component"
-    import com.arkivanov.decompose.ComponentContext
-    import com.arkivanov.decompose.router.slot.ChildSlot
-    import com.arkivanov.decompose.router.slot.SlotNavigation
-    import com.arkivanov.decompose.router.slot.activate
-    import com.arkivanov.decompose.router.slot.childSlot
-    import com.arkivanov.decompose.router.slot.dismiss
-    import com.arkivanov.decompose.value.Value
-    import com.arkivanov.essenty.parcelable.Parcelable
-    import com.arkivanov.essenty.parcelable.Parcelize
-    
-    interface RootComponent {
-    
-        val dialog: Value<ChildSlot<*, DialogComponent>>
-    }
-    
-    class DefaultRootComponent(
-        componentContext: ComponentContext,
-    ) : RootComponent, ComponentContext by componentContext {
-    
-        private val dialogNavigation = SlotNavigation<DialogConfig>()
-    
-        override val dialog: Value<ChildSlot<*, DialogComponent>> =
-            childSlot(
-                source = dialogNavigation,
-                // persistent = false, // Disable navigation state saving, if needed
-                handleBackButton = true, // Close the dialog on back button press
-            ) { config, childComponentContext ->
-                DefaultDialogComponent(
-                    componentContext = childComponentContext,
-                    message = config.message,
-                    onDismissed = dialogNavigation::dismiss,
-                )
-            }
-    
-        private fun showDialog(message: String) {
-            dialogNavigation.activate(DialogConfig(message = message))
+interface RootComponent {
+
+    val dialog: Value<ChildSlot<*, DialogComponent>>
+}
+
+class DefaultRootComponent(
+    componentContext: ComponentContext,
+) : RootComponent, ComponentContext by componentContext {
+
+    private val dialogNavigation = SlotNavigation<DialogConfig>()
+
+    override val dialog: Value<ChildSlot<*, DialogComponent>> =
+        childSlot(
+            source = dialogNavigation,
+            serializer = DialogConfig.serializer(), // Or null to disable navigation state saving
+            handleBackButton = true, // Close the dialog on back button press
+        ) { config, childComponentContext ->
+            DefaultDialogComponent(
+                componentContext = childComponentContext,
+                message = config.message,
+                onDismissed = dialogNavigation::dismiss,
+            )
         }
-    
-        @Parcelize // kotlin-parcelize plugin must be applied if you are targeting Android
-        private data class DialogConfig(
-            val message: String,
-        ) : Parcelable
-    }
-    ```
 
-=== "Since v2.2.0-alpha01"
+    private fun showDialog(message: String) {
+        dialogNavigation.activate(DialogConfig(message = message))
+    }
 
-    ```kotlin title="Root component"
-    import com.arkivanov.decompose.ComponentContext
-    import com.arkivanov.decompose.router.slot.ChildSlot
-    import com.arkivanov.decompose.router.slot.SlotNavigation
-    import com.arkivanov.decompose.router.slot.activate
-    import com.arkivanov.decompose.router.slot.childSlot
-    import com.arkivanov.decompose.router.slot.dismiss
-    import com.arkivanov.decompose.value.Value
-    import kotlinx.serialization.Serializable
-    
-    interface RootComponent {
-    
-        val dialog: Value<ChildSlot<*, DialogComponent>>
-    }
-    
-    class DefaultRootComponent(
-        componentContext: ComponentContext,
-    ) : RootComponent, ComponentContext by componentContext {
-    
-        private val dialogNavigation = SlotNavigation<DialogConfig>()
-    
-        override val dialog: Value<ChildSlot<*, DialogComponent>> =
-            childSlot(
-                source = dialogNavigation,
-                serializer = DialogConfig.serializer(), // Or null to disable navigation state saving
-                handleBackButton = true, // Close the dialog on back button press
-            ) { config, childComponentContext ->
-                DefaultDialogComponent(
-                    componentContext = childComponentContext,
-                    message = config.message,
-                    onDismissed = dialogNavigation::dismiss,
-                )
-            }
-    
-        private fun showDialog(message: String) {
-            dialogNavigation.activate(DialogConfig(message = message))
-        }
-    
-        @Serializable // kotlinx-serialization plugin must be applied
-        private data class DialogConfig(
-            val message: String,
-        )
-    }
-    ```
+    @Serializable // kotlinx-serialization plugin must be applied
+    private data class DialogConfig(
+        val message: String,
+    )
+}
+```
 
 ## Multiple Child Slots in a component
 

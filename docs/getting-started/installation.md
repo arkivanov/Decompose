@@ -42,67 +42,20 @@ Compose is currently published in two separate variants:
 - The one developed and maintained by Google is Android only, called [Jetpack Compose](https://developer.android.com/jetpack/compose).
 - The Kotlin Multiplatform variant of Jetpack Compose maintained by both JetBrains and Google, called [Multiplatform Compose](https://github.com/JetBrains/compose-multiplatform).
 
-=== "Before v3.0.0-alpha01"
+Decompose provides extensions for Compose and depends on Multiplatform Compose, which makes it also compatible with Android Jetpack Compose. The extensions are used to connect Compose with Decompose components. Please see the corresponding [documentation page](../extensions/compose.md).
 
-    Due to this fragmentation Decompose provides two separate extension modules for Compose:
-    
-    === "Groovy"
+=== "Groovy"
 
-        ``` groovy
-        implementation "com.arkivanov.decompose:extensions-compose-jetpack:<version>"
-        // or
-        implementation "com.arkivanov.decompose:extensions-compose-jetbrains:<version>"
-        ```
+    ``` groovy
+    implementation "com.arkivanov.decompose:extensions-compose:<version>"
+    ```
+=== "Kotlin"
 
-    === "Kotlin"
+    ``` kotlin
+    implementation("com.arkivanov.decompose:extensions-compose:<version>")
+    ```
 
-        ``` kotlin
-        implementation("com.arkivanov.decompose:extensions-compose-jetpack:<version>")
-        // or
-        implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>")
-        ```
-    Both modules are used to connect Compose with Decompose components. Please see the corresponding [documentation page](../extensions/compose.md). Typically only one module should be selected, depending on the Compose variant being used.
-
-
-=== "Since v3.0.0-alpha01"
-
-    Since Decompose version v3.0.0-alpha01 there is just one extension module for Compose - compatible with both Jetpack Compose and Multiplatform Compose.
-
-    === "Groovy"
-
-        ``` groovy
-        implementation "com.arkivanov.decompose:extensions-compose:<version>"
-        ```
-    === "Kotlin"
-    
-        ``` kotlin
-        implementation("com.arkivanov.decompose:extensions-compose:<version>")
-        ```
-
-    The module is used to connect Compose with Decompose components. Please see the corresponding [documentation page](../extensions/compose.md).
-#### Support for Compose for iOS and Web (JS/Canvas and Wasm)
-
-=== "Before v3.0.0-alpha01"
-
-    Compose for iOS and Web (JS/Canvas, not Wasm) are supported and published from a separate branch: `compose-experimental`. This means that a special version suffix for all Decompose modules is required when configuring dependencies. Please note that Wasm target is not supported on versions older than v3.0.0-alpha01.
-    
-    === "Groovy"
-    
-        ``` groovy
-        implementation "com.arkivanov.decompose:decompose:<version>-compose-experimental"
-        implementation "com.arkivanov.decompose:extensions-compose-jetbrains:<version>-compose-experimental"
-        ```
-    
-    === "Kotlin"
-    
-        ``` kotlin
-        implementation("com.arkivanov.decompose:decompose:<version>-compose-experimental")
-        implementation("com.arkivanov.decompose:extensions-compose-jetbrains:<version>-compose-experimental")
-        ```
-
-=== "Since v3.0.0-alpha01"
-
-    All Compose variants (Android, JVM/Desktop, Native/iOS, Native/macOS, JS/Canvas, Wasm) are published from the main branch, please add dependencies as usual (no version suffixes required).
+Supported multiplatform targets: Android, JVM/Desktop, Native/iOS, Native/macOS, JS/Canvas and JS/Wasm.
 
 ## Extensions for Android views
 

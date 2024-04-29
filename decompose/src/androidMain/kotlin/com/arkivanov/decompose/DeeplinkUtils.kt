@@ -15,8 +15,9 @@ import androidx.savedstate.SavedStateRegistryOwner
  * This function must be called from [Activity.onCreate] method.
  *
  * It is strongly recommended to always use the `standard` (default)
- * `launchMode` for the [Activity] when handling deep links. This function takes
- * care of restarting the [Activity] task and finishing this [Activity] if needed,
+ * [launchMode](https://developer.android.com/guide/components/activities/tasks-and-back-stack#TaskLaunchModes)
+ * for the [Activity] when handling deep links. This function takes care of
+ * restarting the [Activity] task and finishing this [Activity] if needed,
  * in which case the returned value is `null`.
  *
  * Example of creating a root component with deep link support.
