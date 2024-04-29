@@ -20,7 +20,6 @@ buildscript {
         classpath(deps.android.gradle)
         classpath(deps.jetbrains.compose.composeGradlePlug)
         classpath(deps.jetbrains.kotlinx.binaryCompatibilityValidator)
-        classpath(deps.parcelizeDarwin.gradlePlug)
         classpath(deps.jetbrains.kotlin.serializationGradlePlug)
     }
 }
@@ -34,6 +33,7 @@ setupDefaults(
         androidTarget()
         jvm()
         js { browser() }
+        wasmJs { browser() }
         iosCompat()
         watchosCompat()
         tvosCompat()
@@ -74,5 +74,12 @@ allprojects {
         mavenCentral()
         google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    }
+
+    afterEvaluate {
+        // Workaround for https://youtrack.jetbrains.com/issue/KT-52776
+        rootProject.extensions.findByType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension>()?.apply {
+            versions.webpackCli.version = "4.10.0"
+        }
     }
 }

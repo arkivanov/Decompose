@@ -1,5 +1,7 @@
 package com.arkivanov.decompose.router.children
 
+import com.arkivanov.decompose.Cancellation
+
 /**
  * Represents a generic source of navigation events.
  *
@@ -7,7 +9,5 @@ package com.arkivanov.decompose.router.children
  */
 interface NavigationSource<out T : Any> {
 
-    fun subscribe(observer: (T) -> Unit)
-
-    fun unsubscribe(observer: (T) -> Unit)
+    fun subscribe(observer: (T) -> Unit): Cancellation
 }

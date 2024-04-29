@@ -1,5 +1,6 @@
 package com.arkivanov.sample.shared.utils
 
+import kotlin.jvm.JvmInline
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin

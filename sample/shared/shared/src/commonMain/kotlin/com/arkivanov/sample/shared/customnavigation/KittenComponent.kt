@@ -1,6 +1,7 @@
 package com.arkivanov.sample.shared.customnavigation
 
 import com.arkivanov.decompose.value.Value
+import kotlinx.serialization.Serializable
 
 interface KittenComponent {
 
@@ -11,6 +12,7 @@ interface KittenComponent {
         val text: String,
     )
 
+    @Serializable
     enum class ImageType {
         CAT_1,
         CAT_2,

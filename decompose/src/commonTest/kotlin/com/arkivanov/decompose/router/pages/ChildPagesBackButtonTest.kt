@@ -24,14 +24,14 @@ class ChildPagesBackButtonTest : BaseChildPagesTest() {
 
     @Test
     fun WHEN_5_pages_and_selected_1_THEN_isEnabled_true() {
-        context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 1))
+        context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 1))
 
         assertTrue(backDispatcher.isEnabled)
     }
 
     @Test
     fun GIVEN_5_pages_and_selected_1_WHEN_back_THEN_selected_0() {
-        val pages by context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 1))
+        val pages by context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 1))
 
         backDispatcher.back()
 
@@ -40,7 +40,7 @@ class ChildPagesBackButtonTest : BaseChildPagesTest() {
 
     @Test
     fun WHEN_5_pages_and_selected_0_THEN_isEnabled_false() {
-        context.childPages(initialPages = Pages(items = configs(0, 1, 2, 3, 4), selectedIndex = 0))
+        context.childPages(initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 0))
 
         assertFalse(backDispatcher.isEnabled)
     }

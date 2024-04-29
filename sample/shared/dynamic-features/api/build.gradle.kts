@@ -11,9 +11,7 @@ setupMultiplatform {
     androidTarget()
     jvm()
     js { browser() }
-    iosCompat(
-        arm64 = null, // Comment out to enable arm64 target
-    )
+    iosCompat()
 }
 
 android {

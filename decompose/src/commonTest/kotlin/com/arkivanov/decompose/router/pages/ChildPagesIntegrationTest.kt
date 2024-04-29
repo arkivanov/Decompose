@@ -9,8 +9,7 @@ import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
+import kotlinx.serialization.builtins.serializer
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,7 +17,7 @@ import kotlin.test.assertEquals
 @Suppress("TestFunctionName")
 class ChildPagesIntegrationTest {
 
-    private val navigation = PagesNavigation<Config>()
+    private val navigation = PagesNavigation<Int>()
     private val lifecycle = LifecycleRegistry()
     private val stateKeeper = TestStateKeeperDispatcher()
     private val instanceKeeper = InstanceKeeperDispatcher()
@@ -39,7 +38,7 @@ class ChildPagesIntegrationTest {
 
     @Test
     fun GIVEN_three_pages_and_last_selected_WHEN_selectNext_circular_THEN_first_selected() {
-        val pages by context.childPages(initialPages = Pages(items = configs(1, 2, 3), selectedIndex = 2))
+        val pages by context.childPages(initialPages = Pages(items = listOf(1, 2, 3), selectedIndex = 2))
 
         navigation.selectNext(circular = true)
 
@@ -48,7 +47,7 @@ class ChildPagesIntegrationTest {
 
     @Test
     fun GIVEN_three_pages_and_first_selected_WHEN_selectNext_circular_THEN_first_selected() {
-        val pages by context.childPages(initialPages = Pages(items = configs(1, 2, 3), selectedIndex = 2))
+        val pages by context.childPages(initialPages = Pages(items = listOf(1, 2, 3), selectedIndex = 2))
 
         navigation.selectNext(circular = true)
 
@@ -56,29 +55,14 @@ class ChildPagesIntegrationTest {
     }
 
     private fun ComponentContext.childPages(
-        initialPages: Pages<Config> = Pages(),
+        initialPages: Pages<Int> = Pages(),
         persistent: Boolean = true,
-    ): Value<ChildPages<Config, Component>> =
+    ): Value<ChildPages<Int, Any>> =
         childPages(
             source = navigation,
+            serializer = Int.serializer().takeIf { persistent },
             initialPages = { initialPages },
-            persistent = persistent,
             handleBackButton = true,
-            childFactory = ::Component,
+            childFactory = { config, _ -> config },
         )
-
-    private fun configs(vararg ids: Int): List<Config> =
-        ids.map { Config(id = it) }
-
-    @Parcelize
-    private data class Config(
-        val id: Int,
-    ) : Parcelable
-
-    private class Component(
-        config: Config,
-        componentContext: ComponentContext,
-    ) : ComponentContext by componentContext {
-        val id: Int = config.id
-    }
 }

@@ -1,12 +1,12 @@
 package com.arkivanov.decompose
 
-import com.arkivanov.essenty.backhandler.BackHandlerOwner
-import com.arkivanov.essenty.instancekeeper.InstanceKeeperOwner
-import com.arkivanov.essenty.lifecycle.LifecycleOwner
-import com.arkivanov.essenty.statekeeper.StateKeeperOwner
-
-interface ComponentContext :
-    LifecycleOwner,
-    StateKeeperOwner,
-    InstanceKeeperOwner,
-    BackHandlerOwner
+/**
+ * A default component context interface provided by Decompose.
+ * Should be passed to component classes via their constructors to
+ * enable features like lifecycle handling, state preservation, navigation,
+ * etc.
+ *
+ * It is also possible to define your own interface with additional
+ * properties or methods, and use that instead of this one.
+ */
+interface ComponentContext : GenericComponentContext<ComponentContext>

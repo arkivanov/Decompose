@@ -5,13 +5,12 @@ import com.arkivanov.gradle.setupBinaryCompatibilityValidator
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupPublication
 import com.arkivanov.gradle.setupSourceSets
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     id("kotlin-multiplatform")
     id("com.android.library")
     id("kotlinx-serialization")
-    id("kotlin-parcelize")
-    id("com.arkivanov.parcelize.darwin")
     id("com.arkivanov.gradle.setup")
 }
 
@@ -26,17 +25,18 @@ android {
 kotlin {
     setupSourceSets {
         val android by bundle()
-        val nonAndroid by bundle()
-        val nonNative by bundle()
         val darwin by bundle()
         val itvos by bundle()
         val js by bundle()
-        val nonJs by bundle()
+        val wasmJs by bundle()
+        val nonWeb by bundle()
+        val web by bundle()
 
-        (nonAndroid + darwin + nonNative + nonJs) dependsOn common
-        (allSet - android) dependsOn nonAndroid
-        (allSet - nativeSet) dependsOn nonNative
-        (allSet - js) dependsOn nonJs
+        (darwin) dependsOn common
+        nonWeb dependsOn common
+        (allSet - js - wasmJs) dependsOn nonWeb
+        web dependsOn common
+        (js + wasmJs) dependsOn web
         (iosSet + tvosSet) dependsOn itvos
         (darwinSet - iosSet - tvosSet + itvos) dependsOn darwin
 
@@ -53,17 +53,32 @@ kotlin {
             api(deps.essenty.instanceKeeper)
             api(deps.essenty.backHandler)
             api(deps.jetbrains.kotlinx.kotlinxSerializationCore)
-            implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
         }
 
         common.test.dependencies {
             implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesCore)
+            implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
+
+            // Workaround: https://github.com/Kotlin/kotlinx.coroutines/issues/3968
+            implementation("org.jetbrains.kotlinx:atomicfu:0.23.1")
         }
 
         android.main.dependencies {
-            implementation(deps.androidx.activity.activityKtx)
             implementation(deps.androidx.fragment.fragmentKtx)
-            implementation(deps.androidx.lifecycle.lifecycleCommonJava8)
         }
+
+        android.test.dependencies {
+            implementation(deps.robolectric.robolectric)
+        }
+
+        web.main.dependencies {
+            implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
+        }
+    }
+}
+
+tasks.named<KotlinCompilationTask<*>>("compileKotlinWasmJs").configure {
+    compilerOptions {
+        freeCompilerArgs.add("-Xwasm-kclass-fqn")
     }
 }

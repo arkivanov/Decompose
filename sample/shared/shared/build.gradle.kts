@@ -9,7 +9,6 @@ import org.jetbrains.kotlin.konan.target.Family
 plugins {
     id("kotlin-multiplatform")
     id("com.android.library")
-    id("kotlin-parcelize")
     id("kotlinx-serialization")
     id("com.arkivanov.gradle.setup")
 }
@@ -18,9 +17,7 @@ setupMultiplatform {
     androidTarget()
     jvm()
     js { browser() }
-    iosCompat(
-        arm64 = null, // Comment out to enable arm64 target
-    )
+    iosCompat()
 }
 
 android {
@@ -28,32 +25,34 @@ android {
 }
 
 kotlin {
-    targets
-        .filterIsInstance<KotlinNativeTarget>()
-        .filter { it.konanTarget.family == Family.IOS }
-        .forEach {
-            it.binaries {
-                framework {
-                    baseName = "Shared"
-                    export(project(":decompose"))
-                    export(deps.essenty.lifecycle)
+    if ("XCODE_VERSION_MAJOR" in System.getenv().keys) {
+        targets
+            .filterIsInstance<KotlinNativeTarget>()
+            .filter { it.konanTarget.family == Family.IOS }
+            .forEach {
+                it.binaries {
+                    framework {
+                        baseName = "Shared" // Used by app-ios
+                        export(project(":decompose"))
+                        export(deps.essenty.lifecycle)
 
-                    // Optional, only if you need state preservation on Darwin (Apple) targets
-                    export(deps.essenty.stateKeeper)
-
-                    // Optional, only if you need state preservation on Darwin (Apple) targets
-                    export(deps.parcelizeDarwin.runtime)
+                        // Optional, only if you need state preservation on Darwin (Apple) targets
+                        export(deps.essenty.stateKeeper)
+                    }
                 }
             }
-        }
+    }
 
     setupSourceSets {
         val android by bundle()
         val js by bundle()
+        val ios by bundle()
         val nonAndroid by bundle()
 
-        nonAndroid.dependsOn(common)
-        (allSet - android).dependsOn(nonAndroid)
+        nonAndroid dependsOn common
+        ios dependsOn nonAndroid
+        iosSet dependsOn ios
+        (allSet - iosSet - android).dependsOn(nonAndroid)
 
         common.main.dependencies {
             api(project(":decompose"))
@@ -62,8 +61,8 @@ kotlin {
             api(deps.essenty.stateKeeper)
             api(deps.essenty.backHandler)
             implementation(deps.reaktive.reaktive)
+            implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
         }
-
 
         common.test.dependencies {
             implementation(deps.reaktive.reaktiveTesting)

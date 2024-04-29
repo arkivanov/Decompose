@@ -20,7 +20,7 @@ import com.arkivanov.decompose.hashString
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.observe
+import com.arkivanov.decompose.value.subscribe
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.destroy
@@ -43,7 +43,7 @@ class StackRouterView @JvmOverloads constructor(
         lifecycle: Lifecycle,
         replaceChildView: ViewContext.(parent: ViewGroup, newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>?) -> Unit,
     ) {
-        stack.observe(lifecycle) {
+        stack.subscribe(lifecycle) {
             onStackChanged(it, lifecycle, replaceChildView)
         }
     }

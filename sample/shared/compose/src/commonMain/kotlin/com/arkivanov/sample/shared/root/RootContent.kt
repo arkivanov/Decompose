@@ -26,15 +26,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.Direction
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimation
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.StackAnimator
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.isEnter
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.sample.shared.SwipeUp
 import com.arkivanov.sample.shared.cards.CardsContent
 import com.arkivanov.sample.shared.counters.CountersContent
@@ -73,10 +68,7 @@ private fun Children(component: RootComponent, modifier: Modifier = Modifier) {
     Children(
         stack = component.childStack,
         modifier = modifier,
-
-        // Workaround for https://issuetracker.google.com/issues/270656235
         animation = stackAnimation(fade()),
-//            animation = tabAnimation(),
     ) {
         when (val child = it.instance) {
             is CountersChild -> CountersContent(component = child.component, modifier = Modifier.fillMaxSize())
@@ -164,15 +156,6 @@ private fun BottomBar(component: RootComponent, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-private fun tabAnimation(): StackAnimation<Any, Child> =
-    stackAnimation { child, otherChild, direction ->
-        val index = child.instance.index
-        val otherIndex = otherChild.instance.index
-        val anim = slide()
-        if ((index > otherIndex) == direction.isEnter) anim else anim.flipSide()
-    }
-
 private val Child.index: Int
     get() =
         when (this) {
@@ -183,24 +166,6 @@ private val Child.index: Int
             is CustomNavigationChild -> 4
             is PagesChild -> 5
         }
-
-private fun StackAnimator.flipSide(): StackAnimator =
-    StackAnimator { direction, isInitial, onFinished, content ->
-        invoke(
-            direction = direction.flipSide(),
-            isInitial = isInitial,
-            onFinished = onFinished,
-            content = content,
-        )
-    }
-
-private fun Direction.flipSide(): Direction =
-    when (this) {
-        Direction.ENTER_FRONT -> Direction.ENTER_BACK
-        Direction.EXIT_FRONT -> Direction.EXIT_BACK
-        Direction.ENTER_BACK -> Direction.ENTER_FRONT
-        Direction.EXIT_BACK -> Direction.EXIT_FRONT
-    }
 
 @Preview
 @Composable

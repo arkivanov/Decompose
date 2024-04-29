@@ -103,7 +103,7 @@ class DefaultCustomNavigationComponent(
             configurations.mapIndexed { index, config ->
                 SimpleChildNavState(
                     configuration = config,
-                    status = if (index == this.index) ChildNavState.Status.ACTIVE else ChildNavState.Status.INACTIVE,
+                    status = if (index == this.index) ChildNavState.Status.RESUMED else ChildNavState.Status.CREATED,
                 )
             }
         }

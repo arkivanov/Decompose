@@ -8,14 +8,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.predictiveback.predictiveBackAnimation
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.predictiveBackAnimation
+import com.arkivanov.decompose.extensions.compose.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.sample.shared.counters.counter.CounterContent
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 internal fun CountersContent(component: CountersComponent, modifier: Modifier = Modifier) {
     Children(
@@ -23,15 +25,7 @@ internal fun CountersContent(component: CountersComponent, modifier: Modifier = 
         modifier = modifier,
         animation = predictiveBackAnimation(
             backHandler = component.backHandler,
-            // Workaround for https://issuetracker.google.com/issues/270656235
-            animation = stackAnimation(fade() + scale()),
-//            animation = stackAnimation { _, _, direction ->
-//                if (direction.isFront) {
-//                    slide() + fade()
-//                } else {
-//                    scale(frontFactor = 1F, backFactor = 0.7F) + fade()
-//                }
-//            },
+            fallbackAnimation = stackAnimation(fade() + scale()),
             onBack = component::onBackClicked,
         ),
     ) {

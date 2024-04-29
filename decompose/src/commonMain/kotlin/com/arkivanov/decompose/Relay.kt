@@ -1,10 +1,6 @@
 package com.arkivanov.decompose
 
-import com.arkivanov.decompose.mainthread.checkMainThread
-
-internal class Relay<T>(
-    private val isMainThreadCheckEnabled: Boolean = false,
-) {
+internal class Relay<T> {
 
     private val lock = Lock()
     private val queue = ArrayDeque<T>()
@@ -12,10 +8,6 @@ internal class Relay<T>(
     private var observers = emptySet<(T) -> Unit>()
 
     fun accept(value: T) {
-        if (isMainThreadCheckEnabled) {
-            checkMainThread()
-        }
-
         lock.synchronized {
             queue.addLast(value)
 
@@ -50,11 +42,11 @@ internal class Relay<T>(
         }
     }
 
-    fun subscribe(observer: (T) -> Unit) {
+    fun subscribe(observer: (T) -> Unit): Cancellation {
         lock.synchronized { observers += observer }
-    }
 
-    fun unsubscribe(observer: (T) -> Unit) {
-        lock.synchronized { observers -= observer }
+        return Cancellation {
+            lock.synchronized { observers -= observer }
+        }
     }
 }

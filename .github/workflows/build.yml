@@ -26,13 +26,6 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build -Dsplit_targets
-      - name: Android instrumentation tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 21
-          arch: x86
-          disable-animations: true
-          script: ./gradlew :extensions-compose-jetpack:connectedDebugAndroidTest --stacktrace
   macos-build:
     name: Build on macOS
     runs-on: macos-14
@@ -50,3 +43,5 @@ jobs:
           arguments: build -Dsplit_targets
       - name: Build iOS sample
         run: xcodebuild -project sample/app-ios/app-ios.xcodeproj -scheme app-ios -sdk iphonesimulator -arch x86_64 build
+      - name: Build iOS Compose sample
+        run: xcodebuild -project sample/app-ios-compose/app-ios-compose.xcodeproj -scheme app-ios-compose -sdk iphonesimulator -arch x86_64 build

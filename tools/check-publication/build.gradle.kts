@@ -1,4 +1,6 @@
 import com.arkivanov.gradle.bundle
+import com.arkivanov.gradle.dependsOn
+import com.arkivanov.gradle.plus
 import com.arkivanov.gradle.setupMultiplatform
 import com.arkivanov.gradle.setupSourceSets
 
@@ -29,6 +31,13 @@ kotlin {
     setupSourceSets {
         val android by bundle()
         val jvm by bundle()
+        val compose by bundle()
+        val js by bundle()
+        val wasmJs by bundle()
+
+        compose dependsOn common
+        android dependsOn compose
+        (android + jvm + js + wasmJs + iosSet + macosSet) dependsOn compose
 
         common.main.dependencies {
             implementation("com.arkivanov.decompose:decompose:$version")
@@ -36,12 +45,10 @@ kotlin {
 
         android.main.dependencies {
             implementation("com.arkivanov.decompose:extensions-android:$version")
-            implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$version")
-            implementation("com.arkivanov.decompose:extensions-compose-jetpack:$version")
         }
 
-        jvm.main.dependencies {
-            implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$version")
+        compose.main.dependencies {
+            implementation("com.arkivanov.decompose:extensions-compose:$version")
         }
     }
 }

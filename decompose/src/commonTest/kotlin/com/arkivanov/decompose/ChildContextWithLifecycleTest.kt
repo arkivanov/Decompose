@@ -2,7 +2,6 @@ package com.arkivanov.decompose
 
 import com.arkivanov.decompose.backhandler.TestBackDispatcher
 import com.arkivanov.decompose.router.TestInstance
-import com.arkivanov.decompose.statekeeper.ParcelableStub
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
@@ -15,7 +14,7 @@ import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.start
 import com.arkivanov.essenty.lifecycle.stop
-import com.arkivanov.essenty.parcelable.ParcelableContainer
+import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -90,17 +89,16 @@ class ChildContextWithLifecycleTest {
     fun WHEN_recreated_THEN_child_state_restored() {
         val context = TestContext()
         val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry())
-        val savedChildState = ParcelableStub()
-        childContext.stateKeeper.register("child_key") { savedChildState }
+        childContext.stateKeeper.register("child_key") { "savedChildState" }
         context.lifecycle.resume()
 
         val savedParentState = context.stateKeeper.save()
         context.lifecycle.destroy()
         val newContext = TestContext(savedParentState)
         val newChild = newContext.childContext(key = "key", lifecycle = LifecycleRegistry())
-        val restoredChildState = newChild.stateKeeper.consume("child_key", ParcelableStub::class)
+        val restoredChildState = newChild.stateKeeper.consume<String>("child_key")
 
-        assertEquals(savedChildState, restoredChildState)
+        assertEquals("savedChildState", restoredChildState)
     }
 
     @Test
@@ -241,11 +239,12 @@ class ChildContextWithLifecycleTest {
     }
 
     private class TestContext(
-        savedState: ParcelableContainer? = null,
+        savedState: SerializableContainer? = null,
         override val instanceKeeper: InstanceKeeperDispatcher = InstanceKeeperDispatcher(),
     ) : ComponentContext {
         override val lifecycle: LifecycleRegistry = LifecycleRegistry()
         override val stateKeeper: TestStateKeeperDispatcher = TestStateKeeperDispatcher(savedState)
         override val backHandler: TestBackDispatcher = TestBackDispatcher()
+        override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
     }
 }

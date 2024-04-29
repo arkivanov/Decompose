@@ -7,7 +7,7 @@ import kotlin.reflect.KProperty
 
 operator fun <T : Any> Value<T>.getValue(thisRef: Any?, property: KProperty<*>): T = value
 
-fun <T : Any> Value<T>.observe(
+fun <T : Any> Value<T>.subscribe(
     lifecycle: Lifecycle,
     mode: ObserveLifecycleMode = ObserveLifecycleMode.START_STOP,
     observer: (T) -> Unit,
@@ -17,19 +17,19 @@ fun <T : Any> Value<T>.observe(
     when (mode) {
         ObserveLifecycleMode.CREATE_DESTROY ->
             lifecycle.subscribe(
-                onCreate = { cancellation = observe(observer) },
+                onCreate = { cancellation = subscribe(observer) },
                 onDestroy = { cancellation?.cancel() },
             )
 
         ObserveLifecycleMode.START_STOP ->
             lifecycle.subscribe(
-                onStart = { cancellation = observe(observer) },
+                onStart = { cancellation = subscribe(observer) },
                 onStop = { cancellation?.cancel() },
             )
 
         ObserveLifecycleMode.RESUME_PAUSE ->
             lifecycle.subscribe(
-                onResume = { cancellation = observe(observer) },
+                onResume = { cancellation = subscribe(observer) },
                 onPause = { cancellation?.cancel() },
             )
     }.let {}

@@ -1,15 +1,13 @@
 package com.arkivanov.sample.shared.dialog
 
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DialogContent(dialogComponent: DialogComponent) {
     AlertDialog(
@@ -31,6 +29,6 @@ fun DialogContent(dialogComponent: DialogComponent) {
                 Text("Dismiss")
             }
         },
-        modifier = Modifier.width(300.dp),
+        modifier = Modifier.widthIn(min = 200.dp),
     )
 }
