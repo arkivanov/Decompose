@@ -46,7 +46,7 @@ Pushes the provided `Configuration` at the top of the stack. Decompose will thro
     [A, B, C*]
     ```
 
-### pushNew(configuration) (since v2.2.0-alpha03)
+### pushNew(configuration)
 
 Pushes the provided `Configuration` at the top of the stack. Does nothing if the provided `Configuration` is already on top of the stack. Decompose will throw an exception if the provided `Configuration` is already present in the back stack (not at the top of the stack).
 
@@ -80,7 +80,7 @@ This can be useful when pushing a component on button click, to avoid pushing th
     [A, B, C*]
     ```
 
-### pushToFront(configuration) (since v3.0.0-alpha05)
+### pushToFront(configuration)
 
 Pushes the provided configuration to the top of the stack, removing the configuration from the back stack, if any.
 

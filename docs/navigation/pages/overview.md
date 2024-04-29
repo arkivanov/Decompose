@@ -58,109 +58,57 @@ class DefaultPageComponent(
 ) : PageComponent, ComponentContext by componentContext
 ```
 
-=== "Before v2.2.0-alpha01"
+```kotlin title="PagesComponent"
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.pages.ChildPages
+import com.arkivanov.decompose.router.pages.Pages
+import com.arkivanov.decompose.router.pages.PagesNavigation
+import com.arkivanov.decompose.router.pages.childPages
+import com.arkivanov.decompose.router.pages.select
+import com.arkivanov.decompose.value.Value
+import kotlinx.serialization.Serializable
 
-    ```kotlin title="PagesComponent"
-    import com.arkivanov.decompose.ComponentContext
-    import com.arkivanov.decompose.router.pages.ChildPages
-    import com.arkivanov.decompose.router.pages.Pages
-    import com.arkivanov.decompose.router.pages.PagesNavigation
-    import com.arkivanov.decompose.router.pages.childPages
-    import com.arkivanov.decompose.router.pages.select
-    import com.arkivanov.decompose.value.Value
-    import com.arkivanov.essenty.parcelable.Parcelable
-    import com.arkivanov.essenty.parcelable.Parcelize
-    
-    interface PagesComponent {
-        val pages: Value<ChildPages<*, PageComponent>>
-    
-        fun selectPage(index: Int)
-    }
-    
-    class DefaultPagesComponent(
-        componentContext: ComponentContext,
-    ) : PagesComponent, ComponentContext by componentContext {
-    
-        private val navigation = PagesNavigation<Config>()
-    
-        override val pages: Value<ChildPages<*, PageComponent>> =
-            childPages(
-                source = navigation,
-                initialPages = {
-                    Pages(
-                        items = List(10) { index -> Config(data = "Item $index") },
-                        selectedIndex = 0,
-                    )
-                },
-            ) { config, childComponentContext ->
-                DefaultPageComponent(
-                    componentContext = childComponentContext,
-                    data = config.data,
+interface PagesComponent {
+    val pages: Value<ChildPages<*, PageComponent>>
+
+    fun selectPage(index: Int)
+}
+
+class DefaultPagesComponent(
+    componentContext: ComponentContext,
+) : PagesComponent, ComponentContext by componentContext {
+
+    private val navigation = PagesNavigation<Config>()
+
+    override val pages: Value<ChildPages<*, PageComponent>> =
+        childPages(
+            source = navigation,
+            serializer = Config.serializer(), // Or null to disable navigation state saving
+            initialPages = {
+                Pages(
+                    items = List(10) { index -> Config(data = "Item $index") },
+                    selectedIndex = 0,
                 )
-            }
-    
-        override fun selectPage(index: Int) {
-            navigation.select(index = index)
+            },
+        ) { config, childComponentContext ->
+            DefaultPageComponent(
+                componentContext = childComponentContext,
+                data = config.data,
+            )
         }
-    
-        @Parcelize // kotlin-parcelize plugin must be applied if you are targetting Android
-        private data class Config(val data: String) : Parcelable
-    }    
-    ```
 
-=== "Since v2.2.0-alpha01"
+    override fun selectPage(index: Int) {
+        navigation.select(index = index)
+    }
 
-    ```kotlin title="PagesComponent"
-    import com.arkivanov.decompose.ComponentContext
-    import com.arkivanov.decompose.router.pages.ChildPages
-    import com.arkivanov.decompose.router.pages.Pages
-    import com.arkivanov.decompose.router.pages.PagesNavigation
-    import com.arkivanov.decompose.router.pages.childPages
-    import com.arkivanov.decompose.router.pages.select
-    import com.arkivanov.decompose.value.Value
-    import kotlinx.serialization.Serializable
-    
-    interface PagesComponent {
-        val pages: Value<ChildPages<*, PageComponent>>
-    
-        fun selectPage(index: Int)
-    }
-    
-    class DefaultPagesComponent(
-        componentContext: ComponentContext,
-    ) : PagesComponent, ComponentContext by componentContext {
-    
-        private val navigation = PagesNavigation<Config>()
-    
-        override val pages: Value<ChildPages<*, PageComponent>> =
-            childPages(
-                source = navigation,
-                serializer = Config.serializer(), // Or null to disable navigation state saving
-                initialPages = {
-                    Pages(
-                        items = List(10) { index -> Config(data = "Item $index") },
-                        selectedIndex = 0,
-                    )
-                },
-            ) { config, childComponentContext ->
-                DefaultPageComponent(
-                    componentContext = childComponentContext,
-                    data = config.data,
-                )
-            }
-    
-        override fun selectPage(index: Int) {
-            navigation.select(index = index)
-        }
-    
-        @Serializable // kotlinx-serialization plugin must be applied
-        private data class Config(val data: String)
-    }
-    ```
+    @Serializable // kotlinx-serialization plugin must be applied
+    private data class Config(val data: String)
+}
+```
 
 ## Screen recreation and process death on (not only) Android
 
-`Child Pages` automatically preserves the state when a configuration change or process death occurs. Use the `persistent` argument to disable state preservation completely. When disabled, the state is reset to the initial state when recreated. Note: since version `v2.2.0-alpha01`, the `persistent` argument is deprecated, you can pass `serializer = null` to disable state saving.
+`Child Pages` automatically preserves the state when a configuration change or process death occurs. To disable state preservation completely, pass `serializer = null` argument. When navigation state saving is disabled, the state is reset to the initial value when recreated.
 
 Components are created in their order. E.g. the first component in the list is created first, then the next component in the list is created, and so on. Components are destroyed in reverse order.
 

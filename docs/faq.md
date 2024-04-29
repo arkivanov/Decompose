@@ -8,7 +8,7 @@ However, there are convenient APIs for some platforms.
 
 ### Lifecycle on iOS
 
-If the root component lives in the application scope (i.e. Decompose is used in the entire application, not partially in one screen), then `ApplicationLifecycle` API from Essenty can be used (since Essenty version `2.0.0-alpha07`). Prior to that Essenty version, `ApplicationLifecycle` had been provided by Decompose.
+If the root component lives in the application scope (i.e. Decompose is used in the entire application, not partially in one screen), then `ApplicationLifecycle` API from Essenty can be used. `ApplicationLifecycle` can be destroyed manually if needed, e.g. when the root component is created in a `UIViewController` and the screen is closed.
 
 ### Lifecycle on Compose for Desktop (JVM)
 

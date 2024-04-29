@@ -363,7 +363,7 @@ fun RootContent(component: RootComponent) {
 }
 ```
 
-### Default stack animations (since version 3.0.0-alpha03)
+### Default stack animations
 
 By default, the `Children` function (and all other functions with stack animations) does not animate stack changes, the change is performed instantly. The default stack animation is configurable, so that it's possible to avoid specifying the same animation multiple times.
 
@@ -543,7 +543,7 @@ fun RootContent(component: RootComponent) {
         stack = component.childStack,
         animation = predictiveBackAnimation(
             backHandler = component.backHandler,
-            animation = stackAnimation(fade() + scale()), // Your usual animation here
+            fallbackAnimation = stackAnimation(fade() + scale()), // Your usual animation here
             onBack = component::onBackClicked,
         ),
     ) {
@@ -552,18 +552,15 @@ fun RootContent(component: RootComponent) {
 }
 ```
 
-!!! note
-    Since Decompose version `3.0.0-alpha01` the `animation` argument is renamed to `fallbackAnimation`.
-
 ### Predefined animations
 
 By default, the gesture animation resembles the [predictive back design for Android](https://developer.android.com/design/ui/mobile/guides/patterns/predictive-back) on all platforms.
 
 <video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureMaterial.mp4" type="video/mp4"></video>
 
-#### Standard Android-like system animation (since v3.0.0-alpha07)
+#### Standard Android-like system animation
 
-The `androidPredictiveBackAnimatable` API resembles the standard back gesture animation used on some Android devices (e.g. in system settings on Pixel phones). It's available since Decompose version `3.0.0-alpha07`.
+The `androidPredictiveBackAnimatable` API resembles the standard back gesture animation used on some Android devices (e.g. in system settings on Pixel phones).
 
 ```kotlin
 import androidx.compose.runtime.Composable

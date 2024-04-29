@@ -29,24 +29,11 @@ Configurations must meet the following requirements:
 
 Different kinds of navigation may have additional requirements for configurations. It's recommended to define configurations as `data class`, and use only `val` properties and immutable data structures.
 
-### Configurations are Parcelable (or @Serializable)
+### Configurations are `@Serializable`
 
-`Configurations` can be persisted via Android's [saved state](https://developer.android.com/guide/components/activities/activity-lifecycle#save-simple,-lightweight-ui-state-using-onsaveinstancestate), thus allowing the navigation state to be restored after configuration changes or process death.
-
-Decompose uses [Essenty](https://github.com/arkivanov/Essenty) library, which provides both `Parcelable` interface and `@Parcelize` annotation in common code using expect/actual, which works well with Kotlin Multiplatform. Please familiarise yourself with Essenty library.
-
-Starting with `v1.3.0-alpha01`, the recommended way is to use [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization) library. The Essenty library is still used.
-
-#### All targets (using kotlinx-serialization since v1.3.0-alpha01)
+Configurations can be persisted via Android's [saved state](https://developer.android.com/guide/components/activities/activity-lifecycle#save-simple,-lightweight-ui-state-using-onsaveinstancestate), thus allowing the navigation state to be restored after configuration changes or process death. Decompose relies on [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization) library for persistence. Each configuration class should be annotated as `@Serializable`, or a custom serializer should be implemented manually.
 
 Please make sure you [setup](https://github.com/Kotlin/kotlinx.serialization#setup) `kotlinx-serialization` correctly and applied the plugin.
-
-!!!warning
-    On Android the amount of data that can be preserved is [limited](https://developer.android.com/guide/components/activities/parcelables-and-bundles). Please mind the size of configurations.
-
-#### Android target (using Parcelable/Parcelize, deprecated since v1.3.0-alpha01)
-
-If you support the `android` target, make sure you have applied [kotlin-parcelize](https://developer.android.com/kotlin/parcelize) Gradle plugin. Otherwise, your code won't compile for Android.
 
 !!!warning
     On Android the amount of data that can be preserved is [limited](https://developer.android.com/guide/components/activities/parcelables-and-bundles). Please mind the size of configurations.

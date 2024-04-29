@@ -4,77 +4,53 @@ Due to the fact that components are lifecycle-aware, it is very easy to manage c
 
 ## Creating a CoroutineScope in a component
 
-!!! note "Extensions for CoroutineScope and Lifecycle"
+There are extensions for `CoroutineScope` and `Lifecycle` [provided](https://github.com/arkivanov/Essenty?tab=readme-ov-file#coroutines-extensions) by Essenty.
 
-    === "Before Essenty 2.0.0-alpha01"
-    
-        ```kotlin
-        import com.arkivanov.essenty.lifecycle.Lifecycle
-        import com.arkivanov.essenty.lifecycle.LifecycleOwner
-        import com.arkivanov.essenty.lifecycle.doOnDestroy
-        import kotlinx.coroutines.CoroutineScope
-        import kotlinx.coroutines.cancel
-        import kotlin.coroutines.CoroutineContext
-        
-        fun CoroutineScope(context: CoroutineContext, lifecycle: Lifecycle): CoroutineScope {
-            val scope = CoroutineScope(context)
-            lifecycle.doOnDestroy(scope::cancel)
-            return scope
-        }
-        
-        fun LifecycleOwner.coroutineScope(context: CoroutineContext): CoroutineScope =
-            CoroutineScope(context, lifecycle)
-        ```
-    
-    === "Since Essenty 2.0.0-alpha01"
-    
-        Since Essenty version `2.0.0-alpha01` extensions for `CoroutineScope` and `Lifecycle` are [provided](https://github.com/arkivanov/Essenty?tab=readme-ov-file#coroutines-extensions) by Essenty.
+Add the following dependency to your build.gradle file.
 
-        Add the following dependency to your build.gradle file.
+=== "Groovy"
 
-        === "Groovy"
-        
-            ``` groovy
-            implementation "com.arkivanov.essenty:lifecycle-coroutines:<version>"
-            ```
-        
-        === "Kotlin"
-        
-            ``` kotlin
-            implementation("com.arkivanov.essenty:lifecycle-coroutines:<version>")
-            ```
+    ``` groovy
+    implementation "com.arkivanov.essenty:lifecycle-coroutines:<version>"
+    ```
 
-        Use the Essenty extensions to create the `CoroutineScope`.
+=== "Kotlin"
 
-        ```kotlin
-        import com.arkivanov.decompose.ComponentContext
-        import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-        import kotlinx.coroutines.SupervisorJob
-        import kotlinx.coroutines.launch
-        import kotlinx.coroutines.withContext
-        import kotlin.coroutines.CoroutineContext
-        
-        class SomeComponent(
-          componentContext: ComponentContext,
-          mainContext: CoroutineContext,
-          private val ioContext: CoroutineContext,
-        ) : ComponentContext by componentContext {
-        
-          // The scope is automatically cancelled when the component is destroyed
-          private val scope = coroutineScope(mainContext + SupervisorJob())
-        
-          fun foo() {
-            scope.launch {
-              val result =
+    ``` kotlin
+    implementation("com.arkivanov.essenty:lifecycle-coroutines:<version>")
+    ```
+
+Use the Essenty extensions to create the `CoroutineScope`.
+
+```kotlin
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
+
+class SomeComponent(
+    componentContext: ComponentContext,
+    mainContext: CoroutineContext,
+    private val ioContext: CoroutineContext,
+) : ComponentContext by componentContext {
+
+    // The scope is automatically cancelled when the component is destroyed
+    private val scope = coroutineScope(mainContext + SupervisorJob())
+
+    fun foo() {
+        scope.launch {
+            val result =
                 withContext(ioContext) {
-                  "Result" // Result from background thread
+                    "Result" // Result from background thread
                 }
-        
-              println(result) // Handle the result on main thread
-            }
-          }
+
+            println(result) // Handle the result on main thread
         }
-        ```
+    }
+}
+```
 
 ## Creating a CoroutineScope that survives Android configuration changes
 
@@ -114,74 +90,52 @@ class SomeComponent(
 
 ## Creating a Reaktive DisposableScope in a component
 
-!!! note "Extensions for DisposableScope and Lifecycle"
+There are extensions for `DisposableScope` and `Lifecycle` [provided](https://github.com/arkivanov/Essenty?tab=readme-ov-file#reaktive-extensions) by Essenty.
 
-    === "Before Essenty 2.0.0-alpha01"
-    
-        ```kotlin
-        import com.arkivanov.essenty.lifecycle.Lifecycle
-        import com.arkivanov.essenty.lifecycle.LifecycleOwner
-        import com.arkivanov.essenty.lifecycle.doOnDestroy
-        import com.badoo.reaktive.disposable.scope.DisposableScope
-        
-        fun DisposableScope(lifecycle: Lifecycle): DisposableScope {
-            val scope = DisposableScope()
-            lifecycle.doOnDestroy(scope::dispose)
-            return scope
+Add the following dependency to your build.gradle file.
+
+=== "Groovy"
+
+    ``` groovy
+    implementation "com.arkivanov.essenty:lifecycle-reaktive:<version>"
+    ```
+
+=== "Kotlin"
+
+    ``` kotlin
+    implementation("com.arkivanov.essenty:lifecycle-reaktive:<version>")
+    ```
+
+Use the Essenty extensions to create the `DisposableScope`.
+
+```kotlin
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.sample.shared.multipane.utils.disposableScope
+import com.badoo.reaktive.disposable.scope.DisposableScope
+import com.badoo.reaktive.scheduler.ioScheduler
+import com.badoo.reaktive.scheduler.mainScheduler
+import com.badoo.reaktive.single.observeOn
+import com.badoo.reaktive.single.singleFromFunction
+import com.badoo.reaktive.single.subscribeOn
+
+class SomeComponent(
+    componentContext: ComponentContext,
+) : ComponentContext by componentContext,
+    // The scope is automatically disposed when the component is destroyed
+    DisposableScope by componentContext.disposableScope() {
+
+    fun foo() {
+        singleFromFunction {
+            "Result" // Result from background thread
         }
-        
-        fun LifecycleOwner.disposableScope(): DisposableScope =
-            DisposableScope(lifecycle)
-        ```
-    
-    === "Since Essenty 2.0.0-alpha01"
-    
-        Since Essenty version `2.0.0-alpha01` extensions for `DisposableScope` and `Lifecycle` are [provided](https://github.com/arkivanov/Essenty?tab=readme-ov-file#reaktive-extensions) by Essenty.
-
-        Add the following dependency to your build.gradle file.
-
-        === "Groovy"
-        
-            ``` groovy
-            implementation "com.arkivanov.essenty:lifecycle-reaktive:<version>"
-            ```
-        
-        === "Kotlin"
-        
-            ``` kotlin
-            implementation("com.arkivanov.essenty:lifecycle-reaktive:<version>")
-            ```
-
-        Use the Essenty extensions to create the `DisposableScope`.
-
-        ```kotlin
-        import com.arkivanov.decompose.ComponentContext
-        import com.arkivanov.sample.shared.multipane.utils.disposableScope
-        import com.badoo.reaktive.disposable.scope.DisposableScope
-        import com.badoo.reaktive.scheduler.ioScheduler
-        import com.badoo.reaktive.scheduler.mainScheduler
-        import com.badoo.reaktive.single.observeOn
-        import com.badoo.reaktive.single.singleFromFunction
-        import com.badoo.reaktive.single.subscribeOn
-        
-        class SomeComponent(
-            componentContext: ComponentContext,
-        ) : ComponentContext by componentContext,
-            // The scope is automatically disposed when the component is destroyed
-            DisposableScope by componentContext.disposableScope() {
-        
-            fun foo() {
-                singleFromFunction {
-                    "Result" // Result from background thread
-                }
-                    .subscribeOn(ioScheduler)
-                    .observeOn(mainScheduler)
-                    .subscribeScoped { // Subscribe using the DisposableScope
-                        println(it) // Handle the result on main thread
-                    }
+            .subscribeOn(ioScheduler)
+            .observeOn(mainScheduler)
+            .subscribeScoped { // Subscribe using the DisposableScope
+                println(it) // Handle the result on main thread
             }
-        }
-        ```
+    }
+}
+```
 
 ## Creating a Reaktive DisposableScope that survives Android configuration changes
 

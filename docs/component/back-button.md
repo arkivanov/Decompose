@@ -39,7 +39,7 @@ class SomeComponent(
 
 By default, registered callbacks are checked in reverse order, the last registered enabled callback is called first. Various navigation models may also register back button callbacks, e.g. `Child Stack` uses `BackHandler` to automatically pop the stack on back button press. If you want your callback to be called first, make sure to register it as later as possible. Similarly, if you want your callback to be called last, make sure to register it as early as possible.
 
-Since Essenty version `1.2.0-alpha`, it is also possible to specify a priority for your back callback.
+It is also possible to specify a priority for your back callback.
 
 ```kotlin
 // This will make sure your callback is always called first
