@@ -19,7 +19,16 @@ There is the `LifecycleController` API available on Compose for Desktop.
 This exception is thrown by `StateKeeper` when its `register` method is called second time with the same key.
 
 - If you are using Compose, make sure that you create the root component context and component outside Compose. See the [docs](component/overview.md#root-componentcontext). Otherwise, a second instance can be created if the root Composable function re-composes.
+- Don't use `get() =` for navigation properties (such as `val stack: Value<ChildStack<...>>`), just assign the value to the property.
+    ```diff
+    - val stack: Value<ChildStack<...>> get() = childStack(...)
+    + val stack: Value<ChildStack<...>> = childStack(...)
+    ```
 - If you are using more than one `childStack` in one component (or more than one navigation model of the same kind in one component), then please supply the `key` argument for every such function.
+    ```kotlin
+    val stack1: Value<ChildStack<...>> = childStack(key = "stack1", ...)
+    val stack2: Value<ChildStack<...>> = childStack(key = "stack2", ...)
+    ```
 
 ## Error "Configurations must be unique"
 
