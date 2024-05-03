@@ -2,28 +2,21 @@ package com.arkivanov.sample.shared.root
 
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.sample.shared.cards.CardsComponent
-import com.arkivanov.sample.shared.counters.CountersComponent
+import com.arkivanov.essenty.backhandler.BackHandlerOwner
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesComponent
-import com.arkivanov.sample.shared.multipane.MultiPaneComponent
 import com.arkivanov.sample.shared.pages.PagesComponent
+import com.arkivanov.sample.shared.tabs.TabsComponent
 
-interface RootComponent {
+interface RootComponent : BackHandlerOwner {
 
-    val childStack: Value<ChildStack<*, Child>>
+    val stack: Value<ChildStack<*, Child>>
 
-    fun onCountersTabClicked()
-    fun onCardsTabClicked()
-    fun onMultiPaneTabClicked()
-    fun onDynamicFeaturesTabClicked()
-    fun onCustomNavigationTabClicked()
-    fun onPagesTabClicked()
+    fun onBackClicked()
+    fun onBackClicked(toIndex: Int)
 
     sealed class Child {
-        class CountersChild(val component: CountersComponent) : Child()
-        class CardsChild(val component: CardsComponent) : Child()
-        class MultiPaneChild(val component: MultiPaneComponent) : Child()
+        class TabsChild(val component: TabsComponent) : Child()
         class DynamicFeaturesChild(val component: DynamicFeaturesComponent) : Child()
         class CustomNavigationChild(val component: CustomNavigationComponent) : Child()
         class PagesChild(val component: PagesComponent) : Child()

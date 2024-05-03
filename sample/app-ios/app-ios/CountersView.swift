@@ -11,17 +11,19 @@ import Shared
 struct CountersView: View {
     private let counters: CountersComponent
     
+    @StateValue
+    private var stack: ChildStack<AnyObject, CounterComponent>
+    
+    private var activeChild: ChildCreated<AnyObject, CounterComponent> { stack.active }
+    
     init(_ counters: CountersComponent) {
         self.counters = counters
+        _stack = StateValue(counters.stack)
     }
-    
+
     var body: some View {
-        StackView(
-            stackValue: StateValue(counters.childStack),
-            getTitle: { $0.model.value.title },
-            onBack: counters.onBackClicked,
-            childContent: CounterView.init
-        )
+        CounterView(activeChild.instance)
+            .id(activeChild.configuration.hash)
     }
 }
 

@@ -39,8 +39,6 @@ struct ArticleListView_Previews: PreviewProvider {
 }
 
 class PreviewArticleListComponent: ArticleListComponent {
-    func onArticleClicked(id: Int64) { }
-
     var models: Value<ArticleListComponentModel> = mutableValue(
         ArticleListComponentModel(
             articles: [
@@ -48,7 +46,11 @@ class PreviewArticleListComponent: ArticleListComponent {
                 ArticleListComponentArticle(id: 2, title: "Test Title 2"),
                 ArticleListComponentArticle(id: 3, title: "Test Title 3")
             ],
+            isToolbarVisible: true,
             selectedArticleId: 1
         )
     )
+    
+    func onArticleClicked(id: Int64) {}
+    func onCloseClicked() {}
 }

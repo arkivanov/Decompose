@@ -18,7 +18,7 @@ class CountersComponentIntegrationTest {
             componentContext = DefaultComponentContext(lifecycle = lifecycle),
         )
 
-    private val activeCounter get() = component.childStack.active.instance
+    private val activeCounter get() = component.stack.active.instance
     private val activeCounterModel get() = activeCounter.model.value
 
     @BeforeTest

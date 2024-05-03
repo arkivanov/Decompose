@@ -21,11 +21,12 @@ import kotlin.random.Random
 internal class DefaultDynamicFeaturesComponent(
     componentContext: ComponentContext,
     private val featureInstaller: FeatureInstaller,
+    private val onFinished: () -> Unit,
 ) : DynamicFeaturesComponent, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
 
-    private val stack =
+    private val _stack =
         childStack(
             source = navigation,
             serializer = Config.serializer(),
@@ -34,7 +35,7 @@ internal class DefaultDynamicFeaturesComponent(
             childFactory = ::child,
         )
 
-    override val childStack: Value<ChildStack<*, Child>> get() = stack
+    override val stack: Value<ChildStack<*, Child>> = _stack
 
     private fun child(config: Config, componentContext: ComponentContext): Child =
         when (config) {
@@ -68,6 +69,10 @@ internal class DefaultDynamicFeaturesComponent(
                 )
             }
         )
+
+    override fun onCloseClicked() {
+        onFinished()
+    }
 
     @Serializable
     private sealed interface Config {

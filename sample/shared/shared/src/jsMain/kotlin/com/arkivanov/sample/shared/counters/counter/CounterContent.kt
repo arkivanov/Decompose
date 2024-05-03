@@ -21,6 +21,7 @@ import mui.material.styles.TypographyVariant
 import mui.system.responsive
 import mui.system.sx
 import react.FC
+import react.PropsWithChildren
 import web.cssom.AlignItems
 import web.cssom.BoxSizing
 import web.cssom.number
@@ -36,35 +37,15 @@ internal val CounterContent: FC<RProps<CounterComponent>> = FC { props ->
             boxSizing = BoxSizing.borderBox
         }
 
-        AppBar {
-            position = AppBarPosition.static
-
-            Toolbar {
-                if (model.isBackEnabled) {
-                    IconButton {
-                        size = Size.large
-                        edge = IconButtonEdge.start
-                        color = IconButtonColor.inherit
-                        onClick = { props.component.onPrevClicked() }
-
-                        Icon {
-                            +"arrow_back"
-                        }
-                    }
-                }
-
-                Typography {
-                    sx {
-                        flexGrow = number(1.0)
-                    }
-
-                    variant = TypographyVariant.h6
-                    +model.title
-                }
-            }
+        Typography {
+            variant = TypographyVariant.h6
+            +model.title
         }
 
-        Typography { +model.text }
+        Typography {
+            variant = TypographyVariant.body1
+            +model.text
+        }
 
         Button {
             variant = ButtonVariant.contained

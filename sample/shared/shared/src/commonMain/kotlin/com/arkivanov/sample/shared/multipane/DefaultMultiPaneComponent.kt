@@ -9,6 +9,7 @@ import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.SimpleNavigation
 import com.arkivanov.decompose.router.children.children
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.sample.shared.multipane.MultiPaneComponent.Children
 import com.arkivanov.sample.shared.multipane.database.DefaultArticleDatabase
 import com.arkivanov.sample.shared.multipane.details.ArticleDetailsComponent
@@ -23,7 +24,7 @@ import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import kotlinx.serialization.Serializable
 
 internal class DefaultMultiPaneComponent(
-    componentContext: ComponentContext
+    componentContext: ComponentContext,
 ) : MultiPaneComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
     private val database = DefaultArticleDatabase()
@@ -49,6 +50,16 @@ internal class DefaultMultiPaneComponent(
             childFactory = ::child,
         )
 
+    private val backCallback = BackCallback(isEnabled = false, onBack = ::closeDetails)
+
+    init {
+        backHandler.register(backCallback)
+
+        navState.notNull().subscribeScoped {
+            backCallback.isEnabled = !it.isMultiPane && (it.articleId != null)
+        }
+    }
+
     private fun child(config: Config, componentContext: ComponentContext): Any =
         when (config) {
             is Config.List -> listComponent(componentContext)
@@ -59,8 +70,9 @@ internal class DefaultMultiPaneComponent(
         DefaultArticleListComponent(
             componentContext = componentContext,
             database = database,
+            isToolbarVisible = navState.notNull().map { !it.isMultiPane },
             selectedArticleId = navState.notNull().map { if (it.isMultiPane) it.articleId else null },
-            onArticleSelected = { id -> navigation.navigate { it.copy(articleId = id) } },
+            onArticleSelected = ::showDetails,
         )
 
     private fun detailsComponent(config: Config.Details, componentContext: ComponentContext): ArticleDetailsComponent =
@@ -69,11 +81,19 @@ internal class DefaultMultiPaneComponent(
             database = database,
             articleId = config.articleId,
             isToolbarVisible = navState.notNull().map { !it.isMultiPane },
-            onFinished = { navigation.navigate { it.copy(articleId = null) } },
+            onFinished = ::closeDetails,
         )
 
     override fun setMultiPane(isMultiPane: Boolean) {
         navigation.navigate { it.copy(isMultiPane = isMultiPane) }
+    }
+
+    private fun showDetails(articleId: Long) {
+        navigation.navigate { it.copy(articleId = articleId) }
+    }
+
+    private fun closeDetails() {
+        navigation.navigate { it.copy(articleId = null) }
     }
 
     @Serializable

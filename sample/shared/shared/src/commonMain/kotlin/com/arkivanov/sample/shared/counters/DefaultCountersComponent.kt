@@ -18,7 +18,7 @@ internal class DefaultCountersComponent(
 
     private val navigation = StackNavigation<Config>()
 
-    private val _childStack =
+    private val _stack =
         childStack(
             source = navigation,
             serializer = Config.serializer(),
@@ -26,7 +26,7 @@ internal class DefaultCountersComponent(
             childFactory = ::child,
         )
 
-    override val childStack: Value<ChildStack<*, CounterComponent>> get() = _childStack
+    override val stack: Value<ChildStack<*, CounterComponent>> = _stack
 
     private fun child(
         config: Config,

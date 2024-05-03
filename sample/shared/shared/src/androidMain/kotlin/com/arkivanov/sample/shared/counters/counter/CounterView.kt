@@ -11,32 +11,23 @@ import com.arkivanov.decompose.value.subscribe
 import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.sample.shared.R
 import com.arkivanov.sample.shared.dialog.DialogComponent
-import com.google.android.material.appbar.MaterialToolbar
 
 @ExperimentalDecomposeApi
 @Suppress("FunctionName") // Factory function
 internal fun ViewContext.CounterView(component: CounterComponent): View {
     val layout = layoutInflater.inflate(R.layout.counter, parent, false)
-    val toolbar: MaterialToolbar = layout.findViewById(R.id.toolbar)
+    val titleText: TextView = layout.findViewById(R.id.text_title)
     val counterText: TextView = layout.findViewById(R.id.text_count)
     val infoButton: TextView = layout.findViewById(R.id.button_info)
     val nextButton: TextView = layout.findViewById(R.id.button_next)
     val prevButton: TextView = layout.findViewById(R.id.button_prev)
 
-    toolbar.setNavigationOnClickListener { component.onPrevClicked() }
     infoButton.setOnClickListener { component.onInfoClicked() }
     nextButton.setOnClickListener { component.onNextClicked() }
     prevButton.setOnClickListener { component.onPrevClicked() }
 
     component.model.subscribe(lifecycle) { model ->
-        toolbar.title = model.title
-
-        if (model.isBackEnabled) {
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
-        } else {
-            toolbar.navigationIcon = null
-        }
-
+        titleText.text = model.title
         counterText.text = model.text
         prevButton.isEnabled = model.isBackEnabled
     }

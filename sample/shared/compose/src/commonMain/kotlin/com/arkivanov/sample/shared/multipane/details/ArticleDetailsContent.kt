@@ -5,12 +5,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -24,16 +19,9 @@ internal fun ArticleDetailsContent(component: ArticleDetailsComponent, modifier:
 
     Column(modifier = modifier) {
         if (model.isToolbarVisible) {
-            TopAppBar(
-                title = { Text(text = article.title) },
-                navigationIcon = {
-                    IconButton(onClick = component::onCloseClicked) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null
-                        )
-                    }
-                }
+            com.arkivanov.sample.shared.utils.TopAppBar(
+                title = article.title,
+                onCloseClick = component::onCloseClicked,
             )
         }
 

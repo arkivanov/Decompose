@@ -105,4 +105,5 @@ class PreviewMultiPaneComponent: MultiPaneComponent {
     )
     
     func setMultiPane(isMultiPane: Bool) {}
+    func onCloseClicked() {}
 }

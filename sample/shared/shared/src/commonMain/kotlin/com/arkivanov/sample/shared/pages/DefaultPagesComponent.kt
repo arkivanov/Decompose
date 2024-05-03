@@ -18,6 +18,7 @@ import kotlinx.serialization.serializer
 @OptIn(ExperimentalDecomposeApi::class)
 class DefaultPagesComponent(
     componentContext: ComponentContext,
+    private val onFinished: () -> Unit,
 ) : PagesComponent, ComponentContext by componentContext {
 
     private val nav = PagesNavigation<ImageType>()
@@ -40,5 +41,9 @@ class DefaultPagesComponent(
 
     override fun selectPrev() {
         nav.selectPrev()
+    }
+
+    override fun onCloseClicked() {
+        onFinished()
     }
 }

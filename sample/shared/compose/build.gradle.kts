@@ -64,6 +64,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
+            implementation(compose.components.resources)
 
             // Required due to https://github.com/JetBrains/compose-multiplatform/issues/4326
             api(deps.jetbrains.kotlinx.kotlinxCoroutinesCore)

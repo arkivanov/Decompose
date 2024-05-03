@@ -7,7 +7,7 @@ import com.arkivanov.sample.shared.counters.counter.CounterComponent
 
 interface CountersComponent : BackHandlerOwner {
 
-    val childStack: Value<ChildStack<*, CounterComponent>>
+    val stack: Value<ChildStack<*, CounterComponent>>
 
     fun onBackClicked()
     fun onBackClicked(toIndex: Int)

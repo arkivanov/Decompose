@@ -8,7 +8,9 @@ import com.arkivanov.sample.shared.dynamicfeatures.feature2.Feature2
 
 interface DynamicFeaturesComponent {
 
-    val childStack: Value<ChildStack<*, Child>>
+    val stack: Value<ChildStack<*, Child>>
+
+    fun onCloseClicked()
 
     sealed class Child {
         class Feature1Child(val feature1: DynamicFeatureComponent<Feature1>) : Child()
