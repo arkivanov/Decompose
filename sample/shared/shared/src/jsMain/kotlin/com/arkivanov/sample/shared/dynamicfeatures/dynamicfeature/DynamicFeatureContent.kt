@@ -13,9 +13,9 @@ import react.FC
 fun <T : Any> DynamicFeatureContent(
     content: ChildrenBuilder.(T) -> Unit,
 ): FC<RProps<DynamicFeatureComponent<T>>> = FC { props ->
-    val childStack by props.component.childStack.useAsState()
+    val stack by props.component.childStack.useAsState()
 
-    when (val child = childStack.active.instance) {
+    when (val child = stack.active.instance) {
         is LoadingChild -> Typography { +"Loading ${child.name}" }
         is FeatureChild -> content(child.feature)
         is ErrorChild -> Typography { +"Error loading ${child.name}" }

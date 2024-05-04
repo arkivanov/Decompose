@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.arkivanov.decompose.extensions.android.stack.StackRouterView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/router"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="0dp"
+            app:title="Counters" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.arkivanov.decompose.extensions.android.stack.StackRouterView
+        android:id="@+id/router"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>

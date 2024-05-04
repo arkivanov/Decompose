@@ -25,6 +25,9 @@ struct CounterView: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 8) {
+            Text(model.title)
+                .bold()
+            
             Text(model.text)
 
             Button("Info", action: counter.onInfoClicked)
@@ -34,7 +37,6 @@ struct CounterView: View {
             Button("Prev", action: counter.onPrevClicked)
                 .disabled(!model.isBackEnabled)
         }
-        .navigationBarTitle(model.title, displayMode: .inline)
         .alert(
             item: dialogSlot.child?.instance,
             onDismiss: { $0.onDismissClicked() },

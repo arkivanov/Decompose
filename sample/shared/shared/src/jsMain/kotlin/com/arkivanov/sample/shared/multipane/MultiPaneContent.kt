@@ -1,6 +1,8 @@
 package com.arkivanov.sample.shared.multipane
 
+import com.arkivanov.sample.shared.AppBar
 import com.arkivanov.sample.shared.RProps
+import com.arkivanov.sample.shared.Scaffold
 import com.arkivanov.sample.shared.componentContent
 import com.arkivanov.sample.shared.multipane.details.ArticleDetailsComponent
 import com.arkivanov.sample.shared.multipane.details.ArticleDetailsContent
@@ -39,15 +41,21 @@ val MultiPaneContent: FC<RProps<MultiPaneComponent>> = FC { props ->
         cleanup { window.removeEventListener(type = "resize", callback = resizeCallback) }
     }
 
-    if (children.isMultiPane) {
-        DoublePane {
-            this.listComponent = listComponent
-            this.detailsComponent = detailsComponent
+    Scaffold {
+        if (children.isMultiPane) {
+            appBar = AppBar(title = "Multi-Pane Layout")
         }
-    } else {
-        SinglePane {
-            this.listComponent = listComponent
-            this.detailsComponent = detailsComponent
+
+        if (children.isMultiPane) {
+            DoublePane {
+                this.listComponent = listComponent
+                this.detailsComponent = detailsComponent
+            }
+        } else {
+            SinglePane {
+                this.listComponent = listComponent
+                this.detailsComponent = detailsComponent
+            }
         }
     }
 }

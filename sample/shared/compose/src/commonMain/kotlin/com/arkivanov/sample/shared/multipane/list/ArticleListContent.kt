@@ -1,6 +1,7 @@
 package com.arkivanov.sample.shared.multipane.list
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,28 +19,35 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.sample.shared.multipane.list.ArticleListComponent.Model
+import com.arkivanov.sample.shared.utils.TopAppBar
 
 @Composable
 internal fun ArticleListContent(component: ArticleListComponent, modifier: Modifier = Modifier) {
     val model: Model by component.models.subscribeAsState()
 
-    LazyColumn(modifier = modifier.fillMaxSize()) {
-        items(model.articles) { article ->
-            val isSelected = article.id == model.selectedArticleId
+    Column(modifier = modifier) {
+        if (model.isToolbarVisible) {
+            TopAppBar(title = "Multi-Pane Layout")
+        }
 
-            Text(
-                text = article.title,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .selectable(
-                        selected = isSelected,
-                        onClick = { component.onArticleClicked(id = article.id) }
-                    )
-                    .run { if (isSelected) background(color = selectionColor()) else this }
-                    .padding(16.dp)
-            )
+        LazyColumn(modifier = modifier.fillMaxSize()) {
+            items(model.articles) { article ->
+                val isSelected = article.id == model.selectedArticleId
 
-            Divider()
+                Text(
+                    text = article.title,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = isSelected,
+                            onClick = { component.onArticleClicked(id = article.id) }
+                        )
+                        .run { if (isSelected) background(color = selectionColor()) else this }
+                        .padding(16.dp)
+                )
+
+                Divider()
+            }
         }
     }
 }

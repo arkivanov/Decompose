@@ -6,8 +6,10 @@ import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +34,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent.Children
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent.Mode
 import com.arkivanov.sample.shared.utils.Degrees
+import com.arkivanov.sample.shared.utils.TopAppBar
 import com.arkivanov.sample.shared.utils.Vector
 import com.arkivanov.sample.shared.utils.minus
 import com.arkivanov.sample.shared.utils.plus
@@ -47,17 +50,24 @@ internal fun CustomNavigationContent(
 ) {
     val children by component.children.subscribeAsState()
 
-    Box(modifier = modifier.clipToBounds()) {
-        ChildItems(
-            children = children,
-            modifier = Modifier.fillMaxSize(),
+    Column(modifier = modifier) {
+        TopAppBar(
+            title = "Custom Navigation",
+            onCloseClick = component::onCloseClicked,
         )
 
-        Buttons(
-            component = component,
-            mode = children.mode,
-            modifier = Modifier.align(Alignment.BottomCenter),
-        )
+        Box(modifier = Modifier.fillMaxSize().clipToBounds()) {
+            ChildItems(
+                children = children,
+                modifier = Modifier.fillMaxSize(),
+            )
+
+            Buttons(
+                component = component,
+                mode = children.mode,
+                modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding(),
+            )
+        }
     }
 }
 

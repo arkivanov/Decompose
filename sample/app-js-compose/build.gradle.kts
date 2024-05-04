@@ -36,3 +36,20 @@ kotlin {
 compose.experimental {
     web.application {}
 }
+
+//region Workaround for Compose/JS resources, until Kotlin 2.0
+
+val copyJsResources = tasks.create("copyJsResourcesWorkaround", Copy::class.java) {
+    from(project(":sample:shared:compose").file("src/commonMain/composeResources"))
+    into("build/processedResources/js/main")
+}
+
+afterEvaluate {
+    project.tasks.getByName("jsProcessResources").finalizedBy(copyJsResources)
+    project.tasks.getByName("jsDevelopmentExecutableCompileSync").dependsOn(copyJsResources)
+    project.tasks.getByName("jsProductionExecutableCompileSync").dependsOn(copyJsResources)
+    project.tasks.getByName("jsBrowserProductionExecutableDistributeResources").dependsOn(copyJsResources)
+    project.tasks.getByName("jsJar").dependsOn(copyJsResources)
+}
+
+//end-region

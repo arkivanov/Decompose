@@ -20,7 +20,7 @@ import web.cssom.pct
 import web.cssom.px
 
 val DynamicFeaturesContent: FC<RProps<DynamicFeaturesComponent>> = FC { props ->
-    val childStack by props.component.childStack.useAsState()
+    val stack by props.component.stack.useAsState()
 
     Box {
         sx {
@@ -39,7 +39,7 @@ val DynamicFeaturesContent: FC<RProps<DynamicFeaturesComponent>> = FC { props ->
                 padding = 16.px
             }
 
-            when (val child = childStack.active.instance) {
+            when (val child = stack.active.instance) {
                 is Feature1Child ->
                     componentContent(
                         component = child.feature1,

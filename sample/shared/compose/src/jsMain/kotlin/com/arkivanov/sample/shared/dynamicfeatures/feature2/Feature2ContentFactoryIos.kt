@@ -9,6 +9,6 @@ internal actual fun feature2Content(): DynamicFeatureContent<Feature2> =
     object : DynamicFeatureContent<Feature2> {
         @Composable
         override fun invoke(component: Feature2, modifier: Modifier) {
-            Text(text = "Not implemented")
+            Text(text = "Not implemented", modifier = modifier)
         }
     }

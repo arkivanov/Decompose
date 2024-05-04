@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DialogContent(dialogComponent: DialogComponent) {
+internal fun DialogContent(dialogComponent: DialogComponent) {
     AlertDialog(
         onDismissRequest = {
             dialogComponent.onDismissClicked()

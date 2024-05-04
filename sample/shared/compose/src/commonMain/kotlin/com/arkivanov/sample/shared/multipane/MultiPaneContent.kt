@@ -2,6 +2,7 @@ package com.arkivanov.sample.shared.multipane
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +23,7 @@ import com.arkivanov.sample.shared.multipane.details.ArticleDetailsComponent
 import com.arkivanov.sample.shared.multipane.details.ArticleDetailsContent
 import com.arkivanov.sample.shared.multipane.list.ArticleListComponent
 import com.arkivanov.sample.shared.multipane.list.ArticleListContent
+import com.arkivanov.sample.shared.utils.TopAppBar
 
 @Composable
 internal fun MultiPaneContent(component: MultiPaneComponent, modifier: Modifier = Modifier) {
@@ -57,30 +59,36 @@ internal fun MultiPaneContent(component: MultiPaneComponent, modifier: Modifier 
 
     saveableStateHolder.OldDetailsKeyRemoved(selectedDetailsKey = children.detailsChild?.configuration?.hashCode())
 
-    BoxWithConstraints(modifier = modifier) {
-        when {
-            children.isMultiPane ->
-                Row(modifier = Modifier.fillMaxSize()) {
-                    Box(modifier = Modifier.fillMaxHeight().weight(0.4F)) {
-                        listPane(children.listChild)
-                    }
-
-                    Box(modifier = Modifier.fillMaxHeight().weight(0.6F)) {
-                        children.detailsChild?.also {
-                            detailsPane(it)
-                        }
-                    }
-                }
-
-            detailsChild != null -> detailsPane(detailsChild)
-            else -> listPane(listChild)
+    Column(modifier = modifier) {
+        if (children.isMultiPane) {
+            TopAppBar(title = "Multi-Pane Layout")
         }
 
-        val isMultiPaneRequired = this@BoxWithConstraints.maxWidth >= 800.dp
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            when {
+                children.isMultiPane ->
+                    Row(modifier = Modifier.fillMaxSize()) {
+                        Box(modifier = Modifier.fillMaxHeight().weight(0.4F)) {
+                            listPane(children.listChild)
+                        }
 
-        DisposableEffect(isMultiPaneRequired) {
-            component.setMultiPane(isMultiPaneRequired)
-            onDispose {}
+                        Box(modifier = Modifier.fillMaxHeight().weight(0.6F)) {
+                            children.detailsChild?.also {
+                                detailsPane(it)
+                            }
+                        }
+                    }
+
+                detailsChild != null -> detailsPane(detailsChild)
+                else -> listPane(listChild)
+            }
+
+            val isMultiPaneRequired = this@BoxWithConstraints.maxWidth >= 800.dp
+
+            DisposableEffect(isMultiPaneRequired) {
+                component.setMultiPane(isMultiPaneRequired)
+                onDispose {}
+            }
         }
     }
 }

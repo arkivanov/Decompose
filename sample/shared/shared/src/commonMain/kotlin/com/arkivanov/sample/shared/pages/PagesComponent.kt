@@ -13,4 +13,5 @@ interface PagesComponent {
     fun selectPage(index: Int)
     fun selectNext()
     fun selectPrev()
+    fun onCloseClicked()
 }

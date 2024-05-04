@@ -15,14 +15,16 @@ import com.badoo.reaktive.observable.Observable
 internal class DefaultArticleListComponent(
     componentContext: ComponentContext,
     database: ArticleDatabase,
+    isToolbarVisible: Observable<Boolean>,
     selectedArticleId: Observable<Long?>,
-    private val onArticleSelected: (id: Long) -> Unit
+    private val onArticleSelected: (id: Long) -> Unit,
 ) : ArticleListComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
     private val _models =
         MutableValue(
             Model(
                 articles = database.getAll().map { it.toArticle() },
+                isToolbarVisible = false,
                 selectedArticleId = null
             )
         )
@@ -30,6 +32,10 @@ internal class DefaultArticleListComponent(
     override val models: Value<Model> = _models
 
     init {
+        isToolbarVisible.subscribeScoped { isVisible ->
+            _models.update { it.copy(isToolbarVisible = isVisible) }
+        }
+
         selectedArticleId.subscribeScoped { id ->
             _models.update { it.copy(selectedArticleId = id) }
         }

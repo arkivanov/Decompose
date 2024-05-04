@@ -3,16 +3,14 @@
 package com.arkivanov.sample.shared.counters.counter
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,32 +26,21 @@ internal fun CounterContent(component: CounterComponent, modifier: Modifier = Mo
 
     Column(
         modifier = modifier,
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        TopAppBar(
-            title = {
-                Text(
-                    text = model.title,
-                    modifier = Modifier.testTag("title"),
-                )
-            },
-            navigationIcon = model.isBackEnabled.takeIf { it }?.let {
-                {
-                    IconButton(onClick = component::onPrevClicked) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back button",
-                        )
-                    }
-                }
-            },
+        Text(
+            text = model.title,
+            modifier = Modifier.testTag("title"),
+            style = MaterialTheme.typography.h6,
         )
 
-        Spacer(modifier = Modifier.weight(1F))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = model.text,
             modifier = Modifier.testTag("text"),
+            style = MaterialTheme.typography.body1,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -76,8 +63,6 @@ internal fun CounterContent(component: CounterComponent, modifier: Modifier = Mo
         ) {
             Text(text = "Prev")
         }
-
-        Spacer(modifier = Modifier.weight(1F))
     }
 
     val dialogSlot by component.dialogSlot.subscribeAsState()

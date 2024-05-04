@@ -17,7 +17,7 @@ internal class DefaultArticleDetailsComponent(
     database: ArticleDatabase,
     articleId: Long,
     isToolbarVisible: Observable<Boolean>,
-    private val onFinished: () -> Unit
+    private val onFinished: () -> Unit,
 ) : ArticleDetailsComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
     private val _models =

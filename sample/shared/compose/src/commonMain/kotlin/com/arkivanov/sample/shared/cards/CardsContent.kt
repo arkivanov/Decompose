@@ -3,7 +3,6 @@
 package com.arkivanov.sample.shared.cards
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateOffsetAsState
@@ -16,11 +15,15 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidthIn
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -49,42 +52,46 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.sample.shared.cards.card.CardComponent
 import com.arkivanov.sample.shared.cards.card.CardContent
+import com.arkivanov.sample.shared.utils.TopAppBar
 import com.arkivanov.sample.shared.utils.toPx
 
 @Composable
 internal fun CardsContent(component: CardsComponent, modifier: Modifier = Modifier) {
     val stack by component.stack.subscribeAsState()
 
-    Box(modifier = modifier.fillMaxSize().padding(16.dp)) {
-        IconButton(
-            onClick = component::onRemoveClicked,
-            modifier = Modifier.align(Alignment.TopStart)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Remove",
+    Column(modifier = modifier) {
+        TopAppBar(title = "Cards")
+
+        Box(modifier = Modifier.fillMaxSize().padding(16.dp).consumeWindowInsets(WindowInsets.statusBars)) {
+            IconButton(
+                onClick = component::onRemoveClicked,
+                modifier = Modifier.align(Alignment.TopStart)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Remove",
+                )
+            }
+
+            IconButton(
+                onClick = component::onAddClicked,
+                modifier = Modifier.align(Alignment.TopEnd)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add",
+                )
+            }
+
+            DraggableCards(
+                items = stack.items,
+                onSwiped = component::onCardSwiped,
+                modifier = Modifier.fillMaxSize(),
             )
         }
-
-        IconButton(
-            onClick = component::onAddClicked,
-            modifier = Modifier.align(Alignment.TopEnd)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add",
-            )
-        }
-
-        DraggableCards(
-            items = stack.items,
-            onSwiped = component::onCardSwiped,
-            modifier = Modifier.fillMaxSize(),
-        )
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun DraggableCards(
     items: List<Child.Created<*, CardComponent>>,

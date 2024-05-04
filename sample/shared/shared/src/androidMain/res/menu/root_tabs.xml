@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/tab_menu"
+        android:icon="@drawable/ic_tab_menu"
+        android:title="@null" />
+
+    <item
         android:id="@+id/tab_counters"
         android:icon="@drawable/ic_tab_counters"
         android:title="@null" />
@@ -13,15 +18,5 @@
     <item
         android:id="@+id/tab_multipane"
         android:icon="@drawable/ic_tab_multipane"
-        android:title="@null" />
-
-    <item
-        android:id="@+id/tab_dynamic_features"
-        android:icon="@drawable/ic_tab_dynamic_features"
-        android:title="@null" />
-
-    <item
-        android:id="@+id/tab_custom_navigation"
-        android:icon="@drawable/ic_tab_custom_navigation"
         android:title="@null" />
 </menu>

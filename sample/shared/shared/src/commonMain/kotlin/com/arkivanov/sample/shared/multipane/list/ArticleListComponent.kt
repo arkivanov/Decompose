@@ -10,6 +10,7 @@ interface ArticleListComponent {
 
     data class Model(
         val articles: List<Article>,
+        val isToolbarVisible: Boolean,
         val selectedArticleId: Long?
     )
 

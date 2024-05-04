@@ -10,7 +10,7 @@ import com.arkivanov.sample.shared.counters.counter.PreviewCounterComponent
 
 class PreviewCountersComponent : CountersComponent, ComponentContext by PreviewComponentContext {
 
-    override val childStack: Value<ChildStack<*, CounterComponent>> =
+    override val stack: Value<ChildStack<*, CounterComponent>> =
         MutableValue(
             ChildStack(
                 configuration = Unit,

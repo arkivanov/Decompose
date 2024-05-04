@@ -4,23 +4,22 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
-import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.popTo
+import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.webhistory.WebHistoryController
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.sample.shared.cards.DefaultCardsComponent
-import com.arkivanov.sample.shared.counters.DefaultCountersComponent
 import com.arkivanov.sample.shared.customnavigation.DefaultCustomNavigationComponent
 import com.arkivanov.sample.shared.dynamicfeatures.DefaultDynamicFeaturesComponent
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.FeatureInstaller
-import com.arkivanov.sample.shared.multipane.DefaultMultiPaneComponent
 import com.arkivanov.sample.shared.pages.DefaultPagesComponent
 import com.arkivanov.sample.shared.root.RootComponent.Child
-import com.arkivanov.sample.shared.root.RootComponent.Child.CountersChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
-import com.arkivanov.sample.shared.root.RootComponent.Child.MultiPaneChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.TabsChild
+import com.arkivanov.sample.shared.tabs.DefaultTabsComponent
 import kotlinx.serialization.Serializable
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -31,23 +30,23 @@ class DefaultRootComponent(
     webHistoryController: WebHistoryController? = null,
 ) : RootComponent, ComponentContext by componentContext {
 
-    private val navigation = StackNavigation<Config>()
+    private val nav = StackNavigation<Config>()
 
-    private val stack =
+    private val _stack =
         childStack(
-            source = navigation,
+            source = nav,
             serializer = Config.serializer(),
             initialStack = { getInitialStack(webHistoryPaths = webHistoryController?.historyPaths, deepLink = deepLink) },
             childFactory = ::child,
         )
 
-    override val childStack: Value<ChildStack<*, Child>> = stack
+    override val stack: Value<ChildStack<*, Child>> = _stack
 
     init {
         webHistoryController?.attach(
-            navigator = navigation,
+            navigator = nav,
             serializer = Config.serializer(),
-            stack = stack,
+            stack = _stack,
             getPath = ::getPathForConfig,
             getConfiguration = ::getConfigForPath,
         )
@@ -55,42 +54,51 @@ class DefaultRootComponent(
 
     private fun child(config: Config, componentContext: ComponentContext): Child =
         when (config) {
-            is Config.Counters -> CountersChild(DefaultCountersComponent(componentContext))
-            is Config.Cards -> Child.CardsChild(DefaultCardsComponent(componentContext))
-            is Config.MultiPane -> MultiPaneChild(DefaultMultiPaneComponent(componentContext))
-            is Config.DynamicFeatures -> DynamicFeaturesChild(DefaultDynamicFeaturesComponent(componentContext, featureInstaller))
-            is Config.CustomNavigation -> CustomNavigationChild(DefaultCustomNavigationComponent(componentContext))
-            is Config.Pages -> PagesChild(DefaultPagesComponent(componentContext))
+            is Config.Tabs ->
+                TabsChild(
+                    DefaultTabsComponent(
+                        componentContext = componentContext,
+                        onDynamicFeaturesItemSelected = { nav.pushNew(Config.DynamicFeatures) },
+                        onCustomNavigationItemSelected = { nav.pushNew(Config.CustomNavigation) },
+                        onPagesItemSelected = { nav.pushNew(Config.Pages) },
+                    )
+                )
+
+            is Config.DynamicFeatures ->
+                DynamicFeaturesChild(
+                    DefaultDynamicFeaturesComponent(
+                        componentContext = componentContext,
+                        featureInstaller = featureInstaller,
+                        onFinished = nav::pop,
+                    )
+                )
+
+            is Config.CustomNavigation ->
+                CustomNavigationChild(
+                    DefaultCustomNavigationComponent(
+                        componentContext = componentContext,
+                        onFinished = nav::pop,
+                    )
+                )
+
+            is Config.Pages ->
+                PagesChild(
+                    DefaultPagesComponent(
+                        componentContext = componentContext,
+                        onFinished = nav::pop,
+                    )
+                )
         }
 
-    override fun onCountersTabClicked() {
-        navigation.bringToFront(Config.Counters)
+    override fun onBackClicked() {
+        nav.pop()
     }
 
-    override fun onCardsTabClicked() {
-        navigation.bringToFront(Config.Cards)
-    }
-
-    override fun onMultiPaneTabClicked() {
-        navigation.bringToFront(Config.MultiPane)
-    }
-
-    override fun onDynamicFeaturesTabClicked() {
-        navigation.bringToFront(Config.DynamicFeatures)
-    }
-
-    override fun onCustomNavigationTabClicked() {
-        navigation.bringToFront(Config.CustomNavigation)
-    }
-
-    override fun onPagesTabClicked() {
-        navigation.bringToFront(Config.Pages)
+    override fun onBackClicked(toIndex: Int) {
+        nav.popTo(index = toIndex)
     }
 
     private companion object {
-        private const val WEB_PATH_COUNTERS = "counters"
-        private const val WEB_PATH_CARDS = "cards"
-        private const val WEB_PATH_MULTI_PANE = "multi-pane"
         private const val WEB_PATH_DYNAMIC_FEATURES = "dynamic-features"
         private const val WEB_PATH_CUSTOM_NAVIGATION = "custom-navigation"
         private const val WEB_PATH_PAGES = "pages"
@@ -103,15 +111,13 @@ class DefaultRootComponent(
 
         private fun getInitialStack(deepLink: DeepLink): List<Config> =
             when (deepLink) {
-                is DeepLink.None -> listOf(Config.Counters)
-                is DeepLink.Web -> listOf(getConfigForPath(deepLink.path))
+                is DeepLink.None -> listOf(Config.Tabs)
+                is DeepLink.Web -> listOf(Config.Tabs, getConfigForPath(deepLink.path)).distinct()
             }
 
         private fun getPathForConfig(config: Config): String =
             when (config) {
-                Config.Counters -> "/$WEB_PATH_COUNTERS"
-                Config.Cards -> "/$WEB_PATH_CARDS"
-                Config.MultiPane -> "/$WEB_PATH_MULTI_PANE"
+                Config.Tabs -> ""
                 Config.DynamicFeatures -> "/$WEB_PATH_DYNAMIC_FEATURES"
                 Config.CustomNavigation -> "/$WEB_PATH_CUSTOM_NAVIGATION"
                 Config.Pages -> "/$WEB_PATH_PAGES"
@@ -119,26 +125,17 @@ class DefaultRootComponent(
 
         private fun getConfigForPath(path: String): Config =
             when (path.removePrefix("/")) {
-                WEB_PATH_COUNTERS -> Config.Counters
-                WEB_PATH_CARDS -> Config.Cards
-                WEB_PATH_MULTI_PANE -> Config.MultiPane
                 WEB_PATH_DYNAMIC_FEATURES -> Config.DynamicFeatures
                 WEB_PATH_CUSTOM_NAVIGATION -> Config.CustomNavigation
                 WEB_PATH_PAGES -> Config.Pages
-                else -> Config.Counters
+                else -> Config.Tabs
             }
     }
 
     @Serializable
     private sealed interface Config {
         @Serializable
-        data object Counters : Config
-
-        @Serializable
-        data object Cards : Config
-
-        @Serializable
-        data object MultiPane : Config
+        data object Tabs : Config
 
         @Serializable
         data object DynamicFeatures : Config

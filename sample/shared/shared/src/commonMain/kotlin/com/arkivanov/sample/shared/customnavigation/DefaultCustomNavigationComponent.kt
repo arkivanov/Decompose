@@ -15,6 +15,7 @@ import kotlinx.serialization.Serializable
 
 class DefaultCustomNavigationComponent(
     componentContext: ComponentContext,
+    private val onFinished: () -> Unit,
 ) : CustomNavigationComponent, ComponentContext by componentContext {
 
     private val navigation = SimpleNavigation<(NavigationState) -> NavigationState>()
@@ -85,6 +86,10 @@ class DefaultCustomNavigationComponent(
         navigation.navigate { state ->
             state.copy(configurations = state.configurations.shuffled())
         }
+    }
+
+    override fun onCloseClicked() {
+        onFinished()
     }
 
     @Serializable
