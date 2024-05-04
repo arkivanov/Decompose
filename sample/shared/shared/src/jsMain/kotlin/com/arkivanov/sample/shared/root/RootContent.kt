@@ -5,6 +5,7 @@ import com.arkivanov.sample.shared.componentContent
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.SharedTransitionsChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.TabsChild
 import com.arkivanov.sample.shared.tabs.TabsContent
 import com.arkivanov.sample.shared.useAsState
@@ -15,8 +16,10 @@ var RootContent: FC<RProps<RootComponent>> = FC { props ->
 
     when (val child = stack.active.instance) {
         is TabsChild -> componentContent(component = child.component, content = TabsContent)
-        is CustomNavigationChild -> error("Unsupported child: $child")
-        is DynamicFeaturesChild -> error("Unsupported child: $child")
-        is PagesChild -> error("Unsupported child: $child")
+
+        is CustomNavigationChild,
+        is DynamicFeaturesChild,
+        is PagesChild,
+        is SharedTransitionsChild -> error("Unsupported child: $child")
     }
 }

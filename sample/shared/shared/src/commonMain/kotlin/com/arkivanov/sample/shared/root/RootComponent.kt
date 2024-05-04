@@ -6,6 +6,7 @@ import com.arkivanov.essenty.backhandler.BackHandlerOwner
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesComponent
 import com.arkivanov.sample.shared.pages.PagesComponent
+import com.arkivanov.sample.shared.sharedtransitions.SharedTransitionsComponent
 import com.arkivanov.sample.shared.tabs.TabsComponent
 
 interface RootComponent : BackHandlerOwner {
@@ -20,5 +21,6 @@ interface RootComponent : BackHandlerOwner {
         class DynamicFeaturesChild(val component: DynamicFeaturesComponent) : Child()
         class CustomNavigationChild(val component: CustomNavigationComponent) : Child()
         class PagesChild(val component: PagesComponent) : Child()
+        class SharedTransitionsChild(val component: SharedTransitionsComponent) : Child()
     }
 }

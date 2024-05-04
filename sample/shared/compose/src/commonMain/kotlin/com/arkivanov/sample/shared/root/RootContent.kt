@@ -19,7 +19,9 @@ import com.arkivanov.sample.shared.pages.PagesContent
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.SharedTransitionsChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.TabsChild
+import com.arkivanov.sample.shared.sharedtransitions.SharedTransitionsContent
 import com.arkivanov.sample.shared.tabs.TabsContent
 
 @Composable
@@ -50,6 +52,7 @@ private fun Children(component: RootComponent, modifier: Modifier = Modifier) {
                 is DynamicFeaturesChild -> DynamicFeaturesContent(component = child.component, modifier = Modifier.fillMaxSize())
                 is CustomNavigationChild -> CustomNavigationContent(component = child.component, modifier = Modifier.fillMaxSize())
                 is PagesChild -> PagesContent(component = child.component, modifier = Modifier.fillMaxSize())
+                is SharedTransitionsChild -> SharedTransitionsContent(component = child.component, modifier = Modifier.fillMaxSize())
             }
         }
     }

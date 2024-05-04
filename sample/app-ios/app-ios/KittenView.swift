@@ -10,7 +10,7 @@ struct KittenView: View {
     private var model: KittenComponentModel
 
     private var imageName: String {
-        switch model.imageType {
+        switch model.imageResourceId {
         case .cat1: return "cat1"
         case .cat2: return "cat2"
         case .cat3: return "cat3"
@@ -77,8 +77,3 @@ struct KittenView_Previews: PreviewProvider {
         KittenView(PreviewKittenComponent(), .large)
     }
 }
-
-class PreviewKittenComponent: KittenComponent {
-    var model: Value<KittenComponentModel> = mutableValue(KittenComponentModel(imageType: .cat1, text: "000"))
-}
-

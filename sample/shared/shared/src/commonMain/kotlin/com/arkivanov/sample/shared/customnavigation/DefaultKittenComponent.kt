@@ -8,7 +8,7 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.subscribe
-import com.arkivanov.sample.shared.customnavigation.KittenComponent.ImageType
+import com.arkivanov.sample.shared.ImageResourceId
 import com.arkivanov.sample.shared.customnavigation.KittenComponent.Model
 import com.badoo.reaktive.disposable.Disposable
 import com.badoo.reaktive.observable.observableInterval
@@ -18,7 +18,7 @@ import kotlinx.serialization.Serializable
 
 class DefaultKittenComponent(
     componentContext: ComponentContext,
-    private val imageType: ImageType,
+    private val imageResourceId: ImageResourceId,
 ) : KittenComponent, ComponentContext by componentContext {
 
     private val handler =
@@ -39,7 +39,7 @@ class DefaultKittenComponent(
 
     private fun State.toModel(): Model =
         Model(
-            imageType = imageType,
+            imageResourceId = imageResourceId,
             text = count.toString().padStart(length = 3, padChar = '0'),
         )
 

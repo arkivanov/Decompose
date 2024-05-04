@@ -8,9 +8,9 @@ import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.SimpleNavigation
 import com.arkivanov.decompose.router.children.children
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.sample.shared.ImageResourceId
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent.Children
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent.Mode
-import com.arkivanov.sample.shared.customnavigation.KittenComponent.ImageType
 import kotlinx.serialization.Serializable
 
 class DefaultCustomNavigationComponent(
@@ -27,9 +27,7 @@ class DefaultCustomNavigationComponent(
             key = "carousel",
             initialState = {
                 NavigationState(
-                    configurations = ImageType.values().map { imageType ->
-                        Config(imageType = imageType)
-                    },
+                    configurations = ImageResourceId.entries.map(::Config),
                     index = 0,
                     mode = Mode.CAROUSEL,
                 )
@@ -50,7 +48,7 @@ class DefaultCustomNavigationComponent(
             childFactory = { config, componentContext ->
                 DefaultKittenComponent(
                     componentContext = componentContext,
-                    imageType = config.imageType,
+                    imageResourceId = config.imageResourceId,
                 )
             },
         )
@@ -93,9 +91,7 @@ class DefaultCustomNavigationComponent(
     }
 
     @Serializable
-    private data class Config(
-        val imageType: ImageType,
-    )
+    private data class Config(val imageResourceId: ImageResourceId)
 
     @Serializable
     private data class NavigationState(

@@ -10,9 +10,9 @@ import com.arkivanov.decompose.router.pages.select
 import com.arkivanov.decompose.router.pages.selectNext
 import com.arkivanov.decompose.router.pages.selectPrev
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.sample.shared.ImageResourceId
 import com.arkivanov.sample.shared.customnavigation.DefaultKittenComponent
 import com.arkivanov.sample.shared.customnavigation.KittenComponent
-import com.arkivanov.sample.shared.customnavigation.KittenComponent.ImageType
 import kotlinx.serialization.serializer
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -21,13 +21,13 @@ class DefaultPagesComponent(
     private val onFinished: () -> Unit,
 ) : PagesComponent, ComponentContext by componentContext {
 
-    private val nav = PagesNavigation<ImageType>()
+    private val nav = PagesNavigation<ImageResourceId>()
 
     override val pages: Value<ChildPages<*, KittenComponent>> =
         childPages(
             source = nav,
-            serializer = serializer<ImageType>(),
-            initialPages = { Pages(items = ImageType.entries, selectedIndex = 0) },
+            serializer = serializer<ImageResourceId>(),
+            initialPages = { Pages(items = ImageResourceId.entries, selectedIndex = 0) },
             childFactory = { imageType, ctx -> DefaultKittenComponent(ctx, imageType) },
         )
 

@@ -4,4 +4,5 @@ class PreviewMenuComponent : MenuComponent {
     override val onDynamicFeaturesItemSelected: () -> Unit = {}
     override val onCustomNavigationItemSelected: () -> Unit = {}
     override val onPagesItemSelected: () -> Unit = {}
+    override val onSharedTransitionsItemSelected: () -> Unit = {}
 }

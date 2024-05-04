@@ -53,6 +53,16 @@ class TabsComponentIntegrationTest {
     }
 
     @Test
+    fun WHEN_SharedTransitions_menu_item_clicked_THEN_onSharedTransitionsItemSelected_called() {
+        var isCalled = false
+        val component = createComponent(onSharedTransitionsItemSelected = { isCalled = true })
+
+        component.stack.activeInstance<MenuChild>().component.onSharedTransitionsItemSelected()
+
+        assertTrue(isCalled)
+    }
+
+    @Test
     fun WHEN_onCountersTabClicked_THEN_CountersTab_active() {
         val component = createComponent()
 
@@ -94,6 +104,7 @@ class TabsComponentIntegrationTest {
         onDynamicFeaturesItemSelected: () -> Unit = {},
         onCustomNavigationItemSelected: () -> Unit = {},
         onPagesItemSelected: () -> Unit = {},
+        onSharedTransitionsItemSelected: () -> Unit = {},
     ): DefaultTabsComponent =
         createComponent { componentContext ->
             DefaultTabsComponent(
@@ -101,6 +112,7 @@ class TabsComponentIntegrationTest {
                 onDynamicFeaturesItemSelected = onDynamicFeaturesItemSelected,
                 onCustomNavigationItemSelected = onCustomNavigationItemSelected,
                 onPagesItemSelected = onPagesItemSelected,
+                onSharedTransitionsItemSelected = onSharedTransitionsItemSelected,
             )
         }
 }

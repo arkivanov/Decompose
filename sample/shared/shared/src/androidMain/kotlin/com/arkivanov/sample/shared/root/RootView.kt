@@ -9,6 +9,7 @@ import com.arkivanov.sample.shared.R
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
+import com.arkivanov.sample.shared.root.RootComponent.Child.SharedTransitionsChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.TabsChild
 import com.arkivanov.sample.shared.tabs.TabsView
 import com.arkivanov.sample.shared.viewSwitcher
@@ -25,9 +26,11 @@ fun ViewContext.RootView(component: RootComponent): View {
         replaceChildView = viewSwitcher { child ->
             when (child) {
                 is TabsChild -> TabsView(child.component)
-                is CustomNavigationChild -> error("Unsupported child: $child")
-                is DynamicFeaturesChild -> error("Unsupported child: $child")
-                is PagesChild -> error("Unsupported child: $child")
+
+                is CustomNavigationChild,
+                is DynamicFeaturesChild,
+                is PagesChild,
+                is SharedTransitionsChild -> error("Unsupported child: $child")
             }
         },
     )
