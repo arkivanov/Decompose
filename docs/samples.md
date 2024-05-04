@@ -55,6 +55,11 @@ Content:
 
 ![](media/SampleComponentHierarchy.png)
 
+### Fullscreen Navigation Screenshots
+
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMenuAndroid.gif" width="196">
+<img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleMenuIos.gif" width="196">
+
 ### Counters Screenshots
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCountersAndroid.gif" width="196">
