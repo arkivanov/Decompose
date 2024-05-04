@@ -578,8 +578,8 @@ fun RootContent(component: RootComponent) {
         stack = component.childStack,
         animation = predictiveBackAnimation(
             backHandler = component.backHandler,
-            animation = stackAnimation(fade() + scale()),
-            selector = selector = { backEvent, _, _ -> androidPredictiveBackAnimatable(backEvent) },
+            fallbackAnimation = stackAnimation(fade() + scale()),
+            selector = { backEvent, _, _ -> androidPredictiveBackAnimatable(backEvent) },
             onBack = component::onBackClicked,
         ),
     ) {
