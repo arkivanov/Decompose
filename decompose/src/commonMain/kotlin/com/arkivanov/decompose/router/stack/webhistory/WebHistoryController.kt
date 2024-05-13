@@ -36,5 +36,6 @@ interface WebHistoryController {
         serializer: KSerializer<C>,
         getPath: (configuration: C) -> String,
         getConfiguration: (path: String) -> C,
+        allowWebNavigationCallback: ((C, (Boolean)->Unit)->Unit)? = null
     )
 }

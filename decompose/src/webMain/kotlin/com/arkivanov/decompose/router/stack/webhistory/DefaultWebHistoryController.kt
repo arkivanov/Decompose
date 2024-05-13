@@ -47,8 +47,9 @@ class DefaultWebHistoryController internal constructor(
         serializer: KSerializer<C>,
         getPath: (configuration: C) -> String,
         getConfiguration: (path: String) -> C,
+        allowWebNavigationCallback: ((C, (Boolean) -> Unit) -> Unit)?
     ) {
-        val impl = Impl(navigator, stack, serializer, getPath, getConfiguration)
+        val impl = Impl(navigator, stack, serializer, getPath, getConfiguration, allowWebNavigationCallback)
         impl.init()
         window.setOnPopStateListener(impl::onPopState)
     }
@@ -59,6 +60,7 @@ class DefaultWebHistoryController internal constructor(
         private val serializer: KSerializer<C>,
         private val getPath: (C) -> String,
         private val getConfiguration: (String) -> C,
+        private val allowWebNavigationCallback: ((C, (Boolean) -> Unit) -> Unit)?
     ) {
         private var isStateObserverFirstPass = true
         private var isStateObserverEnabled = true
@@ -154,20 +156,45 @@ class DefaultWebHistoryController internal constructor(
             val newData = state?.let(::deserializeItems) ?: return
             val newConfiguration = deserializeConfiguration(json = newData.last().configurationJson)
 
+            allowWebNavigationCallback?.let { callback ->
+                callback(newConfiguration) { allowed ->
+                    doOnPopState(newData, newConfiguration, allowed)
+                }
+            } ?: doOnPopState(newData, newConfiguration, true)
+        }
+
+        private fun doOnPopState(newData: List<PageItem>, newConfiguration: C, navigationAllowed: Boolean) {
             isStateObserverEnabled = false
 
             navigator.navigate { stack ->
                 val indexInStack = stack.indexOfLast { it == newConfiguration }
-                if (indexInStack >= 0) {
-                    // History popped, pop from the Router
-                    stack.take(indexInStack + 1)
+                if (indexInStack == stack.lastIndex) {
+                    println("onPopStateInternal match")
+                    // Current history and stack aligned, do nothing
+                    stack
+                } else if (indexInStack >= 0) {
+                    println("onPopStateInternal pop")
+                    if (navigationAllowed) {
+                        // History popped, pop from the Router
+                        stack.take(indexInStack + 1)
+                    } else {
+                        window.history.forward() // undo pop
+                        stack
+                    }
                 } else {
-                    // History pushed, push to the Router
-                    stack + newData.drop(stack.size).map { getConfiguration(it.path) }
+                    if (navigationAllowed) {
+                        // History pushed, push to the Router
+                        stack + newData.drop(stack.size).map { getConfiguration(it.path) }
+                    } else {
+                        window.history.back() // undo push
+                        stack
+                    }
                 }
             }
 
-            window.history.replaceState(stack.value.configurations())
+            if (navigationAllowed) {
+                window.history.replaceState(stack.value.configurations())
+            }
 
             isStateObserverEnabled = true
         }
@@ -220,5 +247,7 @@ class DefaultWebHistoryController internal constructor(
         fun go(delta: Int)
         fun pushState(data: String, url: String?)
         fun replaceState(data: String, url: String?)
+        fun forward()
+        fun back()
     }
 }

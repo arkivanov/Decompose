@@ -341,8 +341,12 @@ public final class com/arkivanov/decompose/router/stack/ValueExtKt {
 }
 
 public abstract interface class com/arkivanov/decompose/router/stack/webhistory/WebHistoryController {
-	public abstract fun attach (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun attach (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
 	public abstract fun getHistoryPaths ()Ljava/util/List;
+}
+
+public final class com/arkivanov/decompose/router/stack/webhistory/WebHistoryController$DefaultImpls {
+	public static synthetic fun attach$default (Lcom/arkivanov/decompose/router/stack/webhistory/WebHistoryController;Lcom/arkivanov/decompose/router/stack/StackNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
 public abstract class com/arkivanov/decompose/value/MutableValue : com/arkivanov/decompose/value/Value {

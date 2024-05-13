@@ -23,5 +23,13 @@ internal actual class DefaultWebHistoryControllerWindow actual constructor() : D
         override fun replaceState(data: String, url: String?) {
             kotlinx.browser.window.history.replaceState(data = data, title = "", url = url)
         }
+
+        override fun forward() {
+            kotlinx.browser.window.history.forward()
+        }
+
+        override fun back() {
+            kotlinx.browser.window.history.back()
+        }
     }
 }

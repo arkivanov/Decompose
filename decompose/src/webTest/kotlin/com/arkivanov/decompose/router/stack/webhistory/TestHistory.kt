@@ -32,6 +32,18 @@ class TestHistory(
         stack[index] = Entry(data = data, url = url)
     }
 
+    override fun forward() {
+        if (index < stack.lastIndex) {
+            index++
+        }
+    }
+
+    override fun back() {
+        if (index > 0) {
+            index--
+        }
+    }
+
     fun assertStack(urls: List<String?>, index: Int = urls.lastIndex) {
         assertEquals(urls, stack.map(Entry::url))
         assertEquals(index, this.index)
