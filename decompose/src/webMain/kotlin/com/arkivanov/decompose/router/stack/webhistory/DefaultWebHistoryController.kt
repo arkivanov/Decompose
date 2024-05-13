@@ -176,7 +176,8 @@ class DefaultWebHistoryController internal constructor(
                         // History popped, pop from the Router
                         stack.take(indexInStack + 1)
                     } else {
-                        window.history.forward() // undo pop
+                        // undo pop(s)
+                        window.history.go(stack.lastIndex - indexInStack)
                         stack
                     }
                 } else {
