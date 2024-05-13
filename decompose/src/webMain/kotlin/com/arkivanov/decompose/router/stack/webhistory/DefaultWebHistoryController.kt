@@ -169,11 +169,9 @@ class DefaultWebHistoryController internal constructor(
             navigator.navigate { stack ->
                 val indexInStack = stack.indexOfLast { it == newConfiguration }
                 if (indexInStack == stack.lastIndex) {
-                    println("onPopStateInternal match")
                     // Current history and stack aligned, do nothing
                     stack
                 } else if (indexInStack >= 0) {
-                    println("onPopStateInternal pop")
                     if (navigationAllowed) {
                         // History popped, pop from the Router
                         stack.take(indexInStack + 1)
