@@ -187,7 +187,7 @@ class DefaultWebHistoryController internal constructor(
                         // History pushed, push to the Router
                         stack + newData.drop(stack.size).map { getConfiguration(it.path) }
                     } else {
-                        window.history.back() // undo push
+                        window.history.go(-1) // undo push
                         stack
                     }
                 }
@@ -248,7 +248,5 @@ class DefaultWebHistoryController internal constructor(
         fun go(delta: Int)
         fun pushState(data: String, url: String?)
         fun replaceState(data: String, url: String?)
-        fun forward()
-        fun back()
     }
 }
