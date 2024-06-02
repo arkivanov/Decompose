@@ -2,9 +2,9 @@ package com.arkivanov.decompose.router.stack.webhistory
 
 internal actual class DefaultWebHistoryControllerWindow actual constructor() : DefaultWebHistoryController.Window {
 
-    override val history: DefaultWebHistoryController.History = HistoryImpl()
+    actual override val history: DefaultWebHistoryController.History = HistoryImpl()
 
-    override fun setOnPopStateListener(listener: (state: String?) -> Unit) {
+    actual override fun setOnPopStateListener(listener: (state: String?) -> Unit) {
         kotlinx.browser.window.onpopstate = { listener(it.state?.toString()) }
     }
 

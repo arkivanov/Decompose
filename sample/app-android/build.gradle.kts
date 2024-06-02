@@ -5,6 +5,7 @@ plugins {
     id("kotlin-android")
     id("kotlin-parcelize")
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("com.arkivanov.gradle.setup")
 }
 

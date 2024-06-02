@@ -1,5 +1,3 @@
-@file:Suppress("OPTIONAL_DECLARATION_USAGE_IN_NON_COMMON_SOURCE") // Workaround for KTIJ-22326
-
 package com.arkivanov.sample.shared.cards
 
 import androidx.compose.animation.AnimatedVisibility

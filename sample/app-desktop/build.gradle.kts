@@ -6,6 +6,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
     id("kotlin-multiplatform")
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("com.arkivanov.gradle.setup")
 }
 

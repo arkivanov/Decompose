@@ -19,3 +19,4 @@ venv
 /dist
 /mkdocs_material.egg-info
 .vscode
+.kotlin
