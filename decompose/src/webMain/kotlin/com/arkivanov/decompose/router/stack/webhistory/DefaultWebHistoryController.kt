@@ -47,9 +47,9 @@ class DefaultWebHistoryController internal constructor(
         serializer: KSerializer<C>,
         getPath: (configuration: C) -> String,
         getConfiguration: (path: String) -> C,
-        allowWebNavigationCallback: ((List<C>, (Boolean) -> Unit) -> Unit)?
+        onWebNavigation: (List<C>) -> Boolean
     ) {
-        val impl = Impl(navigator, stack, serializer, getPath, getConfiguration, allowWebNavigationCallback)
+        val impl = Impl(navigator, stack, serializer, getPath, getConfiguration, onWebNavigation)
         impl.init()
         window.setOnPopStateListener(impl::onPopState)
     }
@@ -60,7 +60,7 @@ class DefaultWebHistoryController internal constructor(
         private val serializer: KSerializer<C>,
         private val getPath: (C) -> String,
         private val getConfiguration: (String) -> C,
-        private val allowWebNavigationCallback: ((List<C>, (Boolean) -> Unit) -> Unit)?
+        private val onWebNavigation: (List<C>) -> Boolean
     ) {
         private var isStateObserverFirstPass = true
         private var isStateObserverEnabled = true
@@ -158,11 +158,7 @@ class DefaultWebHistoryController internal constructor(
                 deserializeConfiguration(json = it.configurationJson)
             }
 
-            allowWebNavigationCallback?.let { callback ->
-                callback(configurations) { allowed ->
-                    doOnPopState(newData, configurations.last(), allowed)
-                }
-            } ?: doOnPopState(newData, configurations.last(), true)
+            doOnPopState(newData, configurations.last(), onWebNavigation(configurations))
         }
 
         private fun doOnPopState(newData: List<PageItem>, newConfiguration: C, navigationAllowed: Boolean) {
