@@ -1,7 +1,7 @@
 <picture>
-  <source media="(prefers-color-scheme: light)" srcset="docs/media/logo/titled-1.png">
-  <source media="(prefers-color-scheme: dark)" srcset="docs/media/logo/logo-titled-dark.png">
-  <img src="docs/media/logo/titled-1.png" width="300">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/logo/titled-1.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/logo/logo-titled-dark.png">
+  <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/logo/titled-1.png" width="300">
 </picture>
 
 <br/>
