@@ -427,13 +427,13 @@ class DefaultWebHistoryControllerTest {
         }
 
         val router = TestStackRouter(listOf(Config(0), Config(1)))
-        attach(router) { _, callback ->
-            callback(false)
+        attach(router) { _ ->
+            false
         }
 
         window.history.go(-1)
         window.runPendingOperations()
-
+        window.runPendingOperations()
         assertStack(listOf("/0", "/1"))
     }
 
@@ -444,11 +444,12 @@ class DefaultWebHistoryControllerTest {
         }
 
         val router = TestStackRouter(listOf(Config(0), Config(1)))
-        attach(router) { _, callback ->
-            callback(true)
+        attach(router) { _ ->
+            true
         }
 
         window.history.go(-1)
+        window.runPendingOperations()
         window.runPendingOperations()
 
         assertStack(listOf("/0", "/1"), 0)
@@ -461,23 +462,20 @@ class DefaultWebHistoryControllerTest {
         }
 
         val router = TestStackRouter(listOf(Config(0), Config(1)))
-        attach(router) { config, callback ->
-            if(config.value == 1){
-                callback(false)
-            } else {
-                callback(true)
-            }
+        attach(router) { config ->
+            config.last().value != 1
         }
 
         window.history.go(-1)
         window.runPendingOperations()
         window.history.go(1)
         window.runPendingOperations()
+        window.runPendingOperations()
 
         assertStack(listOf("/0", "/1"), 0)
     }
 
-    private fun attach(router: TestStackRouter<Config>, callback: ((Config, (Boolean) -> Unit) -> Unit)? = null) {
+    private fun attach(router: TestStackRouter<Config>, callback: (List<Config>) -> Boolean = { true }) {
         controller.attach(
             navigator = router,
             stack = router.stack,
