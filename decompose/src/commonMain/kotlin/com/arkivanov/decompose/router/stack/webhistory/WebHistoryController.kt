@@ -39,6 +39,6 @@ interface WebHistoryController {
         serializer: KSerializer<C>,
         getPath: (configuration: C) -> String,
         getConfiguration: (path: String) -> C,
-        onWebNavigation: (configurations: List<C>) -> Boolean = { true }
+        onWebNavigation: (configurations: List<C>) -> Boolean = { true },
     )
 }

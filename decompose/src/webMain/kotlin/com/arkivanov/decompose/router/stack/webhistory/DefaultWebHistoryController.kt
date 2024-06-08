@@ -47,7 +47,7 @@ class DefaultWebHistoryController internal constructor(
         serializer: KSerializer<C>,
         getPath: (configuration: C) -> String,
         getConfiguration: (path: String) -> C,
-        onWebNavigation: (List<C>) -> Boolean
+        onWebNavigation: (List<C>) -> Boolean,
     ) {
         val impl = Impl(navigator, stack, serializer, getPath, getConfiguration, onWebNavigation)
         impl.init()
@@ -60,7 +60,7 @@ class DefaultWebHistoryController internal constructor(
         private val serializer: KSerializer<C>,
         private val getPath: (C) -> String,
         private val getConfiguration: (String) -> C,
-        private val onWebNavigation: (List<C>) -> Boolean
+        private val onWebNavigation: (List<C>) -> Boolean,
     ) {
         private var isStateObserverFirstPass = true
         private var isStateObserverEnabled = true
@@ -154,44 +154,37 @@ class DefaultWebHistoryController internal constructor(
 
         fun onPopState(state: String?) {
             val newData = state?.let(::deserializeItems) ?: return
-            val configurations = newData.map {
+            val newConfigurations = newData.map {
                 deserializeConfiguration(json = it.configurationJson)
             }
 
-            doOnPopState(newData, configurations.last(), onWebNavigation(configurations))
-        }
+            if (!onWebNavigation(newConfigurations)) {
+                window.setOnPopStateListener { window.setOnPopStateListener(::onPopState) }
+                window.history.go(stack.value.items.size - newConfigurations.size)
+                return
+            }
 
-        private fun doOnPopState(newData: List<PageItem>, newConfiguration: C, navigationAllowed: Boolean) {
             isStateObserverEnabled = false
 
             navigator.navigate { stack ->
-                val indexInStack = stack.indexOfLast { it == newConfiguration }
+                val indexInStack = stack.indexOfLast { it == newConfigurations.last() }
                 if (indexInStack == stack.lastIndex) {
                     // Current history and stack aligned, do nothing
                     stack
                 } else if (indexInStack >= 0) {
-                    if (navigationAllowed) {
-                        // History popped, pop from the Router
-                        stack.take(indexInStack + 1)
-                    } else {
-                        // undo pop(s)
-                        window.history.go(stack.lastIndex - indexInStack)
-                        stack
-                    }
+
+                    // History popped, pop from the Router
+                    stack.take(indexInStack + 1)
+
                 } else {
-                    if (navigationAllowed) {
-                        // History pushed, push to the Router
-                        stack + newData.drop(stack.size).map { getConfiguration(it.path) }
-                    } else {
-                        window.history.go(-1) // undo push
-                        stack
-                    }
+
+                    // History pushed, push to the Router
+                    stack + newData.drop(stack.size).map { getConfiguration(it.path) }
+
                 }
             }
 
-            if (navigationAllowed) {
-                window.history.replaceState(stack.value.configurations())
-            }
+            window.history.replaceState(stack.value.configurations())
 
             isStateObserverEnabled = true
         }
