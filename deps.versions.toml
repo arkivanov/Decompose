@@ -1,17 +1,17 @@
 [versions]
 
-decompose = "3.0.0-gs"
-kotlin = "1.9.23"
-essenty = "2.0.0"
+decompose = "3.0.0"
+kotlin = "2.0.0"
+essenty = "2.1.0"
 reaktive = "1.2.3"
 junit = "4.13.2"
-jetbrainsCompose = "1.6.1"
+jetbrainsCompose = "1.6.10"
 jetbrainsKotlinWrappers = "1.0.0-pre.608"
-jetbrainsKotlinxCoroutines = "1.8.0"
-jetbrainsKotlinxSerialization = "1.6.2"
-jetbrainsBinaryCompatibilityValidator = "0.13.2"
+jetbrainsKotlinxCoroutines = "1.8.1"
+jetbrainsKotlinxSerialization = "1.6.3"
+jetbrainsBinaryCompatibilityValidator = "0.15.0-Beta.2"
 robolectric = "4.9.1"
-androidGradle = "8.0.2"
+androidGradle = "8.2.0"
 androidMaterial = "1.6.1"
 androidPlay = "1.10.3"
 androidxCore = "1.9.0"
@@ -36,6 +36,7 @@ reaktive-coroutinesInterop = { group = "com.badoo.reaktive", name = "coroutines-
 junit-junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 jetbrains-compose-composeGradlePlug = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "jetbrainsCompose" }
+jetbrains-kotlin-composeCompilerGradlePlug = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 jetbrains-compose-ui-uiTestJunit4 = { group = "org.jetbrains.compose.ui", name = "ui-test-junit4", version.ref = "jetbrainsCompose" }
 jetbrains-kotlinWrappers-kotlinWrappersBom = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-wrappers-bom", version.ref = "jetbrainsKotlinWrappers" }
 jetbrains-kotlinx-binaryCompatibilityValidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version.ref = "jetbrainsBinaryCompatibilityValidator" }

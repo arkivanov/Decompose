@@ -1,5 +1,3 @@
-@file:Suppress("OPTIONAL_DECLARATION_USAGE_IN_NON_COMMON_SOURCE") // Workaround for KTIJ-22326
-
 package com.arkivanov.sample.shared.counters.counter
 
 import androidx.compose.desktop.ui.tooling.preview.Preview

@@ -8,6 +8,7 @@ plugins {
     id("kotlin-multiplatform")
     id("com.android.dynamic-feature")
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("com.arkivanov.gradle.setup")
 }
 
@@ -55,6 +56,16 @@ kotlin {
     }
 }
 
-compose {
-    platformTypes.set(platformTypes.get() - KotlinPlatformType.js - KotlinPlatformType.native)
+composeCompiler {
+    targetKotlinPlatforms.set(targetKotlinPlatforms.get() - KotlinPlatformType.js - KotlinPlatformType.native)
+}
+
+tasks.matching { it.name == "generateDebugLintModel" }.configureEach {
+    dependsOn("generateResourceAccessorsForAndroidUnitTest")
+    dependsOn("generateResourceAccessorsForAndroidUnitTestDebug")
+}
+
+tasks.matching { it.name == "lintAnalyzeDebug" }.configureEach {
+    dependsOn("generateResourceAccessorsForAndroidUnitTest")
+    dependsOn("generateResourceAccessorsForAndroidUnitTestDebug")
 }

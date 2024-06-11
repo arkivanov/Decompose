@@ -25,6 +25,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.ComponentContextFactory
+import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.backhandler.connectOnBackPressedCallback
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
@@ -101,6 +103,9 @@ private class RetainedComponentContext(savedState: SerializableContainer?) : Com
     override val instanceKeeper: InstanceKeeperDispatcher = InstanceKeeperDispatcher()
     override val backHandler: BackDispatcher = BackDispatcher()
     val onBackPressedCallback: OnBackPressedCallback = backHandler.connectOnBackPressedCallback()
+
+    override val componentContextFactory: ComponentContextFactory<ComponentContext> =
+        ComponentContextFactory(::DefaultComponentContext)
 }
 
 private class Holder<out T>(
