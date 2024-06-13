@@ -427,12 +427,9 @@ class DefaultWebHistoryControllerTest {
         }
 
         val router = TestStackRouter(listOf(Config(0), Config(1)))
-        attach(router) { _ ->
-            false
-        }
+        attach(router) { _, _ -> false }
 
         window.history.go(-1)
-        window.runPendingOperations()
         window.runPendingOperations()
         assertStack(listOf("/0", "/1"))
     }
@@ -444,12 +441,9 @@ class DefaultWebHistoryControllerTest {
         }
 
         val router = TestStackRouter(listOf(Config(0), Config(1)))
-        attach(router) { _ ->
-            true
-        }
+        attach(router) { _, _ -> true }
 
         window.history.go(-1)
-        window.runPendingOperations()
         window.runPendingOperations()
 
         assertStack(listOf("/0", "/1"), 0)
@@ -462,27 +456,75 @@ class DefaultWebHistoryControllerTest {
         }
 
         val router = TestStackRouter(listOf(Config(0), Config(1)))
-        attach(router) { config ->
-            config.last().value != 1
-        }
+        attach(router) { newStack, _ -> newStack.last().value != 1 }
 
         window.history.go(-1)
         window.runPendingOperations()
         window.history.go(1)
         window.runPendingOperations()
-        window.runPendingOperations()
 
         assertStack(listOf("/0", "/1"), 0)
     }
 
-    private fun attach(router: TestStackRouter<Config>, callback: (List<Config>) -> Boolean = { true }) {
+    @Test
+    fun GIVEN_router_with_initial_stack_of_a_b_and_backward_THEN_onWebNavigation_receives_correct_stacks() {
+        if (isNodeJs()) {
+            return
+        }
+
+        val router = TestStackRouter(listOf(Config(0), Config(1)))
+        var newStackVar = emptyList<Config>()
+        var oldStackVar = emptyList<Config>()
+        attach(router) { newStack, oldStack ->
+            newStackVar = newStack
+            oldStackVar = oldStack
+            true
+        }
+
+        window.history.go(-1)
+        window.runPendingOperations()
+
+        assertEquals(listOf(Config(0)), newStackVar)
+        assertEquals(listOf(Config(0), Config(1)), oldStackVar)
+    }
+
+    @Test
+    fun GIVEN_router_with_initial_stack_of_a_b_and_forward_THEN_onWebNavigation_receives_correct_stacks() {
+        if (isNodeJs()) {
+            return
+        }
+
+        val router = TestStackRouter(listOf(Config(0), Config(1)))
+        var newStackVar: List<Config>
+        var oldStackVar: List<Config>
+        attach(router) { newStack, oldStack ->
+            newStackVar = newStack
+            oldStackVar = oldStack
+            true
+        }
+
+        window.history.go(-1)
+        window.runPendingOperations()
+        newStackVar = emptyList()
+        oldStackVar = emptyList()
+        window.history.go(1)
+        window.runPendingOperations()
+
+        assertEquals(listOf(Config(0), Config(1)), newStackVar)
+        assertEquals(listOf(Config(0)), oldStackVar)
+    }
+
+    private fun attach(
+        router: TestStackRouter<Config>,
+        callback: (newStack: List<Config>, oldStack: List<Config>) -> Boolean = { _, _ -> true },
+    ) {
         controller.attach(
             navigator = router,
             stack = router.stack,
             serializer = Config.serializer(),
             getPath = { "/${it.value}" },
             getConfiguration = { Config(it.removePrefix("/").toInt()) },
-            callback
+            onWebNavigation = callback,
         )
 
         window.runPendingOperations()
