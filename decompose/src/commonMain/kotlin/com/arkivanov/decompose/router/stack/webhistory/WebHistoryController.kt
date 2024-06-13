@@ -29,6 +29,9 @@ interface WebHistoryController {
      * @param serializer a [KSerializer] of configurations [C].
      * @param getPath a mapper from the configuration to a corresponding Web page path (starting from '/').
      * @param getConfiguration a mapper from the Web page path (starting from '/') to a corresponding configuration.
+     * @param onWebNavigation an optional callback that can be used to allow, by returning true, or deny, by returning false,
+     * browser-initiated navigation to a new target stack of configurations. The configurations parameter is the target stack if
+     * the navigation is allowed to proceed.
      */
     fun <C : Any> attach(
         navigator: StackNavigator<C>,
@@ -36,5 +39,6 @@ interface WebHistoryController {
         serializer: KSerializer<C>,
         getPath: (configuration: C) -> String,
         getConfiguration: (path: String) -> C,
+        onWebNavigation: (configurations: List<C>) -> Boolean = { true },
     )
 }

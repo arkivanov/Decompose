@@ -420,13 +420,69 @@ class DefaultWebHistoryControllerTest {
         assertStack(listOf("/2", "/1"))
     }
 
-    private fun attach(router: TestStackRouter<Config>) {
+    @Test
+    fun GIVEN_router_with_initial_stack_of_a_b_and_callback_deny_back_THEN_history_is_a_b_and_b_is_active() {
+        if (isNodeJs()) {
+            return
+        }
+
+        val router = TestStackRouter(listOf(Config(0), Config(1)))
+        attach(router) { _ ->
+            false
+        }
+
+        window.history.go(-1)
+        window.runPendingOperations()
+        window.runPendingOperations()
+        assertStack(listOf("/0", "/1"))
+    }
+
+    @Test
+    fun GIVEN_router_with_initial_stack_of_a_b_and_callback_allow_back_THEN_history_is_a_and_a_is_active() {
+        if (isNodeJs()) {
+            return
+        }
+
+        val router = TestStackRouter(listOf(Config(0), Config(1)))
+        attach(router) { _ ->
+            true
+        }
+
+        window.history.go(-1)
+        window.runPendingOperations()
+        window.runPendingOperations()
+
+        assertStack(listOf("/0", "/1"), 0)
+    }
+
+    @Test
+    fun GIVEN_router_with_initial_stack_of_a_b_and_callback_deny_forward_THEN_history_is_a_b_and_a_is_active() {
+        if (isNodeJs()) {
+            return
+        }
+
+        val router = TestStackRouter(listOf(Config(0), Config(1)))
+        attach(router) { config ->
+            config.last().value != 1
+        }
+
+        window.history.go(-1)
+        window.runPendingOperations()
+        window.history.go(1)
+        window.runPendingOperations()
+        window.runPendingOperations()
+
+        assertStack(listOf("/0", "/1"), 0)
+    }
+
+    private fun attach(router: TestStackRouter<Config>, callback: (List<Config>) -> Boolean = { true }) {
         controller.attach(
             navigator = router,
             stack = router.stack,
             serializer = Config.serializer(),
             getPath = { "/${it.value}" },
             getConfiguration = { Config(it.removePrefix("/").toInt()) },
+            callback
         )
 
         window.runPendingOperations()
