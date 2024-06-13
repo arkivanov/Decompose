@@ -116,7 +116,7 @@ class RouterPopToTest {
         val navigator = TestStackNavigator(listOf(Config.A))
         var isSuccess: Boolean? = null
 
-        navigator.pop { isSuccess = it }
+        navigator.popTo(index = 0) { isSuccess = it }
 
         assertEquals(false, isSuccess)
     }

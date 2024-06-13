@@ -317,6 +317,8 @@ public final class com/arkivanov/decompose/router/stack/StackNavigatorExtKt {
 	public static synthetic fun pop$default (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public static final fun popTo (Lcom/arkivanov/decompose/router/stack/StackNavigator;ILkotlin/jvm/functions/Function1;)V
 	public static synthetic fun popTo$default (Lcom/arkivanov/decompose/router/stack/StackNavigator;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun popToFirst (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun popToFirst$default (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public static final fun popWhile (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lkotlin/jvm/functions/Function1;)V
 	public static final fun popWhile (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 	public static final fun push (Lcom/arkivanov/decompose/router/stack/StackNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V

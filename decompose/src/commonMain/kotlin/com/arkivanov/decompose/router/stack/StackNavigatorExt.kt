@@ -75,7 +75,7 @@ inline fun <C : Any> StackNavigator<C>.pop(crossinline onComplete: (isSuccess: B
 }
 
 /**
- * Drops the configurations at the top of the stack while the [predicate] returns `true`.
+ * Pops configurations at the top of the stack while the [predicate] returns `true`.
  * If the [predicate] returns `true` for every configuration, then the first (oldest) configuration
  * remains in the stack.
  */
@@ -84,7 +84,7 @@ inline fun <C : Any> StackNavigator<C>.popWhile(crossinline predicate: (C) -> Bo
 }
 
 /**
- * Drops the configurations at the top of the stack while the [predicate] returns true.
+ * Pops configurations at the top of the stack while the [predicate] returns true.
  * If the [predicate] returns `true` for every configuration, then the first (oldest) configuration
  * remains in the stack.
  *
@@ -102,7 +102,7 @@ inline fun <C : Any> StackNavigator<C>.popWhile(
 }
 
 /**
- * Drops configurations at the top of the stack so that the provided index becomes active (the new top of the stack).
+ * Pops configurations at the top of the stack so that the provided index becomes active (the new top of the stack).
  *
  * @param index the index of the configuration to become active. Must not be negative.
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
@@ -118,6 +118,19 @@ inline fun <C : Any> StackNavigator<C>.popTo(
         transformer = { it.take(index + 1) },
         onComplete = { newStack, oldStack -> onComplete(newStack.size < oldStack.size) },
     )
+}
+
+/**
+ * Pops configurations at the top of the stack so that the first configuration becomes active (the new top of the stack).
+ * Does nothing if there is only one component in the stack.
+ *
+ * Equivalent to `popTo(index = 0)`.
+ *
+ * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
+ * The `isSuccess` argument is `true` if at least one component has been popped.
+ */
+inline fun StackNavigator<*>.popToFirst(crossinline onComplete: (isSuccess: Boolean) -> Unit = {}) {
+    popTo(index = 0, onComplete = onComplete)
 }
 
 /**
