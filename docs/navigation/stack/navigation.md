@@ -155,7 +155,7 @@ Pops the latest configuration at the top of the stack.
 
 ### popWhile(predicate)
 
-Drops the configurations at the top of the stack while the provided predicate returns true.
+Pops configurations at the top of the stack while the provided predicate returns true.
 
 !!! note "Illustration"
 
@@ -173,7 +173,7 @@ Drops the configurations at the top of the stack while the provided predicate re
 
 ### popTo(index)
 
-Drops configurations at the top of the stack so that the provided index becomes active (the new top of the stack).
+Pops configurations at the top of the stack so that the provided index becomes active (the new top of the stack).
 
 !!! note "Illustration"
 
@@ -187,6 +187,24 @@ Drops configurations at the top of the stack so that the provided index becomes 
     
     ```title="After"
     [A, B*]
+    ```
+
+### popToFirst
+
+Pops configurations at the top of the stack so that the first configuration becomes active (the new top of the stack).
+
+!!! note "Illustration"
+
+    ```title="Before"
+    [A, B, C, D*]
+    ```
+    
+    ```kotlin
+    navigation.popToFirst()
+    ```
+    
+    ```title="After"
+    [A*]
     ```
 
 ### replaceCurrent(configuration)
