@@ -34,6 +34,7 @@ jobs:
       - name: Publish
         env:
           SONATYPE_REPOSITORY_ID: ${{ needs.create-staging-repository.outputs.repository_id }}
+          SONATYPE_USER_NAME: ${{ secrets.SONATYPE_USER_NAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
