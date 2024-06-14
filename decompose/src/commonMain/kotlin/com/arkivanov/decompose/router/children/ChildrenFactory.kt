@@ -19,6 +19,8 @@ import kotlinx.serialization.Serializable
  * A convenience method for the main [children] method. Allows having `Serializable` navigation state [N],
  * so it's automatically saved and restored. This method can be used if the custom save/restore logic
  * is not required.
+ *
+ * **It is strongly recommended to call this method on the Main thread.**
  */
 fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState<C>, S : Any> Ctx.children(
     source: NavigationSource<E>,
@@ -73,6 +75,8 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState
  * The navigation is performed by transforming the current [NavState] to a new one. The implementation
  * calculates diffs between the old list of [ChildNavState] and the new one, and manipulates child
  * components as needed.
+ *
+ * **It is strongly recommended to call this method on the Main thread.**
  *
  * @param C a type of component configurations.
  * @param T a type of components.

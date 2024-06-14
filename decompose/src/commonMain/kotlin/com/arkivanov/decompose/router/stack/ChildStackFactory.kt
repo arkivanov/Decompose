@@ -17,6 +17,8 @@ import kotlinx.serialization.builtins.ListSerializer
 /**
  * Initializes and manages a stack of components.
  *
+ * **It is strongly recommended to call this method on the Main thread.**
+ *
  * @param source a source of navigation events.
  * @param serializer an optional [KSerializer] to be used for serializing and deserializing configurations.
  * If `null` then the navigation state will not be preserved.
@@ -60,6 +62,8 @@ fun <Ctx: GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
 
 /**
  * A convenience extension function for [ComponentContext.childStack].
+ *
+ * **It is strongly recommended to call this method on the Main thread.**
  */
 fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
     source: NavigationSource<StackNavigation.Event<C>>,
@@ -80,6 +84,8 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
 
 /**
  * Initializes and manages a stack of components.
+ *
+ * **It is strongly recommended to call this method on the Main thread.**
  *
  * @param source a source of navigation events.
  * @param initialStack a stack of component configurations (ordered from tail to head) that should be set
