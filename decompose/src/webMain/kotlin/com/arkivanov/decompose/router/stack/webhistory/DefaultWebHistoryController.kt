@@ -47,7 +47,7 @@ class DefaultWebHistoryController internal constructor(
         serializer: KSerializer<C>,
         getPath: (configuration: C) -> String,
         getConfiguration: (path: String) -> C,
-        onWebNavigation: (List<C>) -> Boolean,
+        onWebNavigation: (newStack: List<C>, oldStack: List<C>) -> Boolean,
     ) {
         val impl = Impl(navigator, stack, serializer, getPath, getConfiguration, onWebNavigation)
         impl.init()
@@ -60,7 +60,7 @@ class DefaultWebHistoryController internal constructor(
         private val serializer: KSerializer<C>,
         private val getPath: (C) -> String,
         private val getConfiguration: (String) -> C,
-        private val onWebNavigation: (List<C>) -> Boolean,
+        private val onWebNavigation: (newStack: List<C>, oldStack: List<C>) -> Boolean,
     ) {
         private var isStateObserverFirstPass = true
         private var isStateObserverEnabled = true
@@ -154,11 +154,10 @@ class DefaultWebHistoryController internal constructor(
 
         fun onPopState(state: String?) {
             val newData = state?.let(::deserializeItems) ?: return
-            val newConfigurations = newData.map {
-                deserializeConfiguration(json = it.configurationJson)
-            }
+            val newConfigurations = newData.map { deserializeConfiguration(json = it.configurationJson) }
+            val oldConfigurations = stack.value.configurations()
 
-            if (!onWebNavigation(newConfigurations)) {
+            if (!onWebNavigation(newConfigurations, oldConfigurations)) {
                 window.setOnPopStateListener { window.setOnPopStateListener(::onPopState) }
                 window.history.go(stack.value.items.size - newConfigurations.size)
                 return
@@ -172,15 +171,11 @@ class DefaultWebHistoryController internal constructor(
                     // Current history and stack aligned, do nothing
                     stack
                 } else if (indexInStack >= 0) {
-
                     // History popped, pop from the Router
                     stack.take(indexInStack + 1)
-
                 } else {
-
                     // History pushed, push to the Router
                     stack + newData.drop(stack.size).map { getConfiguration(it.path) }
-
                 }
             }
 

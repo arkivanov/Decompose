@@ -16,8 +16,10 @@ class TestWindow : DefaultWebHistoryController.Window {
     }
 
     fun runPendingOperations() {
-        val operations = pendingOperations.toList()
-        pendingOperations.clear()
-        operations.forEach { it() }
+        while (true) {
+            val operations = pendingOperations.toList().takeUnless(List<*>::isEmpty) ?: break
+            pendingOperations.clear()
+            operations.forEach { it() }
+        }
     }
 }
