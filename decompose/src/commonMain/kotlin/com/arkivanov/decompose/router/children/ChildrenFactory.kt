@@ -119,8 +119,6 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState
     backTransformer: (state: N) -> (() -> N)? = { null },
     childFactory: (configuration: C, componentContext: Ctx) -> T,
 ): Value<S> {
-    checkMainThread()
-
     val mainBackHandler = backHandler.child()
     val relay = Relay<NavEvent<E>>()
     val cancellation = source.subscribe { relay.accept(NavEvent.Event(it)) }
