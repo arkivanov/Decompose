@@ -25,8 +25,8 @@ nav:
     - Overview: component/overview.md
     - Child components: component/child-components.md
     - Lifecycle: component/lifecycle.md
-    - State preservation: component/state-preservation.md
-    - Instance retaining: component/instance-retaining.md
+    - State preservation (aka SavedStateHandle): component/state-preservation.md
+    - Instance retaining (aka ViewModel): component/instance-retaining.md
     - Back button: component/back-button.md
     - Scoping jobs and subscriptions: component/scopes.md
     - Custom ComponentContext: component/custom-component-context.md
