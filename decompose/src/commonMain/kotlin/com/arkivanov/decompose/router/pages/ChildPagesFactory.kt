@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.router.pages
 
-import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState
@@ -18,6 +17,8 @@ import kotlinx.serialization.Serializable
 /**
  * Initializes and manages a list of components with one selected (active) component.
  * The list can be empty.
+ *
+ * **It is strongly recommended to call this method on the Main thread.**
  *
  * @param source a source of navigation events.
  * @param serializer an optional [KSerializer] to be used for serializing and deserializing configurations.
@@ -84,6 +85,8 @@ private class SerializablePages<out C : Any>(
 /**
  * Initializes and manages a list of components with one selected (active) component.
  * The list can be empty.
+ *
+ * **It is strongly recommended to call this method on the Main thread.**
  *
  * @param source a source of navigation events.
  * @param initialPages an initial state of Child Pages that should be set

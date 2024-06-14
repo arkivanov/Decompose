@@ -16,6 +16,8 @@ import kotlinx.serialization.KSerializer
  * Initializes and manages a slot for one child component.
  * The child component can be either active or dismissed (destroyed).
  *
+ * **It is strongly recommended to call this method on the Main thread.**
+ *
  * @param source a source of navigation events.
  * @param serializer an optional [KSerializer] to be used for serializing and deserializing configurations.
  * If `null` then the navigation state will not be preserved.
@@ -60,6 +62,8 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childSlot(
 /**
  * Initializes and manages a slot for one child component.
  * The child component can be either active or dismissed (destroyed).
+ *
+ * **It is strongly recommended to call this method on the Main thread.**
  *
  * @param source a source of navigation events.
  * @param key a key of the slot, must be unique within the parent (hosting) component.
