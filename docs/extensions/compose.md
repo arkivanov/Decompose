@@ -672,7 +672,7 @@ actual fun <C : Any, T : Any> backAnimation(
 ): StackAnimation<C, T> =
     predictiveBackAnimation(
         backHandler = backHandler,
-        animation = stackAnimation(fade()),
+        fallbackAnimation = stackAnimation(fade()),
         onBack = onBack,
     )
 ```
@@ -699,7 +699,7 @@ actual fun <C : Any, T : Any> backAnimation(
 ): StackAnimation<C, T> =
     predictiveBackAnimation(
         backHandler = backHandler,
-        animation = stackAnimation(iosLikeSlide()),
+        fallbackAnimation = stackAnimation(iosLikeSlide()),
         selector = { initialBackEvent, _, _ ->
             predictiveBackAnimatable(
                 initialBackEvent = initialBackEvent,
