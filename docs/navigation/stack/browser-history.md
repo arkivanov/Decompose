@@ -1,7 +1,7 @@
 # Web browser history
 
 By default `Child Stack` navigation does not affect URLs in the browser address bar. But sometimes it is necessary to have different URLs for
-different `Child Stack` destinations. For this purpose Decompose provides an **experimental** API - [WebHistoryController](https://github.com/arkivanov/Decompose/blob/master/decompose/src/jsMain/kotlin/com/arkivanov/decompose/router/stack/webhistory/DefaultWebHistoryController.kt).
+different `Child Stack` destinations. For this purpose Decompose provides an **experimental** API - [WebHistoryController](https://github.com/arkivanov/Decompose/blob/master/decompose/src/webMain/kotlin/com/arkivanov/decompose/router/stack/webhistory/DefaultWebHistoryController.kt).
 
 The controller listens for the `Child Stack` state changes and updates the browser URL and the history accordingly:
 
