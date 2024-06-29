@@ -54,6 +54,10 @@ Additional resources:
 * State preservation (automatically on Android, manually on all other targets via `kotlinx-serialization`)
 * Instances retaining (aka ViewModels) over configuration changes (mostly useful in Android)
 
+### Meme time!
+
+<img src="docs/media/DecomposeMeme.png" width="512">
+
 ## Setup
 
 Please check the [Installation](https://arkivanov.github.io/Decompose/getting-started/installation/) section of the documentation.
