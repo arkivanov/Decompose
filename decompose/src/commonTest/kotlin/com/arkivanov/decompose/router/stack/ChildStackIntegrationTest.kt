@@ -1,6 +1,7 @@
 package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.DecomposeExperimentFlags
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.consume
 import com.arkivanov.decompose.register
@@ -16,6 +17,7 @@ import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
 import kotlinx.serialization.Serializable
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -46,13 +48,18 @@ class ChildStackIntegrationTest {
         lifecycle.resume()
     }
 
+    @AfterTest
+    fun after() {
+        DecomposeExperimentFlags.duplicateConfigurationsEnabled = false
+    }
+
     @Test
     fun GIVEN_one_child_in_stack_WHEN_push_one_child_THEN_two_children_in_stack() {
         val stack by context.childStack(initialStack = listOf(Config(1)))
 
         navigation.push(Config(2))
 
-        stack.assertStack(1 to 1, 2 to 2)
+        stack.assertStack(1, 2)
     }
 
     @Test
@@ -63,7 +70,7 @@ class ChildStackIntegrationTest {
         navigation.push(Config(3))
         navigation.pop()
 
-        stack.assertStack(1 to 1, 2 to 2)
+        stack.assertStack(1, 2)
     }
 
     @Test
@@ -72,7 +79,7 @@ class ChildStackIntegrationTest {
 
         navigation.pop()
 
-        stack.assertStack(1 to 1, 2 to 2)
+        stack.assertStack(1, 2)
     }
 
     @Test
@@ -83,7 +90,7 @@ class ChildStackIntegrationTest {
         navigation.push(Config(3))
         backDispatcher.back()
 
-        stack.assertStack(1 to 1, 2 to 2)
+        stack.assertStack(1, 2)
     }
 
     @Test
@@ -92,7 +99,7 @@ class ChildStackIntegrationTest {
 
         backDispatcher.back()
 
-        stack.assertStack(1 to 1, 2 to 2)
+        stack.assertStack(1, 2)
     }
 
     @Test
@@ -101,7 +108,7 @@ class ChildStackIntegrationTest {
 
         navigation.replaceCurrent(Config(3))
 
-        stack.assertStack(1 to 1, 3 to 3)
+        stack.assertStack(1, 3)
     }
 
     @Test
@@ -110,7 +117,7 @@ class ChildStackIntegrationTest {
 
         navigation.navigate { it.reversed() }
 
-        stack.assertStack(3 to 3, 2 to 2, 1 to 1)
+        stack.assertStack(3, 2, 1)
     }
 
     @Test
@@ -121,7 +128,7 @@ class ChildStackIntegrationTest {
 
         navigation.navigate { it.reversed() }
 
-        stack.assertStack(3 to 3, 2 to 2, 1 to 1)
+        stack.assertStack(3, 2, 1)
     }
 
     @Test
@@ -142,8 +149,8 @@ class ChildStackIntegrationTest {
 
         backDispatcher.back()
 
-        stack.assertStack(1 to 1, 2 to 2)
-        stack.active.instance.stack.assertStack(1 to 1)
+        stack.assertStack(1, 2)
+        stack.active.instance.stack.assertStack(1)
     }
 
     @Test
@@ -165,7 +172,7 @@ class ChildStackIntegrationTest {
 
         backDispatcher.back()
 
-        stack.assertStack(1 to 1)
+        stack.assertStack(1)
     }
 
     @Test
@@ -186,7 +193,7 @@ class ChildStackIntegrationTest {
 
         backDispatcher.back()
 
-        stack.assertStack(1 to 1, 2 to 2)
+        stack.assertStack(1, 2)
     }
 
     @Test
@@ -207,7 +214,7 @@ class ChildStackIntegrationTest {
 
         backDispatcher.back()
 
-        stack.assertStack(1 to 1)
+        stack.assertStack(1)
     }
 
     @Test
@@ -221,7 +228,7 @@ class ChildStackIntegrationTest {
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
         val newStack by newContext.childStack()
 
-        newStack.assertStack(1 to 1, 2 to 2)
+        newStack.assertStack(1, 2)
     }
 
     @Test
@@ -235,7 +242,7 @@ class ChildStackIntegrationTest {
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
         val newStack by newContext.childStack(initialStack = listOf(Config(1)))
 
-        newStack.assertStack(1 to 1)
+        newStack.assertStack(1)
     }
 
     @Test
@@ -411,6 +418,28 @@ class ChildStackIntegrationTest {
         assertFalse(instance.isDestroyed)
     }
 
+    @Test
+    fun WHEN_push_duplicated_children_THEN_stack_contains_duplicated_children() {
+        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        val stack by context.childStack(initialStack = listOf(Config(1), Config(2), Config(3)))
+
+        navigation.push(Config(1))
+        navigation.push(Config(2))
+
+        stack.assertStack(1, 2, 3, 1, 2)
+    }
+
+    @Test
+    fun GIVEN_stack_with_duplicated_children_WHEN_remove_duplicated_children_THEN_stack_contains_unique_children() {
+        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        val stack by context.childStack(initialStack = listOf(Config(1), Config(2), Config(3), Config(1), Config(2)))
+
+        navigation.pop()
+        navigation.pop()
+
+        stack.assertStack(1, 2, 3)
+    }
+
     private fun ComponentContext.childStack(
         initialStack: List<Config> = emptyList(),
         persistent: Boolean = true,
@@ -426,8 +455,8 @@ class ChildStackIntegrationTest {
     private val ChildStack<Config, Component>.children: List<Pair<Int, Int>>
         get() = items.map { child -> child.configuration.id to child.instance.id }
 
-    private fun ChildStack<Config, Component>.assertStack(vararg children: Pair<Int, Int>) {
-        assertEquals(children.toList(), this.children)
+    private fun ChildStack<Config, Component>.assertStack(vararg children: Int) {
+        assertEquals(children.map { it to it }, this.children)
         assertEquals(Lifecycle.State.RESUMED, active.instance.lifecycle.state)
 
         assertEquals(

@@ -33,7 +33,7 @@ fun <C : Any, T : Any> Pages(
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     pager: Pager = defaultHorizontalPager(),
-    key: (Child<C, T>) -> Any = { it.configuration.hashString() },
+    key: (Child<C, T>) -> Any = { it.key.hashString() },
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
     val state by pages.subscribeAsState()
@@ -61,7 +61,7 @@ fun <C : Any, T : Any> Pages(
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     pager: Pager = defaultHorizontalPager(),
-    key: (Child<C, T>) -> Any = { it.configuration.hashString() },
+    key: (Child<C, T>) -> Any = { it.key.hashString() },
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
     val selectedIndex = pages.selectedIndex
@@ -95,7 +95,7 @@ fun <C : Any, T : Any> Pages(
     ) { pageIndex ->
         val item = pages.items[pageIndex]
 
-        val pageRef = remember(item.configuration) { Ref(item.instance) }
+        val pageRef = remember(item.key) { Ref(item.instance) }
         if (item.instance != null) {
             pageRef.value = item.instance
         }

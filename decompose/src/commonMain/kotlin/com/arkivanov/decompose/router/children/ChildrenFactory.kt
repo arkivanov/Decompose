@@ -91,7 +91,8 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState
  * The navigation state is not saved if `null` is returned.
  * @param restoreState a function that restores the navigation state from the provided [SerializableContainer].
  * If `null` is returned then [initialState] is used instead.
- * The restored navigation state must have the same amount of child configurations and in the same order.
+ * The restored navigation state must have the same amount of child configurations and in the same order,
+ * otherwise the behaviour is undefined.
  * The restored child [Statuses][ChildNavState.Status] can be any, e.g. a previously active child may become
  * destroyed, etc.
  * @param navTransformer a function that transforms the current navigation state to a new one using the provided

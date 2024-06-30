@@ -10,3 +10,14 @@ fun Any.hashString(): String =
 internal expect val KClass<*>.uniqueName: String?
 
 internal val Lifecycle.isDestroyed: Boolean get() = state == Lifecycle.State.DESTROYED
+
+internal fun <T : Any, C : Any> List<T>.keyed(configuration: (T) -> C): Map<Any, T> {
+    val numbers = HashMap<C, Int>()
+
+    return associateBy { item ->
+        val config = configuration(item)
+        val number = (numbers[config] ?: 0) + 1
+        numbers[config] = number
+        config to number
+    }
+}

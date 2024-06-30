@@ -10,8 +10,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 
+@OptIn(ExperimentalDecomposeApi::class)
 internal abstract class AbstractStackAnimation<C : Any, T : Any>(
     private val disableInputDuringAnimation: Boolean,
 ) : StackAnimation<C, T> {
@@ -28,22 +30,22 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
         var currentStack by remember { mutableStateOf(stack) }
         var items by remember { mutableStateOf(getAnimationItems(newStack = currentStack, oldStack = null)) }
 
-        if (stack.active.configuration != currentStack.active.configuration) {
+        if (stack.active.key != currentStack.active.key) {
             val oldStack = currentStack
             currentStack = stack
             items = getAnimationItems(newStack = currentStack, oldStack = oldStack)
         }
 
         Box(modifier = modifier) {
-            items.forEach { (configuration, item) ->
-                key(configuration) {
+            items.forEach { (key, item) ->
+                key(key) {
                     Child(
                         item = item,
                         onFinished = {
                             if (item.direction.isExit) {
-                                items -= configuration
+                                items -= key
                             } else {
-                                items += (configuration to item.copy(otherChild = null))
+                                items += (key to item.copy(otherChild = null))
                             }
                         },
                         content = content,
@@ -73,12 +75,12 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
         )
     }
 
-    private fun getAnimationItems(newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>?): Map<C, AnimationItem<C, T>> =
+    private fun getAnimationItems(newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>?): Map<Any, AnimationItem<C, T>> =
         when {
             oldStack == null ->
                 listOf(AnimationItem(child = newStack.active, direction = Direction.ENTER_FRONT, isInitial = true))
 
-            (newStack.size < oldStack.size) && (newStack.active.configuration in oldStack.backStack) ->
+            (newStack.size < oldStack.size) && (newStack.active.key in oldStack.backStack) ->
                 listOf(
                     AnimationItem(child = newStack.active, direction = Direction.ENTER_BACK, otherChild = oldStack.active),
                     AnimationItem(child = oldStack.active, direction = Direction.EXIT_FRONT, otherChild = newStack.active),
@@ -89,13 +91,13 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
                     AnimationItem(child = oldStack.active, direction = Direction.EXIT_BACK, otherChild = newStack.active),
                     AnimationItem(child = newStack.active, direction = Direction.ENTER_FRONT, otherChild = oldStack.active),
                 )
-        }.associateBy { it.child.configuration }
+        }.associateBy { it.child.key }
 
     private val ChildStack<*, *>.size: Int
         get() = items.size
 
-    private operator fun <C : Any> Iterable<Child<C, *>>.contains(config: C): Boolean =
-        any { it.configuration == config }
+    private operator fun <C : Any> Iterable<Child<C, *>>.contains(key: Any): Boolean =
+        any { it.key == key }
 
     protected data class AnimationItem<out C : Any, out T : Any>(
         val child: Child.Created<C, T>,

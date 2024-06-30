@@ -109,14 +109,14 @@ class StackRouterView @JvmOverloads constructor(
         @Suppress("UNCHECKED_CAST")
         val currentChild = currentChild as ActiveChild<C, T>?
 
-        if (currentChild?.child?.configuration == activeChild.configuration) {
+        if (currentChild?.child?.key == activeChild.key) {
             return
         }
 
         val currentChildView = currentChild?.let { findChildView(it.key) }
 
-        if ((currentChildView != null) && stack.backStack.any { it.configuration == currentChild.child.configuration }) {
-            inactiveChildren[currentChild.key] = InactiveChild(currentChild.child.configuration, currentChildView.saveHierarchyState())
+        if ((currentChildView != null) && stack.backStack.any { it.key == currentChild.child.key }) {
+            inactiveChildren[currentChild.key] = InactiveChild(currentChild.child.key, currentChildView.saveHierarchyState())
         }
         currentChild?.lifecycle?.destroy()
 
@@ -126,7 +126,7 @@ class StackRouterView @JvmOverloads constructor(
 
         val newChildView = findNewChildView()
 
-        val activeChildKey = activeChild.configuration.hashString()
+        val activeChildKey = activeChild.key.hashString()
 
         newChildView.key = activeChildKey
 
@@ -148,7 +148,7 @@ class StackRouterView @JvmOverloads constructor(
         this.currentChild = ActiveChild(activeChildKey, activeChild, childViewLifecycle)
 
         inactiveChildren.values.removeAll { child ->
-            stack.backStack.none { it.configuration === child.configuration }
+            stack.backStack.none { it.key == child.key }
         }
     }
 
@@ -165,7 +165,7 @@ class StackRouterView @JvmOverloads constructor(
     )
 
     private class InactiveChild(
-        val configuration: Any,
+        val key: Any,
         val savedState: SparseArray<Parcelable>
     )
 

@@ -65,6 +65,21 @@ class DefaultWebHistoryControllerTest {
     }
 
     @Test
+    fun WHEN_router_push_same_config_THEN_url_pushed_to_history() {
+        if (isNodeJs()) {
+            return
+        }
+
+        val router = TestStackRouter(listOf(Config(0)))
+        attach(router)
+
+        router.push(Config(0))
+        window.runPendingOperations()
+
+        assertStack(listOf("/0", "/0"))
+    }
+
+    @Test
     fun GIVEN_router_with_initial_stack_of_two_configs_WHEN_router_pop_THEN_history_changed_to_previous_page() {
         if (isNodeJs()) {
             return
@@ -77,6 +92,21 @@ class DefaultWebHistoryControllerTest {
         window.runPendingOperations()
 
         history.assertStack(listOf("/0", "/1"), 0)
+    }
+
+    @Test
+    fun GIVEN_router_with_initial_stack_of_two_same_configs_WHEN_router_pop_THEN_history_changed_to_previous_page() {
+        if (isNodeJs()) {
+            return
+        }
+
+        val router = TestStackRouter(listOf(Config(0), Config(0)))
+        attach(router)
+
+        router.pop()
+        window.runPendingOperations()
+
+        history.assertStack(listOf("/0", "/0"), 0)
     }
 
     @Test
@@ -94,6 +124,23 @@ class DefaultWebHistoryControllerTest {
         window.runPendingOperations()
 
         assertStack(listOf("/0", "/1"), 0)
+    }
+
+    @Test
+    fun GIVEN_router_push_same_config_WHEN_router_pop_THEN_history_changed_to_previous_page() {
+        if (isNodeJs()) {
+            return
+        }
+
+        val router = TestStackRouter(listOf(Config(0)))
+        attach(router)
+        router.push(Config(0))
+        window.runPendingOperations()
+
+        router.pop()
+        window.runPendingOperations()
+
+        assertStack(listOf("/0", "/0"), 0)
     }
 
     @Test
