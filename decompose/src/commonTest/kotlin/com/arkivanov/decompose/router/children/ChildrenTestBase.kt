@@ -2,6 +2,7 @@ package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.DecomposeExperimentFlags
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.decompose.value.Value
@@ -12,6 +13,7 @@ import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.consumeRequired
 import kotlinx.serialization.Serializable
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.assertContentEquals
 
@@ -32,6 +34,11 @@ open class ChildrenTestBase {
     @BeforeTest
     fun before() {
         lifecycle.resume()
+    }
+
+    @AfterTest
+    fun after() {
+        DecomposeExperimentFlags.duplicateConfigurationsEnabled = false
     }
 
     protected fun ComponentContext.children(
@@ -106,6 +113,9 @@ open class ChildrenTestBase {
 
     protected fun Child<*, Component>.requireInstance(): Component =
         requireNotNull(instance)
+
+    protected fun List<Child<Int, Component>>.instances(): List<Component?> =
+        map { it.instance }
 
     protected data class TestNavState(
         override val children: List<SimpleChildNavState<Int>> = emptyList(),

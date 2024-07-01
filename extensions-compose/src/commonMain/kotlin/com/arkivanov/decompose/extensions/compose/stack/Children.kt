@@ -7,6 +7,7 @@ import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.animation.LocalStackAnimationProvider
 import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.animation.emptyStackAnimation
@@ -15,6 +16,7 @@ import com.arkivanov.decompose.hashString
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun <C : Any, T : Any> Children(
     stack: ChildStack<C, T>,
@@ -24,13 +26,13 @@ fun <C : Any, T : Any> Children(
 ) {
     val holder = rememberSaveableStateHolder()
 
-    holder.retainStates(stack.getConfigurations())
+    holder.retainStates(stack.getKeys())
 
     val animationProvider = LocalStackAnimationProvider.current
     val anim = animation ?: remember(animationProvider, animationProvider::provide) ?: emptyStackAnimation()
 
     anim(stack = stack, modifier = modifier) { child ->
-        holder.SaveableStateProvider(child.configuration.hashString()) {
+        holder.SaveableStateProvider(child.key.hashString()) {
             content(child)
         }
     }
@@ -53,11 +55,12 @@ fun <C : Any, T : Any> Children(
     )
 }
 
-private fun ChildStack<*, *>.getConfigurations(): Set<String> =
-    items.mapTo(HashSet()) { it.configuration.hashString() }
+@OptIn(ExperimentalDecomposeApi::class)
+private fun ChildStack<*, *>.getKeys(): Set<String> =
+    items.mapTo(HashSet()) { it.key.hashString() }
 
 @Composable
-private fun SaveableStateHolder.retainStates(currentKeys: Set<Any>) {
+private fun SaveableStateHolder.retainStates(currentKeys: Set<String>) {
     val keys = remember(this) { Keys(currentKeys) }
 
     DisposableEffect(this, currentKeys) {

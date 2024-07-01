@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.router.children
 
+import com.arkivanov.decompose.DecomposeExperimentFlags
 import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
@@ -279,5 +280,49 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
         assertEquals(Lifecycle.State.DESTROYED, component2.lifecycle.state)
         assertEquals(Lifecycle.State.DESTROYED, component3.lifecycle.state)
         assertEquals(Lifecycle.State.DESTROYED, component4.lifecycle.state)
+    }
+
+    @Test
+    fun GIVEN_first_and_last_children_duplicated_WHEN_last_child_removed_THEN_last_child_destroyed() {
+        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        val children by context.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
+        val child = children.last().requireInstance()
+
+        navigate { it.dropLast(1) }
+
+        assertEquals(Lifecycle.State.DESTROYED, child.lifecycle.state)
+    }
+
+    @Test
+    fun GIVEN_first_and_last_children_duplicated_first_child_created_WHEN_last_child_removed_THEN_first_child_created() {
+        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        val children by context.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
+        val child = children.first().requireInstance()
+
+        navigate { it.dropLast(1) }
+
+        assertEquals(Lifecycle.State.CREATED, child.lifecycle.state)
+    }
+
+    @Test
+    fun GIVEN_first_and_last_children_duplicated_WHEN_first_child_removed_THEN_last_child_destroyed() {
+        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        val children by context.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
+        val child = children.last().requireInstance()
+
+        navigate { it.drop(1) }
+
+        assertEquals(Lifecycle.State.DESTROYED, child.lifecycle.state)
+    }
+
+    @Test
+    fun GIVEN_first_and_last_children_duplicated_and_last_child_resumed_WHEN_first_child_removed_THEN_first_child_resumed() {
+        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        val children by context.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
+        val child = children.first().requireInstance()
+
+        navigate { it.drop(1) }
+
+        assertEquals(Lifecycle.State.RESUMED, child.lifecycle.state)
     }
 }

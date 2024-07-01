@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.router.children
 
+import com.arkivanov.decompose.DecomposeExperimentFlags
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.consume
 import com.arkivanov.decompose.register
@@ -550,5 +551,43 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
         val restoredState2 = newChildren2.getByConfig(config = 2).requireInstance().stateKeeper.consume<Int>(key = "key")
 
         assertEquals(31, restoredState2)
+    }
+
+    @Test
+    fun GIVEN_first_and_last_children_duplicated_WHEN_recreated_THEN_states_restored() {
+        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        val oldStateKeeper = TestStateKeeperDispatcher()
+        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
+        val oldChildren by oldContext.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
+        oldChildren.first().requireInstance().stateKeeper.register("key") { 10 }
+        oldChildren.last().requireInstance().stateKeeper.register("key") { 30 }
+
+        val savedState = oldStateKeeper.save()
+        val newStateKeeper = TestStateKeeperDispatcher(savedState)
+        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
+        val newChildren by newContext.children()
+
+        val restoredState1 = newChildren.first().requireInstance().stateKeeper.consume<Int>("key")
+        val restoredState3 = newChildren.last().requireInstance().stateKeeper.consume<Int>("key")
+
+        assertEquals(10, restoredState1)
+        assertEquals(30, restoredState3)
+    }
+
+    @Test
+    fun GIVEN_first_and_last_children_duplicated_WHEN_children_recreated_THEN_states_restored() {
+        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        val children by context.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
+        children.first().requireInstance().stateKeeper.register("key") { 10 }
+        children.last().requireInstance().stateKeeper.register("key") { 30 }
+
+        navigate { listOf(1 by DESTROYED, 2 by STARTED, 1 by DESTROYED) }
+        navigate { listOf(1 by CREATED, 2 by STARTED, 1 by RESUMED) }
+
+        val restoredState1 = children.first().requireInstance().stateKeeper.consume<Int>("key")
+        val restoredState3 = children.last().requireInstance().stateKeeper.consume<Int>("key")
+
+        assertEquals(10, restoredState1)
+        assertEquals(30, restoredState3)
     }
 }
