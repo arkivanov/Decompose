@@ -16,7 +16,7 @@ import com.arkivanov.decompose.extensions.android.DefaultViewContext
 import com.arkivanov.decompose.extensions.android.R
 import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.forEachChild
-import com.arkivanov.decompose.hashString
+import com.arkivanov.decompose.keyHashString
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
@@ -99,7 +99,7 @@ class StackRouterView @JvmOverloads constructor(
     private fun <C : Any, T : Any> onStackChanged(
         stack: ChildStack<C, T>,
         lifecycle: Lifecycle,
-        replaceChildView:  ViewContext.(parent: ViewGroup, newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>?) -> Unit,
+        replaceChildView: ViewContext.(parent: ViewGroup, newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>?) -> Unit,
     ) {
         val activeChild = stack.active
 
@@ -126,7 +126,7 @@ class StackRouterView @JvmOverloads constructor(
 
         val newChildView = findNewChildView()
 
-        val activeChildKey = activeChild.key.hashString()
+        val activeChildKey = activeChild.keyHashString()
 
         newChildView.key = activeChildKey
 

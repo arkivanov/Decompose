@@ -9,7 +9,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -17,7 +16,7 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.Ref
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.arkivanov.decompose.hashString
+import com.arkivanov.decompose.keyHashString
 import com.arkivanov.decompose.router.pages.ChildPages
 import com.arkivanov.decompose.value.Value
 
@@ -33,7 +32,7 @@ fun <C : Any, T : Any> Pages(
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     pager: Pager = defaultHorizontalPager(),
-    key: (Child<C, T>) -> Any = { it.key.hashString() },
+    key: (Child<C, T>) -> Any = Child<*, *>::keyHashString,
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
     val state by pages.subscribeAsState()
@@ -61,7 +60,7 @@ fun <C : Any, T : Any> Pages(
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     pager: Pager = defaultHorizontalPager(),
-    key: (Child<C, T>) -> Any = { it.key.hashString() },
+    key: (Child<C, T>) -> Any = Child<*, *>::keyHashString,
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
     val selectedIndex = pages.selectedIndex
