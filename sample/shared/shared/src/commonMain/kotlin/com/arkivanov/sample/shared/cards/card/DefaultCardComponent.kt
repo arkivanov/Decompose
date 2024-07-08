@@ -4,9 +4,12 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
+import com.arkivanov.essenty.instancekeeper.ExperimentalInstanceKeeperApi
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import com.arkivanov.essenty.instancekeeper.getOrCreate
+import com.arkivanov.essenty.instancekeeper.retainedInstance
 import com.arkivanov.essenty.lifecycle.subscribe
+import com.arkivanov.essenty.statekeeper.ExperimentalStateKeeperApi
+import com.arkivanov.essenty.statekeeper.saveable
 import com.arkivanov.sample.shared.cards.card.CardComponent.Model
 import com.badoo.reaktive.disposable.Disposable
 import com.badoo.reaktive.disposable.scope.DisposableScope
@@ -16,7 +19,7 @@ import com.badoo.reaktive.scheduler.Scheduler
 import com.badoo.reaktive.scheduler.mainScheduler
 import com.badoo.reaktive.subject.behavior.BehaviorObservable
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
 
 class DefaultCardComponent(
     componentContext: ComponentContext,
@@ -25,20 +28,17 @@ class DefaultCardComponent(
     tickScheduler: Scheduler = mainScheduler,
 ) : CardComponent, ComponentContext by componentContext, DisposableScope by DisposableScope() {
 
-    private val handler =
-        instanceKeeper.getOrCreate {
-            Handler(
-                initialCount = stateKeeper.consume(key = KEY_SAVED_STATE, strategy = SavedState.serializer())?.count ?: 0,
-                tickScheduler = tickScheduler,
-            )
+    @OptIn(ExperimentalStateKeeperApi::class, ExperimentalInstanceKeeperApi::class)
+    private val handler: Handler by saveable(serializer = Int.serializer(), state = { it.count.value }) { savedState ->
+        retainedInstance {
+            Handler(initialCount = savedState ?: 0, tickScheduler = tickScheduler)
         }
+    }
 
     private val _model = MutableValue(Model(color = color, title = number.toString()))
     override val model: Value<Model> = _model
 
     init {
-        stateKeeper.register(key = KEY_SAVED_STATE, strategy = SavedState.serializer()) { SavedState(count = handler.count.value) }
-
         handler.count.subscribeScoped { count ->
             _model.update { it.copy(text = "Count: $count") }
         }
@@ -60,10 +60,6 @@ class DefaultCardComponent(
 
     private fun setStatus(status: String) {
         _model.update { it.copy(status = "Status: $status") }
-    }
-
-    private companion object {
-        const val KEY_SAVED_STATE: String = "SAVED_STATE"
     }
 
     private class Handler(
@@ -89,7 +85,4 @@ class DefaultCardComponent(
             stop()
         }
     }
-
-    @Serializable
-    private class SavedState(val count: Int)
 }
