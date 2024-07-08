@@ -15,12 +15,39 @@ class SomeComponent(
     componentContext: ComponentContext
 ) : ComponentContext by componentContext {
 
-    private val someLogic = instanceKeeper.getOrCreate(::SomeLogic)
+    private val someLogic = instanceKeeper.getOrCreate { SomeLogic() }
 
     /*
      * Instances of this class will be retained (not destroyed on configuration changes).
      * This is equivalent to AndroidX ViewModel.
      * ⚠️ Pay attention to not leak any dependencies, 
+     * e.g. don't make this class `inner`, and don't pass dependencies like Activity Context into it.
+     */
+    private class SomeLogic : InstanceKeeper.Instance {
+        override fun onDestroy() {
+            // Clean-up
+        }
+    }
+}
+```
+
+## Usage example (experimental since version 3.2.0-alpha02)
+
+```kotlin
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.instancekeeper.retainedInstance
+
+class SomeComponent(
+    componentContext: ComponentContext
+) : ComponentContext by componentContext {
+
+    private val someLogic = retainedInstance { SomeLogic() }
+
+    /*
+     * Instances of this class will be retained (not destroyed on configuration changes).
+     * This is equivalent to AndroidX ViewModel.
+     * ⚠️ Pay attention to not leak any dependencies,
      * e.g. don't make this class `inner`, and don't pass dependencies like Activity Context into it.
      */
     private class SomeLogic : InstanceKeeper.Instance {

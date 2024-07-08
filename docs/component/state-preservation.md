@@ -12,9 +12,7 @@ Decompose relies on [kotlinx-serialization](https://github.com/Kotlin/kotlinx.se
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.serialization.Serializable
 
-class SomeComponent(
-    componentContext: ComponentContext
-) : ComponentContext by componentContext {
+class SomeComponent(componentContext: ComponentContext) : ComponentContext by componentContext {
 
     // Either restore the previously saved state or create a new (initial) one
     private var state: State = stateKeeper.consume(key = "SAVED_STATE", strategy = State.serializer()) ?: State()
@@ -34,42 +32,67 @@ class SomeComponent(
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
-import com.arkivanov.essenty.statekeeper.SerializableContainer
+import com.arkivanov.sample.shared.SomeStatefulEntity.State
 import kotlinx.serialization.Serializable
 
-class SomeComponent(
-    componentContext: ComponentContext
-) : ComponentContext by componentContext {
-
+class SomeComponent(componentContext: ComponentContext) : ComponentContext by componentContext {
     private val statefulEntity =
         instanceKeeper.getOrCreate {
-            SomeStatefulEntity(savedState = stateKeeper.consume(key = "SAVED_STATE", strategy = SerializableContainer.serializer()))
+            SomeStatefulEntity(savedState = stateKeeper.consume(key = "SAVED_STATE", strategy = State.serializer()))
         }
 
     init {
-        stateKeeper.register(
-            key = "SAVED_STATE",
-            strategy = SerializableContainer.serializer(),
-            supplier = statefulEntity::saveState,
-        )
+        stateKeeper.register(key = "SAVED_STATE", strategy = State.serializer(), supplier = statefulEntity::state)
     }
 }
 
-class SomeStatefulEntity(
-    savedState: SerializableContainer?,
-) : InstanceKeeper.Instance {
-
-    var state: State = savedState?.consume(strategy = State.serializer()) ?: State()
+class SomeStatefulEntity(savedState: State?) : InstanceKeeper.Instance {
+    var state: State = savedState ?: State()
         private set
-
-    fun saveState(): SerializableContainer =
-        SerializableContainer(value = state, strategy = State.serializer())
-
-    override fun onDestroy() {}
 
     @Serializable
     data class State(val someValue: Int = 0)
-} 
+}
+```
+
+## Usage examples (experimental since version 3.2.0-alpha02)
+
+```kotlin title="Saving state in a component"
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.essenty.statekeeper.saveable
+import kotlinx.serialization.Serializable
+
+class SomeComponent(componentContext: ComponentContext) : ComponentContext by componentContext {
+    private var state: State by saveable(serializer = State.serializer(), init = ::State)
+
+    @Serializable // Comes from kotlinx-serialization
+    private class State(val someValue: Int = 0)
+}
+```
+
+```kotlin title="Saving state of a retained instance"
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.instancekeeper.retainedInstance
+import com.arkivanov.essenty.statekeeper.saveable
+import com.arkivanov.sample.shared.SomeStatefulEntity.State
+import kotlinx.serialization.Serializable
+
+class SomeComponent(componentContext: ComponentContext) : ComponentContext by componentContext {
+    private val statefulEntity by saveable(serializer = State.serializer(), state = { it.state }) { savedState ->
+        retainedInstance {
+            SomeStatefulEntity(savedState = savedState)
+        }
+    }
+}
+
+class SomeStatefulEntity(savedState: State?) : InstanceKeeper.Instance {
+    var state: State = savedState ?: State()
+        private set
+
+    @Serializable
+    data class State(val someValue: Int = 0)
+}
 ```
 
 ## Saving state on non-Android targets
