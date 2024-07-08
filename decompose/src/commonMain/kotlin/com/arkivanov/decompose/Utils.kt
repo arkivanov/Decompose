@@ -7,6 +7,10 @@ import kotlin.reflect.KClass
 fun Any.hashString(): String =
     "${this::class.uniqueName ?: this::class.simpleName}_${hashCode().toString(radix = 36)}"
 
+@InternalDecomposeApi
+fun Child<*, *>.keyHashString(): String =
+    "${configuration::class.uniqueName ?: configuration::class.simpleName}_${key.hashCode().toString(radix = 36)}"
+
 internal expect val KClass<*>.uniqueName: String?
 
 internal val Lifecycle.isDestroyed: Boolean get() = state == Lifecycle.State.DESTROYED
