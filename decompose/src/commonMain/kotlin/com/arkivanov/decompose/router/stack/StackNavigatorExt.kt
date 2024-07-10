@@ -151,7 +151,8 @@ inline fun <C : Any> StackNavigator<C>.replaceCurrent(configuration: C, crossinl
 }
 
 /**
- * Replaces the whole stack with the provided [configurations].
+ * Replaces all configurations currently in the stack with the provided [configurations].
+ * Components that remain in the stack are not recreated, components that are no longer in the stack are destroyed.
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
