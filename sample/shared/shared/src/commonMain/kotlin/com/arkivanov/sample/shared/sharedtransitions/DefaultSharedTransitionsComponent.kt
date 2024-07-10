@@ -50,6 +50,10 @@ class DefaultSharedTransitionsComponent(
                 )
         }
 
+    override fun onBack() {
+        nav.pop()
+    }
+
     @Serializable
     private sealed interface Config {
         @Serializable

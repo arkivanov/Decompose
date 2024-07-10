@@ -1,12 +1,13 @@
-package com.arkivanov.decompose.extensions.compose.stack.animation
+package com.arkivanov.decompose.extensions.compose.experimental.stack.animation
 
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.stack.animation.Direction
 import com.arkivanov.decompose.extensions.compose.stack.animation.Direction.ENTER_BACK
 import com.arkivanov.decompose.extensions.compose.stack.animation.Direction.ENTER_FRONT
 import com.arkivanov.decompose.extensions.compose.stack.animation.Direction.EXIT_BACK
@@ -18,6 +19,7 @@ import org.junit.runners.Parameterized
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(ExperimentalDecomposeApi::class)
 @RunWith(Parameterized::class)
 class StackAnimationDirectionsTest(
     private val params: Params,
@@ -31,17 +33,13 @@ class StackAnimationDirectionsTest(
         val results = HashMap<String, Direction>()
 
         val animation =
-            SimpleStackAnimation<String, String>(
+            DefaultStackAnimation<String, String>(
                 disableInputDuringAnimation = false,
-                selector = { child ->
-                    StackAnimator { direction, isInitial, onFinished, content ->
+                predictiveBackParams = null,
+                selector = { child, _, _ ->
+                    StackAnimator { direction ->
                         results[child.configuration] = direction
-                        content(Modifier)
-
-                        DisposableEffect(direction, isInitial) {
-                            onFinished()
-                            onDispose {}
-                        }
+                        Modifier
                     }
                 },
             )
@@ -93,9 +91,9 @@ class StackAnimationDirectionsTest(
                 Params(from = listOf("a", "b", "c"), to = listOf("a", "d"), expected = mapOf("d" to ENTER_FRONT, "c" to EXIT_BACK)),
                 Params(from = listOf("a", "b"), to = listOf("c", "d"), expected = mapOf("d" to ENTER_FRONT, "b" to EXIT_BACK)),
                 Params(from = listOf("a", "b"), to = listOf("b", "a"), expected = mapOf("a" to ENTER_FRONT, "b" to EXIT_BACK)),
-                Params(from = listOf("a", "b"), to = listOf("b"), expected = mapOf("b" to ENTER_FRONT)),
-                Params(from = listOf("a", "b"), to = listOf("c", "b"), expected = mapOf("b" to ENTER_FRONT)),
-                Params(from = listOf("b", "c"), to = listOf("a", "b", "c"), expected = mapOf("c" to ENTER_FRONT)),
+                Params(from = listOf("a", "b"), to = listOf("b"), expected = emptyMap()),
+                Params(from = listOf("a", "b"), to = listOf("c", "b"), expected = emptyMap()),
+                Params(from = listOf("b", "c"), to = listOf("a", "b", "c"), expected = emptyMap()),
             )
     }
 

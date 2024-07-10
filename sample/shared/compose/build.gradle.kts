@@ -58,6 +58,7 @@ kotlin {
         common.main.dependencies {
             api(project(":decompose"))
             implementation(project(":extensions-compose"))
+            implementation(project(":extensions-compose-experimental")) // Only for the experimental shared transitions
             api(project(":sample:shared:shared"))
             implementation(project(":sample:shared:dynamic-features:api"))
             implementation(project(":sample:shared:dynamic-features:compose-api"))
@@ -66,9 +67,6 @@ kotlin {
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
-
-            // Required due to https://github.com/JetBrains/compose-multiplatform/issues/4326
-            api(deps.jetbrains.kotlinx.kotlinxCoroutinesCore)
         }
 
         jvm.main.dependencies {
