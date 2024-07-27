@@ -88,6 +88,9 @@ public final class com/arkivanov/decompose/DefaultComponentContextBuilderKt {
 	public static synthetic fun defaultComponentContext$default (Landroidx/savedstate/SavedStateRegistryOwner;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/arkivanov/decompose/DefaultComponentContext;
 }
 
+public abstract interface annotation class com/arkivanov/decompose/DelicateDecomposeApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class com/arkivanov/decompose/ExperimentalDecomposeApi : java/lang/annotation/Annotation {
 }
 

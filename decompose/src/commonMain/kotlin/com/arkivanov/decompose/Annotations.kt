@@ -22,3 +22,11 @@ annotation class ExperimentalDecomposeApi
 @RequiresOptIn(level = RequiresOptIn.Level.WARNING)
 @Retention(AnnotationRetention.BINARY)
 annotation class FaultyDecomposeApi
+
+/**
+ * Marks delicate Decompose API that requires special attention when used.
+ * See the docs of the annotated API for more information.
+ */
+@RequiresOptIn(level = RequiresOptIn.Level.WARNING)
+@Retention(AnnotationRetention.BINARY)
+annotation class DelicateDecomposeApi

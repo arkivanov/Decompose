@@ -30,7 +30,7 @@ There are `StackNavigator` [extension functions](https://github.com/arkivanov/De
 
 ### push(configuration)
 
-Pushes the provided `Configuration` at the top of the stack. Decompose will throw an exception if the provided `Configuration` is already present in the stack.
+Pushes the provided `Configuration` at the top of the stack. Decompose will throw an exception if the provided `Configuration` is already present in the stack. This usually happens when a component is pushed on user interaction (e.g. a button click). Consider using [pushNew](#pushnewconfiguration) instead.
 
 !!! note "Illustration"
 

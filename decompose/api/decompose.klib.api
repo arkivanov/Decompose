@@ -250,6 +250,9 @@ final val com.arkivanov.decompose.router.stack/items // com.arkivanov.decompose.
 final var com.arkivanov.decompose.errorhandler/onDecomposeError // com.arkivanov.decompose.errorhandler/onDecomposeError|{}onDecomposeError[0]
     final fun <get-onDecomposeError>(): kotlin/Function1<kotlin/Exception, kotlin/Unit> // com.arkivanov.decompose.errorhandler/onDecomposeError.<get-onDecomposeError>|<get-onDecomposeError>(){}[0]
     final fun <set-onDecomposeError>(kotlin/Function1<kotlin/Exception, kotlin/Unit>) // com.arkivanov.decompose.errorhandler/onDecomposeError.<set-onDecomposeError>|<set-onDecomposeError>(kotlin.Function1<kotlin.Exception,kotlin.Unit>){}[0]
+open annotation class com.arkivanov.decompose/DelicateDecomposeApi : kotlin/Annotation { // com.arkivanov.decompose/DelicateDecomposeApi|null[0]
+    constructor <init>() // com.arkivanov.decompose/DelicateDecomposeApi.<init>|<init>(){}[0]
+}
 open annotation class com.arkivanov.decompose/ExperimentalDecomposeApi : kotlin/Annotation { // com.arkivanov.decompose/ExperimentalDecomposeApi|null[0]
     constructor <init>() // com.arkivanov.decompose/ExperimentalDecomposeApi.<init>|<init>(){}[0]
 }

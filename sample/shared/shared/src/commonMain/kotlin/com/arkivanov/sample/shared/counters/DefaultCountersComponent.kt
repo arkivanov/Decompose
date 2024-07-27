@@ -6,7 +6,7 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popTo
-import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.counters.counter.CounterComponent
 import com.arkivanov.sample.shared.counters.counter.DefaultCounterComponent
@@ -36,7 +36,7 @@ internal class DefaultCountersComponent(
             componentContext = componentContext,
             title = "Counter ${config.index}",
             isBackEnabled = config.isBackEnabled,
-            onNext = { navigation.push(Config(index = config.index + 1, isBackEnabled = true)) },
+            onNext = { navigation.pushNew(Config(index = config.index + 1, isBackEnabled = true)) },
             onPrev = navigation::pop,
         )
 
