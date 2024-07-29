@@ -7,7 +7,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.items
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
-import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.cards.card.CardComponent
 import com.arkivanov.sample.shared.cards.card.DefaultCardComponent
@@ -54,7 +54,7 @@ class DefaultCardsComponent(
 
         val maxNumber = _stack.items.maxOf { it.configuration.number }
 
-        navigation.push(
+        navigation.pushNew(
             Config(
                 color = COLORS[maxNumber % COLORS.size],
                 number = maxNumber + 1,

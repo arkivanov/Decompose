@@ -75,6 +75,9 @@ public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivan
 	public fun getStateKeeper ()Lcom/arkivanov/essenty/statekeeper/StateKeeper;
 }
 
+public abstract interface annotation class com/arkivanov/decompose/DelicateDecomposeApi : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class com/arkivanov/decompose/ExperimentalDecomposeApi : java/lang/annotation/Annotation {
 }
 

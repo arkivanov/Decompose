@@ -1,5 +1,7 @@
 package com.arkivanov.decompose.router.stack
 
+import com.arkivanov.decompose.DelicateDecomposeApi
+
 /**
  * A convenience method for [StackNavigator.navigate].
  */
@@ -11,12 +13,15 @@ fun <C : Any> StackNavigator<C>.navigate(transformer: (stack: List<C>) -> List<C
  * Pushes the provided [configuration] at the top of the stack.
  *
  * Decompose will throw an exception if the provided [configuration] is already present in the stack.
+ * This usually happens when a component is pushed on user interaction (e.g. a button click).
+ * Consider using [pushNew] instead.
  * You can also try enabling the experimental
  * [Duplicate Configurations][com.arkivanov.decompose.DecomposeExperimentFlags.duplicateConfigurationsEnabled] feature
- * to avoid the error.
+ * to avoid the error. But still, pushing duplicated components on top of the stack might be wrong.
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
+@DelicateDecomposeApi
 inline fun <C : Any> StackNavigator<C>.push(configuration: C, crossinline onComplete: () -> Unit = {}) {
     navigate(transformer = { it + configuration }, onComplete = { _, _ -> onComplete() })
 }
