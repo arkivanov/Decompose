@@ -5,4 +5,5 @@ interface MenuComponent {
     val onDynamicFeaturesItemSelected: () -> Unit
     val onCustomNavigationItemSelected: () -> Unit
     val onPagesItemSelected: () -> Unit
+    val onSharedTransitionsItemSelected: () -> Unit
 }

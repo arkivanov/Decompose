@@ -1,5 +1,6 @@
 package com.arkivanov.sample.shared.customnavigation
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,20 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import decompose.sample.shared.compose.generated.resources.Res
-import decompose.sample.shared.compose.generated.resources.cat1
-import decompose.sample.shared.compose.generated.resources.cat2
-import decompose.sample.shared.compose.generated.resources.cat3
-import decompose.sample.shared.compose.generated.resources.cat4
-import decompose.sample.shared.compose.generated.resources.cat5
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
+import com.arkivanov.sample.shared.painterResource
 
 @Composable
 internal fun KittenContent(
@@ -41,7 +34,7 @@ internal fun KittenContent(
 
     Box(modifier = modifier) {
         Image(
-            painter = getKittenPainter(imageType = model.imageType),
+            painter = painterResource(model.imageResourceId),
             contentDescription = "Kitten image",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
@@ -63,15 +56,11 @@ internal fun KittenContent(
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
+@Preview
 @Composable
-internal fun getKittenPainter(imageType: KittenComponent.ImageType): Painter =
-    painterResource(
-        when (imageType) {
-            KittenComponent.ImageType.CAT_1 -> Res.drawable.cat1
-            KittenComponent.ImageType.CAT_2 -> Res.drawable.cat2
-            KittenComponent.ImageType.CAT_3 -> Res.drawable.cat3
-            KittenComponent.ImageType.CAT_4 -> Res.drawable.cat4
-            KittenComponent.ImageType.CAT_5 -> Res.drawable.cat5
-        }
+internal fun KittenContentPreview() {
+    KittenContent(
+        component = PreviewKittenComponent(),
+        textStyle = TextStyle.Default,
     )
+}

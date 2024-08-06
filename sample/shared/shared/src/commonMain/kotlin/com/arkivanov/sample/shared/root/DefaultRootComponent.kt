@@ -19,6 +19,7 @@ import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChil
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.TabsChild
+import com.arkivanov.sample.shared.sharedtransitions.DefaultSharedTransitionsComponent
 import com.arkivanov.sample.shared.tabs.DefaultTabsComponent
 import kotlinx.serialization.Serializable
 
@@ -61,6 +62,7 @@ class DefaultRootComponent(
                         onDynamicFeaturesItemSelected = { nav.pushNew(Config.DynamicFeatures) },
                         onCustomNavigationItemSelected = { nav.pushNew(Config.CustomNavigation) },
                         onPagesItemSelected = { nav.pushNew(Config.Pages) },
+                        onSharedTransitionsItemSelected = { nav.pushNew(Config.SharedTransitions) },
                     )
                 )
 
@@ -88,6 +90,14 @@ class DefaultRootComponent(
                         onFinished = nav::pop,
                     )
                 )
+
+            is Config.SharedTransitions ->
+                Child.SharedTransitionsChild(
+                    DefaultSharedTransitionsComponent(
+                        componentContext = componentContext,
+                        onFinished = nav::pop,
+                    )
+                )
         }
 
     override fun onBackClicked() {
@@ -102,6 +112,7 @@ class DefaultRootComponent(
         private const val WEB_PATH_DYNAMIC_FEATURES = "dynamic-features"
         private const val WEB_PATH_CUSTOM_NAVIGATION = "custom-navigation"
         private const val WEB_PATH_PAGES = "pages"
+        private const val WEB_PATH_SHARED_TRANSITIONS = "shared-transitions"
 
         private fun getInitialStack(webHistoryPaths: List<String>?, deepLink: DeepLink): List<Config> =
             webHistoryPaths
@@ -121,6 +132,7 @@ class DefaultRootComponent(
                 Config.DynamicFeatures -> "/$WEB_PATH_DYNAMIC_FEATURES"
                 Config.CustomNavigation -> "/$WEB_PATH_CUSTOM_NAVIGATION"
                 Config.Pages -> "/$WEB_PATH_PAGES"
+                Config.SharedTransitions -> "/$WEB_PATH_SHARED_TRANSITIONS"
             }
 
         private fun getConfigForPath(path: String): Config =
@@ -128,6 +140,7 @@ class DefaultRootComponent(
                 WEB_PATH_DYNAMIC_FEATURES -> Config.DynamicFeatures
                 WEB_PATH_CUSTOM_NAVIGATION -> Config.CustomNavigation
                 WEB_PATH_PAGES -> Config.Pages
+                WEB_PATH_SHARED_TRANSITIONS -> Config.SharedTransitions
                 else -> Config.Tabs
             }
     }
@@ -145,6 +158,9 @@ class DefaultRootComponent(
 
         @Serializable
         data object Pages : Config
+
+        @Serializable
+        data object SharedTransitions : Config
     }
 
     sealed interface DeepLink {

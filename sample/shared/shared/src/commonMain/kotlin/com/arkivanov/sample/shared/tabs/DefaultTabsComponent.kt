@@ -22,6 +22,7 @@ internal class DefaultTabsComponent(
     private val onDynamicFeaturesItemSelected: () -> Unit,
     private val onCustomNavigationItemSelected: () -> Unit,
     private val onPagesItemSelected: () -> Unit,
+    private val onSharedTransitionsItemSelected: () -> Unit,
 ) : TabsComponent, ComponentContext by componentContext {
 
     private val nav = StackNavigation<Config>()
@@ -42,6 +43,7 @@ internal class DefaultTabsComponent(
                         onDynamicFeaturesItemSelected = onDynamicFeaturesItemSelected,
                         onCustomNavigationItemSelected = onCustomNavigationItemSelected,
                         onPagesItemSelected = onPagesItemSelected,
+                        onSharedTransitionsItemSelected = onSharedTransitionsItemSelected,
                     )
                 )
 
