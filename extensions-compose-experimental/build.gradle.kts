@@ -1,5 +1,4 @@
 import com.arkivanov.gradle.bundle
-import com.arkivanov.gradle.dependsOn
 import com.arkivanov.gradle.iosCompat
 import com.arkivanov.gradle.macosCompat
 import com.arkivanov.gradle.setupBinaryCompatibilityValidator
@@ -28,17 +27,12 @@ setupPublication()
 setupBinaryCompatibilityValidator()
 
 android {
-    namespace = "com.arkivanov.decompose.extensions.compose"
+    namespace = "com.arkivanov.decompose.extensions.compose.experimental"
 }
 
 kotlin {
     setupSourceSets {
-        val android by bundle()
         val jvm by bundle()
-        val nonAndroid by bundle()
-
-        nonAndroid dependsOn common
-        (allSet - android) dependsOn nonAndroid
 
         all {
             languageSettings {
@@ -48,6 +42,7 @@ kotlin {
 
         common.main.dependencies {
             implementation(project(":decompose"))
+            api(project(":extensions-compose"))
             implementation(compose.foundation)
         }
 

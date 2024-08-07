@@ -5,48 +5,53 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.arkivanov.decompose.extensions.compose.stack.Children
-import com.arkivanov.decompose.extensions.compose.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.stack.animation.plus
-import com.arkivanov.decompose.extensions.compose.stack.animation.scale
-import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.PredictiveBackParams
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
 import com.arkivanov.sample.shared.sharedtransitions.SharedTransitionsComponent.Child.GalleryChild
 import com.arkivanov.sample.shared.sharedtransitions.SharedTransitionsComponent.Child.PhotoChild
 import com.arkivanov.sample.shared.sharedtransitions.gallery.GalleryContent
 import com.arkivanov.sample.shared.sharedtransitions.photo.PhotoContent
 
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalDecomposeApi::class)
 @Composable
 internal fun SharedTransitionsContent(
     component: SharedTransitionsComponent,
     modifier: Modifier = Modifier,
 ) {
-    val stack by component.stack.subscribeAsState()
-
     SharedTransitionLayout(modifier = modifier) {
-        Children(
+        ChildStack(
             stack = component.stack,
             modifier = Modifier.fillMaxSize().background(Color.Black),
-            animation = stackAnimation(fade() + scale()),
+            animation = stackAnimation(
+                animator = fade() + scale(),
+                predictiveBackParams = PredictiveBackParams(
+                    backHandler = component.backHandler,
+                    onBack = component::onBack,
+                ),
+            ),
         ) {
             when (val child = it.instance) {
                 is GalleryChild ->
                     GalleryContent(
                         component = child.component,
-                        isVisible = stack.active.instance is GalleryChild,
+                        animatedVisibilityScope = this,
                         modifier = Modifier.fillMaxSize(),
                     )
 
-                is PhotoChild ->
+                is PhotoChild -> {
                     PhotoContent(
                         component = child.component,
-                        isVisible = stack.active.instance is PhotoChild,
+                        animatedVisibilityScope = this,
                         modifier = Modifier.fillMaxSize(),
                     )
+                }
             }
         }
     }

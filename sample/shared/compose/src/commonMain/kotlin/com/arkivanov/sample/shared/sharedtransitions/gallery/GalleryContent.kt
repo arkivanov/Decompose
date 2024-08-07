@@ -1,5 +1,7 @@
 package com.arkivanov.sample.shared.sharedtransitions.gallery
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
@@ -24,7 +26,7 @@ import com.arkivanov.sample.shared.utils.TopAppBar
 @Composable
 internal fun SharedTransitionScope.GalleryContent(
     component: GalleryComponent,
-    isVisible: Boolean,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -40,9 +42,9 @@ internal fun SharedTransitionScope.GalleryContent(
                     contentDescription = null,
                     modifier = Modifier
                         .aspectRatio(1F)
-                        .sharedElementWithCallerManagedVisibility(
-                            sharedContentState = rememberSharedContentState(key = image.id),
-                            visible = isVisible,
+                        .sharedElement(
+                            state = rememberSharedContentState(key = image.id),
+                            animatedVisibilityScope = animatedVisibilityScope,
                         )
                         .clickable { component.onImageClicked(index = index) },
                     contentScale = ContentScale.Crop,
@@ -57,10 +59,12 @@ internal fun SharedTransitionScope.GalleryContent(
 @Composable
 internal fun GalleryContentPreview() {
     SharedTransitionLayout {
-        GalleryContent(
-            component = PreviewGalleryComponent(),
-            isVisible = true,
-            modifier = Modifier.fillMaxSize(),
-        )
+        AnimatedVisibility(visible = true) {
+            GalleryContent(
+                component = PreviewGalleryComponent(),
+                animatedVisibilityScope = this,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
     }
 }
