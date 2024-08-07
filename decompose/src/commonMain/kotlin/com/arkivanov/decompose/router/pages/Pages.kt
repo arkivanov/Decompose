@@ -1,7 +1,5 @@
 package com.arkivanov.decompose.router.pages
 
-import com.arkivanov.decompose.ExperimentalDecomposeApi
-
 /**
  * Represents a state of Child Pages navigation model.
  *
@@ -9,7 +7,6 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
  * @param selectedIndex an index of the selected child configuration.
  * Must be within the range of [items] indices if [items] is not empty, otherwise can be any number.
  */
-@ExperimentalDecomposeApi
 data class Pages<out C : Any>(
     val items: List<C>,
     val selectedIndex: Int,

@@ -1,8 +1,5 @@
 package com.arkivanov.decompose.router.pages
 
-import com.arkivanov.decompose.ExperimentalDecomposeApi
-
-@ExperimentalDecomposeApi
 interface PagesNavigator<C : Any> {
 
     /**

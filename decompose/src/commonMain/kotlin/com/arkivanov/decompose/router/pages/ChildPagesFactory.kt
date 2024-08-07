@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.router.pages
 
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState
 import com.arkivanov.decompose.router.children.ChildNavState.Status
@@ -36,7 +35,6 @@ import kotlinx.serialization.Serializable
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildPages].
  */
-@ExperimentalDecomposeApi
 fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childPages(
     source: NavigationSource<PagesNavigation.Event<C>>,
     serializer: KSerializer<C>?,
@@ -107,7 +105,6 @@ private class SerializablePages<out C : Any>(
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildPages].
  */
-@ExperimentalDecomposeApi
 fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childPages(
     source: NavigationSource<PagesNavigation.Event<C>>,
     initialPages: () -> Pages<C>,
@@ -180,9 +177,3 @@ private data class PagesNavState<out C : Any>(
             )
         }
 }
-
-@Serializable
-private class PagesSavedNavState(
-    val configurations: List<SerializableContainer>,
-    val selectedIndex: Int,
-)

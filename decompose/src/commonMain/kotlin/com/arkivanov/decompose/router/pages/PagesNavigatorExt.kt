@@ -1,11 +1,8 @@
 package com.arkivanov.decompose.router.pages
 
-import com.arkivanov.decompose.ExperimentalDecomposeApi
-
 /**
  * A convenience method for [PagesNavigator.navigate].
  */
-@ExperimentalDecomposeApi
 fun <C : Any> PagesNavigator<C>.navigate(transformer: (Pages<C>) -> Pages<C>) {
     navigate(transformer = transformer, onComplete = { _, _ -> })
 }
@@ -18,7 +15,6 @@ fun <C : Any> PagesNavigator<C>.navigate(transformer: (Pages<C>) -> Pages<C>) {
  * Default value is `false`.
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
-@ExperimentalDecomposeApi
 fun <C : Any> PagesNavigator<C>.selectNext(
     circular: Boolean = false,
     onComplete: (newPages: Pages<C>, oldPages: Pages<C>) -> Unit = { _, _ -> },
@@ -39,7 +35,6 @@ fun <C : Any> PagesNavigator<C>.selectNext(
  * Default value is `false`.
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
-@ExperimentalDecomposeApi
 fun <C : Any> PagesNavigator<C>.selectPrev(
     circular: Boolean = false,
     onComplete: (newPages: Pages<C>, oldPages: Pages<C>) -> Unit = { _, _ -> },
@@ -57,7 +52,6 @@ fun <C : Any> PagesNavigator<C>.selectPrev(
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
-@ExperimentalDecomposeApi
 fun <C : Any> PagesNavigator<C>.selectFirst(onComplete: (newPages: Pages<C>, oldPages: Pages<C>) -> Unit = { _, _ -> }) {
     navigate(
         transformer = { pages ->
@@ -72,7 +66,6 @@ fun <C : Any> PagesNavigator<C>.selectFirst(onComplete: (newPages: Pages<C>, old
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
-@ExperimentalDecomposeApi
 fun <C : Any> PagesNavigator<C>.selectLast(onComplete: (newPages: Pages<C>, oldPages: Pages<C>) -> Unit = { _, _ -> }) {
     navigate(
         transformer = { pages ->
@@ -88,7 +81,6 @@ fun <C : Any> PagesNavigator<C>.selectLast(onComplete: (newPages: Pages<C>, oldP
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
-@ExperimentalDecomposeApi
 fun <C : Any> PagesNavigator<C>.select(
     index: Int,
     onComplete: (newPages: Pages<C>, oldPages: Pages<C>) -> Unit = { _, _ -> },
@@ -104,7 +96,6 @@ fun <C : Any> PagesNavigator<C>.select(
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
-@ExperimentalDecomposeApi
 fun <C : Any> PagesNavigator<C>.clear(onComplete: (newPages: Pages<C>, oldPages: Pages<C>) -> Unit = { _, _ -> }) {
     navigate(
         transformer = { Pages() },

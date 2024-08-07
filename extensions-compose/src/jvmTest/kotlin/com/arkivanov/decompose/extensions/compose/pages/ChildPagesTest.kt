@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.extensions.compose.pages
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -9,15 +8,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.pages.ChildPages
 import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
-@OptIn(ExperimentalDecomposeApi::class, ExperimentalFoundationApi::class)
 @Suppress("TestFunctionName")
-class PagesTest {
+class ChildPagesTest {
 
     @get:Rule
     val composeRule = createComposeRule()
@@ -150,7 +147,7 @@ class PagesTest {
         scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     ) {
         composeRule.setContent {
-            Pages(
+            ChildPages(
                 pages = pages.value,
                 onPageSelected = onPageSelected,
                 scrollAnimation = scrollAnimation,
