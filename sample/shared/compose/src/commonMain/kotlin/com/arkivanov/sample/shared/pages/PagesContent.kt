@@ -1,6 +1,5 @@
 package com.arkivanov.sample.shared.pages
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,17 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.pages.Pages
+import com.arkivanov.decompose.extensions.compose.pages.ChildPages
 import com.arkivanov.decompose.extensions.compose.pages.PagesScrollAnimation
 import com.arkivanov.sample.shared.customnavigation.KittenContent
 import com.arkivanov.sample.shared.utils.CloseButton
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalDecomposeApi::class)
 @Composable
 internal fun PagesContent(component: PagesComponent, modifier: Modifier = Modifier) {
     Box(modifier = modifier) {
-        Pages(
+        ChildPages(
             pages = component.pages,
             onPageSelected = component::selectPage,
             modifier = Modifier.fillMaxSize(),

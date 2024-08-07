@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.extensions.compose.pages
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.PagerState
@@ -13,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.Ref
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.keyHashString
@@ -23,10 +21,8 @@ import com.arkivanov.decompose.value.Value
 /**
  * Displays a list of pages represented by [ChildPages].
  */
-@ExperimentalFoundationApi
-@ExperimentalDecomposeApi
 @Composable
-fun <C : Any, T : Any> Pages(
+fun <C : Any, T : Any> ChildPages(
     pages: Value<ChildPages<C, T>>,
     onPageSelected: (index: Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -37,7 +33,7 @@ fun <C : Any, T : Any> Pages(
 ) {
     val state by pages.subscribeAsState()
 
-    Pages(
+    ChildPages(
         pages = state,
         onPageSelected = onPageSelected,
         modifier = modifier,
@@ -51,10 +47,8 @@ fun <C : Any, T : Any> Pages(
 /**
  * Displays a list of pages represented by [ChildPages].
  */
-@ExperimentalFoundationApi
-@ExperimentalDecomposeApi
 @Composable
-fun <C : Any, T : Any> Pages(
+fun <C : Any, T : Any> ChildPages(
     pages: ChildPages<C, T>,
     onPageSelected: (index: Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -106,8 +100,6 @@ fun <C : Any, T : Any> Pages(
     }
 }
 
-@ExperimentalFoundationApi
-@ExperimentalDecomposeApi
 fun defaultHorizontalPager(): Pager =
     { modifier, state, key, pageContent ->
         HorizontalPager(
@@ -118,8 +110,6 @@ fun defaultHorizontalPager(): Pager =
         )
     }
 
-@ExperimentalFoundationApi
-@ExperimentalDecomposeApi
 fun defaultVerticalPager(): Pager =
     { modifier, state, key, pageContent ->
         VerticalPager(
@@ -130,7 +120,6 @@ fun defaultVerticalPager(): Pager =
         )
     }
 
-@OptIn(ExperimentalFoundationApi::class)
 internal typealias Pager =
     @Composable (
         Modifier,

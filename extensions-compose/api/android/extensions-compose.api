@@ -2,20 +2,20 @@ public final class com/arkivanov/decompose/extensions/compose/SubscribeAsStateKt
 	public static final fun subscribeAsState (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/runtime/SnapshotMutationPolicy;Landroidx/compose/runtime/Composer;II)Landroidx/compose/runtime/State;
 }
 
-public final class com/arkivanov/decompose/extensions/compose/pages/ComposableSingletons$PagesKt {
-	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/pages/ComposableSingletons$PagesKt;
+public final class com/arkivanov/decompose/extensions/compose/pages/ChildPagesKt {
+	public static final fun ChildPages (Lcom/arkivanov/decompose/router/pages/ChildPages;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/pages/PagesScrollAnimation;Lkotlin/jvm/functions/Function6;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function5;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ChildPages (Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/pages/PagesScrollAnimation;Lkotlin/jvm/functions/Function6;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function5;Landroidx/compose/runtime/Composer;II)V
+	public static final fun defaultHorizontalPager ()Lkotlin/jvm/functions/Function6;
+	public static final fun defaultVerticalPager ()Lkotlin/jvm/functions/Function6;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/pages/ComposableSingletons$ChildPagesKt {
+	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/pages/ComposableSingletons$ChildPagesKt;
 	public static field lambda-1 Lkotlin/jvm/functions/Function6;
 	public static field lambda-2 Lkotlin/jvm/functions/Function6;
 	public fun <init> ()V
 	public final fun getLambda-1$extensions_compose_release ()Lkotlin/jvm/functions/Function6;
 	public final fun getLambda-2$extensions_compose_release ()Lkotlin/jvm/functions/Function6;
-}
-
-public final class com/arkivanov/decompose/extensions/compose/pages/PagesKt {
-	public static final fun Pages (Lcom/arkivanov/decompose/router/pages/ChildPages;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/pages/PagesScrollAnimation;Lkotlin/jvm/functions/Function6;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function5;Landroidx/compose/runtime/Composer;II)V
-	public static final fun Pages (Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/pages/PagesScrollAnimation;Lkotlin/jvm/functions/Function6;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function5;Landroidx/compose/runtime/Composer;II)V
-	public static final fun defaultHorizontalPager ()Lkotlin/jvm/functions/Function6;
-	public static final fun defaultVerticalPager ()Lkotlin/jvm/functions/Function6;
 }
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/pages/PagesScrollAnimation {
