@@ -17,6 +17,9 @@ import com.arkivanov.essenty.backhandler.BackHandler
  * for the given initial [BackEvent] and child components. If not provided, then a default
  * animation will be used for back gestures
  * (see [ChildStack][com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack]).
+ *
+ * @see com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
+ * @see com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.androidPredictiveBackAnimatable
  */
 @ExperimentalDecomposeApi
 class PredictiveBackParams<in C : Any, in T : Any>(
