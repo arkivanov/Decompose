@@ -35,7 +35,7 @@ class StackAnimationDirectionsTest(
         val animation =
             DefaultStackAnimation<String, String>(
                 disableInputDuringAnimation = false,
-                predictiveBackParams = null,
+                predictiveBackParams = { null },
                 selector = { child, _, _ ->
                     StackAnimator { direction ->
                         results[child.configuration] = direction

@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 @ExperimentalDecomposeApi
 internal class DefaultStackAnimation<C : Any, T : Any>(
     private val disableInputDuringAnimation: Boolean,
-    private val predictiveBackParams: PredictiveBackParams<C, T>?,
+    private val predictiveBackParams: (ChildStack<C, T>) -> PredictiveBackParams<C, T>?,
     private val selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator?,
 ) : StackAnimation<C, T> {
 
@@ -92,13 +92,16 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             }
         }
 
-        if ((predictiveBackParams != null) && currentStack.backStack.isNotEmpty()) {
-            key(currentStackKeys) {
-                PredictiveBackController(
-                    stack = currentStack,
-                    predictiveBackParams = predictiveBackParams,
-                    setItems = { items = it },
-                )
+        if (currentStack.backStack.isNotEmpty()) {
+            val predictiveBackParams = remember(currentStackKeys) { predictiveBackParams(currentStack) }
+            if (predictiveBackParams != null) {
+                key(currentStackKeys) {
+                    PredictiveBackController(
+                        stack = currentStack,
+                        predictiveBackParams = predictiveBackParams,
+                        setItems = { items = it },
+                    )
+                }
             }
         }
     }
@@ -217,13 +220,13 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         private val predictiveBackParams: PredictiveBackParams<C, T>,
         private val setItems: (Map<Any, AnimationItem<C, T>>) -> Unit,
     ) : BackCallback() {
-        private val exitChild = stack.active
-        private val enterChild = stack.backStack.last()
         private var animationHandler: AnimationHandler? = null
 
         override fun onBackStarted(backEvent: BackEvent) {
-            val animationHandler = AnimationHandler(animatable = predictiveBackParams.animatableSelector(backEvent, exitChild, enterChild))
+            val animationHandler = AnimationHandler(animatable = predictiveBackParams.animatableSelector(backEvent))
             this.animationHandler = animationHandler
+            val exitChild = stack.active
+            val enterChild = stack.backStack.last()
 
             setItems(
                 keyedItemsOf(

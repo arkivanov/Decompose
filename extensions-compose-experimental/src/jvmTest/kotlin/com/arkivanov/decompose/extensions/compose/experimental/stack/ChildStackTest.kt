@@ -246,7 +246,7 @@ class ChildStackTest(
                 PredictiveBackParams<Config, Config>(
                     backHandler = BackDispatcher(),
                     onBack = {},
-                    animatableSelector = { initialBackEvent, _, _ -> materialPredictiveBackAnimatable(initialBackEvent) },
+                    animatableSelector = ::materialPredictiveBackAnimatable,
                 )
 
             return listOf(
@@ -256,16 +256,16 @@ class ChildStackTest(
                 stackAnimation { _, _, _ -> fade() },
                 stackAnimation { _, _, _ -> slide() },
                 stackAnimation { _, _, _ -> scale() + fade() + slide() },
-                stackAnimation(predictiveBackParams = predictiveBackParams1) { _, _, _ -> null },
-                stackAnimation(predictiveBackParams = predictiveBackParams1) { _, _, _ -> scale() },
-                stackAnimation(predictiveBackParams = predictiveBackParams1) { _, _, _ -> fade() },
-                stackAnimation(predictiveBackParams = predictiveBackParams1) { _, _, _ -> slide() },
-                stackAnimation(predictiveBackParams = predictiveBackParams1) { _, _, _ -> scale() + fade() + slide() },
-                stackAnimation(predictiveBackParams = predictiveBackParams2) { _, _, _ -> null },
-                stackAnimation(predictiveBackParams = predictiveBackParams2) { _, _, _ -> scale() },
-                stackAnimation(predictiveBackParams = predictiveBackParams2) { _, _, _ -> fade() },
-                stackAnimation(predictiveBackParams = predictiveBackParams2) { _, _, _ -> slide() },
-                stackAnimation(predictiveBackParams = predictiveBackParams2) { _, _, _ -> scale() + fade() + slide() },
+                stackAnimation(predictiveBackParams = { predictiveBackParams1 }) { _, _, _ -> null },
+                stackAnimation(predictiveBackParams = { predictiveBackParams1 }) { _, _, _ -> scale() },
+                stackAnimation(predictiveBackParams = { predictiveBackParams1 }) { _, _, _ -> fade() },
+                stackAnimation(predictiveBackParams = { predictiveBackParams1 }) { _, _, _ -> slide() },
+                stackAnimation(predictiveBackParams = { predictiveBackParams1 }) { _, _, _ -> scale() + fade() + slide() },
+                stackAnimation(predictiveBackParams = { predictiveBackParams2 }) { _, _, _ -> null },
+                stackAnimation(predictiveBackParams = { predictiveBackParams2 }) { _, _, _ -> scale() },
+                stackAnimation(predictiveBackParams = { predictiveBackParams2 }) { _, _, _ -> fade() },
+                stackAnimation(predictiveBackParams = { predictiveBackParams2 }) { _, _, _ -> slide() },
+                stackAnimation(predictiveBackParams = { predictiveBackParams2 }) { _, _, _ -> scale() + fade() + slide() },
             )
         }
     }

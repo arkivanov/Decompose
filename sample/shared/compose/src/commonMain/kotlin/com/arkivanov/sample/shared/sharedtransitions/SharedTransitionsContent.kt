@@ -31,10 +31,12 @@ internal fun SharedTransitionsContent(
             modifier = Modifier.fillMaxSize().background(Color.Black),
             animation = stackAnimation(
                 animator = fade() + scale(),
-                predictiveBackParams = PredictiveBackParams(
-                    backHandler = component.backHandler,
-                    onBack = component::onBack,
-                ),
+                predictiveBackParams = {
+                    PredictiveBackParams(
+                        backHandler = component.backHandler,
+                        onBack = component::onBack,
+                    )
+                },
             ),
         ) {
             when (val child = it.instance) {

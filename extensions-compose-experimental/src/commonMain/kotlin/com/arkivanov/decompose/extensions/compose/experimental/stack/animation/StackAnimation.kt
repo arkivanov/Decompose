@@ -26,13 +26,15 @@ fun interface StackAnimation<C : Any, T : Any> {
  * Creates an implementation of [StackAnimation] that allows different [StackAnimator]s.
  *
  * @param disableInputDuringAnimation disables input and touch events while animating, default value is `true`.
- * @param predictiveBackParams enables the predictive back gesture with the specified parameters.
+ * @param predictiveBackParams a function that returns [PredictiveBackParams] for the specified [ChildStack],
+ * or `null`. The predictive back gesture is enabled if the value returned for the specified [ChildStack]
+ * is *not* `null`, and disabled if the returned value is `null`.
  * @param selector provides a [StackAnimator] for the current [Child], other [Child] and [Direction].
  */
 @ExperimentalDecomposeApi
 fun <C : Any, T : Any> stackAnimation(
     disableInputDuringAnimation: Boolean = true,
-    predictiveBackParams: PredictiveBackParams<C, T>? = null,
+    predictiveBackParams: (ChildStack<C, T>) -> PredictiveBackParams<C, T>? = { null },
     selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator?,
 ): StackAnimation<C, T> =
     DefaultStackAnimation(
@@ -46,13 +48,15 @@ fun <C : Any, T : Any> stackAnimation(
  *
  * @param animator a [StackAnimator] to be used for animation, default is [fade].
  * @param disableInputDuringAnimation disables input and touch events while animating, default value is `true`.
- * @param predictiveBackParams enables the predictive back gesture with the specified parameters.
+ * @param predictiveBackParams a function that returns [PredictiveBackParams] for the specified [ChildStack],
+ * or `null`. The predictive back gesture is enabled if the value returned for the specified [ChildStack]
+ * is not `null`, and disabled if the returned value is `null`.
  */
 @ExperimentalDecomposeApi
 fun <C : Any, T : Any> stackAnimation(
     animator: StackAnimator = fade(),
     disableInputDuringAnimation: Boolean = true,
-    predictiveBackParams: PredictiveBackParams<C, T>? = null,
+    predictiveBackParams: (ChildStack<C, T>) -> PredictiveBackParams<C, T>? = { null },
 ): StackAnimation<C, T> =
     DefaultStackAnimation(
         disableInputDuringAnimation = disableInputDuringAnimation,
