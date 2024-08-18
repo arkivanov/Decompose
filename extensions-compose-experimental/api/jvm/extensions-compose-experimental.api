@@ -10,9 +10,9 @@ public final class com/arkivanov/decompose/extensions/compose/experimental/stack
 
 public final class com/arkivanov/decompose/extensions/compose/experimental/stack/animation/PredictiveBackParams {
 	public static final field $stable I
-	public fun <init> (Lcom/arkivanov/essenty/backhandler/BackHandler;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;)V
-	public synthetic fun <init> (Lcom/arkivanov/essenty/backhandler/BackHandler;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getAnimatableSelector ()Lkotlin/jvm/functions/Function3;
+	public fun <init> (Lcom/arkivanov/essenty/backhandler/BackHandler;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lcom/arkivanov/essenty/backhandler/BackHandler;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAnimatableSelector ()Lkotlin/jvm/functions/Function1;
 	public final fun getBackHandler ()Lcom/arkivanov/essenty/backhandler/BackHandler;
 	public final fun getOnBack ()Lkotlin/jvm/functions/Function0;
 }
@@ -32,10 +32,10 @@ public abstract interface class com/arkivanov/decompose/extensions/compose/exper
 }
 
 public final class com/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimationKt {
-	public static final fun stackAnimation (Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimator;ZLcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/PredictiveBackParams;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
-	public static final fun stackAnimation (ZLcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/PredictiveBackParams;Lkotlin/jvm/functions/Function3;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
-	public static synthetic fun stackAnimation$default (Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimator;ZLcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/PredictiveBackParams;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
-	public static synthetic fun stackAnimation$default (ZLcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/PredictiveBackParams;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
+	public static final fun stackAnimation (Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimator;ZLkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
+	public static final fun stackAnimation (ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
+	public static synthetic fun stackAnimation$default (Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimator;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
+	public static synthetic fun stackAnimation$default (ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
 }
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimationProvider {

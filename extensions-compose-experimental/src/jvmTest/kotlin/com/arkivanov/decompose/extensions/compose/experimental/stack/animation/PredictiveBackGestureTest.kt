@@ -285,13 +285,13 @@ class PredictiveBackGestureTest {
     private fun DefaultStackAnimation(onBack: () -> Unit): DefaultStackAnimation<String, String> =
         DefaultStackAnimation(
             disableInputDuringAnimation = false,
-            predictiveBackParams = PredictiveBackParams(
-                backHandler = backDispatcher,
-                onBack = onBack,
-                animatableSelector = { initialBackEvent, _, _ ->
-                    TestAnimatable(initialBackEvent)
-                },
-            ),
+            predictiveBackParams = {
+                PredictiveBackParams(
+                    backHandler = backDispatcher,
+                    onBack = onBack,
+                    animatableSelector = ::TestAnimatable,
+                )
+            },
             selector = { _, _, _ -> null },
         )
 
