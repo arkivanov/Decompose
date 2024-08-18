@@ -21,6 +21,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.experimental.stack.WithAnimatedVisibilityScope
+import com.arkivanov.decompose.extensions.compose.experimental.stack.awaitAll
 import com.arkivanov.decompose.extensions.compose.experimental.stack.dropLast
 import com.arkivanov.decompose.extensions.compose.experimental.stack.size
 import com.arkivanov.decompose.extensions.compose.stack.animation.Direction
@@ -30,7 +31,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.backhandler.BackEvent
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 @ExperimentalDecomposeApi
@@ -48,12 +49,21 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     ) {
         var currentStack by remember { mutableStateOf(stack) }
         var items by remember { mutableStateOf(getAnimationItems(newStack = currentStack)) }
+        val stackKeys = remember(stack) { stack.items.map { it.key } }
+        val currentStackKeys = remember(currentStack) { currentStack.items.map { it.key } }
 
-        if (stack.active.key != currentStack.active.key) {
+        if (stackKeys != currentStackKeys) {
             val oldStack = currentStack
             currentStack = stack
 
-            if ((items.size == 1) && (items.keys.single() != currentStack.active.key)) {
+            val updateItems =
+                if (stack.active.key == oldStack.active.key) {
+                    items.keys.singleOrNull() != stack.active.key
+                } else {
+                    items.keys.toList() != stackKeys
+                }
+
+            if (updateItems) {
                 items = getAnimationItems(newStack = currentStack, oldStack = oldStack)
             }
         }
@@ -83,7 +93,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         }
 
         if ((predictiveBackParams != null) && currentStack.backStack.isNotEmpty()) {
-            key(items.keys) {
+            key(currentStackKeys) {
                 PredictiveBackController(
                     stack = currentStack,
                     predictiveBackParams = predictiveBackParams,
@@ -179,7 +189,11 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
         DisposableEffect(predictiveBackParams.backHandler, callback) {
             predictiveBackParams.backHandler.register(callback)
-            onDispose { predictiveBackParams.backHandler.unregister(callback) }
+
+            onDispose {
+                scope.cancel() // Ensure the scope is cancelled before unregistering the callback
+                predictiveBackParams.backHandler.unregister(callback)
+            }
         }
     }
 
@@ -204,79 +218,101 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         private val setItems: (Map<Any, AnimationItem<C, T>>) -> Unit,
     ) : BackCallback() {
         private val exitChild = stack.active
-        private val exitTransitionState = SeekableTransitionState(initialState = EnterExitState.Visible)
         private val enterChild = stack.backStack.last()
-        private val enterTransitionState = SeekableTransitionState(initialState = EnterExitState.PreEnter)
-        private var animatable: PredictiveBackAnimatable? = null
+        private var animationHandler: AnimationHandler? = null
 
         override fun onBackStarted(backEvent: BackEvent) {
-            animatable = predictiveBackParams.animatableSelector(backEvent, exitChild, enterChild)
+            val animationHandler = AnimationHandler(animatable = predictiveBackParams.animatableSelector(backEvent, exitChild, enterChild))
+            this.animationHandler = animationHandler
 
             setItems(
                 keyedItemsOf(
                     AnimationItem(
                         child = enterChild,
                         direction = Direction.ENTER_BACK,
-                        transitionState = enterTransitionState,
+                        transitionState = animationHandler.enterTransitionState,
                         otherChild = exitChild,
-                        predictiveBackAnimator = animatable?.let { anim -> SimpleStackAnimator { anim.enterModifier } },
+                        predictiveBackAnimator = animationHandler.animatable?.let { anim -> SimpleStackAnimator { anim.enterModifier } },
                     ),
                     AnimationItem(
                         child = exitChild,
                         direction = Direction.EXIT_FRONT,
-                        transitionState = exitTransitionState,
+                        transitionState = animationHandler.exitTransitionState,
                         otherChild = enterChild,
-                        predictiveBackAnimator = animatable?.let { anim -> SimpleStackAnimator { anim.exitModifier } },
+                        predictiveBackAnimator = animationHandler.animatable?.let { anim -> SimpleStackAnimator { anim.exitModifier } },
                     ),
                 )
             )
 
             scope.launch {
-                joinAll(
-                    launch { exitTransitionState.seekTo(fraction = backEvent.progress, targetState = EnterExitState.PostExit) },
-                    launch { enterTransitionState.seekTo(fraction = backEvent.progress, targetState = EnterExitState.Visible) },
-                    launch { animatable?.animate(backEvent) },
-                )
+                animationHandler.start(backEvent)
             }
         }
 
         override fun onBackProgressed(backEvent: BackEvent) {
             scope.launch {
-                animatable?.run {
-                    animate(backEvent)
-                    return@launch // Don't animate transition states on back progress if there is PredictiveBackAnimatable
-                }
-
-                joinAll(
-                    launch { exitTransitionState.seekTo(fraction = backEvent.progress, targetState = EnterExitState.PostExit) },
-                    launch { enterTransitionState.seekTo(fraction = backEvent.progress, targetState = EnterExitState.Visible) },
-                )
+                animationHandler?.progress(backEvent)
             }
         }
 
         override fun onBackCancelled() {
             scope.launch {
-                joinAll(
-                    launch { exitTransitionState.snapTo(EnterExitState.Visible) },
-                    launch { enterTransitionState.snapTo(EnterExitState.PreEnter) },
-                    launch { animatable?.cancel() },
-                )
-
+                animationHandler?.cancel()
+                animationHandler = null
                 setItems(getAnimationItems(newStack = stack))
             }
         }
 
         override fun onBack() {
             scope.launch {
-                joinAll(
-                    launch { exitTransitionState.animateTo(EnterExitState.PostExit) },
-                    launch { enterTransitionState.animateTo(EnterExitState.Visible) },
-                    launch { animatable?.finish() }
-                )
-
+                animationHandler?.finish()
+                animationHandler = null
                 setItems(getAnimationItems(newStack = stack.dropLast()))
                 predictiveBackParams.onBack()
             }
+        }
+    }
+
+    private class AnimationHandler(
+        val animatable: PredictiveBackAnimatable?,
+    ) {
+        val exitTransitionState: SeekableTransitionState<EnterExitState> = SeekableTransitionState(EnterExitState.Visible)
+        val enterTransitionState: SeekableTransitionState<EnterExitState> = SeekableTransitionState(EnterExitState.PreEnter)
+
+        suspend fun start(backEvent: BackEvent) {
+            awaitAll(
+                { exitTransitionState.seekTo(fraction = backEvent.progress, targetState = EnterExitState.PostExit) },
+                { enterTransitionState.seekTo(fraction = backEvent.progress, targetState = EnterExitState.Visible) },
+                { animatable?.animate(backEvent) },
+            )
+        }
+
+        suspend fun progress(backEvent: BackEvent) {
+            animatable?.run {
+                animate(backEvent)
+                return@progress // Don't animate transition states on back progress if there is PredictiveBackAnimatable
+            }
+
+            awaitAll(
+                { exitTransitionState.seekTo(fraction = backEvent.progress, targetState = EnterExitState.PostExit) },
+                { enterTransitionState.seekTo(fraction = backEvent.progress, targetState = EnterExitState.Visible) },
+            )
+        }
+
+        suspend fun cancel() {
+            awaitAll(
+                { exitTransitionState.snapTo(EnterExitState.Visible) },
+                { enterTransitionState.snapTo(EnterExitState.PreEnter) },
+                { animatable?.cancel() },
+            )
+        }
+
+        suspend fun finish() {
+            awaitAll(
+                { exitTransitionState.animateTo(EnterExitState.PostExit) },
+                { enterTransitionState.animateTo(EnterExitState.Visible) },
+                { animatable?.finish() },
+            )
         }
     }
 }
@@ -291,7 +327,7 @@ private fun Overlay(modifier: Modifier) {
                     event.changes.forEach { it.consume() }
                 }
             }
-        }
+        },
     )
 }
 

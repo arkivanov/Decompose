@@ -15,13 +15,16 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.PredictiveBackParams
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
 import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.essenty.backhandler.BackDispatcher
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -232,15 +235,39 @@ class ChildStackTest(
         fun parameters(): List<Array<out Any?>> =
             getParameters().map { arrayOf(it) }
 
-        private fun getParameters(): List<StackAnimation<Config, Config>?> =
-            listOf(
+        private fun getParameters(): List<StackAnimation<Config, Config>?> {
+            val predictiveBackParams1 =
+                PredictiveBackParams<Config, Config>(
+                    backHandler = BackDispatcher(),
+                    onBack = {},
+                )
+
+            val predictiveBackParams2 =
+                PredictiveBackParams<Config, Config>(
+                    backHandler = BackDispatcher(),
+                    onBack = {},
+                    animatableSelector = { initialBackEvent, _, _ -> materialPredictiveBackAnimatable(initialBackEvent) },
+                )
+
+            return listOf(
                 null,
                 stackAnimation { _, _, _ -> null },
                 stackAnimation { _, _, _ -> scale() },
                 stackAnimation { _, _, _ -> fade() },
                 stackAnimation { _, _, _ -> slide() },
                 stackAnimation { _, _, _ -> scale() + fade() + slide() },
+                stackAnimation(predictiveBackParams = predictiveBackParams1) { _, _, _ -> null },
+                stackAnimation(predictiveBackParams = predictiveBackParams1) { _, _, _ -> scale() },
+                stackAnimation(predictiveBackParams = predictiveBackParams1) { _, _, _ -> fade() },
+                stackAnimation(predictiveBackParams = predictiveBackParams1) { _, _, _ -> slide() },
+                stackAnimation(predictiveBackParams = predictiveBackParams1) { _, _, _ -> scale() + fade() + slide() },
+                stackAnimation(predictiveBackParams = predictiveBackParams2) { _, _, _ -> null },
+                stackAnimation(predictiveBackParams = predictiveBackParams2) { _, _, _ -> scale() },
+                stackAnimation(predictiveBackParams = predictiveBackParams2) { _, _, _ -> fade() },
+                stackAnimation(predictiveBackParams = predictiveBackParams2) { _, _, _ -> slide() },
+                stackAnimation(predictiveBackParams = predictiveBackParams2) { _, _, _ -> scale() + fade() + slide() },
             )
+        }
     }
 
     // Can be enum, workaround https://issuetracker.google.com/issues/195185633
