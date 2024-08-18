@@ -246,7 +246,7 @@ class ChildStackTest(
                 PredictiveBackParams<Config, Config>(
                     backHandler = BackDispatcher(),
                     onBack = {},
-                    animatableSelector = ::materialPredictiveBackAnimatable,
+                    animatable = ::materialPredictiveBackAnimatable,
                 )
 
             return listOf(
