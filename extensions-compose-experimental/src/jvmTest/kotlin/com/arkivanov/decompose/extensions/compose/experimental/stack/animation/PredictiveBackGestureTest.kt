@@ -289,7 +289,7 @@ class PredictiveBackGestureTest {
                 PredictiveBackParams(
                     backHandler = backDispatcher,
                     onBack = onBack,
-                    animatableSelector = ::TestAnimatable,
+                    animatable = ::TestAnimatable,
                 )
             },
             selector = { _, _, _ -> null },

@@ -223,7 +223,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         private var animationHandler: AnimationHandler? = null
 
         override fun onBackStarted(backEvent: BackEvent) {
-            val animationHandler = AnimationHandler(animatable = predictiveBackParams.animatableSelector(backEvent))
+            val animationHandler = AnimationHandler(animatable = predictiveBackParams.animatable(backEvent))
             this.animationHandler = animationHandler
             val exitChild = stack.active
             val enterChild = stack.backStack.last()

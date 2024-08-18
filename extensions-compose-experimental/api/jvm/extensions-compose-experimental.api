@@ -12,7 +12,7 @@ public final class com/arkivanov/decompose/extensions/compose/experimental/stack
 	public static final field $stable I
 	public fun <init> (Lcom/arkivanov/essenty/backhandler/BackHandler;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lcom/arkivanov/essenty/backhandler/BackHandler;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getAnimatableSelector ()Lkotlin/jvm/functions/Function1;
+	public final fun getAnimatable ()Lkotlin/jvm/functions/Function1;
 	public final fun getBackHandler ()Lcom/arkivanov/essenty/backhandler/BackHandler;
 	public final fun getOnBack ()Lkotlin/jvm/functions/Function0;
 }

@@ -12,9 +12,8 @@ import com.arkivanov.essenty.backhandler.BackHandler
  * corresponding child [ComponentContext][com.arkivanov.decompose.ComponentContext].
  * @param onBack a callback to be called when the back gesture is confirmed (finished),
  * it should usually call [StackNavigator#pop][com.arkivanov.decompose.router.stack.pop].
- * @param animatableSelector a selector function that returns a [PredictiveBackAnimatable]
- * for the given initial [BackEvent]. If not provided, then a default animation will be used
- * for back gestures
+ * @param animatable a function that returns a [PredictiveBackAnimatable] for the given
+ * initial [BackEvent]. If not provided, then a default animation will be used for back gestures
  * (see [ChildStack][com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack]).
  *
  * @see com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
@@ -24,5 +23,5 @@ import com.arkivanov.essenty.backhandler.BackHandler
 class PredictiveBackParams<in C : Any, in T : Any>(
     val backHandler: BackHandler,
     val onBack: () -> Unit,
-    val animatableSelector: (initialBackEvent: BackEvent) -> PredictiveBackAnimatable? = { null },
+    val animatable: (initialBackEvent: BackEvent) -> PredictiveBackAnimatable? = { null },
 )
