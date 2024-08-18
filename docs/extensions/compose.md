@@ -851,10 +851,12 @@ class DefaultRootComponent(
             stack = component.childStack,
             animation = stackAnimation(
                 animator = fade() + scale(),
-                predictiveBackParams = PredictiveBackParams(
-                    backHandler = component.backHandler,
-                    onBack = component::onBackClicked,
-                )
+                predictiveBackParams = {
+                    PredictiveBackParams(
+                        backHandler = component.backHandler,
+                        onBack = component::onBackClicked,
+                    )
+                },
             ),
         ) {
             // Omitted code
@@ -888,11 +890,13 @@ class DefaultRootComponent(
             stack = component.childStack,
             animation = stackAnimation(
                 animator = fade() + scale(),
-                predictiveBackParams = PredictiveBackParams(
-                    backHandler = component.backHandler,
-                    onBack = component::onBackClicked,
-                    animatableSelector = { initialBackEvent, _, _ -> materialPredictiveBackAnimatable(initialBackEvent) },
-                )
+                predictiveBackParams = {
+                    PredictiveBackParams(
+                        backHandler = component.backHandler,
+                        onBack = component::onBackClicked,
+                        animatable = ::materialPredictiveBackAnimatable,
+                    )
+                },
             ),
         ) {
             // Omitted code
@@ -952,11 +956,13 @@ The `androidPredictiveBackAnimatable` API resembles the standard back gesture an
             stack = component.childStack,
             animation = stackAnimation(
                 animator = fade() + scale(),
-                predictiveBackParams = PredictiveBackParams(
-                    backHandler = component.backHandler,
-                    onBack = component::onBackClicked,
-                    animatableSelector = { initialBackEvent, _, _ -> androidPredictiveBackAnimatable(initialBackEvent) },
-                )
+                predictiveBackParams = {
+                    PredictiveBackParams(
+                        backHandler = component.backHandler,
+                        onBack = component::onBackClicked,
+                        animatable = ::androidPredictiveBackAnimatable,
+                    )
+                }
             ),
         ) {
             // Omitted code
@@ -1109,7 +1115,7 @@ Add the following code in your `androidMain` source set.
             predictiveBackParams = PredictiveBackParams(
                 backHandler = backHandler,
                 onBack = onBack,
-                animatableSelector = { initialBackEvent, _, _ -> materialPredictiveBackAnimatable(initialBackEvent) },
+                animatable = ::materialPredictiveBackAnimatable,
             )
         )
     ```
@@ -1205,10 +1211,12 @@ Add the following code in your `iosMain` source set.
     ): StackAnimation<C, T> =
         stackAnimation(
             animator = iosLikeSlide(),
-            predictiveBackParams = PredictiveBackParams(
-                backHandler = backHandler,
-                onBack = onBack,
-            )
+            predictiveBackParams = {
+                PredictiveBackParams(
+                    backHandler = backHandler,
+                    onBack = onBack,
+                )
+            },
         )
     
     private fun iosLikeSlide(animationSpec: FiniteAnimationSpec<Float> = tween()): StackAnimator =
