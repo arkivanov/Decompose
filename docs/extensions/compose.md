@@ -771,7 +771,7 @@ The `ChildStack` composable function exposes [AnimatedVisibilityScope](https://d
 ## Predictive Back Gesture
 
 !!!warning
-    Predictive Back Gesture support is experimental, the API is subject to change. For now, please use version 2.1.x.
+    Predictive Back Gesture support is experimental, the API is subject to change.
 
 `Child Stack` supports the new [Android Predictive Back Gesture](https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture) on all platforms. By default, the gesture animation resembles the [predictive back design for Android](https://developer.android.com/design/ui/mobile/guides/patterns/predictive-back), but it's customizable.
 
