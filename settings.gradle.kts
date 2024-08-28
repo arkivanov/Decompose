@@ -30,6 +30,7 @@ if (!startParameter.projectProperties.containsKey("check_publication")) {
     include(":extensions-compose")
     include(":extensions-compose-experimental")
     include(":extensions-android")
+    include(":plugin-idea")
     include(":sample:shared:shared")
     include(":sample:shared:compose")
     include(":sample:shared:dynamic-features:api")

@@ -1,0 +1,12 @@
+<idea-plugin>
+
+    <depends>org.jetbrains.kotlin</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <runLineMarkerContributor implementationClass="com.arkivanov.decompose.plugin.idea.ComponentHierarchyRunLineMarkerContributor"
+            language="kotlin" />
+
+        <toolWindow anchor="right" doNotActivateOnStart="true"
+            factoryClass="com.arkivanov.decompose.plugin.idea.ComponentHierarchyToolWindowFactory" id="Decompose Component Hierarchy" />
+    </extensions>
+</idea-plugin>
