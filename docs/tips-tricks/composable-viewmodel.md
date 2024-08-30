@@ -23,7 +23,7 @@ class DefaultMainComponent(
 }
 ```
 
-The Details screen is a `Composable` function with a `ViewModel`.
+The Details screen is a `Composable` function with a `ViewModel`, e.g. an existing screen that is difficult to migrate to Decompose.
 
 ```kotlin title="Details screen"
 import androidx.compose.runtime.Composable
@@ -40,7 +40,45 @@ class DetailsViewModel : ViewModel() {
 }
 ```
 
-### Composable functions with ViewModels WITHOUT SavedStateHandle
+## Injecting a ViewModel into a Composable function
+
+Decompose destroys components as soon as they are removed from the hierarchy (e.g. when a screen is popped from the stack). This may cause issues when injecting `ViewModels` into `Composable` functions. If the removed screen is still animating but its `ViewModel` has already been cleared, a new instance of the `ViewModel` may be created on next re-composition, causing a memory leak.
+
+To prevent the issue described above, `ViewModel` injecting should be done in a special way.
+
+```kotlin title="ViewModel injecting function"
+import androidx.compose.runtime.Composable
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+
+@Composable
+inline fun <reified T : ViewModel> rememberViewModel(): T {
+    var vm by remember { mutableStateOf<T?>(null) }
+    if (vm == null) {
+        vm = viewModel<T>()
+    }
+
+    return requireNotNull(vm)
+}
+```
+
+Then just replace all usages of the `viewModel()` injecting function with the new `rememberViewModel()` function.
+
+```kotlin title="Details screen"
+import androidx.compose.runtime.Composable
+import androidx.lifecycle.ViewModel
+
+@Composable
+fun DetailsContent(viewModel: DetailsViewModel = rememberViewModel()) {
+    // Omitted code
+}
+
+class DetailsViewModel : ViewModel() { 
+    // Omitted code
+}
+```
+
+## Composable functions with ViewModels WITHOUT SavedStateHandle
 
 The fix is very simple when `SavedStateHandle` is not required.
 
@@ -154,7 +192,7 @@ fun RootContent(component: RootComponent) {
 }
 ```
 
-### Composable functions with ViewModels WITH SavedStateHandle
+## Composable functions with ViewModels WITH SavedStateHandle
 
 Things are a bit more complicated when injecting `SavedStateHandle` is required.
 
