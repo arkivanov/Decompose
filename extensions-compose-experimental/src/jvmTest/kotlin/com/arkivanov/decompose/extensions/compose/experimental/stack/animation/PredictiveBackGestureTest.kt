@@ -1,5 +1,7 @@
 package com.arkivanov.decompose.extensions.compose.experimental.stack.animation
 
+import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.material.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +22,7 @@ import com.arkivanov.essenty.backhandler.BackEvent
 import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 @Suppress("TestFunctionName")
 @OptIn(ExperimentalDecomposeApi::class)
@@ -280,6 +283,44 @@ class PredictiveBackGestureTest {
         composeRule.onNodeWithText("2").assertDoesNotExist()
         composeRule.onNodeWithText("3").assertExists()
         composeRule.onNodeWithText("3").assertTestTagToRootDoesNotExist { it.startsWith(TEST_TAG_PREFIX) }
+    }
+
+    @Test
+    fun GIVEN_three_children_in_stack_WHEN_predictive_back_finished_THEN_previous_child_not_animated_after_pop() {
+        var stack by mutableStateOf(stack("1", "2", "3"))
+        val values = ArrayList<Float>()
+
+        val animation =
+            DefaultStackAnimation(
+                onBack = {
+                    values.clear()
+                    stack = stack.dropLast()
+                }
+            )
+
+
+        composeRule.setContent {
+            animation(stack, Modifier) {
+                val float by transition.animateFloat { state ->
+                    when (state) {
+                        EnterExitState.PreEnter -> 0F
+                        EnterExitState.Visible -> 1F
+                        EnterExitState.PostExit -> 0F
+                    }
+                }
+
+                if (it.configuration == "2") {
+                    values += float
+                }
+            }
+        }
+
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        composeRule.waitForIdle()
+        backDispatcher.back()
+        composeRule.waitForIdle()
+
+        assertFalse(values.any { it < 1F })
     }
 
     private fun DefaultStackAnimation(onBack: () -> Unit): DefaultStackAnimation<String, String> =

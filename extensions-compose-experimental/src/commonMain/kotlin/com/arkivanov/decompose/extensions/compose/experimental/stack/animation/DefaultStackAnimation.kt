@@ -57,10 +57,10 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             currentStack = stack
 
             val updateItems =
-                if (stack.active.key == oldStack.active.key) {
-                    items.keys.singleOrNull() != stack.active.key
-                } else {
-                    items.keys.toList() != stackKeys
+                when {
+                    stack.active.key == oldStack.active.key -> items.keys.singleOrNull() != stack.active.key
+                    items.size == 1 -> items.keys.single() != stack.active.key
+                    else -> items.keys.toList() != stackKeys
                 }
 
             if (updateItems) {
