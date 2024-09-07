@@ -258,8 +258,6 @@ final class com.arkivanov.decompose/DefaultComponentContext : com.arkivanov.deco
 }
 
 sealed class <#A: out kotlin/Any, #B: out kotlin/Any> com.arkivanov.decompose/Child { // com.arkivanov.decompose/Child|null[0]
-    constructor <init>() // com.arkivanov.decompose/Child.<init>|<init>(){}[0]
-
     abstract val configuration // com.arkivanov.decompose/Child.configuration|{}configuration[0]
         abstract fun <get-configuration>(): #A // com.arkivanov.decompose/Child.configuration.<get-configuration>|<get-configuration>(){}[0]
     abstract val instance // com.arkivanov.decompose/Child.instance|{}instance[0]
