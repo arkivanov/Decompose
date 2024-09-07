@@ -18,6 +18,7 @@ import com.arkivanov.decompose.Ref
 import com.arkivanov.decompose.extensions.compose.stack.animation.LocalStackAnimationProvider
 import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.animation.emptyStackAnimation
+import com.arkivanov.decompose.extensions.compose.utils.InputConsumingOverlay
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.backhandler.BackEvent
@@ -94,6 +95,10 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
                         content = childContent,
                     )
                 }
+            }
+
+            if (handler.items.size > 1) {
+                InputConsumingOverlay(modifier = Modifier.matchParentSize())
             }
         }
 
