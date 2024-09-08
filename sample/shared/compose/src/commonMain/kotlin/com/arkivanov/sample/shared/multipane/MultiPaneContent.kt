@@ -27,9 +27,9 @@ import com.arkivanov.sample.shared.utils.TopAppBar
 
 @Composable
 internal fun MultiPaneContent(component: MultiPaneComponent, modifier: Modifier = Modifier) {
-    val children by component.children.subscribeAsState()
-    val listChild = children.listChild
-    val detailsChild = children.detailsChild
+    val children by component.panels.subscribeAsState()
+    val listChild = children.main
+    val detailsChild = children.details
 
     val saveableStateHolder = rememberSaveableStateHolder()
 
@@ -57,7 +57,7 @@ internal fun MultiPaneContent(component: MultiPaneComponent, modifier: Modifier 
             }
         }
 
-    saveableStateHolder.OldDetailsKeyRemoved(selectedDetailsKey = children.detailsChild?.configuration?.hashCode())
+    saveableStateHolder.OldDetailsKeyRemoved(selectedDetailsKey = detailsChild?.configuration?.hashCode())
 
     Column(modifier = modifier) {
         if (children.isMultiPane) {
@@ -69,11 +69,11 @@ internal fun MultiPaneContent(component: MultiPaneComponent, modifier: Modifier 
                 children.isMultiPane ->
                     Row(modifier = Modifier.fillMaxSize()) {
                         Box(modifier = Modifier.fillMaxHeight().weight(0.4F)) {
-                            listPane(children.listChild)
+                            listPane(listChild)
                         }
 
                         Box(modifier = Modifier.fillMaxHeight().weight(0.6F)) {
-                            children.detailsChild?.also {
+                            detailsChild?.also {
                                 detailsPane(it)
                             }
                         }

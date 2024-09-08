@@ -1,16 +1,12 @@
 package com.arkivanov.sample.shared.multipane
 
-import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.children.ChildNavState
-import com.arkivanov.decompose.router.children.ChildNavState.Status
-import com.arkivanov.decompose.router.children.NavState
-import com.arkivanov.decompose.router.children.SimpleChildNavState
-import com.arkivanov.decompose.router.children.SimpleNavigation
-import com.arkivanov.decompose.router.children.children
+import com.arkivanov.decompose.router.panels.ChildPanels
+import com.arkivanov.decompose.router.panels.Panels
+import com.arkivanov.decompose.router.panels.PanelsNavigation
+import com.arkivanov.decompose.router.panels.childPanels
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
-import com.arkivanov.sample.shared.multipane.MultiPaneComponent.Children
 import com.arkivanov.sample.shared.multipane.database.DefaultArticleDatabase
 import com.arkivanov.sample.shared.multipane.details.ArticleDetailsComponent
 import com.arkivanov.sample.shared.multipane.details.DefaultArticleDetailsComponent
@@ -22,32 +18,24 @@ import com.badoo.reaktive.observable.map
 import com.badoo.reaktive.observable.notNull
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
 
 internal class DefaultMultiPaneComponent(
     componentContext: ComponentContext,
 ) : MultiPaneComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
     private val database = DefaultArticleDatabase()
-    private val navigation = SimpleNavigation<(NavigationState) -> NavigationState>()
-    private val navState = BehaviorSubject<NavigationState?>(null)
+    private val nav = PanelsNavigation<Unit, DetailsConfig>()
+    private val navState = BehaviorSubject<Panels<Unit, DetailsConfig>?>(null)
 
-    override val children: Value<Children> =
-        children(
-            source = navigation,
-            stateSerializer = NavigationState.serializer(),
-            key = "children",
-            initialState = ::NavigationState,
-            navTransformer = { navState, event -> event(navState) },
-            stateMapper = { navState, children ->
-                @Suppress("UNCHECKED_CAST")
-                Children(
-                    isMultiPane = navState.isMultiPane,
-                    listChild = children.first { it.instance is ArticleListComponent } as Child.Created<*, ArticleListComponent>,
-                    detailsChild = children.find { it.instance is ArticleDetailsComponent } as Child.Created<*, ArticleDetailsComponent>?,
-                )
-            },
+    override val panels: Value<ChildPanels<*, ArticleListComponent, *, ArticleDetailsComponent>> =
+        childPanels(
+            source = nav,
+            initialPanels = { Panels(mainConfig = Unit) },
+            serializers = Unit.serializer() to DetailsConfig.serializer(),
             onStateChanged = { newState, _ -> navState.onNext(newState) },
-            childFactory = ::child,
+            mainFactory = { _, ctx -> listComponent(ctx) },
+            detailsFactory = ::detailsComponent,
         )
 
     private val backCallback = BackCallback(isEnabled = false, onBack = ::closeDetails)
@@ -56,26 +44,20 @@ internal class DefaultMultiPaneComponent(
         backHandler.register(backCallback)
 
         navState.notNull().subscribeScoped {
-            backCallback.isEnabled = !it.isMultiPane && (it.articleId != null)
+            backCallback.isEnabled = !it.isMultiPane && (it.detailsConfig?.articleId != null)
         }
     }
-
-    private fun child(config: Config, componentContext: ComponentContext): Any =
-        when (config) {
-            is Config.List -> listComponent(componentContext)
-            is Config.Details -> detailsComponent(config, componentContext)
-        }
 
     private fun listComponent(componentContext: ComponentContext): ArticleListComponent =
         DefaultArticleListComponent(
             componentContext = componentContext,
             database = database,
             isToolbarVisible = navState.notNull().map { !it.isMultiPane },
-            selectedArticleId = navState.notNull().map { if (it.isMultiPane) it.articleId else null },
+            selectedArticleId = navState.notNull().map { if (it.isMultiPane) it.detailsConfig?.articleId else null },
             onArticleSelected = ::showDetails,
         )
 
-    private fun detailsComponent(config: Config.Details, componentContext: ComponentContext): ArticleDetailsComponent =
+    private fun detailsComponent(config: DetailsConfig, componentContext: ComponentContext): ArticleDetailsComponent =
         DefaultArticleDetailsComponent(
             componentContext = componentContext,
             database = database,
@@ -85,36 +67,17 @@ internal class DefaultMultiPaneComponent(
         )
 
     override fun setMultiPane(isMultiPane: Boolean) {
-        navigation.navigate { it.copy(isMultiPane = isMultiPane) }
+        nav.navigate(transformer = { it.copy(isMultiPane = isMultiPane) })
     }
 
     private fun showDetails(articleId: Long) {
-        navigation.navigate { it.copy(articleId = articleId) }
+        nav.navigate(transformer = { it.copy(detailsConfig = DetailsConfig(articleId = articleId)) })
     }
 
     private fun closeDetails() {
-        navigation.navigate { it.copy(articleId = null) }
+        nav.navigate(transformer = { it.copy(detailsConfig = null) })
     }
 
     @Serializable
-    private sealed interface Config {
-        @Serializable
-        data object List : Config
-
-        @Serializable
-        data class Details(val articleId: Long) : Config
-    }
-
-    @Serializable
-    private data class NavigationState(
-        val isMultiPane: Boolean = false,
-        val articleId: Long? = null,
-    ) : NavState<Config> {
-        override val children: List<ChildNavState<Config>> by lazy {
-            listOfNotNull(
-                SimpleChildNavState(Config.List, if (isMultiPane || (articleId == null)) Status.RESUMED else Status.CREATED),
-                if (articleId != null) SimpleChildNavState(Config.Details(articleId), Status.RESUMED) else null,
-            )
-        }
-    }
+    data class DetailsConfig(val articleId: Long)
 }
