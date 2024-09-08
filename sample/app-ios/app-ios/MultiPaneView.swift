@@ -8,53 +8,64 @@
 import SwiftUI
 import Shared
 
-private let listPaneWeight = CGFloat(0.4)
-private let detailsPaneWeight = CGFloat(0.6)
+private let listPaneWeight = CGFloat(0.3)
+private let detailsPaneWeight = CGFloat(0.4)
+private let authorPaneWeight = CGFloat(0.3)
 
 struct MultiPaneView: View {
     private let component: MultiPaneComponent
     
     @StateValue
-    private var children: MultiPaneComponentChildren
+    private var panels: ChildPanels<AnyObject, ArticleListComponent, AnyObject, ArticleDetailsComponent, AnyObject, ArticleAuthorComponent>
     
-    private var isMultiPane: Bool { children.isMultiPane }
-    private var listComponent: ArticleListComponent { children.listChild.instance }
-    private var detailsComponent: ArticleDetailsComponent? { children.detailsChild?.instance }
+    private var mode: ChildPanelsMode { panels.mode }
+    private var listComponent: ArticleListComponent { panels.main.instance }
+    private var detailsComponent: ArticleDetailsComponent? { panels.details?.instance }
+    private var authorComponent: ArticleAuthorComponent? { panels.extra?.instance }
     
     init(_ component: MultiPaneComponent) {
         self.component = component
-        _children = StateValue(component.children)
+        _panels = StateValue(component.panels)
     }
     
     var body: some View {
         ZStack(alignment: .top) {
             ListPane(
                 listComponent: listComponent,
-                isMultiPane: isMultiPane,
-                isVisible: isMultiPane || (detailsComponent == nil)
+                mode: mode,
+                isVisible: (mode != .single) || (detailsComponent == nil)
             )
             
             DetailsPane(
                 detailsComponent: detailsComponent,
-                isMultiPane: isMultiPane
+                mode: mode
             )
-        }.onAppear { component.setMultiPane(isMultiPane: deviceRequiresMultiPane()) }
+            
+            AuthorPane(
+                authorComponent: authorComponent,
+                mode: mode
+            )
+        }
+        .onAppear { component.setMode(mode: requiredMode()) }
+        .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+            component.setMode(mode: requiredMode())
+        }
     }
 }
 
 struct ListPane: View {
     let listComponent: ArticleListComponent
-    let isMultiPane: Bool
+    let mode: ChildPanelsMode
     let isVisible: Bool
     
     var body: some View {
         GeometryReader { metrics in
             HStack {
                 ArticleListView(listComponent)
-                    .frame(width: isMultiPane ? metrics.size.width * listPaneWeight : metrics.size.width)
+                    .frame(width: mode == .single ? metrics.size.width : metrics.size.width * listPaneWeight)
                 
-                if isMultiPane {
-                    Spacer().frame(width: metrics.size.width * detailsPaneWeight)
+                if (mode != .single) {
+                    Spacer().frame(width: metrics.size.width * (detailsPaneWeight + authorPaneWeight))
                 }
             }
         }.opacity(isVisible ? 1 : 0)
@@ -63,18 +74,30 @@ struct ListPane: View {
 
 struct DetailsPane: View {
     let detailsComponent: ArticleDetailsComponent?
-    let isMultiPane: Bool
+    let mode: ChildPanelsMode
     
     var body: some View {
         if (detailsComponent != nil) {
             GeometryReader { metrics in
                 HStack {
-                    if isMultiPane {
+                    if (mode != .single) {
                         Spacer().frame(width: metrics.size.width * listPaneWeight)
                     }
                     
+                    let width = switch mode {
+                        case .single: metrics.size.width
+                        case .dual: metrics.size.width * (detailsPaneWeight + authorPaneWeight)
+                        case .triple: metrics.size.width * detailsPaneWeight
+                        default: metrics.size.width
+                    }
+                    
                     ArticleDetailsView(detailsComponent!)
-                        .frame(width: isMultiPane ? metrics.size.width * detailsPaneWeight : metrics.size.width)
+                        .frame(width: width)
+                        .background(.background)
+                    
+                    if (mode == .triple) {
+                        Spacer().frame(width: metrics.size.width * authorPaneWeight)
+                    }
                 }
             }
         } else {
@@ -83,27 +106,50 @@ struct DetailsPane: View {
     }
 }
 
-private func deviceRequiresMultiPane() -> Bool {
-    return UIDevice.current.userInterfaceIdiom == .pad
+struct AuthorPane: View {
+    let authorComponent: ArticleAuthorComponent?
+    let mode: ChildPanelsMode
+    
+    var body: some View {
+        if (authorComponent != nil) {
+            GeometryReader { metrics in
+                HStack {
+                    if (mode != .single) {
+                        Spacer().frame(width: metrics.size.width * listPaneWeight)
+                    }
+                    
+                    if (mode == .triple) {
+                        Spacer().frame(width: metrics.size.width * detailsPaneWeight)
+                    }
+                    
+                    let width = switch mode {
+                        case .single: metrics.size.width
+                        case .dual: metrics.size.width * (detailsPaneWeight + authorPaneWeight)
+                        case .triple: metrics.size.width * authorPaneWeight
+                        default: metrics.size.width
+                    }
+                    
+                    ArticleAuthorView(authorComponent!)
+                        .frame(width: width)
+                        .background(.background)
+                }
+            }
+        } else {
+            EmptyView()
+        }
+    }
+}
+
+private func requiredMode() -> ChildPanelsMode {
+    return if (UIDevice.current.userInterfaceIdiom == .pad) {
+        UIDevice.current.orientation.isLandscape ? .triple : .dual
+    } else {
+        UIDevice.current.orientation.isLandscape ? .dual : .single
+    }
 }
 
 struct MultiPaneView_Previews: PreviewProvider {
     static var previews: some View {
-        MultiPaneView(PreviewMultiPaneComponent())
+        MultiPaneView(PreviewMultiPaneComponent(isMultiPane: true))
     }
-}
-
-class PreviewMultiPaneComponent: MultiPaneComponent {
-    var listComponent: ArticleListComponent = PreviewArticleListComponent()
-    
-    var children: Value<MultiPaneComponentChildren> = mutableValue(
-        MultiPaneComponentChildren(
-            isMultiPane: false,
-            listChild: ChildCreated(configuration: "list" as AnyObject, instance: PreviewArticleListComponent()),
-            detailsChild: nil
-        )
-    )
-    
-    func setMultiPane(isMultiPane: Bool) {}
-    func onCloseClicked() {}
 }

@@ -1,6 +1,7 @@
 package com.arkivanov.sample.shared.multipane.database
 
 import kotlin.random.Random
+import kotlin.random.nextInt
 
 internal object LorenIpsumGenerator {
 
@@ -8,7 +9,7 @@ internal object LorenIpsumGenerator {
         List(count) {
             var word: String
             do {
-                word = words.random()
+                word = randomWord()
             } while (word.length < minWordLength)
             word
         }
@@ -20,6 +21,11 @@ internal object LorenIpsumGenerator {
                 prefix = words.random().replaceFirstChar(Char::uppercase),
                 postfix = "."
             )
+
+    fun randomWord(capitalize: Boolean = false): String =
+        words.random().let { word ->
+            word.takeIf { capitalize }?.replaceFirstChar(Char::uppercase) ?: word
+        }
 
     private val words =
         listOf(

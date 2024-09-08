@@ -40,7 +40,7 @@ internal fun ArticleListContent(component: ArticleListComponent, modifier: Modif
                         .fillMaxWidth()
                         .selectable(
                             selected = isSelected,
-                            onClick = { component.onArticleClicked(id = article.id) }
+                            onClick = { component.onArticleClicked(article) }
                         )
                         .run { if (isSelected) background(color = selectionColor()) else this }
                         .padding(16.dp)

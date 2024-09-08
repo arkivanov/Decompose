@@ -17,13 +17,13 @@ internal class DefaultArticleListComponent(
     database: ArticleDatabase,
     isToolbarVisible: Observable<Boolean>,
     selectedArticleId: Observable<Long?>,
-    private val onArticleSelected: (id: Long) -> Unit,
+    private val onArticleSelected: (articleId: Long, authorId: Long) -> Unit,
 ) : ArticleListComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
     private val _models =
         MutableValue(
             Model(
-                articles = database.getAll().map { it.toArticle() },
+                articles = database.getArticles().map { it.toArticle() },
                 isToolbarVisible = false,
                 selectedArticleId = null
             )
@@ -44,10 +44,11 @@ internal class DefaultArticleListComponent(
     private fun ArticleEntity.toArticle(): Article =
         Article(
             id = id,
+            authorId = author.id,
             title = title
         )
 
-    override fun onArticleClicked(id: Long) {
-        onArticleSelected(id)
+    override fun onArticleClicked(article: Article) {
+        onArticleSelected(article.id, article.authorId)
     }
 }

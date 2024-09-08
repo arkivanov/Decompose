@@ -23,7 +23,11 @@ struct ArticleDetailsView: View {
         if model.isToolbarVisible {
             NavigationView {
                 VStack {
-                    DetailsTextView(text: model.article.text)
+                    DetailsView(
+                        authorName: model.article.authorName,
+                        text: model.article.text,
+                        onAuthorClicked: component.onAuthorClicked
+                    )
                 }.navigationBarTitle(
                     Text(model.article.title),
                     displayMode: .inline
@@ -36,38 +40,44 @@ struct ArticleDetailsView: View {
                 )
             }
         } else {
-            DetailsTextView(text: model.article.text)
+            DetailsView(
+                authorName: model.article.authorName,
+                text: model.article.text,
+                onAuthorClicked: component.onAuthorClicked
+            )
         }
     }
 }
 
-struct DetailsTextView: View {
+private struct DetailsView: View {
+    let authorName: String
     let text: String
+    let onAuthorClicked: () -> Void
     
     var body: some View {
         ScrollView([.vertical]) {
-            Text(text)
-                .padding([.top, .leading, .trailing])
-                .lineLimit(nil)
+            VStack(alignment: .leading) {
+                HStack {
+                    Text("Author: ")
+                        .font(.title3)
+                    
+                    Text(authorName)
+                        .font(.title3)
+                        .underline()
+                }
+                .padding([.top, .leading, .trailing, .bottom])
+                .onTapGesture(perform: onAuthorClicked)
+                
+                Text(text)
+                    .padding([.leading, .trailing])
+                    .lineLimit(nil)
+            }
         }
     }
 }
 
 struct DetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleDetailsView(PreviewArticleDetailsComponent())
+        ArticleDetailsView(PreviewArticleDetailsComponent(isToolbarVisible: true))
     }
-}
-
-class PreviewArticleDetailsComponent: ArticleDetailsComponent {
-    func onCloseClicked() {}
-    
-    var models: Value<ArticleDetailsComponentModel> = mutableValue(
-        ArticleDetailsComponentModel(
-            isToolbarVisible: false,
-            article: ArticleDetailsComponentArticle(
-                title: "You can use this approach to create loops of any type. For example, this code ", text: "You can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each color name and color value:, u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each , u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each u can use this approach to create loops of any type. For example, this code creates an array of three colors, loops over them all, and creates text views using each "
-            )
-        )
-    )
 }

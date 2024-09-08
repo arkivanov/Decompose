@@ -2,7 +2,9 @@ package com.arkivanov.sample.shared.multipane.database
 
 internal interface ArticleDatabase {
 
-    fun getAll(): List<ArticleEntity>
+    fun getArticles(): List<ArticleEntity>
 
-    fun getById(id: Long): ArticleEntity
+    fun getArticle(id: Long): ArticleEntity
+
+    fun getAuthor(id: Long): AuthorEntity
 }

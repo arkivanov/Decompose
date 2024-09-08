@@ -6,7 +6,7 @@ interface ArticleListComponent {
 
     val models: Value<Model>
 
-    fun onArticleClicked(id: Long)
+    fun onArticleClicked(article: Article)
 
     data class Model(
         val articles: List<Article>,
@@ -16,6 +16,7 @@ interface ArticleListComponent {
 
     data class Article(
         val id: Long,
+        val authorId: Long,
         val title: String
     )
 }

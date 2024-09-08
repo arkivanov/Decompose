@@ -24,7 +24,7 @@ struct ArticleListView: View {
             Text(article.title)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .onTapGesture { component.onArticleClicked(id: article.id) }
+                .onTapGesture { component.onArticleClicked(article: article) }
                 .listRowBackground(
                     article.id == model.selectedArticleId?.int64Value ? Color.accentColor : Color.clear)
                 .listRowInsets(EdgeInsets())
@@ -34,23 +34,6 @@ struct ArticleListView: View {
 
 struct ArticleListView_Previews: PreviewProvider {
     static var previews: some View {
-        ArticleListView(PreviewArticleListComponent())
+        ArticleListView(PreviewArticleListComponent(isToolbarVisible: false))
     }
-}
-
-class PreviewArticleListComponent: ArticleListComponent {
-    var models: Value<ArticleListComponentModel> = mutableValue(
-        ArticleListComponentModel(
-            articles: [
-                ArticleListComponentArticle(id: 1, title: "Test Title 1"),
-                ArticleListComponentArticle(id: 2, title: "Test Title 2"),
-                ArticleListComponentArticle(id: 3, title: "Test Title 3")
-            ],
-            isToolbarVisible: true,
-            selectedArticleId: 1
-        )
-    )
-    
-    func onArticleClicked(id: Int64) {}
-    func onCloseClicked() {}
 }
