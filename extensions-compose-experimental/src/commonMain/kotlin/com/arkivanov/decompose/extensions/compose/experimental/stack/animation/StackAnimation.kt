@@ -34,7 +34,7 @@ fun interface StackAnimation<C : Any, T : Any> {
 @ExperimentalDecomposeApi
 fun <C : Any, T : Any> stackAnimation(
     disableInputDuringAnimation: Boolean = true,
-    predictiveBackParams: (ChildStack<C, T>) -> PredictiveBackParams<C, T>? = { null },
+    predictiveBackParams: (ChildStack<C, T>) -> PredictiveBackParams? = { null },
     selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator?,
 ): StackAnimation<C, T> =
     DefaultStackAnimation(
@@ -56,7 +56,7 @@ fun <C : Any, T : Any> stackAnimation(
 fun <C : Any, T : Any> stackAnimation(
     animator: StackAnimator = fade(),
     disableInputDuringAnimation: Boolean = true,
-    predictiveBackParams: (ChildStack<C, T>) -> PredictiveBackParams<C, T>? = { null },
+    predictiveBackParams: (ChildStack<C, T>) -> PredictiveBackParams? = { null },
 ): StackAnimation<C, T> =
     DefaultStackAnimation(
         disableInputDuringAnimation = disableInputDuringAnimation,
