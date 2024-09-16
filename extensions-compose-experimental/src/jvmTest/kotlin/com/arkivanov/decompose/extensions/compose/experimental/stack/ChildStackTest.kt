@@ -237,13 +237,13 @@ class ChildStackTest(
 
         private fun getParameters(): List<StackAnimation<Config, Config>?> {
             val predictiveBackParams1 =
-                PredictiveBackParams<Config, Config>(
+                PredictiveBackParams(
                     backHandler = BackDispatcher(),
                     onBack = {},
                 )
 
             val predictiveBackParams2 =
-                PredictiveBackParams<Config, Config>(
+                PredictiveBackParams(
                     backHandler = BackDispatcher(),
                     onBack = {},
                     animatable = ::materialPredictiveBackAnimatable,

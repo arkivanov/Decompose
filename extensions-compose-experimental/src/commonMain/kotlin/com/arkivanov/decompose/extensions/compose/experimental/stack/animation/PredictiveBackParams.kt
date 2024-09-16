@@ -20,7 +20,7 @@ import com.arkivanov.essenty.backhandler.BackHandler
  * @see com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.androidPredictiveBackAnimatable
  */
 @ExperimentalDecomposeApi
-class PredictiveBackParams<in C : Any, in T : Any>(
+class PredictiveBackParams(
     val backHandler: BackHandler,
     val onBack: () -> Unit,
     val animatable: (initialBackEvent: BackEvent) -> PredictiveBackAnimatable? = { null },

@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 @ExperimentalDecomposeApi
 internal class DefaultStackAnimation<C : Any, T : Any>(
     private val disableInputDuringAnimation: Boolean,
-    private val predictiveBackParams: (ChildStack<C, T>) -> PredictiveBackParams<C, T>?,
+    private val predictiveBackParams: (ChildStack<C, T>) -> PredictiveBackParams?,
     private val selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator?,
 ) : StackAnimation<C, T> {
 
@@ -175,7 +175,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     @Composable
     private fun PredictiveBackController(
         stack: ChildStack<C, T>,
-        predictiveBackParams: PredictiveBackParams<C, T>,
+        predictiveBackParams: PredictiveBackParams,
         setItems: (Map<Any, AnimationItem<C, T>>) -> Unit,
     ) {
         val scope = rememberCoroutineScope()
@@ -217,7 +217,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     private inner class PredictiveBackCallback(
         private val stack: ChildStack<C, T>,
         private val scope: CoroutineScope,
-        private val predictiveBackParams: PredictiveBackParams<C, T>,
+        private val predictiveBackParams: PredictiveBackParams,
         private val setItems: (Map<Any, AnimationItem<C, T>>) -> Unit,
     ) : BackCallback() {
         private var animationHandler: AnimationHandler? = null
