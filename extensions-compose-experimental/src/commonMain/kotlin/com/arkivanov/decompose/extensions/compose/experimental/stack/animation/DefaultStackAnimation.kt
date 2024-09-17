@@ -221,8 +221,24 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         private val setItems: (Map<Any, AnimationItem<C, T>>) -> Unit,
     ) : BackCallback() {
         private var animationHandler: AnimationHandler? = null
+        private var initialBackEvent: BackEvent? = null
 
         override fun onBackStarted(backEvent: BackEvent) {
+            initialBackEvent = backEvent
+        }
+
+        override fun onBackProgressed(backEvent: BackEvent) {
+            startIfNeeded()
+
+            scope.launch {
+                animationHandler?.progress(backEvent)
+            }
+        }
+
+        private fun startIfNeeded() {
+            val backEvent = initialBackEvent ?: return
+            initialBackEvent = null
+
             val animationHandler = AnimationHandler(animatable = predictiveBackParams.animatable(backEvent))
             this.animationHandler = animationHandler
             val exitChild = stack.active
@@ -252,25 +268,28 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             }
         }
 
-        override fun onBackProgressed(backEvent: BackEvent) {
-            scope.launch {
-                animationHandler?.progress(backEvent)
-            }
-        }
-
         override fun onBackCancelled() {
+            initialBackEvent = null
+
             scope.launch {
-                animationHandler?.cancel()
-                animationHandler = null
-                setItems(getAnimationItems(newStack = stack))
+                animationHandler?.also { handler ->
+                    handler.cancel()
+                    animationHandler = null
+                    setItems(getAnimationItems(newStack = stack))
+                }
             }
         }
 
         override fun onBack() {
+            initialBackEvent = null
+
             scope.launch {
-                animationHandler?.finish()
-                animationHandler = null
-                setItems(getAnimationItems(newStack = stack.dropLast()))
+                animationHandler?.also { handler ->
+                    handler.finish()
+                    animationHandler = null
+                    setItems(getAnimationItems(newStack = stack.dropLast()))
+                }
+
                 predictiveBackParams.onBack()
             }
         }
