@@ -3,7 +3,7 @@ package com.arkivanov.decompose.router.stack
 interface StackNavigator<C : Any> {
 
     /**
-     * Transforms the current stack of configurations into a new one.
+     * Transforms the current stack of configurations to a new one.
      * The stack is represented as [List], where the last element is the top of the stack,
      * and the first element is the bottom of the stack. The returned stack must not be empty.
      *
@@ -12,7 +12,7 @@ interface StackNavigator<C : Any> {
      * there is only one component resumed at a time - the top one. All components in the back stack
      * are always either stopped or destroyed.
      *
-     * The `Child Stack` usually performs the navigation synchronously, which means that by the time
+     * The navigation is usually performed synchronously, which means that by the time
      * the `navigate` method returns, the navigation is finished and all component lifecycles are
      * moved into required states. However, the navigation is performed asynchronously in case of
      * recursive invocations - e.g. `pop` is called from `onResume` lifecycle callback of a

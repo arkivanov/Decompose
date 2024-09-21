@@ -3,14 +3,14 @@ package com.arkivanov.decompose.router.slot
 interface SlotNavigator<C : Any> {
 
     /**
-     * Transforms the current configuration into a new one. Configuration `null` means that the
+     * Transforms the current configuration to a new one. Configuration `null` means that the
      * component is not shown.
      *
      * During the navigation process, the `Child Slot` compares the new configuration with
      * the previous one. The `Child Slot` ensures that the current component is resumed, and a
      * dismissed component is destroyed.
      *
-     * The `Child Slot` usually performs the navigation synchronously, which means that by the time
+     * The navigation is usually performed synchronously, which means that by the time
      * the `navigate` method returns, the navigation is finished and all component lifecycles are
      * moved into required states. However, the navigation is performed asynchronously in case of
      * recursive invocations - e.g. `dismiss` is called from `onResume` lifecycle callback of a

@@ -21,7 +21,7 @@ import kotlinx.serialization.KSerializer
  * @param source a source of navigation events.
  * @param serializer an optional [KSerializer] to be used for serializing and deserializing configurations.
  * If `null` then the navigation state will not be preserved.
- * @param key a key of the slot, must be unique within the parent (hosting) component.
+ * @param key a key of the navigation, must be unique within the parent (hosting) component.
  * @param initialConfiguration a component configuration that should be shown if there is
  * no saved state, return `null` to show nothing.
  * @param handleBackButton determines whether the child component should be automatically dismissed
@@ -66,7 +66,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childSlot(
  * **It is strongly recommended to call this method on the Main thread.**
  *
  * @param source a source of navigation events.
- * @param key a key of the slot, must be unique within the parent (hosting) component.
+ * @param key a key of the navigation, must be unique within the parent (hosting) component.
  * @param saveConfiguration a function that saves the provided configuration into [SerializableContainer].
  * @param restoreConfiguration a function that restores the configuration from the provided [SerializableContainer].
  * @param initialConfiguration a component configuration that should be shown if there is

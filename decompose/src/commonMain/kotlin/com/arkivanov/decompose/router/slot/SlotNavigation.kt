@@ -4,7 +4,7 @@ import com.arkivanov.decompose.router.children.NavigationSource
 import com.arkivanov.decompose.router.slot.SlotNavigation.Event
 
 /**
- * Represents [SlotNavigator] and [SlotNavigationSource] at the same time.
+ * Represents [SlotNavigator] and [NavigationSource] at the same time.
  */
 interface SlotNavigation<C : Any> : SlotNavigator<C>, NavigationSource<Event<C>> {
 

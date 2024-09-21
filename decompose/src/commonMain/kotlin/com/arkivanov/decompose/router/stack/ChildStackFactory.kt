@@ -24,7 +24,7 @@ import kotlinx.serialization.builtins.ListSerializer
  * If `null` then the navigation state will not be preserved.
  * @param initialStack a stack of component configurations (ordered from tail to head) that should be set
  * if there is no saved state, must be not empty and unique.
- * @param key a key of the stack, must be unique if there are multiple stacks in the same component.
+ * @param key a key of the navigation, must be unique if there are multiple stacks in the same component.
  * @param handleBackButton determines whether the stack should be automatically popped on back button press or not,
  * default is `false`.
  * @param childFactory a factory function that creates new child instances.
@@ -95,7 +95,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
  * @param restoreStack a function that restores the stack of configuration from the provided [SerializableContainer].
  * If `null` is returned then [initialStack] is used instead.
  * The restored stack must have the same amount of configurations and in the same order.
- * @param key a key of the stack, must be unique if there are multiple stacks in the same component.
+ * @param key a key of the navigation, must be unique if there are multiple stacks in the same component.
  * @param handleBackButton determines whether the stack should be automatically popped on back button press or not,
  * default is `false`.
  * @param childFactory a factory function that creates new child instances.
