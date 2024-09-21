@@ -4,7 +4,7 @@ import com.arkivanov.decompose.router.children.NavigationSource
 import com.arkivanov.decompose.router.pages.PagesNavigation.Event
 
 /**
- * Represents [PagesNavigator] and [PagesNavigationSource] at the same time.
+ * Represents [PagesNavigator] and [NavigationSource] at the same time.
  */
 interface PagesNavigation<C : Any> : PagesNavigator<C>, NavigationSource<Event<C>> {
 

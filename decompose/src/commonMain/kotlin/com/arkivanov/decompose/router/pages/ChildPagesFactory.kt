@@ -24,7 +24,7 @@ import kotlinx.serialization.Serializable
  * If `null` then the navigation state will not be preserved.
  * @param initialPages an initial state of Child Pages that should be set
  * if there is no saved state. See [Pages] for more information.
- * @param key a key of the list, must be unique if there are multiple Child Pages used in
+ * @param key a key of the navigation, must be unique if there are multiple Child Pages used in
  * the same component.
  * @param pageStatus a function that returns a [Status] of a page at a given index.
  * By default, the currently selected page is [Status.RESUMED], its two neighbours
@@ -94,7 +94,7 @@ private class SerializablePages<out C : Any>(
  * @param restorePages a function that restores the [Pages] state from the provided [SerializableContainer].
  * If `null` is returned then [initialPages] is used instead.
  * The restored [Pages] state must have the same amount of configurations and in the same order.
- * @param key a key of the list, must be unique if there are multiple Child Pages used in
+ * @param key a key of the navigation, must be unique if there are multiple Child Pages used in
  * the same component.
  * @param pageStatus a function that returns a [Status] of a page at a given index.
  * By default, the currently selected page is [Status.RESUMED], its two neighbours

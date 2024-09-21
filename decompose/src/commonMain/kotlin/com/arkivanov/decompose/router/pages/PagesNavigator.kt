@@ -3,7 +3,7 @@ package com.arkivanov.decompose.router.pages
 interface PagesNavigator<C : Any> {
 
     /**
-     * Transforms the current [Pages] state into a new one.
+     * Transforms the current [Pages] state to a new one.
      *
      * During the navigation process, the Child Pages navigation model compares the new [Pages] state
      * with the previous one. The navigation model ensures that all removed components are destroyed,
