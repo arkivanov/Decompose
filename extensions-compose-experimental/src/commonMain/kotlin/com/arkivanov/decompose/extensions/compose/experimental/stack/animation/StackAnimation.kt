@@ -29,7 +29,7 @@ fun interface StackAnimation<C : Any, T : Any> {
  * @param predictiveBackParams a function that returns [PredictiveBackParams] for the specified [ChildStack],
  * or `null`. The predictive back gesture is enabled if the value returned for the specified [ChildStack]
  * is *not* `null`, and disabled if the returned value is `null`.
- * @param selector provides a [StackAnimator] for the current [Child], other [Child] and [Direction].
+ * @param selector provides an optional [StackAnimator] for the current [Child], other [Child] and [Direction].
  */
 @ExperimentalDecomposeApi
 fun <C : Any, T : Any> stackAnimation(
@@ -46,7 +46,7 @@ fun <C : Any, T : Any> stackAnimation(
 /**
  * Creates an implementation of [StackAnimation] with the provided [StackAnimator].
  *
- * @param animator a [StackAnimator] to be used for animation, default is [fade].
+ * @param animator an optional [StackAnimator] to be used for animation, default is [fade].
  * @param disableInputDuringAnimation disables input and touch events while animating, default value is `true`.
  * @param predictiveBackParams a function that returns [PredictiveBackParams] for the specified [ChildStack],
  * or `null`. The predictive back gesture is enabled if the value returned for the specified [ChildStack]
@@ -54,7 +54,7 @@ fun <C : Any, T : Any> stackAnimation(
  */
 @ExperimentalDecomposeApi
 fun <C : Any, T : Any> stackAnimation(
-    animator: StackAnimator = fade(),
+    animator: StackAnimator? = fade(),
     disableInputDuringAnimation: Boolean = true,
     predictiveBackParams: (ChildStack<C, T>) -> PredictiveBackParams? = { null },
 ): StackAnimation<C, T> =
