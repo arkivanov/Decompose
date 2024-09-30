@@ -24,4 +24,16 @@ class PredictiveBackParams(
     val backHandler: BackHandler,
     val onBack: () -> Unit,
     val animatable: (initialBackEvent: BackEvent) -> PredictiveBackAnimatable? = { null },
-)
+) {
+
+    internal fun copy(
+        backHandler: BackHandler = this.backHandler,
+        onBack: () -> Unit = this.onBack,
+        animatable: (initialBackEvent: BackEvent) -> PredictiveBackAnimatable? = this.animatable,
+    ): PredictiveBackParams =
+        PredictiveBackParams(
+            backHandler = backHandler,
+            onBack = onBack,
+            animatable = animatable,
+        )
+}

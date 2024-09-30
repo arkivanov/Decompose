@@ -37,6 +37,7 @@ internal val TabsContent: FC<RProps<TabsComponent>> = FC { props ->
         sx {
             display = Display.flex
             flexDirection = FlexDirection.column
+            boxSizing = BoxSizing.borderBox
             position = Position.fixed
             padding = 0.px
             top = 0.px
@@ -50,6 +51,8 @@ internal val TabsContent: FC<RProps<TabsComponent>> = FC { props ->
                 width = 100.pct
                 boxSizing = BoxSizing.borderBox
                 flex = Flex(grow = number(1.0), shrink = number(0.0), basis = 0.px)
+                display = Display.flex
+                flexDirection = FlexDirection.column
                 overflowY = Overflow.clip
             }
 

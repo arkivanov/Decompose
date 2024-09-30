@@ -1,3 +1,41 @@
+public final class com/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsAnimators {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimator;Lkotlin/Pair;Lkotlin/Triple;)V
+	public synthetic fun <init> (Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimator;Lkotlin/Pair;Lkotlin/Triple;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getDual ()Lkotlin/Pair;
+	public final fun getSingle ()Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimator;
+	public final fun getTriple ()Lkotlin/Triple;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsKt {
+	public static final fun ChildPanels (Lcom/arkivanov/decompose/router/panels/ChildPanels;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsLayout;Lcom/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsAnimators;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ChildPanels (Lcom/arkivanov/decompose/router/panels/ChildPanels;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsLayout;Lcom/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsAnimators;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ChildPanels (Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsLayout;Lcom/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsAnimators;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ChildPanels (Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsLayout;Lcom/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsAnimators;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+}
+
+public abstract interface class com/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsLayout {
+	public abstract fun Layout (Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/arkivanov/decompose/extensions/compose/experimental/panels/ComposableSingletons$ChildPanelsKt {
+	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/experimental/panels/ComposableSingletons$ChildPanelsKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function3;
+	public static field lambda-2 Lkotlin/jvm/functions/Function3;
+	public fun <init> ()V
+	public final fun getLambda-1$extensions_compose_experimental_release ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-2$extensions_compose_experimental_release ()Lkotlin/jvm/functions/Function3;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/experimental/panels/HorizontalChildPanelsLayout : com/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsLayout {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (Lkotlin/Pair;Lkotlin/Triple;)V
+	public synthetic fun <init> (Lkotlin/Pair;Lkotlin/Triple;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun Layout (Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+}
+
 public final class com/arkivanov/decompose/extensions/compose/experimental/stack/ChildStackKt {
 	public static final fun ChildStack (Lcom/arkivanov/decompose/router/stack/ChildStack;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function4;Landroidx/compose/runtime/Composer;II)V
 	public static final fun ChildStack (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function4;Landroidx/compose/runtime/Composer;II)V

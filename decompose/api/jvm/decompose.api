@@ -214,6 +214,126 @@ public final class com/arkivanov/decompose/router/pages/PagesNavigatorExtKt {
 	public static synthetic fun selectPrev$default (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
+public final class com/arkivanov/decompose/router/panels/ChildPanels {
+	public fun <init> (Lcom/arkivanov/decompose/Child$Created;Lcom/arkivanov/decompose/Child$Created;Lcom/arkivanov/decompose/Child$Created;Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;)V
+	public synthetic fun <init> (Lcom/arkivanov/decompose/Child$Created;Lcom/arkivanov/decompose/Child$Created;Lcom/arkivanov/decompose/Child$Created;Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/arkivanov/decompose/Child$Created;
+	public final fun component2 ()Lcom/arkivanov/decompose/Child$Created;
+	public final fun component3 ()Lcom/arkivanov/decompose/Child$Created;
+	public final fun component4 ()Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;
+	public final fun copy (Lcom/arkivanov/decompose/Child$Created;Lcom/arkivanov/decompose/Child$Created;Lcom/arkivanov/decompose/Child$Created;Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;)Lcom/arkivanov/decompose/router/panels/ChildPanels;
+	public static synthetic fun copy$default (Lcom/arkivanov/decompose/router/panels/ChildPanels;Lcom/arkivanov/decompose/Child$Created;Lcom/arkivanov/decompose/Child$Created;Lcom/arkivanov/decompose/Child$Created;Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/panels/ChildPanels;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDetails ()Lcom/arkivanov/decompose/Child$Created;
+	public final fun getExtra ()Lcom/arkivanov/decompose/Child$Created;
+	public final fun getMain ()Lcom/arkivanov/decompose/Child$Created;
+	public final fun getMode ()Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/arkivanov/decompose/router/panels/ChildPanelsFactoryKt {
+	public static final fun childPanels (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/Pair;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun childPanels (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/Triple;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun childPanels (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun childPanels (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childPanels$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/Pair;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childPanels$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/Triple;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childPanels$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childPanels$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+}
+
+public final class com/arkivanov/decompose/router/panels/ChildPanelsMode : java/lang/Enum {
+	public static final field DUAL Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;
+	public static final field SINGLE Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;
+	public static final field TRIPLE Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;
+	public static fun values ()[Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;
+}
+
+public final class com/arkivanov/decompose/router/panels/ChildPanelsModeKt {
+	public static final fun isDual (Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;)Z
+	public static final fun isSingle (Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;)Z
+	public static final fun isTriple (Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;)Z
+}
+
+public final class com/arkivanov/decompose/router/panels/Panels {
+	public static final field Companion Lcom/arkivanov/decompose/router/panels/Panels$Companion;
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;)V
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun component3 ()Ljava/lang/Object;
+	public final fun component4 ()Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;
+	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;)Lcom/arkivanov/decompose/router/panels/Panels;
+	public static synthetic fun copy$default (Lcom/arkivanov/decompose/router/panels/Panels;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/panels/Panels;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDetails ()Ljava/lang/Object;
+	public final fun getExtra ()Ljava/lang/Object;
+	public final fun getMain ()Ljava/lang/Object;
+	public final fun getMode ()Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class com/arkivanov/decompose/router/panels/Panels$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/arkivanov/decompose/router/panels/Panels;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/arkivanov/decompose/router/panels/Panels;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/arkivanov/decompose/router/panels/Panels$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class com/arkivanov/decompose/router/panels/PanelsNavigation : com/arkivanov/decompose/router/children/NavigationSource, com/arkivanov/decompose/router/panels/PanelsNavigator {
+}
+
+public final class com/arkivanov/decompose/router/panels/PanelsNavigation$Event {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getOnComplete ()Lkotlin/jvm/functions/Function2;
+	public final fun getTransformer ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/arkivanov/decompose/router/panels/PanelsNavigationKt {
+	public static final fun PanelsNavigation ()Lcom/arkivanov/decompose/router/panels/PanelsNavigation;
+}
+
+public abstract interface class com/arkivanov/decompose/router/panels/PanelsNavigator {
+	public abstract fun navigate (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+}
+
+public final class com/arkivanov/decompose/router/panels/PanelsNavigatorExtKt {
+	public static final fun activateDetails (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun activateDetails$default (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun activateExtra (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun activateExtra$default (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun activateMain (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun activateMain$default (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun dismissDetails (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun dismissDetails$default (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun dismissExtra (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun dismissExtra$default (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun navigate (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)V
+	public static final fun navigate (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)V
+	public static final fun navigate (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)V
+	public static final fun navigate (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun navigate$default (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static synthetic fun navigate$default (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static synthetic fun navigate$default (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun pop (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun pop$default (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun setMode (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun setMode$default (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
 public final class com/arkivanov/decompose/router/slot/ChildSlot {
 	public fun <init> ()V
 	public fun <init> (Lcom/arkivanov/decompose/Child$Created;)V

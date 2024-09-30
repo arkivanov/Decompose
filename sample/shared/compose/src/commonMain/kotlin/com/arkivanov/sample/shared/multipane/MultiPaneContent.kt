@@ -1,115 +1,94 @@
 package com.arkivanov.sample.shared.multipane
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.movableContentOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.SaveableStateHolder
-import androidx.compose.runtime.saveable.rememberSaveableStateHolder
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.experimental.panels.ChildPanels
+import com.arkivanov.decompose.extensions.compose.experimental.panels.ChildPanelsAnimators
+import com.arkivanov.decompose.extensions.compose.experimental.panels.HorizontalChildPanelsLayout
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.PredictiveBackParams
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.arkivanov.sample.shared.multipane.details.ArticleDetailsComponent
+import com.arkivanov.decompose.router.panels.ChildPanelsMode
+import com.arkivanov.decompose.router.panels.isSingle
+import com.arkivanov.sample.shared.multipane.author.ArticleAuthorContent
 import com.arkivanov.sample.shared.multipane.details.ArticleDetailsContent
-import com.arkivanov.sample.shared.multipane.list.ArticleListComponent
 import com.arkivanov.sample.shared.multipane.list.ArticleListContent
 import com.arkivanov.sample.shared.utils.TopAppBar
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 internal fun MultiPaneContent(component: MultiPaneComponent, modifier: Modifier = Modifier) {
-    val children by component.children.subscribeAsState()
-    val listChild = children.listChild
-    val detailsChild = children.detailsChild
-
-    val saveableStateHolder = rememberSaveableStateHolder()
-
-    val listPane: @Composable (Child.Created<*, ArticleListComponent>) -> Unit =
-        remember {
-            movableContentOf { (config, component) ->
-                saveableStateHolder.SaveableStateProvider(key = config.hashCode()) {
-                    ArticleListContent(
-                        component = component,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                }
-            }
-        }
-
-    val detailsPane: @Composable (Child.Created<*, ArticleDetailsComponent>) -> Unit =
-        remember {
-            movableContentOf { (config, component) ->
-                saveableStateHolder.SaveableStateProvider(key = config.hashCode()) {
-                    ArticleDetailsContent(
-                        component = component,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                }
-            }
-        }
-
-    saveableStateHolder.OldDetailsKeyRemoved(selectedDetailsKey = children.detailsChild?.configuration?.hashCode())
+    val panels by component.panels.subscribeAsState()
 
     Column(modifier = modifier) {
-        if (children.isMultiPane) {
+        if (!panels.mode.isSingle) {
             TopAppBar(title = "Multi-Pane Layout")
         }
 
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            when {
-                children.isMultiPane ->
-                    Row(modifier = Modifier.fillMaxSize()) {
-                        Box(modifier = Modifier.fillMaxHeight().weight(0.4F)) {
-                            listPane(children.listChild)
-                        }
-
-                        Box(modifier = Modifier.fillMaxHeight().weight(0.6F)) {
-                            children.detailsChild?.also {
-                                detailsPane(it)
-                            }
-                        }
+            ChildPanels(
+                panels = panels,
+                mainChild = {
+                    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+                        ArticleListContent(
+                            component = it.instance,
+                            modifier = Modifier.fillMaxSize(),
+                        )
                     }
+                },
+                detailsChild = {
+                    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+                        ArticleDetailsContent(
+                            component = it.instance,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                },
+                extraChild = {
+                    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+                        ArticleAuthorContent(
+                            component = it.instance,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                },
+                layout = HorizontalChildPanelsLayout(
+                    dualWeights = Pair(first = 0.3F, second = 0.7F),
+                    tripleWeights = Triple(first = 0.3F, second = 0.4F, third = 0.3F),
+                ),
+                animators = ChildPanelsAnimators(single = fade() + scale(), dual = fade() to fade()),
+                predictiveBackParams = {
+                    PredictiveBackParams(
+                        backHandler = component.backHandler,
+                        onBack = component::onBack,
+                        animatable = ::materialPredictiveBackAnimatable,
+                    )
+                },
+            )
 
-                detailsChild != null -> detailsPane(detailsChild)
-                else -> listPane(listChild)
-            }
+            val mode =
+                when {
+                    maxWidth >= 1200.dp -> ChildPanelsMode.TRIPLE
+                    maxWidth >= 800.dp -> ChildPanelsMode.DUAL
+                    else -> ChildPanelsMode.SINGLE
+                }
 
-            val isMultiPaneRequired = this@BoxWithConstraints.maxWidth >= 800.dp
-
-            DisposableEffect(isMultiPaneRequired) {
-                component.setMultiPane(isMultiPaneRequired)
+            DisposableEffect(mode) {
+                component.setMode(mode)
                 onDispose {}
             }
         }
-    }
-}
-
-@Composable
-private fun SaveableStateHolder.OldDetailsKeyRemoved(selectedDetailsKey: Any?) {
-    var lastDetailsKey by remember { mutableStateOf(selectedDetailsKey) }
-
-    if (selectedDetailsKey == lastDetailsKey) {
-        return
-    }
-
-    val keyToRemove = lastDetailsKey
-    lastDetailsKey = selectedDetailsKey
-
-    if (keyToRemove == null) {
-        return
-    }
-
-    DisposableEffect(keyToRemove) {
-        removeState(key = keyToRemove)
-        onDispose {}
     }
 }

@@ -6,6 +6,7 @@ interface ArticleDetailsComponent {
 
     val models: Value<Model>
 
+    fun onAuthorClicked()
     fun onCloseClicked()
 
     data class Model(
@@ -15,6 +16,8 @@ interface ArticleDetailsComponent {
 
     data class Article(
         val title: String,
+        val authorId: Long,
+        val authorName: String,
         val text: String
     )
 }

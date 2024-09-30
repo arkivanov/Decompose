@@ -17,6 +17,7 @@ internal class DefaultArticleDetailsComponent(
     database: ArticleDatabase,
     articleId: Long,
     isToolbarVisible: Observable<Boolean>,
+    private val onAuthorRequested: () -> Unit,
     private val onFinished: () -> Unit,
 ) : ArticleDetailsComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
@@ -24,7 +25,7 @@ internal class DefaultArticleDetailsComponent(
         MutableValue(
             Model(
                 isToolbarVisible = false,
-                article = database.getById(id = articleId).toArticle()
+                article = database.getArticle(id = articleId).toArticle()
             )
         )
 
@@ -39,8 +40,14 @@ internal class DefaultArticleDetailsComponent(
     private fun ArticleEntity.toArticle(): Article =
         Article(
             title = title,
+            authorId = author.id,
+            authorName = author.name,
             text = text
         )
+
+    override fun onAuthorClicked() {
+        onAuthorRequested()
+    }
 
     override fun onCloseClicked() {
         onFinished()
