@@ -44,6 +44,9 @@ nav:
     - Child Pages:
         - Overview: navigation/pages/overview.md
         - Navigation: navigation/pages/navigation.md
+    - Child Panels:
+        - Overview: navigation/panels/overview.md
+        - Navigation: navigation/panels/navigation.md
     - Generic Navigation:
         - Overview: navigation/children/overview.md
 

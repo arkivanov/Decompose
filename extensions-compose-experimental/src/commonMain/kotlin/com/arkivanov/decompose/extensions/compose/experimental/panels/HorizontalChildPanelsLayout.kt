@@ -13,7 +13,36 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
 
 /**
- * An implementation of [ChildPanelsLayout] for laying out panels horizontally.
+ * An implementation of [ChildPanelsLayout] for laying out panels in the following ways.
+ *
+ * - If the `mode` is `SINGLE`, all panels are displayed in a stack. The Main panel, then
+ * the Details panel on top (if any), and finally the Extra panel (if any).
+ * - If the `mode` is `DUAL`, the Main panel is always displayed on the left side, and then
+ * the Details and the Extra panels are displayed in a stack on the right side (next to the Main panel).
+ * - If the `mode` is `TRIPLE`, all panels are displayed horizontally side by side.
+ *
+ * ```
+ * SINGLE mode
+ * +-----------------------------+
+ * |            Main             |
+ * |           Details           |
+ * |            Extra            |
+ * +-----------------------------+
+ *
+ * DUAL mode
+ * +-----------------------------+
+ * |              |    Details   |
+ * |     Main     |     Extra    |
+ * |              |              |
+ * +-----------------------------+
+ *
+ * TRIPLE mode
+ * +-----------------------------+
+ * |         |         |         |
+ * |  Main   | Details |  Extra  |
+ * |         |         |         |
+ * +-----------------------------+
+ * ```
  *
  * @param dualWeights a [Pair] of weights for two panels to be used in
  * [DUAL][com.arkivanov.decompose.router.panels.ChildPanelsMode.DUAL] mode.

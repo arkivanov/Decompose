@@ -207,17 +207,15 @@ fun DialogContent(component: DialogComponent) {
 
     Child Slot might not be suitable for a Navigation Drawer. This is because the Navigation Drawer can be opened by a drag gesture at any time. The corresponding component should be [always created](https://arkivanov.github.io/Decompose/component/child-components/#adding-a-child-component-manually) so that it's always ready to be rendered.
 
-## Pager-like navigation
-
-!!!warning
-    This navigation model is experimental, the API is subject to change.
+## Child Pages navigation with Compose
 
 The [Child Pages](../navigation/pages/overview.md) navigation model provides [ChildPages](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/pages/ChildPages.kt) as `Value<ChildPages>` that can be observed in a `Composable` component.
 
 The Compose extension module provides the [ChildPages(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/pages/ChildPages.kt) function which has the following features:
 
 - It listens for the `ChildPages` changes and displays child components using `HorizontalPager` or `VerticalPager` (see the related Jetpack Compose [documentation](https://developer.android.com/jetpack/compose/layouts/pager)).
-- It animates page changes if there is an `animation` spec provided.
+- It animates page changes if there is a `scrollAnimation` spec provided.
+- It supports displaying either just two panels (Main and Details) or three panels (Main, Details and Extra).
 
 === "Before version 3.2.0-alpha03"
 
@@ -266,6 +264,87 @@ The Compose extension module provides the [ChildPages(...)](https://github.com/a
         // Omitted code
     }
     ```
+
+## Child Panels navigation with Compose
+
+!!!warning
+    This navigation model is experimental since version `3.2.0-beta01`, the API is subject to change.
+
+The [Child Panels](../navigation/panels/overview.md) navigation model provides [ChildPanels](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/panels/ChildPanels.kt) as `Value<ChildPages>` that can be observed in a `Composable` component.
+
+The experimental Compose extension module provides the [ChildPanels(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-experimental/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanels.kt) function which has the following features:
+
+- It listens for the `ChildPanels` changes and displays child components (panels) using the provided `layout`.
+- It animates panel changes using the provided `animators` and `predictiveBackParams` specs.
+
+The following arguments are supported.
+
+- `panels` - an observable [ChildPanels] to be displayed.
+- `mainChild` - a `Composable` function that displays the provided Main component.
+- `detailsChild` - a `Composable` function that displays the provided Details component.
+- `extraChild` - a `Composable` function that displays the provided Extra component.
+- `modifier` - a `Modifier` to be applied to a wrapping container.
+- `layout` - an implementation of [ChildPanelsLayout](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-experimental/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsLayout.kt) responsible for laying out panels. The default layout is [HorizontalChildPanelsLayout](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-experimental/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/experimental/panels/HorizontalChildPanelsLayout.kt).
+- `animators` - a [ChildPanelsAnimators](https://github.com/arkivanov/Decompose/blob/master/extensions-compose-experimental/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsAnimators.kt) containing panel animators for different kinds of layouts.
+- `predictiveBackParams` - a function that returns `PredictiveBackParams` for the specified `ChildPanels`, or `null`. The predictive back gesture is enabled if the value returned for the specified `ChildStack` is not `null`, and disabled if the returned value is `null`. Only works if `ChildPanels.mode` is `SINGLE`. Also see the related docs below.
+
+The default `HorizontalChildPanelsLayout` layout places child components (panels) in the following ways.
+
+- If the `mode` is `SINGLE`, all panels are displayed in a stack. The Main panel, then the Details panel on top (if any), and finally the Extra panel (if any).
+- If the `mode` is `DUAL`, the Main panel is always displayed on the left side, and then the Details and the Extra panels are displayed in a stack on the right side (next to the Main panel).
+- If the `mode` is `TRIPLE`, all panels are displayed horizontally side by side.
+
+```kotlin title="Basic example"
+import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.extensions.compose.experimental.panels.ChildPanels
+
+@Composable
+fun PanelsContent(component: PanelsComponent) {
+    ChildPanels(
+        panels = component.panels,
+        mainChild = { MainContent(it.instance) },
+        detailsChild = { DetailsContent(it.instance) },
+    )
+}
+
+@Composable
+fun MainContent(component: MainComponent) {
+    // Omitted code
+}
+
+@Composable
+fun DetailsContent(component: DetailsComponent) {
+    // Omitted code
+}
+```
+
+```kotlin title="Example with animations"
+import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.extensions.compose.experimental.panels.ChildPanels
+import com.arkivanov.decompose.extensions.compose.experimental.panels.ChildPanelsAnimators
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.PredictiveBackParams
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
+
+@Composable
+fun PanelsContent(component: PanelsComponent) {
+    ChildPanels(
+        panels = component.panels,
+        mainChild = { MainContent(it.instance) },
+        detailsChild = { DetailsContent(it.instance) },
+        animators = ChildPanelsAnimators(single = fade() + scale(), dual = fade() to fade()),
+        predictiveBackParams = { // See the docs below
+            PredictiveBackParams(
+                backHandler = component.backHandler,
+                onBack = component::onBackClicked,
+                animatable = ::materialPredictiveBackAnimatable,
+            )
+        },
+    )
+}
+```
 
 ## Animations
 
