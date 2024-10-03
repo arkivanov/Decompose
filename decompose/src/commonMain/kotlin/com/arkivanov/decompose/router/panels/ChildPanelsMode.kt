@@ -3,7 +3,7 @@ package com.arkivanov.decompose.router.panels
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 
 /**
- * Determines how lifecycles of the panels within the Child Panels navigation model are changing.
+ * Determines how lifecycles of the child components within the Child Panels navigation model are changing.
  *
  * @see com.arkivanov.essenty.lifecycle.Lifecycle.State
  */

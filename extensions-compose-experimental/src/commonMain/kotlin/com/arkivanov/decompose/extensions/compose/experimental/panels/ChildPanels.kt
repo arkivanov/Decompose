@@ -33,6 +33,7 @@ import com.arkivanov.decompose.value.Value
  * @param detailsChild a `Composable` function that displays the provided Details component.
  * @param modifier a [Modifier] to applied to a wrapping container.
  * @param layout an implementation of [ChildPanelsLayout] responsible for laying out panels.
+ * The default layout is [HorizontalChildPanelsLayout].
  * @param animators a [ChildPanelsAnimators] containing panel animators for different
  * kinds of layouts.
  * @param predictiveBackParams a function that returns [PredictiveBackParams] for the specified [ChildPanels],
@@ -116,7 +117,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
  * @param mainChild a `Composable` function that displays the provided Main component.
  * @param detailsChild a `Composable` function that displays the provided Details component.
  * @param extraChild a `Composable` function that displays the provided Extra component.
- * @param modifier a [Modifier] to applied to a wrapping container.
+ * @param modifier a [Modifier] to be applied to a wrapping container.
  * @param layout an implementation of [ChildPanelsLayout] responsible for laying out panels.
  * @param animators a [ChildPanelsAnimators] containing panel animators for different
  * kinds of layouts.

@@ -1,17 +1,14 @@
 # Child Pages overview
 
-## The Child Pages (experimental)
+## The Child Pages
 
 `Child Pages` is a navigation model for managing a list of components (pages) with one selected (active) component. The list can be empty.
-
-!!!warning
-    This navigation model is experimental, the API is subject to change.
 
 Similarly to `Child Stack`, each component has its own `Lifecycle`. By default, the currently selected page is `ACTIVE`, its two neighbours are `INACTIVE`, and the rest are `DESTROYED`. You can implement your own logic, for example with circular behaviour. 
 
 It is possible to have more than one `Child Pages` navigation model in a component, nested navigation is also supported.
 
-The `Child Pages` navigation model consists of two main entities:
+The `Child Pages` navigation model consists of three main entities:
 
 - [Pages](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/pages/Pages.kt) - represents a state of the `Child Pages` navigation model. The navigation is performed by creating a new navigation state from the previous one.
     - `Pages#items` - the list of child configurations, must be unique, can be empty.
@@ -49,7 +46,7 @@ There are three steps to initialize `Child Pages`:
 
 ### Displaying pages with Compose
 
-`Child Pages` state can be observed and displayed in Compose by using the `Pager` `Composable` function from the Compose extensions module provided by Decompose. Please see the [related documentation](../../extensions/compose.md#pager-like-navigation) for more information.
+`Child Pages` state can be observed and displayed in Compose by using the `ChildPages` `Composable` function from the Compose extensions module provided by Decompose. Please see the [related documentation](../../extensions/compose.md#child-pages-navigation-with-compose) for more information.
 
 ## Example
 

@@ -6,7 +6,7 @@ All navigation in `Child Stack` is performed using the [`StackNavigator`](https:
 
 `StackNavigator` contains the `navigate` method with the following arguments:
 
-- `transformer` - converts the current stack of configurations into a new one. The stack is represented as `List`, where the last element is the top of the stack, and the first element is the bottom of the stack.
+- `transformer` - converts the current stack of configurations to a new one. The stack is represented as `List`, where the last element is the top of the stack, and the first element is the bottom of the stack.
 - `onComplete` - called when navigation is finished.
 
 There is also `navigate` extension function without the `onComplete` callback, for convenience.
@@ -15,14 +15,15 @@ There is also `navigate` extension function without the `onComplete` callback, f
     The configuration stack returned by the `transformer` function must not be empty.
 
 ```kotlin title="Creating the navigation"
+// In your component class
 val navigation = StackNavigation<Configuration>()
 ```
 
 ### The navigation process
 
-During the navigation process, the `Child Stack` compares the new stack of configurations with the previous one. The `Child Stack` ensures that all removed components are destroyed, and that there is only one component resumed at a time - the top one. All components in the back stack are always either stopped or destroyed.
+During the navigation process, the `Child Stack` navigation model compares the new stack of configurations with the previous one. It ensures that all removed components are destroyed, and that there is only one component resumed at a time - the top one. All components in the back stack are always either stopped or destroyed.
 
-The `Child Stack` usually performs the navigation synchronously, which means that by the time the `navigate` method returns, the navigation is finished and all component lifecycles are moved into required states. However, the navigation is performed asynchronously in case of recursive invocations - e.g. `pop` is called from `onResume` lifecycle callback of a component being pushed. All recursive invocations are queued and performed one by one once the current navigation is finished.
+The `Child Stack` navigation model usually performs the navigation synchronously, which means that by the time the `navigate` method returns, the navigation is finished and all component lifecycles are moved into required states. However, the navigation is performed asynchronously in case of recursive invocations - e.g. `pop` is called from `onResume` lifecycle callback of a component being pushed. All recursive invocations are queued and performed one by one once the current navigation is finished.
 
 ## StackNavigator extension functions
 

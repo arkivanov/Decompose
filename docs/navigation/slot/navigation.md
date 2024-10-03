@@ -12,6 +12,7 @@ All navigation in `Child Slot` is performed using the [`SlotNavigator`](https://
 There is also `navigate` extension function without the `onComplete` callback, for convenience.
 
 ```kotlin title="Creating the navigation"
+// In your component class
 val navigation = SlotNavigation<DialogConfig>()
 ```
 

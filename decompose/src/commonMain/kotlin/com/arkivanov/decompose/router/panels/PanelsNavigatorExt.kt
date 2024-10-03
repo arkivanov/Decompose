@@ -58,7 +58,7 @@ fun <MC : Any, DC : Any, EC : Any> PanelsNavigator<MC, DC, EC>.navigate(
 }
 
 /**
- * Activates the [Main][ChildPanels.main] component represented by the specified [main],
+ * Activates the [Main][ChildPanels.main] component represented by the specified [main] configuration,
  * and dismisses (destroys) any currently active Main component.
  *
  * @param main a configuration of the Main component being activated.
@@ -76,7 +76,7 @@ fun <MC : Any, DC : Any, EC : Any> PanelsNavigator<MC, DC, EC>.activateMain(
 }
 
 /**
- * Activates the [Details][ChildPanels.details] component represented by the specified [details],
+ * Activates the [Details][ChildPanels.details] component represented by the specified [details] configuration,
  * and dismisses (destroys) any currently active Details component.
  *
  * @param details a configuration of the Details component being activated.
@@ -109,7 +109,7 @@ fun <MC : Any, DC : Any, EC : Any> PanelsNavigator<MC, DC, EC>.dismissDetails(
 }
 
 /**
- * Activates the [Extra][ChildPanels.extra] component represented by the specified [extra],
+ * Activates the [Extra][ChildPanels.extra] component represented by the specified [extra] configuration,
  * and dismisses (destroys) any currently active Extra component.
  *
  * @param extra a configuration of the Extra component being activated.
