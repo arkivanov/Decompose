@@ -1,6 +1,7 @@
 package com.arkivanov.decompose.extensions.compose.experimental
 
 import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.core.AnimationConstants
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateFloat
@@ -15,14 +16,24 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import kotlin.test.fail
 
 @Composable
-internal fun Transition<EnterExitState>.animateFloat(): State<Float> =
-    animateFloat(transitionSpec = { tween(easing = LinearEasing) }) { state ->
+internal fun Transition<EnterExitState>.animateFloat(durationMillis: Int = AnimationConstants.DefaultDurationMillis): State<Float> =
+    animateFloat(transitionSpec = { tween(easing = LinearEasing, durationMillis = durationMillis) }) { state ->
         when (state) {
             EnterExitState.PreEnter -> 0F
             EnterExitState.Visible -> 1F
             EnterExitState.PostExit -> 0F
         }
     }
+
+internal fun <T> List<T>.takeSorted(comparator: Comparator<T>): List<T> =
+    takeWhileIndexed { index, item ->
+        (index == 0) || (comparator.compare(item, get(index - 1)) >= 0)
+    }
+
+internal fun <T> Iterable<T>.takeWhileIndexed(predicate: (Int, T) -> Boolean): List<T> =
+    withIndex()
+        .takeWhile { (index, item) -> predicate(index, item) }
+        .map { it.value }
 
 internal fun SemanticsNodeInteraction.assertTestTagToRootExists(testTag: String) {
     val count = collectTestTagsToRoot().filter { it == testTag }.size

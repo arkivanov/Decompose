@@ -2,6 +2,7 @@ package com.arkivanov.decompose.extensions.compose.stack.animation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -29,11 +30,18 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
     override operator fun invoke(stack: ChildStack<C, T>, modifier: Modifier, content: @Composable (child: Child.Created<C, T>) -> Unit) {
         var currentStack by remember { mutableStateOf(stack) }
         var items by remember { mutableStateOf(getAnimationItems(newStack = currentStack, oldStack = null)) }
+        var nextItems: Map<Any, AnimationItem<C, T>>? by remember { mutableStateOf(null) }
 
-        if (stack.active.key != currentStack.active.key) {
+        if (stack.active.key != currentStack.active.key || stack.active.instance != currentStack.active.instance) {
             val oldStack = currentStack
             currentStack = stack
-            items = getAnimationItems(newStack = currentStack, oldStack = oldStack)
+
+            val newItems = getAnimationItems(newStack = currentStack, oldStack = oldStack)
+            if (items.size == 1) {
+                items = newItems
+            } else {
+                nextItems = newItems
+            }
         }
 
         Box(modifier = modifier) {
@@ -50,12 +58,21 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
                         },
                         content = content,
                     )
+
+                    if (item.direction.isExit) {
+                        DisposableEffect(Unit) {
+                            onDispose {
+                                nextItems?.also { items = it }
+                                nextItems = null
+                            }
+                        }
+                    }
                 }
             }
 
             // A workaround until https://issuetracker.google.com/issues/214231672.
             // Normally only the exiting child should be disabled.
-            if (disableInputDuringAnimation && (items.size > 1)) {
+            if (disableInputDuringAnimation && ((items.size > 1) || (nextItems != null))) {
                 InputConsumingOverlay(modifier = Modifier.matchParentSize())
             }
         }
@@ -63,7 +80,7 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
 
     private fun getAnimationItems(newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>?): Map<Any, AnimationItem<C, T>> =
         when {
-            oldStack == null ->
+            (oldStack == null) || (newStack.active.key == oldStack.active.key) ->
                 listOf(AnimationItem(child = newStack.active, direction = Direction.ENTER_FRONT, isInitial = true))
 
             (newStack.size < oldStack.size) && (newStack.active.key in oldStack.backStack) ->

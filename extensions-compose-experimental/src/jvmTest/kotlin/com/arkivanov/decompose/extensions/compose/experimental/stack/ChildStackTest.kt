@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.extensions.compose.experimental.stack
 
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -29,12 +30,13 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import kotlin.test.assertSame
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Suppress("TestFunctionName")
 @RunWith(Parameterized::class)
 class ChildStackTest(
-    private val animation: StackAnimation<Config, Config>?,
+    private val animation: StackAnimation<Config, Any>?,
 ) {
 
     @get:Rule
@@ -90,6 +92,18 @@ class ChildStackTest(
         state.setValueOnIdle(routerState("A1" to Config.A))
 
         composeRule.onNodeWithText(text = "ChildA1", substring = true).assertExists()
+    }
+
+    @Test
+    fun GIVEN_child_displayed_WHEN_new_child_instance_with_the_same_key_THEN_new_child_instance_displayed() {
+        val state = mutableStateOf(routerState(Child.Created(configuration = Config.A, instance = Any(), key = "A")))
+        var lastInstance: Any? = null
+        setContent(state) { lastInstance = it.instance }
+
+        val instance2 = Any()
+        state.setValueOnIdle(routerState(Child.Created(configuration = Config.A, instance = instance2, key = "A")))
+
+        assertSame(instance2, lastInstance)
     }
 
     @Test
@@ -186,11 +200,14 @@ class ChildStackTest(
         composeRule.onNodeWithText(text = "ChildA2", substring = true).assertDoesNotExist()
     }
 
-    private fun setContent(state: State<ChildStack<Config, Config>>) {
+    private fun setContent(
+        state: State<ChildStack<Config, Any>>,
+        content: @Composable AnimatedVisibilityScope.(Child.Created<Config, Any>) -> Unit = {
+            Child(name = it.key.toString())
+        },
+    ) {
         composeRule.setContent {
-            ChildStack(stack = state.value, animation = animation) { child ->
-                Child(name = child.key.toString())
-            }
+            ChildStack(stack = state.value, animation = animation, content = content)
         }
 
         composeRule.runOnIdle {}
@@ -209,6 +226,12 @@ class ChildStackTest(
         ChildStack(
             active = stack.last().toChild(),
             backStack = stack.dropLast(1).map { it.toChild() },
+        )
+
+    private fun routerState(vararg stack: Child.Created<Config, Any>): ChildStack<Config, Any> =
+        ChildStack(
+            active = stack.last(),
+            backStack = stack.dropLast(1),
         )
 
     private fun Pair<Any, Config>.toChild(): Child.Created<Config, Config> =
@@ -235,7 +258,7 @@ class ChildStackTest(
         fun parameters(): List<Array<out Any?>> =
             getParameters().map { arrayOf(it) }
 
-        private fun getParameters(): List<StackAnimation<Config, Config>?> {
+        private fun getParameters(): List<StackAnimation<Config, Any>?> {
             val predictiveBackParams1 =
                 PredictiveBackParams(
                     backHandler = BackDispatcher(),
