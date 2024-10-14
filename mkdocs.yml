@@ -79,9 +79,18 @@ theme:
     - navigation.tabs
     - navigation.expand
   palette:
-    scheme: default
-    primary: indigo
-    accent: indigo
+    # Palette toggle for light mode
+    - scheme: default
+      primary: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
   font:
     text: Roboto
     code: Roboto Mono
