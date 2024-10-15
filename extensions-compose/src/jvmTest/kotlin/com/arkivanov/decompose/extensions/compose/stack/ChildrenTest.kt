@@ -14,7 +14,6 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.FaultyDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
@@ -27,11 +26,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import kotlin.test.assertSame
 
 @Suppress("TestFunctionName")
 @RunWith(Parameterized::class)
 class ChildrenTest(
-    private val animation: StackAnimation<Config, Config>?,
+    private val animation: StackAnimation<Config, Any>?,
 ) {
 
     @get:Rule
@@ -87,6 +87,18 @@ class ChildrenTest(
         state.setValueOnIdle(routerState("A1" to Config.A))
 
         composeRule.onNodeWithText(text = "ChildA1", substring = true).assertExists()
+    }
+
+    @Test
+    fun GIVEN_child_displayed_WHEN_new_child_instance_with_the_same_key_THEN_new_child_instance_displayed() {
+        val state = mutableStateOf(routerState(Child.Created(configuration = Config.A, instance = Any(), key = "A")))
+        var lastInstance: Any? = null
+        setContent(state) { lastInstance = it.instance }
+
+        val instance2 = Any()
+        state.setValueOnIdle(routerState(Child.Created(configuration = Config.A, instance = instance2, key = "A")))
+
+        assertSame(instance2, lastInstance)
     }
 
     @Test
@@ -183,11 +195,14 @@ class ChildrenTest(
         composeRule.onNodeWithText(text = "ChildA2", substring = true).assertDoesNotExist()
     }
 
-    private fun setContent(state: State<ChildStack<Config, Config>>) {
+    private fun setContent(
+        state: State<ChildStack<Config, Any>>,
+        content: @Composable (Child.Created<Config, Any>) -> Unit = {
+            Child(name = it.key.toString())
+        },
+    ) {
         composeRule.setContent {
-            Children(stack = state.value, animation = animation) { child ->
-                Child(name = child.key.toString())
-            }
+            Children(stack = state.value, animation = animation, content = content)
         }
 
         composeRule.runOnIdle {}
@@ -206,6 +221,12 @@ class ChildrenTest(
         ChildStack(
             active = stack.last().toChild(),
             backStack = stack.dropLast(1).map { it.toChild() },
+        )
+
+    private fun routerState(vararg stack: Child.Created<Config, Any>): ChildStack<Config, Any> =
+        ChildStack(
+            active = stack.last(),
+            backStack = stack.dropLast(1),
         )
 
     private fun Pair<Any, Config>.toChild(): Child.Created<Config, Config> =
@@ -233,7 +254,7 @@ class ChildrenTest(
             getParameters().map { arrayOf(it) }
 
         @OptIn(FaultyDecomposeApi::class)
-        private fun getParameters(): List<StackAnimation<Config, Config>?> =
+        private fun getParameters(): List<StackAnimation<Config, Any>?> =
             listOf(
                 null,
                 stackAnimation { _, _, _ -> null },

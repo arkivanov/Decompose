@@ -49,22 +49,31 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     ) {
         var currentStack by remember { mutableStateOf(stack) }
         var items by remember { mutableStateOf(getAnimationItems(newStack = currentStack)) }
+        var nextItems: Map<Any, AnimationItem<C, T>>? by remember { mutableStateOf(null) }
         val stackKeys = remember(stack) { stack.items.map { it.key } }
         val currentStackKeys = remember(currentStack) { currentStack.items.map { it.key } }
 
-        if (stackKeys != currentStackKeys) {
+        if (stack != currentStack) {
             val oldStack = currentStack
             currentStack = stack
 
             val updateItems =
                 when {
-                    stack.active.key == oldStack.active.key -> items.keys.singleOrNull() != stack.active.key
+                    stack.active.key == oldStack.active.key ->
+                        (items.keys.singleOrNull() != stack.active.key) ||
+                            (items.values.singleOrNull()?.child?.instance != stack.active.instance)
+
                     items.size == 1 -> items.keys.single() != stack.active.key
                     else -> items.keys.toList() != stackKeys
                 }
 
             if (updateItems) {
-                items = getAnimationItems(newStack = currentStack, oldStack = oldStack)
+                val newItems = getAnimationItems(newStack = currentStack, oldStack = oldStack)
+                if (items.size == 1) {
+                    items = newItems
+                } else {
+                    nextItems = newItems
+                }
             }
         }
 
@@ -82,12 +91,21 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                         },
                         content = content,
                     )
+
+                    if (item.direction.isExit) {
+                        DisposableEffect(Unit) {
+                            onDispose {
+                                nextItems?.also { items = it }
+                                nextItems = null
+                            }
+                        }
+                    }
                 }
             }
 
             // A workaround until https://issuetracker.google.com/issues/214231672.
             // Normally only the exiting child should be disabled.
-            if (disableInputDuringAnimation && (items.size > 1)) {
+            if (disableInputDuringAnimation && ((items.size > 1) || (nextItems != null))) {
                 Overlay(modifier = Modifier.matchParentSize())
             }
         }
@@ -129,7 +147,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
     private fun getAnimationItems(newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>? = null): Map<Any, AnimationItem<C, T>> =
         when {
-            oldStack == null ->
+            (oldStack == null) || (newStack.active.key == oldStack.active.key) ->
                 keyedItemsOf(
                     AnimationItem(
                         child = newStack.active,
