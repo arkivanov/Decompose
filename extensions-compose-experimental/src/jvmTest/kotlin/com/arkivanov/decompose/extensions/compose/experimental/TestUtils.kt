@@ -1,11 +1,28 @@
 package com.arkivanov.decompose.extensions.compose.experimental
 
+import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.semantics.SemanticsConfiguration
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import kotlin.test.fail
+
+@Composable
+internal fun Transition<EnterExitState>.animateFloat(): State<Float> =
+    animateFloat(transitionSpec = { tween(easing = LinearEasing) }) { state ->
+        when (state) {
+            EnterExitState.PreEnter -> 0F
+            EnterExitState.Visible -> 1F
+            EnterExitState.PostExit -> 0F
+        }
+    }
 
 internal fun SemanticsNodeInteraction.assertTestTagToRootExists(testTag: String) {
     val count = collectTestTagsToRoot().filter { it == testTag }.size

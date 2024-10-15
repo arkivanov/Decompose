@@ -264,7 +264,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             )
 
             scope.launch {
-                animationHandler.start(backEvent)
+                animationHandler.progress(backEvent)
             }
         }
 
@@ -300,14 +300,6 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     ) {
         val exitTransitionState: SeekableTransitionState<EnterExitState> = SeekableTransitionState(EnterExitState.Visible)
         val enterTransitionState: SeekableTransitionState<EnterExitState> = SeekableTransitionState(EnterExitState.PreEnter)
-
-        suspend fun start(backEvent: BackEvent) {
-            awaitAll(
-                { exitTransitionState.seekTo(fraction = backEvent.progress, targetState = EnterExitState.PostExit) },
-                { enterTransitionState.seekTo(fraction = backEvent.progress, targetState = EnterExitState.Visible) },
-                { animatable?.animate(backEvent) },
-            )
-        }
 
         suspend fun progress(backEvent: BackEvent) {
             animatable?.run {
