@@ -32,9 +32,10 @@ internal fun SharedTransitionScope.PhotoContent(
             painter = painterResource(component.image.resourceId),
             contentDescription = null,
             modifier = Modifier
-                .sharedElement(
-                    state = rememberSharedContentState(key = component.image.id),
+                .sharedBounds(
+                    sharedContentState = rememberSharedContentState(key = component.image.id),
                     animatedVisibilityScope = animatedVisibilityScope,
+                    renderInOverlayDuringTransition = false,
                 )
                 .fillMaxWidth()
                 .weight(1F)

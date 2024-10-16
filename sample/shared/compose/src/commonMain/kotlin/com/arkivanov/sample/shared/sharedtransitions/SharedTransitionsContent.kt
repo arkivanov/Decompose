@@ -14,6 +14,7 @@ import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.f
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
 import com.arkivanov.sample.shared.sharedtransitions.SharedTransitionsComponent.Child.GalleryChild
 import com.arkivanov.sample.shared.sharedtransitions.SharedTransitionsComponent.Child.PhotoChild
 import com.arkivanov.sample.shared.sharedtransitions.gallery.GalleryContent
@@ -35,6 +36,7 @@ internal fun SharedTransitionsContent(
                     PredictiveBackParams(
                         backHandler = component.backHandler,
                         onBack = component::onBack,
+                        animatable = ::materialPredictiveBackAnimatable,
                     )
                 },
             ),

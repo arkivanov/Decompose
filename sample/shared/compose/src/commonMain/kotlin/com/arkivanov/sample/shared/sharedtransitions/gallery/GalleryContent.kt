@@ -42,8 +42,8 @@ internal fun SharedTransitionScope.GalleryContent(
                     contentDescription = null,
                     modifier = Modifier
                         .aspectRatio(1F)
-                        .sharedElement(
-                            state = rememberSharedContentState(key = image.id),
+                        .sharedBounds(
+                            sharedContentState = rememberSharedContentState(key = image.id),
                             animatedVisibilityScope = animatedVisibilityScope,
                         )
                         .clickable { component.onImageClicked(index = index) },
