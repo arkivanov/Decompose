@@ -6,7 +6,7 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import com.arkivanov.essenty.instancekeeper.getOrCreate
+import com.arkivanov.essenty.instancekeeper.retainedInstance
 import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.sample.shared.ImageResourceId
 import com.arkivanov.sample.shared.customnavigation.KittenComponent.Model
@@ -22,7 +22,7 @@ class DefaultKittenComponent(
 ) : KittenComponent, ComponentContext by componentContext {
 
     private val handler =
-        instanceKeeper.getOrCreate(KEY_STATE) {
+        retainedInstance {
             Handler(initialState = stateKeeper.consume(key = KEY_STATE, strategy = State.serializer()) ?: State())
         }
 
