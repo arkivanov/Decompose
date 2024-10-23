@@ -15,6 +15,7 @@ import com.badoo.reaktive.observable.observableInterval
 import com.badoo.reaktive.observable.subscribe
 import com.badoo.reaktive.scheduler.mainScheduler
 import kotlinx.serialization.Serializable
+import kotlin.time.Duration.Companion.milliseconds
 
 class DefaultKittenComponent(
     componentContext: ComponentContext,
@@ -61,7 +62,7 @@ class DefaultKittenComponent(
             disposable?.dispose()
 
             disposable =
-                observableInterval(periodMillis = 250L, scheduler = mainScheduler).subscribe(isThreadLocal = true) {
+                observableInterval(period = 250.milliseconds, scheduler = mainScheduler).subscribe {
                     state.update { it.copy(count = it.count + 1) }
                 }
         }

@@ -20,6 +20,7 @@ import com.badoo.reaktive.observable.observableInterval
 import com.badoo.reaktive.scheduler.Scheduler
 import com.badoo.reaktive.scheduler.mainScheduler
 import kotlinx.serialization.Serializable
+import kotlin.time.Duration.Companion.milliseconds
 
 internal class DefaultCounterComponent(
     componentContext: ComponentContext,
@@ -105,7 +106,7 @@ internal class DefaultCounterComponent(
         val state: MutableValue<State> = MutableValue(initialState)
 
         init {
-            observableInterval(periodMillis = 250L, scheduler = tickScheduler).subscribeScoped {
+            observableInterval(period = 250.milliseconds, scheduler = tickScheduler).subscribeScoped {
                 state.update { it.copy(count = it.count + 1) }
             }
         }

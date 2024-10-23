@@ -60,6 +60,7 @@ kotlin {
             api(deps.essenty.lifecycle)
             api(deps.essenty.stateKeeper)
             api(deps.essenty.backHandler)
+            implementation(deps.essenty.lifecycleReaktive)
             implementation(deps.reaktive.reaktive)
             implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
         }
