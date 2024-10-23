@@ -18,6 +18,7 @@ import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.android.play.core.splitinstall.SplitInstallSessionState
 import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
+import kotlin.time.Duration.Companion.seconds
 
 class DefaultFeatureInstaller(
     context: Context
@@ -34,7 +35,7 @@ class DefaultFeatureInstaller(
     // For testing purposes all dynamic features are configured as `install-time`, so simulating installation process
     private fun Single<Result>.simulateInstallationProcessIfNeeded(name: String): Single<Result> =
         takeUnless { name in installedFeatures }
-            ?.delaySubscription(delayMillis = 3000L, scheduler = mainScheduler)
+            ?.delaySubscription(delay = 3.seconds, scheduler = mainScheduler)
             ?.doOnBeforeSuccess {
                 if (it is Result.Installed) {
                     installedFeatures += name

@@ -4,9 +4,9 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.arkivanov.essenty.instancekeeper.ExperimentalInstanceKeeperApi
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.retainedInstance
+import com.arkivanov.essenty.lifecycle.reaktive.disposableScope
 import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.essenty.statekeeper.ExperimentalStateKeeperApi
 import com.arkivanov.essenty.statekeeper.saveable
@@ -20,18 +20,19 @@ import com.badoo.reaktive.scheduler.mainScheduler
 import com.badoo.reaktive.subject.behavior.BehaviorObservable
 import com.badoo.reaktive.subject.behavior.BehaviorSubject
 import kotlinx.serialization.builtins.serializer
+import kotlin.time.Duration.Companion.milliseconds
 
 class DefaultCardComponent(
     componentContext: ComponentContext,
     color: Long,
     number: Int,
     tickScheduler: Scheduler = mainScheduler,
-) : CardComponent, ComponentContext by componentContext, DisposableScope by DisposableScope() {
+) : CardComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
-    @OptIn(ExperimentalStateKeeperApi::class, ExperimentalInstanceKeeperApi::class)
+    @OptIn(ExperimentalStateKeeperApi::class)
     private val handler: Handler by saveable(serializer = Int.serializer(), state = { it.count.value }) { savedState ->
         retainedInstance {
-            Handler(initialCount = savedState ?: 0, tickScheduler = tickScheduler)
+            Handler(savedState = savedState, tickScheduler = tickScheduler)
         }
     }
 
@@ -44,15 +45,6 @@ class DefaultCardComponent(
         }
 
         lifecycle.subscribe(
-            onCreate = { setStatus("Created") },
-            onStart = { setStatus("Started") },
-            onResume = { setStatus("Resumed") },
-            onPause = { setStatus("Paused") },
-            onStop = { setStatus("Stopped") },
-            onDestroy = { setStatus("Destroyed") },
-        )
-
-        lifecycle.subscribe(
             onStart = handler::start,
             onStop = handler::stop,
         )
@@ -63,16 +55,16 @@ class DefaultCardComponent(
     }
 
     private class Handler(
-        initialCount: Int,
+        savedState: Int?,
         private val tickScheduler: Scheduler,
     ) : InstanceKeeper.Instance {
-        private val _count = BehaviorSubject(initialCount)
+        private val _count = BehaviorSubject(savedState ?: 0)
         val count: BehaviorObservable<Int> = _count
         private var disposable: Disposable? = null
 
         fun start() {
             disposable =
-                observableInterval(periodMillis = 250L, scheduler = tickScheduler)
+                observableInterval(period = 250.milliseconds, scheduler = tickScheduler)
                     .subscribe { _count.onNext(_count.value + 1) }
         }
 

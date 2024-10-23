@@ -4,11 +4,11 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
+import com.arkivanov.essenty.lifecycle.reaktive.disposableScope
 import com.arkivanov.sample.shared.multipane.database.ArticleDatabase
 import com.arkivanov.sample.shared.multipane.database.ArticleEntity
 import com.arkivanov.sample.shared.multipane.list.ArticleListComponent.Article
 import com.arkivanov.sample.shared.multipane.list.ArticleListComponent.Model
-import com.arkivanov.sample.shared.multipane.utils.disposableScope
 import com.badoo.reaktive.disposable.scope.DisposableScope
 import com.badoo.reaktive.observable.Observable
 

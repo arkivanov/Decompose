@@ -14,6 +14,7 @@ import com.arkivanov.decompose.router.panels.isSingle
 import com.arkivanov.decompose.router.panels.navigate
 import com.arkivanov.decompose.router.panels.pop
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.reaktive.disposableScope
 import com.arkivanov.sample.shared.multipane.author.ArticleAuthorComponent
 import com.arkivanov.sample.shared.multipane.author.DefaultArticleAuthorComponent
 import com.arkivanov.sample.shared.multipane.database.DefaultArticleDatabase
@@ -21,7 +22,6 @@ import com.arkivanov.sample.shared.multipane.details.ArticleDetailsComponent
 import com.arkivanov.sample.shared.multipane.details.DefaultArticleDetailsComponent
 import com.arkivanov.sample.shared.multipane.list.ArticleListComponent
 import com.arkivanov.sample.shared.multipane.list.DefaultArticleListComponent
-import com.arkivanov.sample.shared.multipane.utils.disposableScope
 import com.badoo.reaktive.disposable.scope.DisposableScope
 import com.badoo.reaktive.observable.map
 import com.badoo.reaktive.observable.notNull
