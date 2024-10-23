@@ -31,7 +31,11 @@ class SomeComponent(
 }
 ```
 
-## Usage example (experimental since version 3.2.0-alpha02)
+## Simplified usage example
+
+!!!warning
+
+    The `retainedInstance` API is experimental since version `3.2.0-alpha02`, stable since `3.2.0`.
 
 ```kotlin
 import com.arkivanov.decompose.ComponentContext

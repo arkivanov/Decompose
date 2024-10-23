@@ -55,9 +55,13 @@ class SomeStatefulEntity(savedState: State?) : InstanceKeeper.Instance {
 }
 ```
 
-## Usage examples (experimental since version 3.2.0-alpha02)
+## Simplified state preservation
 
-```kotlin title="Saving state in a component"
+!!!warning
+
+    The `saveable` API is experimental since version `3.2.0-alpha02`.
+
+```kotlin
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.statekeeper.saveable
 import kotlinx.serialization.Serializable
@@ -66,11 +70,17 @@ class SomeComponent(componentContext: ComponentContext) : ComponentContext by co
     private var state: State by saveable(serializer = State.serializer(), init = ::State)
 
     @Serializable // Comes from kotlinx-serialization
-    private class State(val someValue: Int = 0)
+    private data class State(val someValue: Int = 0)
 }
 ```
 
-```kotlin title="Saving state of a retained instance"
+## Simplified state preservation of a retained instance
+
+!!!warning
+
+    The `retainedInstance` API is experimental since version `3.2.0-alpha02`, stable since `3.2.0`.
+
+```kotlin
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.retainedInstance
