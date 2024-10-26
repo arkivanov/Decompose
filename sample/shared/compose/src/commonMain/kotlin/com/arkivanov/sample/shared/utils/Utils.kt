@@ -7,3 +7,6 @@ import androidx.compose.ui.unit.Dp
 @Composable
 internal fun Dp.toPx(): Float =
     with(LocalDensity.current) { toPx() }
+
+@Composable
+internal expect fun WebDocumentTitle(title: String)

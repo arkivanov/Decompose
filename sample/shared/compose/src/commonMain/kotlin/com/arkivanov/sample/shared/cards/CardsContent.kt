@@ -51,10 +51,13 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.sample.shared.cards.card.CardComponent
 import com.arkivanov.sample.shared.cards.card.CardContent
 import com.arkivanov.sample.shared.utils.TopAppBar
+import com.arkivanov.sample.shared.utils.WebDocumentTitle
 import com.arkivanov.sample.shared.utils.toPx
 
 @Composable
 internal fun CardsContent(component: CardsComponent, modifier: Modifier = Modifier) {
+    WebDocumentTitle(title = "Cards")
+
     val stack by component.stack.subscribeAsState()
 
     Column(modifier = modifier) {

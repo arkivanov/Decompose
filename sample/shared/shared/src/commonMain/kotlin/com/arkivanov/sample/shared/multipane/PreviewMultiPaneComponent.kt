@@ -5,6 +5,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.panels.ChildPanels
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
+import com.arkivanov.decompose.router.webhistory.WebNavigationOwner
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.PreviewComponentContext
@@ -17,9 +18,10 @@ import com.arkivanov.sample.shared.multipane.list.PreviewArticleListComponent
 @OptIn(ExperimentalDecomposeApi::class)
 class PreviewMultiPaneComponent(
     isMultiPane: Boolean = false,
-) : MultiPaneComponent, ComponentContext by PreviewComponentContext {
+) : MultiPaneComponent,
+    ComponentContext by PreviewComponentContext,
+    WebNavigationOwner.NoOp {
 
-    @OptIn(ExperimentalDecomposeApi::class)
     override val panels: Value<ChildPanels<Any, ArticleListComponent, Any, ArticleDetailsComponent, Any, ArticleAuthorComponent>> =
         MutableValue(
             ChildPanels(

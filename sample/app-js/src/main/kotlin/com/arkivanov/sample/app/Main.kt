@@ -2,14 +2,14 @@ package com.arkivanov.sample.app
 
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.router.stack.webhistory.DefaultWebHistoryController
+import com.arkivanov.decompose.router.webhistory.withWebHistory
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.stop
+import com.arkivanov.sample.shared.Url
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DefaultFeatureInstaller
 import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootContent
-import kotlinx.browser.window
 import react.create
 import react.dom.client.createRoot
 import web.dom.DocumentVisibilityState
@@ -21,12 +21,15 @@ fun main() {
     val lifecycle = LifecycleRegistry()
 
     val root =
-        DefaultRootComponent(
-            componentContext = DefaultComponentContext(lifecycle = lifecycle),
-            featureInstaller = DefaultFeatureInstaller,
-            deepLink = DefaultRootComponent.DeepLink.Web(path = window.location.pathname),
-            webHistoryController = DefaultWebHistoryController(),
-        )
+        withWebHistory { stateKeeper, deepLink ->
+            DefaultRootComponent(
+                componentContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = stateKeeper),
+                featureInstaller = DefaultFeatureInstaller,
+                deepLinkUrl = deepLink?.let(::Url),
+            )
+        }
+
+    console.log(root.stack.value)
 
     lifecycle.attachToDocument()
 

@@ -49,9 +49,13 @@ kotlin {
     }
 
     setupSourceSets {
+        val nonWeb by bundle()
         val jvm by bundle()
         val ios by bundle()
+        val js by bundle()
 
+        nonWeb dependsOn common
+        (allSet - js) dependsOn nonWeb
         ios dependsOn common
         iosSet dependsOn ios
 

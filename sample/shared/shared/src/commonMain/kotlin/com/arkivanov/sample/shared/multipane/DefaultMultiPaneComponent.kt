@@ -9,12 +9,15 @@ import com.arkivanov.decompose.router.panels.Panels
 import com.arkivanov.decompose.router.panels.PanelsNavigation
 import com.arkivanov.decompose.router.panels.activateExtra
 import com.arkivanov.decompose.router.panels.childPanels
+import com.arkivanov.decompose.router.panels.childPanelsWebNavigation
 import com.arkivanov.decompose.router.panels.isDual
 import com.arkivanov.decompose.router.panels.isSingle
 import com.arkivanov.decompose.router.panels.navigate
 import com.arkivanov.decompose.router.panels.pop
+import com.arkivanov.decompose.router.webhistory.WebNavigation
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.reaktive.disposableScope
+import com.arkivanov.sample.shared.Url
 import com.arkivanov.sample.shared.multipane.author.ArticleAuthorComponent
 import com.arkivanov.sample.shared.multipane.author.DefaultArticleAuthorComponent
 import com.arkivanov.sample.shared.multipane.database.DefaultArticleDatabase
@@ -32,6 +35,7 @@ import kotlinx.serialization.builtins.serializer
 @OptIn(ExperimentalDecomposeApi::class)
 internal class DefaultMultiPaneComponent(
     componentContext: ComponentContext,
+    deepLinkUrl: Url?,
 ) : MultiPaneComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
     private val database = DefaultArticleDatabase()
@@ -39,16 +43,32 @@ internal class DefaultMultiPaneComponent(
     private val _navState = BehaviorSubject<Panels<Unit, Details, Extra>?>(null)
     private val navState = _navState.notNull()
 
-    override val panels: Value<ChildPanels<*, ArticleListComponent, *, ArticleDetailsComponent, *, ArticleAuthorComponent>> =
+    private val _panels =
         childPanels(
             source = navigation,
-            initialPanels = { Panels(main = Unit) },
+            initialPanels = { getInitialPanels(deepLinkUrl) },
             serializers = Triple(Unit.serializer(), Details.serializer(), Extra.serializer()),
             onStateChanged = { newState, _ -> _navState.onNext(newState) },
             handleBackButton = true,
             mainFactory = { _, ctx -> listComponent(ctx) },
             detailsFactory = ::detailsComponent,
             extraFactory = ::authorComponent,
+        )
+
+    override val panels: Value<ChildPanels<*, ArticleListComponent, *, ArticleDetailsComponent, *, ArticleAuthorComponent>> = _panels
+
+    override val webNavigation: WebNavigation<*> =
+        childPanelsWebNavigation(
+            navigator = navigation,
+            panels = _panels,
+            mainSerializer = Unit.serializer(),
+            detailsSerializer = Details.serializer(),
+            extraSerializer = Extra.serializer(),
+            parametersMapper = { panels ->
+                panels.details?.let {
+                    mapOf(KEY_ARTICLE_ID to it.configuration.articleId.toString())
+                }
+            },
         )
 
     private fun listComponent(componentContext: ComponentContext): ArticleListComponent =
@@ -98,6 +118,19 @@ internal class DefaultMultiPaneComponent(
 
     override fun onBack() {
         navigation.pop()
+    }
+
+    private fun getInitialPanels(deepLinkUrl: Url?): Panels<Unit, Details, Extra> {
+        val parameters = deepLinkUrl?.parameters ?: return Panels(main = Unit)
+
+        return Panels(
+            main = Unit,
+            details = parameters[KEY_ARTICLE_ID]?.toLongOrNull()?.let { Details(articleId = it) },
+        )
+    }
+
+    private companion object {
+        private const val KEY_ARTICLE_ID = "articleId"
     }
 
     @Serializable

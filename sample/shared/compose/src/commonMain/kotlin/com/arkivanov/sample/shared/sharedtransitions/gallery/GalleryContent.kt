@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.arkivanov.sample.shared.painterResource
 import com.arkivanov.sample.shared.utils.TopAppBar
+import com.arkivanov.sample.shared.utils.WebDocumentTitle
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -29,6 +30,8 @@ internal fun SharedTransitionScope.GalleryContent(
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
+    WebDocumentTitle(title = "Shared Transitions Gallery")
+
     Column(modifier = modifier) {
         TopAppBar(title = "Photo Gallery", onCloseClick = component::onCloseClicked)
 
