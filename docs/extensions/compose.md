@@ -294,12 +294,39 @@ The default `HorizontalChildPanelsLayout` layout places child components (panels
 - If the `mode` is `DUAL`, the Main panel is always displayed on the left side, and then the Details and the Extra panels are displayed in a stack on the right side (next to the Main panel).
 - If the `mode` is `TRIPLE`, all panels are displayed horizontally side by side.
 
+You can use window size classes from the `material3-window-size-class` package to determine which `ChildPanelsMode` should be used.
+
+```kotlin title="WindowSizeClass example"
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+
+@Composable
+fun MyApp() {
+    val windowSizeClass = calculateWindowSizeClass()
+    val mode = if (windowSizeClass.widthSizeClass < WindowWidthSizeClass.Expanded) {
+        ChildPanelsMode.SINGLE
+    } else {
+        ChildPanelsMode.DUAL
+    }
+    /* ... */
+}
+```
+
+!!!warning
+    Function calculateWindowSizeClass will cause recomposition on every window size change. Try to reduce the recomposition scope.
+
 ```kotlin title="Basic example"
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.extensions.compose.experimental.panels.ChildPanels
+import com.arkivanov.decompose.router.panels.ChildPanelsMode
 
 @Composable
-fun PanelsContent(component: PanelsComponent) {
+fun PanelsContent(component: PanelsComponent, mode: ChildPanelsMode) {
+    DisposableEffect(mode) {
+        component.setMode(mode)
+        onDispose { }
+    }
+
     ChildPanels(
         panels = component.panels,
         mainChild = { MainContent(it.instance) },
@@ -327,9 +354,15 @@ import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.f
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
+import com.arkivanov.decompose.router.panels.ChildPanelsMode
 
 @Composable
-fun PanelsContent(component: PanelsComponent) {
+fun PanelsContent(component: PanelsComponent, mode: ChildPanelsMode) {
+    DisposableEffect(mode) {
+        component.setMode(mode)
+        onDispose { }
+    }
+
     ChildPanels(
         panels = component.panels,
         mainChild = { MainContent(it.instance) },
