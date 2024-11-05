@@ -301,14 +301,13 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 
 @Composable
-fun MyApp() {
-    val windowSizeClass = calculateWindowSizeClass()
-    val mode = if (windowSizeClass.widthSizeClass < WindowWidthSizeClass.Expanded) {
+fun calculatePanelsMode(): ChildPanelsMode {
+    val windowSize = calculateWindowSizeClass()
+    return if (windowSize.widthSizeClass < WindowWidthSizeClass.Expanded) {
         ChildPanelsMode.SINGLE
     } else {
         ChildPanelsMode.DUAL
     }
-    /* ... */
 }
 ```
 
@@ -321,7 +320,8 @@ import com.arkivanov.decompose.extensions.compose.experimental.panels.ChildPanel
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
 
 @Composable
-fun PanelsContent(component: PanelsComponent, mode: ChildPanelsMode) {
+fun PanelsContent(component: PanelsComponent) {
+    val mode = calculatePanelsMode()
     DisposableEffect(mode) {
         component.setMode(mode)
         onDispose { }
@@ -357,7 +357,8 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
 
 @Composable
-fun PanelsContent(component: PanelsComponent, mode: ChildPanelsMode) {
+fun PanelsContent(component: PanelsComponent) {
+    val mode = calculatePanelsMode()
     DisposableEffect(mode) {
         component.setMode(mode)
         onDispose { }
