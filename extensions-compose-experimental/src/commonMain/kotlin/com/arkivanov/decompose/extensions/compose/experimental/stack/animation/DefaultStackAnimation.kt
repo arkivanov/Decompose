@@ -69,7 +69,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
             if (updateItems) {
                 val newItems = getAnimationItems(newStack = currentStack, oldStack = oldStack)
-                if (items.size == 1) {
+                if ((items.size == 1) || items.values.last().transitionState.isSeekable()) {
                     items = newItems
                 } else {
                     nextItems = newItems
@@ -401,3 +401,6 @@ private fun TransitionState<*>.isIdle(): Boolean =
         is SeekableTransitionState -> false
         else -> false
     }
+
+private fun TransitionState<*>.isSeekable(): Boolean =
+    this is SeekableTransitionState

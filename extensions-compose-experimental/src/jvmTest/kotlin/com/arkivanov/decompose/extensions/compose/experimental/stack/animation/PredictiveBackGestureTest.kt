@@ -214,6 +214,29 @@ class PredictiveBackGestureTest {
     }
 
     @Test
+    fun GIVEN_gesture_started_WHEN_stack_popped_THEN_gesture_cancelled() {
+        var stack by mutableStateOf(stack("1", "2"))
+        val animation = DefaultStackAnimation(animator = fade(), onBack = { stack = stack.dropLast() },)
+
+        composeRule.setContent {
+            animation(stack, Modifier) {
+                Text(text = it.configuration)
+            }
+        }
+
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        composeRule.waitForIdle()
+        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        composeRule.waitForIdle()
+
+        stack = stack.dropLast()
+        composeRule.mainClock.autoAdvance = false
+        composeRule.mainClock.advanceTimeByFrame()
+
+        composeRule.onNodeWithText("2").assertTestTagToRootDoesNotExist { it.startsWith(TEST_TAG_PREFIX) }
+    }
+
+    @Test
     fun GIVEN_gesture_started_WHEN_stack_pushed_and_back_THEN_new_child_popped_and_gesture_finished() {
         var stack by mutableStateOf(stack("1", "2"))
         val animation = DefaultStackAnimation(onBack = { stack = stack.dropLast() })
@@ -471,6 +494,7 @@ class PredictiveBackGestureTest {
 
     private fun DefaultStackAnimation(
         predictiveBackAnimatable: (initialBackEvent: BackEvent) -> PredictiveBackAnimatable? = ::TestAnimatable,
+        animator: StackAnimator? = null,
         onBack: () -> Unit,
     ): DefaultStackAnimation<String, String> =
         DefaultStackAnimation(
@@ -482,7 +506,7 @@ class PredictiveBackGestureTest {
                     animatable = predictiveBackAnimatable,
                 )
             },
-            selector = { _, _, _ -> null },
+            selector = { _, _, _ -> animator },
         )
 
     private fun stack(configs: List<String>): ChildStack<String, String> =
