@@ -298,21 +298,23 @@ You can use window size classes from the `material3-window-size-class` package t
 
 ```kotlin title="WindowSizeClass example"
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass.Companion.Expanded
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import com.arkivanov.decompose.router.panels.ChildPanelsMode
+import com.arkivanov.decompose.router.panels.ChildPanelsMode.SINGLE
+import com.arkivanov.decompose.router.panels.ChildPanelsMode.DUAL
 
 @Composable
-fun calculatePanelsMode(): ChildPanelsMode {
+fun ChildPanelsModeChangedEffect(onModeChanged: (ChildPanelsMode) -> Unit) {
     val windowSize = calculateWindowSizeClass()
-    return if (windowSize.widthSizeClass < WindowWidthSizeClass.Expanded) {
-        ChildPanelsMode.SINGLE
-    } else {
-        ChildPanelsMode.DUAL
+    val mode = if (windowSize.widthSizeClass < Expanded) SINGLE else DUAL
+
+    DisposableEffect(mode) {
+        onModeChanged(mode)
+        onDispose {}
     }
 }
 ```
-
-!!!warning
-    Function calculateWindowSizeClass will cause recomposition on every window size change. Try to reduce the recomposition scope.
 
 ```kotlin title="Basic example"
 import androidx.compose.runtime.Composable
@@ -321,11 +323,7 @@ import com.arkivanov.decompose.router.panels.ChildPanelsMode
 
 @Composable
 fun PanelsContent(component: PanelsComponent) {
-    val mode = calculatePanelsMode()
-    DisposableEffect(mode) {
-        component.setMode(mode)
-        onDispose { }
-    }
+    ChildPanelsModeChangedEffect(component::setMode)
 
     ChildPanels(
         panels = component.panels,
@@ -358,11 +356,7 @@ import com.arkivanov.decompose.router.panels.ChildPanelsMode
 
 @Composable
 fun PanelsContent(component: PanelsComponent) {
-    val mode = calculatePanelsMode()
-    DisposableEffect(mode) {
-        component.setMode(mode)
-        onDispose { }
-    }
+    ChildPanelsModeChangedEffect(component::setMode)
 
     ChildPanels(
         panels = component.panels,
