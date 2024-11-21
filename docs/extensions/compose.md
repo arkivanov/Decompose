@@ -215,7 +215,6 @@ The Compose extension module provides the [ChildPages(...)](https://github.com/a
 
 - It listens for the `ChildPages` changes and displays child components using `HorizontalPager` or `VerticalPager` (see the related Jetpack Compose [documentation](https://developer.android.com/jetpack/compose/layouts/pager)).
 - It animates page changes if there is a `scrollAnimation` spec provided.
-- It supports displaying either just two panels (Main and Details) or three panels (Main, Details and Extra).
 
 === "Before version 3.2.0-alpha03"
 
@@ -276,6 +275,7 @@ The experimental Compose extension module provides the [ChildPanels(...)](https:
 
 - It listens for the `ChildPanels` changes and displays child components (panels) using the provided `layout`.
 - It animates panel changes using the provided `animators` and `predictiveBackParams` specs.
+- It supports displaying either just two panels (Main and Details) or three panels (Main, Details and Extra).
 
 The following arguments are supported.
 
