@@ -1,13 +1,16 @@
 package com.arkivanov.sample.shared.multipane
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.ExperimentalDecomposeApi
@@ -68,6 +71,13 @@ internal fun MultiPaneContent(component: MultiPaneComponent, modifier: Modifier 
                     dualWeights = Pair(first = 0.3F, second = 0.7F),
                     tripleWeights = Triple(first = 0.3F, second = 0.4F, third = 0.3F),
                 ),
+                secondPanelPlaceholder = {
+                    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(text = "Select an article", style = MaterialTheme.typography.subtitle1)
+                        }
+                    }
+                },
                 animators = ChildPanelsAnimators(single = fade() + scale(), dual = fade() to fade()),
                 predictiveBackParams = {
                     PredictiveBackParams(
