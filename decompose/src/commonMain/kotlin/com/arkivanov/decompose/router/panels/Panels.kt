@@ -11,6 +11,9 @@ import kotlinx.serialization.Serializable
  * @param extra an optional configuration of the Extra panel, default value is `null`.
  * @param mode determines how lifecycles of the panels within the Child Panels navigation model are changing,
  * default value is [ChildPanelsMode.SINGLE], see [ChildPanelsMode].
+ * @param MC a type of the `Main` panel configuration.
+ * @param DC a type of the `Details` panel configuration.
+ * @param EC a type of the `Extra` panel configuration. Use `Nothing` if the panel is not required.
  */
 @ExperimentalDecomposeApi
 @Serializable
