@@ -29,11 +29,13 @@ import com.arkivanov.decompose.value.Value
  * [List-Details Layout](https://developer.android.com/develop/ui/compose/layouts/adaptive/list-detail).
  *
  * @param panels an observable [ChildPanels] to be displayed.
- * @param mainChild a `Composable` function that displays the provided Main component.
- * @param detailsChild a `Composable` function that displays the provided Details component.
+ * @param mainChild a `Composable` function that displays the provided [ChildPanels.main] component.
+ * @param detailsChild a `Composable` function that displays the provided [ChildPanels.details] component.
  * @param modifier a [Modifier] to applied to a wrapping container.
  * @param layout an implementation of [ChildPanelsLayout] responsible for laying out panels.
  * The default layout is [HorizontalChildPanelsLayout].
+ * @param secondPanelPlaceholder a `Composable` function that displays a placeholder when there is nothing to
+ * display in the second panel.
  * @param animators a [ChildPanelsAnimators] containing panel animators for different
  * kinds of layouts.
  * @param predictiveBackParams a function that returns [PredictiveBackParams] for the specified [ChildPanels],
@@ -48,6 +50,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
     mainChild: @Composable (Child.Created<MC, MT>) -> Unit,
     detailsChild: @Composable (Child.Created<DC, DT>) -> Unit,
     modifier: Modifier = Modifier,
+    secondPanelPlaceholder: @Composable () -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
     animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
     predictiveBackParams: (ChildPanels<MC, MT, DC, DT, *, *>) -> PredictiveBackParams? = { null },
@@ -58,6 +61,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
         detailsChild = detailsChild,
         extraChild = {},
         modifier = modifier,
+        secondPanelPlaceholder = secondPanelPlaceholder,
         layout = layout,
         animators = animators,
         predictiveBackParams = predictiveBackParams,
@@ -72,10 +76,12 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
  * [List-Details Layout](https://developer.android.com/develop/ui/compose/layouts/adaptive/list-detail).
  *
  * @param panels a [ChildPanels] to be displayed.
- * @param mainChild a `Composable` function that displays the provided Main component.
- * @param detailsChild a `Composable` function that displays the provided Details component.
+ * @param mainChild a `Composable` function that displays the provided [ChildPanels.main] component.
+ * @param detailsChild a `Composable` function that displays the provided [ChildPanels.details] component.
  * @param modifier a [Modifier] to applied to a wrapping container.
  * @param layout an implementation of [ChildPanelsLayout] responsible for laying out panels.
+ * @param secondPanelPlaceholder a `Composable` function that displays a placeholder when there is nothing to
+ * display in the second panel.
  * @param animators a [ChildPanelsAnimators] containing panel animators for different
  * kinds of layouts.
  * @param predictiveBackParams a function that returns [PredictiveBackParams] for the specified [ChildPanels],
@@ -90,6 +96,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
     mainChild: @Composable (Child.Created<MC, MT>) -> Unit,
     detailsChild: @Composable (Child.Created<DC, DT>) -> Unit,
     modifier: Modifier = Modifier,
+    secondPanelPlaceholder: @Composable () -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
     animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
     predictiveBackParams: (ChildPanels<MC, MT, DC, DT, *, *>) -> PredictiveBackParams? = { null },
@@ -100,6 +107,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
         detailsChild = detailsChild,
         extraChild = {},
         modifier = modifier,
+        secondPanelPlaceholder = secondPanelPlaceholder,
         layout = layout,
         animators = animators,
         predictiveBackParams = predictiveBackParams,
@@ -114,11 +122,15 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
  * [List-Details Layout](https://developer.android.com/develop/ui/compose/layouts/adaptive/list-detail).
  *
  * @param panels an observable [ChildPanels] to be displayed.
- * @param mainChild a `Composable` function that displays the provided Main component.
- * @param detailsChild a `Composable` function that displays the provided Details component.
- * @param extraChild a `Composable` function that displays the provided Extra component.
+ * @param mainChild a `Composable` function that displays the provided [ChildPanels.main] component.
+ * @param detailsChild a `Composable` function that displays the provided [ChildPanels.details] component.
+ * @param extraChild a `Composable` function that displays the provided [ChildPanels.extra] component.
  * @param modifier a [Modifier] to be applied to a wrapping container.
  * @param layout an implementation of [ChildPanelsLayout] responsible for laying out panels.
+ * @param secondPanelPlaceholder a `Composable` function that displays a placeholder when there is nothing to
+ * display in the second panel.
+ * @param thirdPanelPlaceholder a `Composable` function that displays a placeholder when there is nothing to
+ * display in the third panel.
  * @param animators a [ChildPanelsAnimators] containing panel animators for different
  * kinds of layouts.
  * @param predictiveBackParams a function that returns [PredictiveBackParams] for the specified [ChildPanels],
@@ -134,6 +146,8 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
     detailsChild: @Composable (Child.Created<DC, DT>) -> Unit,
     extraChild: @Composable (Child.Created<EC, ET>) -> Unit,
     modifier: Modifier = Modifier,
+    secondPanelPlaceholder: @Composable () -> Unit = {},
+    thirdPanelPlaceholder: @Composable () -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
     animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
     predictiveBackParams: (ChildPanels<MC, MT, DC, DT, EC, ET>) -> PredictiveBackParams? = { null },
@@ -146,6 +160,8 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
         detailsChild = detailsChild,
         extraChild = extraChild,
         modifier = modifier,
+        secondPanelPlaceholder = secondPanelPlaceholder,
+        thirdPanelPlaceholder = thirdPanelPlaceholder,
         layout = layout,
         animators = animators,
         predictiveBackParams = predictiveBackParams,
@@ -160,11 +176,15 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
  * [List-Details Layout](https://developer.android.com/develop/ui/compose/layouts/adaptive/list-detail).
  *
  * @param panels a [ChildPanels] to be displayed.
- * @param mainChild a `Composable` function that displays the provided Main component.
- * @param detailsChild a `Composable` function that displays the provided Details component.
- * @param extraChild a `Composable` function that displays the provided Extra component.
+ * @param mainChild a `Composable` function that displays the provided [ChildPanels.main] component.
+ * @param detailsChild a `Composable` function that displays the provided [ChildPanels.details] component.
+ * @param extraChild a `Composable` function that displays the provided [ChildPanels.extra] component.
  * @param modifier a [Modifier] to applied to a wrapping container.
  * @param layout an implementation of [ChildPanelsLayout] responsible for laying out panels.
+ * @param secondPanelPlaceholder a `Composable` function that displays a placeholder when there is nothing to
+ * display in the second panel.
+ * @param thirdPanelPlaceholder a `Composable` function that displays a placeholder when there is nothing to
+ * display in the third panel.
  * @param animators a [ChildPanelsAnimators] containing panel animators for different
  * kinds of layouts.
  * @param predictiveBackParams a function that returns [PredictiveBackParams] for the specified [ChildPanels],
@@ -180,6 +200,8 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
     detailsChild: @Composable (Child.Created<DC, DT>) -> Unit,
     extraChild: @Composable (Child.Created<EC, ET>) -> Unit,
     modifier: Modifier = Modifier,
+    secondPanelPlaceholder: @Composable () -> Unit = {},
+    thirdPanelPlaceholder: @Composable () -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
     animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
     predictiveBackParams: (ChildPanels<MC, MT, DC, DT, EC, ET>) -> PredictiveBackParams? = { null },
@@ -212,6 +234,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
                     animators = animators,
                     predictiveBackParams = broadcastPredictiveBackParams,
                     content = detailsChild,
+                    placeholder = secondPanelPlaceholder,
                 )
             },
             extra = {
@@ -221,6 +244,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
                     animators = animators,
                     predictiveBackParams = broadcastPredictiveBackParams,
                     content = extraChild,
+                    placeholder = thirdPanelPlaceholder,
                 )
             },
         )
@@ -270,6 +294,7 @@ private fun <DC : Any, DT : Any> DetailsPanel(
     animators: ChildPanelsAnimators,
     predictiveBackParams: Lazy<PredictiveBackParams?>,
     content: @Composable (Child.Created<DC, DT>) -> Unit,
+    placeholder: @Composable () -> Unit,
 ) {
     ChildStack(
         stack = when (mode) {
@@ -295,7 +320,7 @@ private fun <DC : Any, DT : Any> DetailsPanel(
     ) {
         when (val child = it.instance) {
             is PanelChild.Panel -> content(child.child)
-            is PanelChild.Empty -> Unit // no-op
+            is PanelChild.Empty -> placeholder()
         }
     }
 }
@@ -308,6 +333,7 @@ private fun <EC : Any, ET : Any> ExtraPanel(
     animators: ChildPanelsAnimators,
     predictiveBackParams: Lazy<PredictiveBackParams?>,
     content: @Composable (Child.Created<EC, ET>) -> Unit,
+    placeholder: @Composable () -> Unit,
 ) {
     ChildStack(
         stack = stackOfNotNull(if (mode == SINGLE) EmptyChild1 else EmptyChild2, extra),
@@ -323,7 +349,7 @@ private fun <EC : Any, ET : Any> ExtraPanel(
     ) {
         when (val child = it.instance) {
             is PanelChild.Panel -> content(child.child)
-            is PanelChild.Empty -> Unit // no-op
+            is PanelChild.Empty -> placeholder()
         }
     }
 }
