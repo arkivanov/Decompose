@@ -46,14 +46,14 @@ import com.arkivanov.decompose.value.Value
 @ExperimentalDecomposeApi
 @Composable
 fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
-    panels: Value<ChildPanels<MC, MT, DC, DT, *, *>>,
+    panels: Value<ChildPanels<MC, MT, DC, DT, Nothing, Nothing>>,
     mainChild: @Composable (Child.Created<MC, MT>) -> Unit,
     detailsChild: @Composable (Child.Created<DC, DT>) -> Unit,
     modifier: Modifier = Modifier,
     secondPanelPlaceholder: @Composable () -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
     animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
-    predictiveBackParams: (ChildPanels<MC, MT, DC, DT, *, *>) -> PredictiveBackParams? = { null },
+    predictiveBackParams: (ChildPanels<MC, MT, DC, DT, Nothing, Nothing>) -> PredictiveBackParams? = { null },
 ) {
     ChildPanels(
         panels = panels,
@@ -92,14 +92,14 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
 @ExperimentalDecomposeApi
 @Composable
 fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
-    panels: ChildPanels<MC, MT, DC, DT, *, *>,
+    panels: ChildPanels<MC, MT, DC, DT, Nothing, Nothing>,
     mainChild: @Composable (Child.Created<MC, MT>) -> Unit,
     detailsChild: @Composable (Child.Created<DC, DT>) -> Unit,
     modifier: Modifier = Modifier,
     secondPanelPlaceholder: @Composable () -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
     animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
-    predictiveBackParams: (ChildPanels<MC, MT, DC, DT, *, *>) -> PredictiveBackParams? = { null },
+    predictiveBackParams: (ChildPanels<MC, MT, DC, DT, Nothing, Nothing>) -> PredictiveBackParams? = { null },
 ) {
     ChildPanels(
         panels = panels,
