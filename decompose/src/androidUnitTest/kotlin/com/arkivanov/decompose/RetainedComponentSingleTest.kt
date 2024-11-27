@@ -16,7 +16,7 @@ import kotlin.test.assertTrue
 
 @Suppress("TestFunctionName")
 @RunWith(RobolectricTestRunner::class)
-class RetainedComponentTest {
+class RetainedComponentSingleTest {
 
     @Test
     fun WHEN_created_THEN_lifecycle_resumed() {
@@ -55,7 +55,7 @@ class RetainedComponentTest {
     @Test
     fun WHEN_configuration_changed_THEN_lifecycle_not_called() {
         var owner = TestOwner()
-        val ctx = owner.retainedComponent(isChangingConfigurations = { true })
+        val ctx = owner.retainedComponent()
         val events = ctx.lifecycle.logEvents()
         events.clear()
 
@@ -166,6 +166,33 @@ class RetainedComponentTest {
     }
 
     @Test
+    fun WHEN_configuration_changed_and_discardSavedState_is_true_on_restore_THEN_old_instance_lifecycle_destroyed() {
+        var owner = TestOwner()
+        val ctx = owner.retainedComponent()
+        val events = ctx.lifecycle.logEvents()
+        events.clear()
+
+        owner.isChangingConfigurations = true
+        owner = owner.recreate()
+        owner.retainedComponent(discardSavedState = true)
+
+        assertContentEquals(listOf("onPause", "onStop", "onDestroy"), events)
+    }
+
+    @Test
+    fun WHEN_configuration_changed_and_discardSavedState_is_true_on_restore_THEN_new_instance_lifecycle_resumed() {
+        var owner = TestOwner()
+        owner.retainedComponent()
+
+        owner.isChangingConfigurations = true
+        owner = owner.recreate()
+        val ctx = owner.retainedComponent(discardSavedState = true)
+        val events = ctx.lifecycle.logEvents()
+
+        assertContentEquals(listOf("onCreate", "onStart", "onResume"), events)
+    }
+
+    @Test
     fun GIVEN_enabled_BackCallback_registered_WHEN_onBackPressed_THEN_callback_called() {
         val owner = TestOwner()
         val ctx = owner.retainedComponent()
@@ -180,7 +207,7 @@ class RetainedComponentTest {
     @Test
     fun GIVEN_disabled_BackCallback_registered_WHEN_onBackPressed_THEN_callback_not_called() {
         val owner = TestOwner()
-        val ctx = owner.defaultComponentContext()
+        val ctx = owner.retainedComponent()
         var isCalled = false
         ctx.backHandler.register(BackCallback(isEnabled = false) { isCalled = true })
 
@@ -192,14 +219,13 @@ class RetainedComponentTest {
     private fun TestOwner.retainedComponent(
         discardSavedState: Boolean = false,
         isStateSavingAllowed: () -> Boolean = { true },
-        isChangingConfigurations: () -> Boolean = { false },
     ): ComponentContext =
         retainedComponent(
             key = "key",
             onBackPressedDispatcher = onBackPressedDispatcher,
             discardSavedState = discardSavedState,
             isStateSavingAllowed = isStateSavingAllowed,
-            isChangingConfigurations = isChangingConfigurations,
+            isChangingConfigurations = { isChangingConfigurations },
             factory = { it },
         )
 }

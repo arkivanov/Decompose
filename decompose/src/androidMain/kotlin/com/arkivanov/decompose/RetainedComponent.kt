@@ -1,5 +1,6 @@
 package com.arkivanov.decompose
 
+import android.annotation.SuppressLint
 import androidx.activity.BackEventCompat
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -97,13 +98,23 @@ internal fun <T, O> O.retainedComponent(
     isChangingConfigurations: () -> Boolean,
     factory: (ComponentContext) -> T,
 ): T where O : LifecycleOwner, O : SavedStateRegistryOwner, O : ViewModelStoreOwner {
-    val lifecycle = essentyLifecycle()
-    val stateKeeper = stateKeeper(discardSavedState = discardSavedState, isSavingAllowed = isStateSavingAllowed)
-    val marker = stateKeeper.consume(key = KEY_STATE_MARKER, strategy = String.serializer())
-    stateKeeper.register(key = KEY_STATE_MARKER, strategy = String.serializer()) { "marker" }
-    val instanceKeeper = instanceKeeper(discardRetainedInstances = marker == null)
+    check(savedStateRegistry.getSavedStateProvider(key = key) == null) {
+        "Another retained component is already registered with the key: $key"
+    }
 
-    check(!stateKeeper.isRegistered(key = key)) { "Another retained component is already registered with the key: $key" }
+    val lifecycle = essentyLifecycle()
+    val stateKeeper = stateKeeper(key = key, discardSavedState = discardSavedState, isSavingAllowed = isStateSavingAllowed)
+    val instanceKeeper = instanceKeeper()
+
+    val discardRetainedInstance = stateKeeper.consume(key = KEY_STATE_MARKER, strategy = Boolean.serializer()) == null
+    stateKeeper.register(key = KEY_STATE_MARKER, strategy = Boolean.serializer()) { true }
+
+    if (discardRetainedInstance) {
+        (instanceKeeper.remove(key = key) as RetainedComponentHolder<*>?)?.also { holder ->
+            holder.lifecycle.destroy()
+            holder.onDestroy()
+        }
+    }
 
     val holder =
         instanceKeeper.getOrCreate(key = key) {
@@ -154,14 +165,17 @@ private class DelegateOnBackPressedCallback(
         dispatcher.onBackPressed()
     }
 
+    @SuppressLint("VisibleForTests")
     override fun handleOnBackStarted(backEvent: BackEventCompat) {
         dispatcher.dispatchOnBackStarted(backEvent)
     }
 
+    @SuppressLint("VisibleForTests")
     override fun handleOnBackProgressed(backEvent: BackEventCompat) {
         dispatcher.dispatchOnBackProgressed(backEvent)
     }
 
+    @SuppressLint("VisibleForTests")
     override fun handleOnBackCancelled() {
         dispatcher.dispatchOnBackCancelled()
     }

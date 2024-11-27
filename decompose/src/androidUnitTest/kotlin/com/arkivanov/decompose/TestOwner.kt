@@ -22,12 +22,15 @@ class TestOwner(
     override val savedStateRegistry: SavedStateRegistry get() = savedStateRegistryController.savedStateRegistry
     override val onBackPressedDispatcher: OnBackPressedDispatcher = OnBackPressedDispatcher()
 
+    var isChangingConfigurations: Boolean = true
+
     init {
         savedStateRegistryController.performRestore(savedState)
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
     }
 
     fun recreate(isChangingConfigurations: Boolean = true): TestOwner {
+        this.isChangingConfigurations = isChangingConfigurations
         val bundle = Bundle()
         savedStateRegistryController.performSave(bundle)
         val savedState = bundle.parcelize().deparcelize()
