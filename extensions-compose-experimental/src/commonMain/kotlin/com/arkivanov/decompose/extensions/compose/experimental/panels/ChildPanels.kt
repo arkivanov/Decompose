@@ -320,7 +320,12 @@ private fun <DC : Any, DT : Any> DetailsPanel(
     ) {
         when (val child = it.instance) {
             is PanelChild.Panel -> content(child.child)
-            is PanelChild.Empty -> placeholder()
+
+            is PanelChild.Empty -> {
+                if (it == EmptyChild3) {
+                    placeholder()
+                }
+            }
         }
     }
 }
