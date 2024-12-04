@@ -5,7 +5,9 @@ import com.arkivanov.decompose.router.stack.TestStackRouter
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceCurrent
+import com.arkivanov.decompose.router.webhistory.TestBrowserHistory
 import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -14,9 +16,8 @@ import kotlin.test.assertTrue
 @Suppress("TestFunctionName")
 class DefaultWebHistoryControllerTest {
 
-    private val window = TestWindow()
-    private val history = window.history
-    private val controller = DefaultWebHistoryController(window)
+    private val history = TestBrowserHistory()
+    private val controller = DefaultWebHistoryController(history)
 
     @Test
     fun WHEN_created_THEN_historyPaths_empty() {
@@ -58,12 +59,13 @@ class DefaultWebHistoryControllerTest {
         val router = TestStackRouter(listOf(Config(0)))
         attach(router)
 
-        router.push(Config(1))
-        window.runPendingOperations()
+        router.pushNew(Config(1))
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/1"))
     }
 
+    @Suppress("OPT_IN_USAGE")
     @Test
     fun WHEN_router_push_same_config_THEN_url_pushed_to_history() {
         if (isNodeJs()) {
@@ -74,7 +76,7 @@ class DefaultWebHistoryControllerTest {
         attach(router)
 
         router.push(Config(0))
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/0"))
     }
@@ -89,7 +91,7 @@ class DefaultWebHistoryControllerTest {
         attach(router)
 
         router.pop()
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         history.assertStack(listOf("/0", "/1"), 0)
     }
@@ -104,7 +106,7 @@ class DefaultWebHistoryControllerTest {
         attach(router)
 
         router.pop()
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         history.assertStack(listOf("/0", "/0"), 0)
     }
@@ -117,15 +119,16 @@ class DefaultWebHistoryControllerTest {
 
         val router = TestStackRouter(listOf(Config(0)))
         attach(router)
-        router.push(Config(1))
-        window.runPendingOperations()
+        router.pushNew(Config(1))
+        history.runPendingOperations()
 
         router.pop()
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/1"), 0)
     }
 
+    @Suppress("OPT_IN_USAGE")
     @Test
     fun GIVEN_router_push_same_config_WHEN_router_pop_THEN_history_changed_to_previous_page() {
         if (isNodeJs()) {
@@ -135,10 +138,10 @@ class DefaultWebHistoryControllerTest {
         val router = TestStackRouter(listOf(Config(0)))
         attach(router)
         router.push(Config(0))
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         router.pop()
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/0"), 0)
     }
@@ -153,7 +156,7 @@ class DefaultWebHistoryControllerTest {
         attach(router)
 
         router.navigate { it.dropLast(2) }
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/1", "/2"), 0)
     }
@@ -167,10 +170,10 @@ class DefaultWebHistoryControllerTest {
         val router = TestStackRouter(listOf(Config(0)))
         attach(router)
         router.navigate { it + listOf(Config(1), Config(2)) }
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         router.navigate { it.dropLast(2) }
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/1", "/2"), 0)
     }
@@ -183,13 +186,13 @@ class DefaultWebHistoryControllerTest {
 
         val router = TestStackRouter(listOf(Config(0)))
         attach(router)
-        router.push(Config(1))
-        window.runPendingOperations()
+        router.pushNew(Config(1))
+        history.runPendingOperations()
         router.pop()
-        window.runPendingOperations()
+        history.runPendingOperations()
 
-        router.push(Config(1))
-        window.runPendingOperations()
+        router.pushNew(Config(1))
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/1"))
     }
@@ -202,13 +205,13 @@ class DefaultWebHistoryControllerTest {
 
         val router = TestStackRouter(listOf(Config(0)))
         attach(router)
-        router.push(Config(1))
-        window.runPendingOperations()
+        router.pushNew(Config(1))
+        history.runPendingOperations()
         router.pop()
-        window.runPendingOperations()
+        history.runPendingOperations()
 
-        router.push(Config(2))
-        window.runPendingOperations()
+        router.pushNew(Config(2))
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/2"))
     }
@@ -223,7 +226,7 @@ class DefaultWebHistoryControllerTest {
         attach(router)
 
         router.navigate { listOf(Config(0), Config(3)) }
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/3"))
     }
@@ -238,7 +241,7 @@ class DefaultWebHistoryControllerTest {
         attach(router)
 
         router.navigate { listOf(Config(0), Config(3), Config(4)) }
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/3", "/4"))
     }
@@ -253,7 +256,7 @@ class DefaultWebHistoryControllerTest {
         attach(router)
 
         router.navigate { listOf(Config(0), Config(2)) }
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/2"))
     }
@@ -268,7 +271,7 @@ class DefaultWebHistoryControllerTest {
         attach(router)
 
         router.navigate { listOf(Config(0), Config(2), Config(3)) }
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/2", "/3"))
     }
@@ -283,7 +286,7 @@ class DefaultWebHistoryControllerTest {
         attach(router)
 
         router.navigate { listOf(Config(2)) }
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         // Corner case: old pages remain in the history
         assertStack(listOf("/2", "/1"), 0)
@@ -299,7 +302,7 @@ class DefaultWebHistoryControllerTest {
         attach(router)
 
         router.navigate { listOf(Config(2), Config(3)) }
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         assertStack(listOf("/2", "/3"))
     }
@@ -314,7 +317,7 @@ class DefaultWebHistoryControllerTest {
         attach(router)
 
         router.navigate { listOf(Config(1)) }
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         assertStack(listOf("/1"))
     }
@@ -329,7 +332,7 @@ class DefaultWebHistoryControllerTest {
         attach(router)
 
         router.navigate { listOf(Config(1), Config(2)) }
-        window.runPendingOperations()
+        history.runPendingOperations()
 
         assertStack(listOf("/1", "/2"))
     }
@@ -344,11 +347,11 @@ class DefaultWebHistoryControllerTest {
 
         val router = TestStackRouter(listOf(Config(0)))
         attach(router)
-        router.push(Config(1))
-        window.runPendingOperations()
+        router.pushNew(Config(1))
+        history.runPendingOperations()
 
-        window.history.go(delta = -1)
-        window.runPendingOperations()
+        history.go(delta = -1)
+        history.runPendingOperations()
 
         assertEquals(listOf(Config(0)), router.configurations)
     }
@@ -361,13 +364,13 @@ class DefaultWebHistoryControllerTest {
 
         val router = TestStackRouter(listOf(Config(0)))
         attach(router)
-        router.push(Config(1))
-        window.runPendingOperations()
-        window.history.go(delta = -1)
-        window.runPendingOperations()
+        router.pushNew(Config(1))
+        history.runPendingOperations()
+        history.go(delta = -1)
+        history.runPendingOperations()
 
-        window.history.go(delta = 1)
-        window.runPendingOperations()
+        history.go(delta = 1)
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/1"))
     }
@@ -380,13 +383,13 @@ class DefaultWebHistoryControllerTest {
 
         val router = TestStackRouter(listOf(Config(0)))
         attach(router)
-        router.push(Config(1))
-        window.runPendingOperations()
-        window.history.go(delta = -1)
-        window.runPendingOperations()
+        router.pushNew(Config(1))
+        history.runPendingOperations()
+        history.go(delta = -1)
+        history.runPendingOperations()
 
-        window.history.go(delta = 1)
-        window.runPendingOperations()
+        history.go(delta = 1)
+        history.runPendingOperations()
 
         assertEquals(listOf(Config(0), Config(1)), router.configurations)
     }
@@ -399,15 +402,15 @@ class DefaultWebHistoryControllerTest {
 
         val router = TestStackRouter(listOf(Config(0)))
         attach(router)
-        router.push(Config(1))
-        window.runPendingOperations()
-        window.history.go(delta = -1)
-        window.runPendingOperations()
+        router.pushNew(Config(1))
+        history.runPendingOperations()
+        history.go(delta = -1)
+        history.runPendingOperations()
         router.replaceCurrent(Config(2))
-        window.runPendingOperations()
+        history.runPendingOperations()
 
-        window.history.go(delta = 1)
-        window.runPendingOperations()
+        history.go(delta = 1)
+        history.runPendingOperations()
 
         assertStack(listOf("/2", "/1"))
     }
@@ -420,15 +423,15 @@ class DefaultWebHistoryControllerTest {
 
         val router = TestStackRouter(listOf(Config(0)))
         attach(router)
-        router.push(Config(1))
-        window.runPendingOperations()
-        window.history.go(delta = -1)
-        window.runPendingOperations()
+        router.pushNew(Config(1))
+        history.runPendingOperations()
+        history.go(delta = -1)
+        history.runPendingOperations()
         router.replaceCurrent(Config(2))
-        window.runPendingOperations()
+        history.runPendingOperations()
 
-        window.history.go(delta = 1)
-        window.runPendingOperations()
+        history.go(delta = 1)
+        history.runPendingOperations()
 
         assertEquals(listOf(Config(2), Config(1)), router.configurations)
     }
@@ -442,10 +445,10 @@ class DefaultWebHistoryControllerTest {
         val router = TestStackRouter(listOf(Config(0), Config(1)))
         attach(router)
         router.navigate { listOf(Config(2)) }
-        window.runPendingOperations()
+        history.runPendingOperations()
 
-        window.history.go(delta = 1)
-        window.runPendingOperations()
+        history.go(delta = 1)
+        history.runPendingOperations()
 
         assertEquals(listOf(Config(2), Config(1)), router.configurations)
     }
@@ -459,10 +462,10 @@ class DefaultWebHistoryControllerTest {
         val router = TestStackRouter(listOf(Config(0), Config(1)))
         attach(router)
         router.navigate { listOf(Config(2)) }
-        window.runPendingOperations()
+        history.runPendingOperations()
 
-        window.history.go(delta = 1)
-        window.runPendingOperations()
+        history.go(delta = 1)
+        history.runPendingOperations()
 
         assertStack(listOf("/2", "/1"))
     }
@@ -476,8 +479,8 @@ class DefaultWebHistoryControllerTest {
         val router = TestStackRouter(listOf(Config(0), Config(1)))
         attach(router) { _, _ -> false }
 
-        window.history.go(-1)
-        window.runPendingOperations()
+        history.go(-1)
+        history.runPendingOperations()
         assertStack(listOf("/0", "/1"))
     }
 
@@ -490,8 +493,8 @@ class DefaultWebHistoryControllerTest {
         val router = TestStackRouter(listOf(Config(0), Config(1)))
         attach(router) { _, _ -> true }
 
-        window.history.go(-1)
-        window.runPendingOperations()
+        history.go(-1)
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/1"), 0)
     }
@@ -505,10 +508,10 @@ class DefaultWebHistoryControllerTest {
         val router = TestStackRouter(listOf(Config(0), Config(1)))
         attach(router) { newStack, _ -> newStack.last().value != 1 }
 
-        window.history.go(-1)
-        window.runPendingOperations()
-        window.history.go(1)
-        window.runPendingOperations()
+        history.go(-1)
+        history.runPendingOperations()
+        history.go(1)
+        history.runPendingOperations()
 
         assertStack(listOf("/0", "/1"), 0)
     }
@@ -528,8 +531,8 @@ class DefaultWebHistoryControllerTest {
             true
         }
 
-        window.history.go(-1)
-        window.runPendingOperations()
+        history.go(-1)
+        history.runPendingOperations()
 
         assertEquals(listOf(Config(0)), newStackVar)
         assertEquals(listOf(Config(0), Config(1)), oldStackVar)
@@ -550,12 +553,12 @@ class DefaultWebHistoryControllerTest {
             true
         }
 
-        window.history.go(-1)
-        window.runPendingOperations()
+        history.go(-1)
+        history.runPendingOperations()
         newStackVar = emptyList()
         oldStackVar = emptyList()
-        window.history.go(1)
-        window.runPendingOperations()
+        history.go(1)
+        history.runPendingOperations()
 
         assertEquals(listOf(Config(0), Config(1)), newStackVar)
         assertEquals(listOf(Config(0)), oldStackVar)
@@ -574,7 +577,7 @@ class DefaultWebHistoryControllerTest {
             onWebNavigation = callback,
         )
 
-        window.runPendingOperations()
+        history.runPendingOperations()
     }
 
     private fun assertStack(urls: List<String>, index: Int = urls.lastIndex) {
