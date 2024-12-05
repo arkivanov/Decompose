@@ -8,6 +8,8 @@ import com.arkivanov.decompose.router.stack.findFirstDifferentIndex
 import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.startsWith
 import com.arkivanov.decompose.router.stack.subscribe
+import com.arkivanov.decompose.router.webhistory.BrowserHistory
+import com.arkivanov.decompose.router.webhistory.DefaultBrowserHistory
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -15,23 +17,23 @@ import kotlinx.serialization.builtins.ListSerializer
 
 @ExperimentalDecomposeApi
 class DefaultWebHistoryController internal constructor(
-    private val window: Window,
+    private val browserHistory: BrowserHistory,
 ) : WebHistoryController {
 
     @Suppress("unused") // Public API
-    constructor() : this(DefaultWebHistoryControllerWindow())
+    constructor() : this(DefaultBrowserHistory)
 
     override val historyPaths: List<String>
-        get() = window.history.getItems().map(PageItem::path)
+        get() = browserHistory.getItems().map(PageItem::path)
 
-    private fun History.getItems(): List<PageItem> =
+    private fun BrowserHistory.getItems(): List<PageItem> =
         state?.let(::deserializeItems) ?: emptyList()
 
-    private fun History.pushState(items: List<PageItem>) {
+    private fun BrowserHistory.pushState(items: List<PageItem>) {
         pushState(data = serializeItems(items), url = items.last().path)
     }
 
-    private fun History.replaceState(items: List<PageItem>) {
+    private fun BrowserHistory.replaceState(items: List<PageItem>) {
         replaceState(data = serializeItems(items), url = items.last().path)
     }
 
@@ -51,7 +53,7 @@ class DefaultWebHistoryController internal constructor(
     ) {
         val impl = Impl(navigator, stack, serializer, getPath, getConfiguration, onWebNavigation)
         impl.init()
-        window.setOnPopStateListener(impl::onPopState)
+        browserHistory.setOnPopStateListener(impl::onPopState)
     }
 
     private inner class Impl<in C : Any>(
@@ -67,15 +69,15 @@ class DefaultWebHistoryController internal constructor(
 
         fun init() {
             // Initialise the history if it's empty
-            if (window.history.getItems().isEmpty()) {
+            if (browserHistory.getItems().isEmpty()) {
                 val configurations = stack.value.configurations()
-                window.history.replaceState(configurations[0])
+                browserHistory.replaceState(configurations[0])
                 for (i in 1..configurations.lastIndex) {
-                    window.history.pushState(configurations[i])
+                    browserHistory.pushState(configurations[i])
                 }
             }
 
-            stack.subscribe(::onStackChanged)
+            stack.subscribe(observer = ::onStackChanged)
         }
 
         private fun onStackChanged(newStack: ChildStack<C, *>, oldStack: ChildStack<C, *>) {
@@ -95,59 +97,59 @@ class DefaultWebHistoryController internal constructor(
 
                 // One or more configurations were popped from the stack
                 oldConfigurationStack.startsWith(newConfigurationStack) -> { // Pop removed pages from the history
-                    window.history.go(delta = newConfigurationStack.size - oldConfigurationStack.size)
+                    browserHistory.go(delta = newConfigurationStack.size - oldConfigurationStack.size)
                 }
 
                 // One or more configurations were pushed to the history
                 newConfigurationStack.startsWith(oldConfigurationStack) -> { // Push new pages to the history
                     for (i in oldConfigurationStack.size..newConfigurationStack.lastIndex) {
-                        window.history.pushState(newConfigurationStack[i])
+                        browserHistory.pushState(newConfigurationStack[i])
                     }
                 }
 
                 // The active configuration was changed, and new configurations could be pushed
                 firstDifferentIndex == oldConfigurationStack.lastIndex -> {
                     // Replace the current page with a new one
-                    window.history.replaceState(newConfigurationStack[firstDifferentIndex])
+                    browserHistory.replaceState(newConfigurationStack[firstDifferentIndex])
 
                     // Push the rest of the pages to the history
                     for (i in (firstDifferentIndex + 1)..newConfigurationStack.lastIndex) {
-                        window.history.pushState(newConfigurationStack[i])
+                        browserHistory.pushState(newConfigurationStack[i])
                     }
                 }
 
                 // Some configurations were popped, and one or more configurations were pushed
                 firstDifferentIndex > 0 -> {
-                    window.setOnPopStateListener {
-                        window.setOnPopStateListener(::onPopState)
+                    browserHistory.setOnPopStateListener {
+                        browserHistory.setOnPopStateListener(::onPopState)
 
                         // Push new pages to the history
                         for (i in firstDifferentIndex..newConfigurationStack.lastIndex) {
-                            window.history.pushState(newConfigurationStack[i])
+                            browserHistory.pushState(newConfigurationStack[i])
                         }
                     }
 
                     // Pop removed pages from the history
-                    window.history.go(delta = firstDifferentIndex - oldConfigurationStack.size)
+                    browserHistory.go(delta = firstDifferentIndex - oldConfigurationStack.size)
                 }
 
                 // All configurations were popped, and one or more configurations were pushed
                 else -> {
-                    window.setOnPopStateListener {
-                        window.setOnPopStateListener(::onPopState)
+                    browserHistory.setOnPopStateListener {
+                        browserHistory.setOnPopStateListener(::onPopState)
 
                         // Replace the current page with a new one
-                        window.history.replaceState(newConfigurationStack[firstDifferentIndex])
+                        browserHistory.replaceState(newConfigurationStack[firstDifferentIndex])
 
                         // Push the rest of the pages to the history
                         // Corner case: if there is nothing to push, old pages will remain in the history
                         for (i in (firstDifferentIndex + 1)..newConfigurationStack.lastIndex) {
-                            window.history.pushState(newConfigurationStack[i])
+                            browserHistory.pushState(newConfigurationStack[i])
                         }
                     }
 
                     // Pop removed pages from the history, except the first one
-                    window.history.go(delta = -oldConfigurationStack.lastIndex)
+                    browserHistory.go(delta = -oldConfigurationStack.lastIndex)
                 }
             }
         }
@@ -158,8 +160,8 @@ class DefaultWebHistoryController internal constructor(
             val oldConfigurations = stack.value.configurations()
 
             if (!onWebNavigation(newConfigurations, oldConfigurations)) {
-                window.setOnPopStateListener { window.setOnPopStateListener(::onPopState) }
-                window.history.go(stack.value.items.size - newConfigurations.size)
+                browserHistory.setOnPopStateListener { browserHistory.setOnPopStateListener(::onPopState) }
+                browserHistory.go(stack.value.items.size - newConfigurations.size)
                 return
             }
 
@@ -179,20 +181,20 @@ class DefaultWebHistoryController internal constructor(
                 }
             }
 
-            window.history.replaceState(stack.value.configurations())
+            browserHistory.replaceState(stack.value.configurations())
 
             isStateObserverEnabled = true
         }
 
-        private fun History.pushState(configuration: C) {
-            pushState(items = window.history.getItems() + PageItem(configuration = configuration))
+        private fun BrowserHistory.pushState(configuration: C) {
+            pushState(items = browserHistory.getItems() + PageItem(configuration = configuration))
         }
 
-        private fun History.replaceState(configuration: C) {
-            replaceState(items = window.history.getItems().dropLast(1) + PageItem(configuration = configuration))
+        private fun BrowserHistory.replaceState(configuration: C) {
+            replaceState(items = browserHistory.getItems().dropLast(1) + PageItem(configuration = configuration))
         }
 
-        private fun History.replaceState(configurations: List<C>) {
+        private fun BrowserHistory.replaceState(configurations: List<C>) {
             replaceState(items = configurations.map(::PageItem))
         }
 
@@ -218,19 +220,5 @@ class DefaultWebHistoryController internal constructor(
             val listSerializer: KSerializer<List<PageItem>> =
                 ListSerializer(serializer())
         }
-    }
-
-    internal interface Window {
-        val history: History
-
-        fun setOnPopStateListener(listener: (state: String?) -> Unit)
-    }
-
-    internal interface History {
-        val state: String?
-
-        fun go(delta: Int)
-        fun pushState(data: String, url: String?)
-        fun replaceState(data: String, url: String?)
     }
 }
