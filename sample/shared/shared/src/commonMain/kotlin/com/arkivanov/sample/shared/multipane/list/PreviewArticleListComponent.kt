@@ -13,7 +13,7 @@ class PreviewArticleListComponent(
         MutableValue(
             Model(
                 articles = List(10) { index ->
-                    Article(id = index.toLong(), authorId = index.toLong(), title = "Article $index")
+                    Article(id = index.toLong(), title = "Article $index")
                 },
                 isToolbarVisible = isToolbarVisible,
                 selectedArticleId = null,
