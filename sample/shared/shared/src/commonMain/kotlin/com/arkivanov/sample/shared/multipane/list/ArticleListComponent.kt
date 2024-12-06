@@ -16,7 +16,6 @@ interface ArticleListComponent {
 
     data class Article(
         val id: Long,
-        val authorId: Long,
         val title: String
     )
 }

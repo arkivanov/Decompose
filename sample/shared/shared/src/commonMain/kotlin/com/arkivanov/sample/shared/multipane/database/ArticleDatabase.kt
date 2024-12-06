@@ -5,6 +5,4 @@ internal interface ArticleDatabase {
     fun getArticles(): List<ArticleEntity>
 
     fun getArticle(id: Long): ArticleEntity
-
-    fun getAuthor(id: Long): AuthorEntity
 }

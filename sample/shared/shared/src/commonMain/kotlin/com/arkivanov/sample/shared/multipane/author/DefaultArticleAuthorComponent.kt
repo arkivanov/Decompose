@@ -15,7 +15,7 @@ import com.badoo.reaktive.observable.Observable
 internal class DefaultArticleAuthorComponent(
     componentContext: ComponentContext,
     database: ArticleDatabase,
-    authorId: Long,
+    articleId: Long,
     isToolbarVisible: Observable<Boolean>,
     isCloseButtonVisible: Observable<Boolean>,
     private val onFinished: () -> Unit,
@@ -26,7 +26,7 @@ internal class DefaultArticleAuthorComponent(
             Model(
                 isToolbarVisible = false,
                 isCloseButtonVisible = false,
-                author = database.getAuthor(id = authorId).toAuthor(),
+                author = database.getArticle(id = articleId).author.toAuthor(),
             )
         )
 

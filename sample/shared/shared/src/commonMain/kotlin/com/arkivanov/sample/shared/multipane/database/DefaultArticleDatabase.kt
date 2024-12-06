@@ -28,14 +28,10 @@ internal class DefaultArticleDatabase : ArticleDatabase {
             )
         }
 
-    private val authorMap = authors.associateBy(AuthorEntity::id)
     private val articleMap = articles.associateBy(ArticleEntity::id)
 
     override fun getArticles(): List<ArticleEntity> = articles
 
     override fun getArticle(id: Long): ArticleEntity =
         articleMap.getValue(id)
-
-    override fun getAuthor(id: Long): AuthorEntity =
-        authorMap.getValue(id)
 }

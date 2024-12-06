@@ -57,11 +57,11 @@ internal class DefaultMultiPaneComponent(
             database = database,
             isToolbarVisible = navState.map { it.mode.isSingle },
             selectedArticleId = navState.map { it.takeUnless { it.mode.isSingle }?.details?.articleId },
-            onArticleSelected = { articleId, authorId ->
+            onArticleSelected = { articleId ->
                 navigation.navigate { state ->
                     state.copy(
-                        details = Details(articleId = articleId, authorId = authorId),
-                        extra = if (state.mode == TRIPLE) Extra(authorId = authorId) else null,
+                        details = Details(articleId = articleId),
+                        extra = if (state.mode == TRIPLE) Extra(articleId = articleId) else null,
                     )
                 }
             },
@@ -73,7 +73,7 @@ internal class DefaultMultiPaneComponent(
             database = database,
             articleId = config.articleId,
             isToolbarVisible = navState.map { it.mode.isSingle },
-            onAuthorRequested = { navigation.activateExtra(extra = Extra(authorId = config.authorId)) },
+            onAuthorRequested = { navigation.activateExtra(extra = Extra(articleId = config.articleId)) },
             onFinished = navigation::pop,
         )
 
@@ -81,7 +81,7 @@ internal class DefaultMultiPaneComponent(
         DefaultArticleAuthorComponent(
             componentContext = componentContext,
             database = database,
-            authorId = config.authorId,
+            articleId = config.articleId,
             isToolbarVisible = navState.map { it.mode.isSingle },
             isCloseButtonVisible = navState.map { it.mode.isDual },
             onFinished = navigation::pop,
@@ -90,7 +90,7 @@ internal class DefaultMultiPaneComponent(
     override fun setMode(mode: ChildPanelsMode) {
         navigation.navigate { state ->
             state.copy(
-                extra = state.takeIf { mode == TRIPLE }?.details?.authorId?.let { Extra(authorId = it) } ?: state.extra,
+                extra = state.takeIf { mode == TRIPLE }?.details?.articleId?.let { Extra(articleId = it) } ?: state.extra,
                 mode = mode,
             )
         }
@@ -101,8 +101,8 @@ internal class DefaultMultiPaneComponent(
     }
 
     @Serializable
-    private data class Details(val articleId: Long, val authorId: Long)
+    private data class Details(val articleId: Long)
 
     @Serializable
-    private data class Extra(val authorId: Long)
+    private data class Extra(val articleId: Long)
 }
