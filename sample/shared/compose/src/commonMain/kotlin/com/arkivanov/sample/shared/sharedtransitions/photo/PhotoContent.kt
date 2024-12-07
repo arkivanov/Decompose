@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import com.arkivanov.sample.shared.painterResource
 import com.arkivanov.sample.shared.utils.TopAppBar
+import com.arkivanov.sample.shared.utils.WebDocumentTitle
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -25,6 +26,8 @@ internal fun SharedTransitionScope.PhotoContent(
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
+    WebDocumentTitle(title = "Shared Transitions ${component.image.resourceId.name}")
+
     Column(modifier = modifier) {
         TopAppBar(title = "Photo ${component.image.id}", onCloseClick = component::onCloseClicked)
 

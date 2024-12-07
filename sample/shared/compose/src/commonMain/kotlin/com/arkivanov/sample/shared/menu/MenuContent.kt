@@ -17,12 +17,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.arkivanov.sample.shared.utils.TopAppBar
+import com.arkivanov.sample.shared.utils.WebDocumentTitle
 
 @Composable
 internal fun MenuContent(
     component: MenuComponent,
     modifier: Modifier = Modifier,
 ) {
+    WebDocumentTitle(title = "Menu")
+
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         TopAppBar(title = "Decompose Sample")
 

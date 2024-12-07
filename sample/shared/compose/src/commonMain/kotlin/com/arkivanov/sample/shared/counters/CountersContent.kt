@@ -19,10 +19,13 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.sample.shared.counters.counter.CounterContent
 import com.arkivanov.sample.shared.utils.TopAppBar
+import com.arkivanov.sample.shared.utils.WebDocumentTitle
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 internal fun CountersContent(component: CountersComponent, modifier: Modifier = Modifier) {
+    WebDocumentTitle(title = "Counters")
+
     Column(modifier = modifier) {
         TopAppBar(title = "Counters")
 

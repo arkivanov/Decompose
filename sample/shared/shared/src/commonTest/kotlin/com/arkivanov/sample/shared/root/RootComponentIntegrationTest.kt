@@ -1,10 +1,9 @@
 package com.arkivanov.sample.shared.root
 
-import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.sample.shared.Url
 import com.arkivanov.sample.shared.assertActiveInstance
 import com.arkivanov.sample.shared.createComponent
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.TestFeatureInstaller
-import com.arkivanov.sample.shared.root.DefaultRootComponent.DeepLink
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
@@ -15,49 +14,48 @@ import kotlin.test.Test
 class RootComponentIntegrationTest {
 
     @Test
-    fun WHEN_created_with_deeplink_Web_empty_THEN_TabsChild_active() {
-        val component = createComponent(deepLink = DeepLink.Web(path = ""))
+    fun WHEN_created_with_deeplink_empty_THEN_TabsChild_active() {
+        val component = createComponent(deepLink = Url(url = "https://example.com"))
 
         component.stack.assertActiveInstance<TabsChild>()
     }
 
     @Test
-    fun WHEN_created_with_deeplink_Web_unrecognized_THEN_TabsChild_active() {
-        val component = createComponent(deepLink = DeepLink.Web(path = "/xyz"))
+    fun WHEN_created_with_deeplink_unrecognized_THEN_TabsChild_active() {
+        val component = createComponent(deepLink = Url(url = "https://example.com/xyz"))
 
         component.stack.assertActiveInstance<TabsChild>()
     }
 
     @Test
-    fun WHEN_created_with_deeplink_Web_DynamicFeatures_THEN_DynamicFeaturesChild_active() {
-        val component = createComponent(deepLink = DeepLink.Web(path = "/dynamic-features"))
+    fun WHEN_created_with_deeplink_DynamicFeatures_THEN_DynamicFeaturesChild_active() {
+        val component = createComponent(deepLink = Url(url = "https://example.com/dynamic_features"))
 
         component.stack.assertActiveInstance<DynamicFeaturesChild>()
     }
 
     @Test
-    fun WHEN_created_with_deeplink_Web_CustomNavigationChild_THEN_CustomNavigationChild_active() {
-        val component = createComponent(deepLink = DeepLink.Web(path = "/custom-navigation"))
+    fun WHEN_created_with_deeplink_CustomNavigationChild_THEN_CustomNavigationChild_active() {
+        val component = createComponent(deepLink = Url(url = "https://example.com/custom_navigation"))
 
         component.stack.assertActiveInstance<CustomNavigationChild>()
     }
 
     @Test
-    fun WHEN_created_with_deeplink_Web_PagesChild_THEN_PagesChild_active() {
-        val component = createComponent(deepLink = DeepLink.Web(path = "/pages"))
+    fun WHEN_created_with_deeplink_PagesChild_THEN_PagesChild_active() {
+        val component = createComponent(deepLink = Url(url = "https://example.com/pages"))
 
         component.stack.assertActiveInstance<PagesChild>()
     }
 
-    @OptIn(ExperimentalDecomposeApi::class)
     private fun createComponent(
-        deepLink: DeepLink = DeepLink.None,
+        deepLink: Url? = null,
     ): RootComponent =
         createComponent { componentContext ->
             DefaultRootComponent(
                 componentContext = componentContext,
                 featureInstaller = TestFeatureInstaller(),
-                deepLink = deepLink,
+                deepLinkUrl = deepLink,
             )
         }
 }

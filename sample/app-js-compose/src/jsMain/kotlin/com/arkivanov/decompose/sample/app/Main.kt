@@ -6,30 +6,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.CanvasBasedWindow
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.router.stack.webhistory.DefaultWebHistoryController
+import com.arkivanov.decompose.router.webhistory.withWebHistory
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.stop
+import com.arkivanov.sample.shared.Url
 import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DefaultFeatureInstaller
 import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootContent
-import kotlinx.browser.window
 import org.jetbrains.skiko.wasm.onWasmReady
 import web.dom.DocumentVisibilityState
 import web.dom.document
 import web.events.EventType
 
-@OptIn(ExperimentalDecomposeApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalDecomposeApi::class)
 fun main() {
     val lifecycle = LifecycleRegistry()
 
     val root =
-        DefaultRootComponent(
-            componentContext = DefaultComponentContext(lifecycle = lifecycle),
-            featureInstaller = DefaultFeatureInstaller,
-            deepLink = DefaultRootComponent.DeepLink.Web(path = window.location.pathname),
-            webHistoryController = DefaultWebHistoryController(),
-        )
+        withWebHistory { stateKeeper, deepLink ->
+            DefaultRootComponent(
+                componentContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = stateKeeper),
+                featureInstaller = DefaultFeatureInstaller,
+                deepLinkUrl = deepLink?.let(::Url),
+            )
+        }
 
     lifecycle.attachToDocument()
 
@@ -53,4 +54,3 @@ private fun LifecycleRegistry.attachToDocument() {
 
     document.addEventListener(type = EventType("visibilitychange"), callback = { onVisibilityChanged() })
 }
-

@@ -31,8 +31,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             backHandler: nil
         ),
         featureInstaller: DefaultFeatureInstaller.shared,
-        deepLink: DefaultRootComponentDeepLinkNone.shared,
-        webHistoryController: nil
+        deepLinkUrl: nil
     )
     
     func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {

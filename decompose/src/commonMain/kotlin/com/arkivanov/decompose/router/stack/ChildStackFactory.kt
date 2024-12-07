@@ -30,7 +30,7 @@ import kotlinx.serialization.builtins.ListSerializer
  * @param childFactory a factory function that creates new child instances.
  * @return an observable [Value] of [ChildStack].
  */
-fun <Ctx: GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
+fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
     source: NavigationSource<StackNavigation.Event<C>>,
     serializer: KSerializer<C>?,
     initialStack: () -> List<C>,

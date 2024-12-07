@@ -16,3 +16,14 @@ private fun <T : Any> Value<T>.asObservableInternal(): Observable<T> =
         val cancellation = subscribe(emitter::onNext)
         emitter.setCancellable(cancellation::cancel)
     }
+
+internal fun String.snakeCase(): String =
+    buildString {
+        for (c in this@snakeCase) {
+            if (c.isUpperCase() && isNotEmpty()) {
+                append('_')
+            }
+
+            append(c.lowercaseChar())
+        }
+    }

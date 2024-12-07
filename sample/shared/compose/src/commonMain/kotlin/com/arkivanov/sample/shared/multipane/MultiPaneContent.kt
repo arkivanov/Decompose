@@ -29,10 +29,13 @@ import com.arkivanov.sample.shared.multipane.author.ArticleAuthorContent
 import com.arkivanov.sample.shared.multipane.details.ArticleDetailsContent
 import com.arkivanov.sample.shared.multipane.list.ArticleListContent
 import com.arkivanov.sample.shared.utils.TopAppBar
+import com.arkivanov.sample.shared.utils.WebDocumentTitle
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 internal fun MultiPaneContent(component: MultiPaneComponent, modifier: Modifier = Modifier) {
+    WebDocumentTitle(title = "Multi-Pane Layout")
+
     val panels by component.panels.subscribeAsState()
 
     Column(modifier = modifier) {

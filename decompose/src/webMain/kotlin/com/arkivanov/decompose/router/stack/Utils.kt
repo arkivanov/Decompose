@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.router.stack
 
+import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.value.Value
 import kotlin.math.min
 
@@ -32,9 +33,10 @@ internal fun <T> List<T>.findFirstDifferentIndex(other: List<T>): Int {
     return i
 }
 
-internal fun <T : Any> Value<T>.subscribe(observer: (new: T, old: T) -> Unit) {
+internal fun <T : Any> Value<T>.subscribe(observer: (new: T, old: T) -> Unit): Cancellation {
     var old = value
-    subscribe { new ->
+
+    return subscribe callback@{ new ->
         val tmp = old
         old = new
         observer(new, tmp)

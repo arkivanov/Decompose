@@ -1,13 +1,14 @@
 package com.arkivanov.sample.shared.tabs
 
 import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.webhistory.WebNavigationOwner
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.cards.CardsComponent
 import com.arkivanov.sample.shared.counters.CountersComponent
 import com.arkivanov.sample.shared.menu.MenuComponent
 import com.arkivanov.sample.shared.multipane.MultiPaneComponent
 
-interface TabsComponent {
+interface TabsComponent : WebNavigationOwner {
 
     val stack: Value<ChildStack<*, Child>>
 

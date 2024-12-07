@@ -109,6 +109,7 @@ class TabsComponentIntegrationTest {
         createComponent { componentContext ->
             DefaultTabsComponent(
                 componentContext = componentContext,
+                deepLinkUrl = null,
                 onDynamicFeaturesItemSelected = onDynamicFeaturesItemSelected,
                 onCustomNavigationItemSelected = onCustomNavigationItemSelected,
                 onPagesItemSelected = onPagesItemSelected,

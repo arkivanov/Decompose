@@ -187,6 +187,7 @@ public final class com/arkivanov/decompose/router/pages/ChildPagesFactoryKt {
 }
 
 public final class com/arkivanov/decompose/router/pages/Pages {
+	public static final field Companion Lcom/arkivanov/decompose/router/pages/Pages$Companion;
 	public fun <init> ()V
 	public fun <init> (Ljava/util/List;I)V
 	public final fun component1 ()Ljava/util/List;
@@ -198,6 +199,21 @@ public final class com/arkivanov/decompose/router/pages/Pages {
 	public final fun getSelectedIndex ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class com/arkivanov/decompose/router/pages/Pages$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public fun <init> (Lkotlinx/serialization/KSerializer;)V
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/arkivanov/decompose/router/pages/Pages;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/arkivanov/decompose/router/pages/Pages;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/arkivanov/decompose/router/pages/Pages$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
 }
 
 public abstract interface class com/arkivanov/decompose/router/pages/PagesNavigation : com/arkivanov/decompose/router/children/NavigationSource, com/arkivanov/decompose/router/pages/PagesNavigator {
@@ -232,6 +248,11 @@ public final class com/arkivanov/decompose/router/pages/PagesNavigatorExtKt {
 	public static synthetic fun selectNext$default (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 	public static final fun selectPrev (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ZLkotlin/jvm/functions/Function2;)V
 	public static synthetic fun selectPrev$default (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class com/arkivanov/decompose/router/pages/PagesWebNavigationKt {
+	public static final fun childPagesWebNavigation (Lcom/arkivanov/decompose/router/pages/PagesNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/router/webhistory/WebNavigation;
+	public static synthetic fun childPagesWebNavigation$default (Lcom/arkivanov/decompose/router/pages/PagesNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/webhistory/WebNavigation;
 }
 
 public final class com/arkivanov/decompose/router/panels/ChildPanels {
@@ -354,6 +375,11 @@ public final class com/arkivanov/decompose/router/panels/PanelsNavigatorExtKt {
 	public static synthetic fun setMode$default (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
+public final class com/arkivanov/decompose/router/panels/PanelsWebNavigationKt {
+	public static final fun childPanelsWebNavigation (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/router/webhistory/WebNavigation;
+	public static synthetic fun childPanelsWebNavigation$default (Lcom/arkivanov/decompose/router/panels/PanelsNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/webhistory/WebNavigation;
+}
+
 public final class com/arkivanov/decompose/router/slot/ChildSlot {
 	public fun <init> ()V
 	public fun <init> (Lcom/arkivanov/decompose/Child$Created;)V
@@ -472,6 +498,11 @@ public final class com/arkivanov/decompose/router/stack/StackNavigatorExtKt {
 	public static synthetic fun replaceCurrent$default (Lcom/arkivanov/decompose/router/stack/StackNavigator;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
 }
 
+public final class com/arkivanov/decompose/router/stack/StackWebNavigationKt {
+	public static final fun childStackWebNavigation (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlinx/serialization/KSerializer;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/router/webhistory/WebNavigation;
+	public static synthetic fun childStackWebNavigation$default (Lcom/arkivanov/decompose/router/stack/StackNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlinx/serialization/KSerializer;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/webhistory/WebNavigation;
+}
+
 public final class com/arkivanov/decompose/router/stack/ValueExtKt {
 	public static final fun getActive (Lcom/arkivanov/decompose/value/Value;)Lcom/arkivanov/decompose/Child$Created;
 	public static final fun getBackStack (Lcom/arkivanov/decompose/value/Value;)Ljava/util/List;
@@ -485,6 +516,33 @@ public abstract interface class com/arkivanov/decompose/router/stack/webhistory/
 
 public final class com/arkivanov/decompose/router/stack/webhistory/WebHistoryController$DefaultImpls {
 	public static synthetic fun attach$default (Lcom/arkivanov/decompose/router/stack/webhistory/WebHistoryController;Lcom/arkivanov/decompose/router/stack/StackNavigator;Lcom/arkivanov/decompose/value/Value;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public abstract interface class com/arkivanov/decompose/router/webhistory/WebNavigation {
+	public abstract fun getHistory ()Lcom/arkivanov/decompose/value/Value;
+	public abstract fun getSerializer ()Lkotlinx/serialization/KSerializer;
+	public abstract fun navigate (Ljava/util/List;)V
+	public abstract fun onBeforeNavigate ()Z
+}
+
+public final class com/arkivanov/decompose/router/webhistory/WebNavigation$HistoryItem {
+	public fun <init> (Ljava/lang/Object;Ljava/lang/String;Ljava/util/Map;Lcom/arkivanov/decompose/router/webhistory/WebNavigationOwner;)V
+	public final fun getChild ()Lcom/arkivanov/decompose/router/webhistory/WebNavigationOwner;
+	public final fun getKey ()Ljava/lang/Object;
+	public final fun getParameters ()Ljava/util/Map;
+	public final fun getPath ()Ljava/lang/String;
+}
+
+public abstract interface class com/arkivanov/decompose/router/webhistory/WebNavigationOwner {
+	public abstract fun getWebNavigation ()Lcom/arkivanov/decompose/router/webhistory/WebNavigation;
+}
+
+public abstract interface class com/arkivanov/decompose/router/webhistory/WebNavigationOwner$NoOp : com/arkivanov/decompose/router/webhistory/WebNavigationOwner {
+	public abstract fun getWebNavigation ()Lcom/arkivanov/decompose/router/webhistory/WebNavigation;
+}
+
+public final class com/arkivanov/decompose/router/webhistory/WebNavigationOwner$NoOp$DefaultImpls {
+	public static fun getWebNavigation (Lcom/arkivanov/decompose/router/webhistory/WebNavigationOwner$NoOp;)Lcom/arkivanov/decompose/router/webhistory/WebNavigation;
 }
 
 public abstract class com/arkivanov/decompose/value/MutableValue : com/arkivanov/decompose/value/Value {
