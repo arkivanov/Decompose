@@ -1,4 +1,8 @@
-# Web browser history
+# Web Browser History
+
+!!!warning
+
+    This API is likely to be removed in the future. Please see the successor of this experimental API: [Web Navigation API](../web-navigation.md).
 
 By default `Child Stack` navigation does not affect URLs in the browser address bar. But sometimes it is necessary to have different URLs for
 different `Child Stack` destinations. For this purpose Decompose provides an **experimental** API - [WebHistoryController](https://github.com/arkivanov/Decompose/blob/master/decompose/src/webMain/kotlin/com/arkivanov/decompose/router/stack/webhistory/DefaultWebHistoryController.kt).
@@ -56,10 +60,3 @@ Using `WebHistoryController` is easy:
 3. In the component, call the `WebHistoryController.attach` method and supply all arguments.
 4. In the JS app, pass an initial deeplink to the component.
 5. Use the deeplink in the component to generate an initial back stack.
-
-### Example
-
-The sample project demonstrates the use of `WebHistoryController`:
-
-- [Main.kt](https://github.com/arkivanov/Decompose/blob/master/sample/app-js/src/main/kotlin/com/arkivanov/sample/app/Main.kt) - demonstrates passing `WebHistoryController` and a deeplink via constructor to `RootComponent`
-- [RootComponent](https://github.com/arkivanov/Decompose/blob/master/sample/shared/shared/src/commonMain/kotlin/com/arkivanov/sample/shared/root/RootComponent.kt) - demonstrates generating the initial stack from the deeplink, as well as calling `WebHistoryController.attach` and supplying the arguments
