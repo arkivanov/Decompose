@@ -67,7 +67,7 @@ Content:
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCountersDesktop.png" width="294">
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCountersWeb.png" width="294">
 
-### Swipeable Cards Screenhots
+### Swipeable Cards Screenshots
 
 <img src="https://raw.githubusercontent.com/arkivanov/Decompose/master/docs/media/SampleCardsAndroid.gif" width="196">
 
