@@ -122,7 +122,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
  * **It is strongly recommended to call this method on the Main thread.**
  *
  * @param source a source of navigation events.
- * @param serializers an optional [Pair] of [KSerializer] (Main and Details) to be used for
+ * @param serializers an optional [Triple] of [KSerializer] (Main, Details and Extra) to be used for
  * serializing and deserializing configurations. If `null` then the navigation state will not be preserved.
  * @param initialPanels an initial state of Child Panels that should be set if there is no saved state.
  * See [Panels] for more information.
