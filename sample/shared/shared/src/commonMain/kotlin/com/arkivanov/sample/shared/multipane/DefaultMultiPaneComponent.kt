@@ -47,7 +47,7 @@ internal class DefaultMultiPaneComponent(
         childPanels(
             source = navigation,
             initialPanels = { getInitialPanels(deepLinkUrl) },
-            serializers = Triple(Unit.serializer(), Details.serializer(), Extra.serializer()),
+            serializers = SERIALIZERS,
             onStateChanged = { newState, _ -> _navState.onNext(newState) },
             handleBackButton = true,
             mainFactory = { _, ctx -> listComponent(ctx) },
@@ -61,9 +61,7 @@ internal class DefaultMultiPaneComponent(
         childPanelsWebNavigation(
             navigator = navigation,
             panels = _panels,
-            mainSerializer = Unit.serializer(),
-            detailsSerializer = Details.serializer(),
-            extraSerializer = Extra.serializer(),
+            serializers = SERIALIZERS,
             parametersMapper = { panels ->
                 panels.details?.let {
                     mapOf(KEY_ARTICLE_ID to it.configuration.articleId.toString())
@@ -131,6 +129,7 @@ internal class DefaultMultiPaneComponent(
 
     private companion object {
         private const val KEY_ARTICLE_ID = "articleId"
+        private val SERIALIZERS = Triple(Unit.serializer(), Details.serializer(), Extra.serializer())
     }
 
     @Serializable
