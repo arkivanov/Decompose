@@ -49,6 +49,7 @@ nav:
         - Navigation: navigation/panels/navigation.md
     - Generic Navigation:
         - Overview: navigation/children/overview.md
+    - Web Navigation: navigation/web-navigation.md
 
   - Extensions:
     - Overview: extensions/overview.md
