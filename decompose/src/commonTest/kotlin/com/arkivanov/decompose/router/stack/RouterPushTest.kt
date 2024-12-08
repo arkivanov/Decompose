@@ -1,9 +1,11 @@
 package com.arkivanov.decompose.router.stack
 
+import com.arkivanov.decompose.DelicateDecomposeApi
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@OptIn(DelicateDecomposeApi::class)
 @Suppress("TestFunctionName")
 class RouterPushTest {
 
