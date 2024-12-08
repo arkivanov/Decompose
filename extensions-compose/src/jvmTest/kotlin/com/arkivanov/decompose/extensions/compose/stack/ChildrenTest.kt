@@ -270,7 +270,6 @@ class ChildrenTest(
             )
     }
 
-    // Can be enum, workaround https://issuetracker.google.com/issues/195185633
     sealed class Config {
         data object A : Config()
         data object B : Config()
