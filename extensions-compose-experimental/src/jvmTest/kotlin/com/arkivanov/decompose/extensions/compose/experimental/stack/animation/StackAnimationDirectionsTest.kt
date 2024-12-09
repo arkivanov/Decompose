@@ -36,7 +36,7 @@ class StackAnimationDirectionsTest(
             DefaultStackAnimation<String, String>(
                 disableInputDuringAnimation = false,
                 predictiveBackParams = { null },
-                selector = { child, _, _ ->
+                selector = { child, _, _, _ ->
                     StackAnimator { direction ->
                         results[child.configuration] = direction
                         Modifier

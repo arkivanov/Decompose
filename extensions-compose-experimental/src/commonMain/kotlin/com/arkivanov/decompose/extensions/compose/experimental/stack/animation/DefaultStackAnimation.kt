@@ -38,7 +38,12 @@ import kotlinx.coroutines.launch
 internal class DefaultStackAnimation<C : Any, T : Any>(
     private val disableInputDuringAnimation: Boolean,
     private val predictiveBackParams: (ChildStack<C, T>) -> PredictiveBackParams?,
-    private val selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator?,
+    private val selector: (
+        child: Child.Created<C, T>,
+        otherChild: Child.Created<C, T>,
+        direction: Direction,
+        isPredictiveBack: Boolean,
+    ) -> StackAnimator?,
 ) : StackAnimation<C, T> {
 
     @Composable
@@ -223,13 +228,14 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         direction: Direction,
         transitionState: TransitionState<EnterExitState>,
         otherChild: Child.Created<C, T>,
+        isPredictiveBack: Boolean = false,
         predictiveBackAnimator: StackAnimator? = null,
     ): AnimationItem<C, T> =
         AnimationItem(
             child = child,
             direction = direction,
             transitionState = transitionState,
-            animator = predictiveBackAnimator ?: selector(child, otherChild, direction),
+            animator = predictiveBackAnimator ?: selector(child, otherChild, direction, isPredictiveBack),
         )
 
     private inner class PredictiveBackCallback(
@@ -269,6 +275,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                         direction = Direction.ENTER_BACK,
                         transitionState = animationHandler.enterTransitionState,
                         otherChild = exitChild,
+                        isPredictiveBack = true,
                         predictiveBackAnimator = animationHandler.animatable?.let { anim -> SimpleStackAnimator { anim.enterModifier } },
                     ),
                     AnimationItem(
@@ -276,6 +283,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                         direction = Direction.EXIT_FRONT,
                         transitionState = animationHandler.exitTransitionState,
                         otherChild = enterChild,
+                        isPredictiveBack = true,
                         predictiveBackAnimator = animationHandler.animatable?.let { anim -> SimpleStackAnimator { anim.exitModifier } },
                     ),
                 )

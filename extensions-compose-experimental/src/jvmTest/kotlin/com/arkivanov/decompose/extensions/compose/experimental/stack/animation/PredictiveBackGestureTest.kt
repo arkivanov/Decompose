@@ -506,7 +506,7 @@ class PredictiveBackGestureTest {
                     animatable = predictiveBackAnimatable,
                 )
             },
-            selector = { _, _, _ -> animator },
+            selector = { _, _, _, _ -> animator },
         )
 
     private fun stack(configs: List<String>): ChildStack<String, String> =
