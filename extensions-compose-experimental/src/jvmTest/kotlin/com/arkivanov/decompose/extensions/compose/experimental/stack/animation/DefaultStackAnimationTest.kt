@@ -28,7 +28,7 @@ class DefaultStackAnimationTest {
             DefaultStackAnimation<Int, Any>(
                 disableInputDuringAnimation = true,
                 predictiveBackParams = { null },
-                selector = { _, _, _ -> null },
+                selector = { _, _, _, _ -> null },
             )
 
         var stack by mutableStateOf(stack(1))
@@ -77,7 +77,7 @@ class DefaultStackAnimationTest {
             DefaultStackAnimation<Int, Any>(
                 disableInputDuringAnimation = true,
                 predictiveBackParams = { null },
-                selector = { _, _, _ -> null },
+                selector = { _, _, _, _ -> null },
             )
 
         var stack by mutableStateOf(stack(1))

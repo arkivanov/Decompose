@@ -83,9 +83,9 @@ public abstract interface class com/arkivanov/decompose/extensions/compose/exper
 
 public final class com/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimationKt {
 	public static final fun stackAnimation (Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimator;ZLkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
-	public static final fun stackAnimation (ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
+	public static final fun stackAnimation (ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function4;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
 	public static synthetic fun stackAnimation$default (Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimator;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
-	public static synthetic fun stackAnimation$default (ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
+	public static synthetic fun stackAnimation$default (ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimation;
 }
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimationProvider {
