@@ -84,7 +84,7 @@ import kotlinx.serialization.builtins.serializer
 
 interface PanelsComponent {
 
-    val panels: Value<ChildPanels<*, MainComponent, *, DetailsComponent, *, Nothing>>
+    val panels: Value<ChildPanels<*, MainComponent, *, DetailsComponent, Nothing, Nothing>>
 
     fun setMode(mode: ChildPanelsMode)
 }
@@ -95,7 +95,7 @@ class DefaultPanelsComponent(
 
     private val nav = PanelsNavigation<Unit, DetailsConfig, Nothing>()
 
-    override val panels: Value<ChildPanels<*, MainComponent, *, DetailsComponent, *, Nothing>> =
+    override val panels: Value<ChildPanels<*, MainComponent, *, DetailsComponent, Nothing, Nothing>> =
         childPanels(
             source = nav,
             serializers = Unit.serializer() to DetailsConfig.serializer(),
