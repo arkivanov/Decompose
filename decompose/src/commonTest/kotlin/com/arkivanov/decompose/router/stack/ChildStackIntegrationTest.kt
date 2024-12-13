@@ -3,6 +3,7 @@ package com.arkivanov.decompose.router.stack
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeExperimentFlags
 import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.DelicateDecomposeApi
 import com.arkivanov.decompose.consume
 import com.arkivanov.decompose.register
 import com.arkivanov.decompose.router.TestInstance
@@ -26,6 +27,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
+@OptIn(DelicateDecomposeApi::class)
 @Suppress("TestFunctionName")
 class ChildStackIntegrationTest {
 
