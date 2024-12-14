@@ -21,3 +21,11 @@ Link: [plugins.jetbrains.com/plugin/22852-mvikotlin-decompose-template](https://
 Source code: [github.com/makeevrserg/MVIKotlin-Decompose-Plugin](https://github.com/makeevrserg/MVIKotlin-Decompose-Plugin)
 
 Author: [@makeevrserg](https://github.com/makeevrserg)
+
+### Decompose with Compose LazyList
+
+A project that shows an example of implementing your `children` extension to use Decompose components in Compose LazyList
+
+Source code: [github.com/EvgenyMeltsaykin/Decompose-LazyList](https://github.com/EvgenyMeltsaykin/Decompose-LazyList)
+
+Author: [@EvgenyMeltsaykin](https://github.com/EvgenyMeltsaykin)
