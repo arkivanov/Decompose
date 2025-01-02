@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.extensions.compose.experimental.panels
 
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -47,10 +48,10 @@ import com.arkivanov.decompose.value.Value
 @Composable
 fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
     panels: Value<ChildPanels<MC, MT, DC, DT, Nothing, Nothing>>,
-    mainChild: @Composable (Child.Created<MC, MT>) -> Unit,
-    detailsChild: @Composable (Child.Created<DC, DT>) -> Unit,
+    mainChild: @Composable AnimatedVisibilityScope.(Child.Created<MC, MT>) -> Unit,
+    detailsChild: @Composable AnimatedVisibilityScope.(Child.Created<DC, DT>) -> Unit,
     modifier: Modifier = Modifier,
-    secondPanelPlaceholder: @Composable () -> Unit = {},
+    secondPanelPlaceholder: @Composable AnimatedVisibilityScope.() -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
     animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
     predictiveBackParams: (ChildPanels<MC, MT, DC, DT, Nothing, Nothing>) -> PredictiveBackParams? = { null },
@@ -93,10 +94,10 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
 @Composable
 fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
     panels: ChildPanels<MC, MT, DC, DT, Nothing, Nothing>,
-    mainChild: @Composable (Child.Created<MC, MT>) -> Unit,
-    detailsChild: @Composable (Child.Created<DC, DT>) -> Unit,
+    mainChild: @Composable AnimatedVisibilityScope.(Child.Created<MC, MT>) -> Unit,
+    detailsChild: @Composable AnimatedVisibilityScope.(Child.Created<DC, DT>) -> Unit,
     modifier: Modifier = Modifier,
-    secondPanelPlaceholder: @Composable () -> Unit = {},
+    secondPanelPlaceholder: @Composable AnimatedVisibilityScope.() -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
     animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
     predictiveBackParams: (ChildPanels<MC, MT, DC, DT, Nothing, Nothing>) -> PredictiveBackParams? = { null },
@@ -142,12 +143,12 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
 @Composable
 fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
     panels: Value<ChildPanels<MC, MT, DC, DT, EC, ET>>,
-    mainChild: @Composable (Child.Created<MC, MT>) -> Unit,
-    detailsChild: @Composable (Child.Created<DC, DT>) -> Unit,
-    extraChild: @Composable (Child.Created<EC, ET>) -> Unit,
+    mainChild: @Composable AnimatedVisibilityScope.(Child.Created<MC, MT>) -> Unit,
+    detailsChild: @Composable AnimatedVisibilityScope.(Child.Created<DC, DT>) -> Unit,
+    extraChild: @Composable AnimatedVisibilityScope.(Child.Created<EC, ET>) -> Unit,
     modifier: Modifier = Modifier,
-    secondPanelPlaceholder: @Composable () -> Unit = {},
-    thirdPanelPlaceholder: @Composable () -> Unit = {},
+    secondPanelPlaceholder: @Composable AnimatedVisibilityScope.() -> Unit = {},
+    thirdPanelPlaceholder: @Composable AnimatedVisibilityScope.() -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
     animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
     predictiveBackParams: (ChildPanels<MC, MT, DC, DT, EC, ET>) -> PredictiveBackParams? = { null },
@@ -196,12 +197,12 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
 @Composable
 fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
     panels: ChildPanels<MC, MT, DC, DT, EC, ET>,
-    mainChild: @Composable (Child.Created<MC, MT>) -> Unit,
-    detailsChild: @Composable (Child.Created<DC, DT>) -> Unit,
-    extraChild: @Composable (Child.Created<EC, ET>) -> Unit,
+    mainChild: @Composable AnimatedVisibilityScope.(Child.Created<MC, MT>) -> Unit,
+    detailsChild: @Composable AnimatedVisibilityScope.(Child.Created<DC, DT>) -> Unit,
+    extraChild: @Composable AnimatedVisibilityScope.(Child.Created<EC, ET>) -> Unit,
     modifier: Modifier = Modifier,
-    secondPanelPlaceholder: @Composable () -> Unit = {},
-    thirdPanelPlaceholder: @Composable () -> Unit = {},
+    secondPanelPlaceholder: @Composable AnimatedVisibilityScope.() -> Unit = {},
+    thirdPanelPlaceholder: @Composable AnimatedVisibilityScope.() -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
     animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
     predictiveBackParams: (ChildPanels<MC, MT, DC, DT, EC, ET>) -> PredictiveBackParams? = { null },
@@ -260,7 +261,7 @@ private fun <MC : Any, MT : Any> MainPanel(
     hasExtra: Boolean,
     animators: ChildPanelsAnimators,
     predictiveBackParams: Lazy<PredictiveBackParams?>,
-    content: @Composable (Child.Created<MC, MT>) -> Unit,
+    content: @Composable AnimatedVisibilityScope.(Child.Created<MC, MT>) -> Unit,
 ) {
     ChildStack(
         stack = when (mode) {
@@ -293,8 +294,8 @@ private fun <DC : Any, DT : Any> DetailsPanel(
     hasExtra: Boolean,
     animators: ChildPanelsAnimators,
     predictiveBackParams: Lazy<PredictiveBackParams?>,
-    content: @Composable (Child.Created<DC, DT>) -> Unit,
-    placeholder: @Composable () -> Unit,
+    content: @Composable AnimatedVisibilityScope.(Child.Created<DC, DT>) -> Unit,
+    placeholder: @Composable AnimatedVisibilityScope.() -> Unit,
 ) {
     ChildStack(
         stack = when (mode) {
@@ -337,8 +338,8 @@ private fun <EC : Any, ET : Any> ExtraPanel(
     mode: ChildPanelsMode,
     animators: ChildPanelsAnimators,
     predictiveBackParams: Lazy<PredictiveBackParams?>,
-    content: @Composable (Child.Created<EC, ET>) -> Unit,
-    placeholder: @Composable () -> Unit,
+    content: @Composable AnimatedVisibilityScope.(Child.Created<EC, ET>) -> Unit,
+    placeholder: @Composable AnimatedVisibilityScope.() -> Unit,
 ) {
     ChildStack(
         stack = stackOfNotNull(if (mode == SINGLE) EmptyChild1 else EmptyChild2, extra),
