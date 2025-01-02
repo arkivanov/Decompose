@@ -1,17 +1,18 @@
 [versions]
 
 decompose = "3.3.0-alpha02"
-kotlin = "2.0.20"
-essenty = "2.3.0"
+kotlin = "2.1.0"
+essenty = "2.4.0"
 reaktive = "2.2.0"
 junit = "4.13.2"
 jetbrainsCompose = "1.7.0"
 jetbrainsKotlinWrappers = "1.0.0-pre.608"
-jetbrainsKotlinxCoroutines = "1.8.1"
+jetbrainsKotlinxCoroutines = "1.9.0"
 jetbrainsKotlinxSerialization = "1.6.3"
+jetbrainsKotlinxBrowser = "0.3"
 jetbrainsBinaryCompatibilityValidator = "0.16.3"
 robolectric = "4.9.1"
-androidGradle = "8.2.0"
+androidGradle = "8.7.3"
 androidMaterial = "1.6.1"
 androidPlay = "1.10.3"
 androidxCore = "1.9.0"
@@ -46,6 +47,7 @@ jetbrains-kotlinx-kotlinxCoroutinesSwing = { group = "org.jetbrains.kotlinx", na
 jetbrains-kotlin-serializationGradlePlug = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
 jetbrains-kotlinx-kotlinxSerializationCore = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "jetbrainsKotlinxSerialization" }
 jetbrains-kotlinx-kotlinxSerializationJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "jetbrainsKotlinxSerialization" }
+jetbrains-kotlinx-kotlinxBrowser = { group = "org.jetbrains.kotlinx", name = "kotlinx-browser", version.ref = "jetbrainsKotlinxBrowser" }
 
 robolectric-robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 

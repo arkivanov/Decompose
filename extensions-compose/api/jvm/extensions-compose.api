@@ -15,8 +15,6 @@ public final class com/arkivanov/decompose/extensions/compose/pages/ChildPagesKt
 
 public final class com/arkivanov/decompose/extensions/compose/pages/ComposableSingletons$ChildPagesKt {
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/pages/ComposableSingletons$ChildPagesKt;
-	public static field lambda-1 Lkotlin/jvm/functions/Function6;
-	public static field lambda-2 Lkotlin/jvm/functions/Function6;
 	public fun <init> ()V
 	public final fun getLambda-1$extensions_compose ()Lkotlin/jvm/functions/Function6;
 	public final fun getLambda-2$extensions_compose ()Lkotlin/jvm/functions/Function6;

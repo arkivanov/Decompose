@@ -58,9 +58,6 @@ kotlin {
         common.test.dependencies {
             implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesCore)
             implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
-
-            // Workaround: https://github.com/Kotlin/kotlinx.coroutines/issues/3968
-            implementation("org.jetbrains.kotlinx:atomicfu:0.23.1")
         }
 
         android.main.dependencies {
@@ -73,6 +70,10 @@ kotlin {
 
         web.main.dependencies {
             implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
+        }
+
+        wasmJs.main.dependencies {
+            implementation(deps.jetbrains.kotlinx.kotlinxBrowser)
         }
     }
 }
