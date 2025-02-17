@@ -29,3 +29,11 @@ A project that shows an example of implementing your `children` extension to use
 Source code: [github.com/EvgenyMeltsaykin/Decompose-LazyList](https://github.com/EvgenyMeltsaykin/Decompose-LazyList)
 
 Author: [@EvgenyMeltsaykin](https://github.com/EvgenyMeltsaykin)
+
+### Decompose Detekt Rules
+
+A set of custom detekt rules that help you avoid critical mistakes when working with Decompose.
+
+Link: [github.com/AJIEKCX/decompose-detekt-rules](https://github.com/AJIEKCX/decompose-detekt-rules)
+
+Author: [@AJIEKCX](https://github.com/AJIEKCX)
