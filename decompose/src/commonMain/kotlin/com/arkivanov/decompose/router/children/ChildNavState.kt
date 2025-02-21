@@ -1,5 +1,7 @@
 package com.arkivanov.decompose.router.children
 
+import kotlinx.serialization.Serializable
+
 /**
  * Represents a child navigation state.
  */
@@ -18,6 +20,7 @@ interface ChildNavState<out C : Any> {
     /**
      * Enumerates all possible child lifecycle statuses.
      */
+    @Serializable
     enum class Status {
         /**
          * The child component is destroyed but still managed, e.g. it's state may be saved and restored later.

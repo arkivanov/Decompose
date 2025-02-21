@@ -1,6 +1,7 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 
 internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
@@ -28,22 +29,14 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         }
 
     init {
-        if (savedChildState == null) {
-            controller.init(
-                state = navState.children.associateBy(
-                    keySelector = { it.configuration },
-                    valueTransform = { it.status },
-                ),
-            )
-        } else {
-            controller.restore(
-                savedState = navState.children
-                    .zip(savedChildState)
-                    .associateBy(
-                        keySelector = { (childNavState) -> childNavState.configuration },
-                        valueTransform = { (childNavState, childSavedState) -> childNavState.status to childSavedState },
-                    ),
-            )
+        controller.init(dropState = savedChildState == null) {
+            if (savedChildState == null) {
+                navState.children.forEach(::activateChild)
+            } else {
+                navState.children.zip(savedChildState).forEach { (childNavState, childSavedState) ->
+                    activateChild(childNavState, childSavedState)
+                }
+            }
         }
     }
 
@@ -60,14 +53,29 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             "Configurations must be unique: ${newStates.map(ChildNavState<C>::configuration)}."
         }
 
-        newStates.forEach {
-            controller.update(configuration = it.configuration, status = it.status)
+        newStates.forEach { state ->
+            if ((state.status >= Status.CREATED) && !controller.isActive(state.configuration)) {
+                controller.create(configuration = state.configuration)
+            }
         }
 
         oldStates.forEach {
             if (it.configuration !in newConfigurations) {
-                controller.update(configuration = it.configuration, status = null)
+                controller.remove(it.configuration)
             }
+        }
+
+        newStates.forEach { state ->
+            activateChild(state)
+        }
+    }
+
+    private fun activateChild(state: ChildNavState<C>, savedState: SerializableContainer? = null) {
+        when (state.status) {
+            Status.DESTROYED -> controller.destroy(configuration = state.configuration, savedState = savedState)
+            Status.CREATED -> controller.create(configuration = state.configuration, savedState = savedState)
+            Status.STARTED -> controller.start(configuration = state.configuration, savedState = savedState)
+            Status.RESUMED -> controller.resume(configuration = state.configuration, savedState = savedState)
         }
     }
 }
