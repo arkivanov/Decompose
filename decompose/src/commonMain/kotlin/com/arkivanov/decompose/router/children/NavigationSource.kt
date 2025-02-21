@@ -7,7 +7,7 @@ import com.arkivanov.decompose.Cancellation
  *
  * @see [children]
  */
-interface NavigationSource<out T : Any> {
+fun interface NavigationSource<out T : Any> {
 
     fun subscribe(observer: (T) -> Unit): Cancellation
 }

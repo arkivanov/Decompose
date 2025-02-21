@@ -4,7 +4,7 @@ import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.backhandler.ChildBackHandler
 import com.arkivanov.decompose.backhandler.childBackHandler
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
-import com.arkivanov.decompose.router.children.ChildNavState.Status
+import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.instancekeeper.retainedInstance
@@ -26,38 +26,20 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
 ) {
 
     private val retainedInstance: RetainedInstance<C> = componentContext.retainedInstance(key = key, factory = ::RetainedInstance)
-
     private val items = HashMap<C, Item<T>>()
 
-    fun init(state: Map<C, Status>) {
-        retainedInstance.onDestroy()
-
-        state.forEach { (cfg, status) ->
-            when (status) {
-                Status.DESTROYED -> items[cfg] = Item.Destroyed()
-                Status.CREATED -> activateNew(cfg, ActiveLifecycleState.CREATED)
-                Status.STARTED -> activateNew(cfg, ActiveLifecycleState.STARTED)
-                Status.RESUMED -> activateNew(cfg, ActiveLifecycleState.RESUMED)
-            }
+    fun init(dropState: Boolean, block: () -> Unit) {
+        if (dropState) {
+            retainedInstance.onDestroy()
         }
-    }
 
-    fun restore(savedState: Map<C, Pair<Status, SerializableContainer?>>) {
-        savedState.forEach { (cfg, childSavedState) ->
-            when (childSavedState.first) {
-                Status.DESTROYED -> items[cfg] = Item.Destroyed(childSavedState.second)
-                Status.CREATED -> activateNew(cfg, ActiveLifecycleState.CREATED, childSavedState.second)
-                Status.STARTED -> activateNew(cfg, ActiveLifecycleState.STARTED, childSavedState.second)
-                Status.RESUMED -> activateNew(cfg, ActiveLifecycleState.RESUMED, childSavedState.second)
-            }
-        }
+        block()
 
         val iter = retainedInstance.map.iterator()
         while (iter.hasNext()) {
             val (cfg, instanceKeeper) = iter.next()
-            val childSavedState = savedState[cfg]
 
-            if ((childSavedState == null) || (childSavedState.first == Status.DESTROYED)) {
+            if (items[cfg]?.instance == null) {
                 instanceKeeper.destroy()
                 iter.remove()
             }
@@ -65,67 +47,94 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
     }
 
     fun saveState(configuration: C): SerializableContainer? =
-        when (val item = items[configuration]) {
-            is Item.Created -> item.stateKeeperDispatcher.save()
-            is Item.Destroyed -> item.savedState
-            null -> null
-        }
+        items[configuration]?.saveState()
 
-    fun update(configuration: C, status: Status?) {
-        when (status) {
-            null -> remove(configuration)
-            Status.DESTROYED -> destroy(configuration)
-            Status.CREATED -> activate(configuration, ActiveLifecycleState.CREATED)
-            Status.STARTED -> activate(configuration, ActiveLifecycleState.STARTED)
-            Status.RESUMED -> activate(configuration, ActiveLifecycleState.RESUMED)
+    private fun Item<*>.saveState(): SerializableContainer? =
+        when (this) {
+            is Item.Created -> stateKeeperDispatcher.save()
+            is Item.Destroyed -> savedState
         }
-    }
 
     operator fun get(configuration: C): T? =
         items[configuration]?.instance
 
-    private fun remove(configuration: C) {
+    fun remove(configuration: C) {
         val item = items.remove(configuration) as? Item.Created ?: return
 
         item.destroy()
         retainedInstance.map -= configuration
     }
 
-    private fun destroy(configuration: C) {
-        val item = items.remove(configuration) as? Item.Created ?: return
+    fun destroy(configuration: C, savedState: SerializableContainer? = null) {
+        val item = items.remove(configuration) as? Item.Created
 
-        val savedState = item.stateKeeperDispatcher.save()
+        if (item == null) {
+            items[configuration] = Item.Destroyed(savedState)
+            return
+        }
+
+        val childSavedState = savedState ?: item.stateKeeperDispatcher.save()
         item.destroy()
         retainedInstance.map -= configuration
 
-        items[configuration] = Item.Destroyed(savedState)
+        items[configuration] = Item.Destroyed(childSavedState)
+    }
+
+    fun create(configuration: C, savedState: SerializableContainer? = null) {
+        activate(
+            configuration = configuration,
+            lifecycleState = ActiveLifecycleState.CREATED,
+            savedState = savedState,
+        )
+    }
+
+    fun start(configuration: C, backHandlerPriority: Int = BackCallback.PRIORITY_DEFAULT, savedState: SerializableContainer? = null) {
+        activate(
+            configuration = configuration,
+            lifecycleState = ActiveLifecycleState.STARTED,
+            backHandlerPriority = backHandlerPriority,
+            savedState = savedState,
+        )
+    }
+
+    fun resume(configuration: C, backHandlerPriority: Int = BackCallback.PRIORITY_DEFAULT, savedState: SerializableContainer? = null) {
+        activate(
+            configuration = configuration,
+            lifecycleState = ActiveLifecycleState.RESUMED,
+            backHandlerPriority = backHandlerPriority,
+            savedState = savedState,
+        )
     }
 
     private fun activate(
         configuration: C,
         lifecycleState: ActiveLifecycleState,
-    ) {
+        backHandlerPriority: Int = BackCallback.PRIORITY_DEFAULT,
+        savedState: SerializableContainer? = null
+    ): T =
         when (val oldItem = items[configuration]) {
-            is Item.Created -> oldItem.setState(lifecycleState)
-            is Item.Destroyed -> activateNew(configuration, lifecycleState, oldItem.savedState)
-            null -> activateNew(configuration, lifecycleState)
+            is Item.Created -> oldItem.apply { setState(lifecycleState, backHandlerPriority) }.instance
+            is Item.Destroyed -> activateNew(configuration, lifecycleState, backHandlerPriority, savedState ?: oldItem.savedState)
+            null -> activateNew(configuration, lifecycleState, backHandlerPriority, savedState)
         }
-    }
 
     private fun activateNew(
         configuration: C,
         lifecycleState: ActiveLifecycleState,
+        backHandlerPriority: Int = BackCallback.PRIORITY_DEFAULT,
         savedState: SerializableContainer? = null,
-    ) {
+    ): T {
         val item = item(configuration = configuration, savedState = savedState)
-        item.setState(lifecycleState)
+        item.setState(lifecycleState = lifecycleState, backHandlerPriority = backHandlerPriority)
         retainedInstance.map[configuration] = item.instanceKeeperDispatcher
         items[configuration] = item
+
+        return item.instance
     }
 
-    private fun Item.Created<*>.setState(lifecycleState: ActiveLifecycleState) {
+    private fun Item.Created<*>.setState(lifecycleState: ActiveLifecycleState, backHandlerPriority: Int) {
         lifecycleRegistry.setState(lifecycleState)
-        backHandler.setState(lifecycleState)
+        backHandler.setState(lifecycleState = lifecycleState, priority = backHandlerPriority)
     }
 
     private fun LifecycleRegistry.setState(lifecycleState: ActiveLifecycleState) {
@@ -148,12 +157,17 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         }
     }
 
-    private fun ChildBackHandler.setState(lifecycleState: ActiveLifecycleState) {
+    private fun ChildBackHandler.setState(
+        lifecycleState: ActiveLifecycleState,
+        priority: Int,
+    ) {
         when (lifecycleState) {
             ActiveLifecycleState.CREATED -> stop()
             ActiveLifecycleState.STARTED,
             ActiveLifecycleState.RESUMED -> start()
         }
+
+        this@setState.priority = priority
     }
 
     private fun item(

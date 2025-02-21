@@ -23,6 +23,7 @@ internal class DefaultChildBackHandler(
         )
 
     override var isEnabled: Boolean by observable(isEnabled) { _, _, _ -> updateParentCallbackEnabledState() }
+    override var priority: Int by parentCallback::priority
 
     init {
         delegate.addEnabledChangedListener { updateParentCallbackEnabledState() }
