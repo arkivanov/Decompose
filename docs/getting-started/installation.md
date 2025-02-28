@@ -32,9 +32,6 @@ If you are having Android module (androidApp or composeApp if using KMP Wizard) 
 
 Some functionality is actually provided by [Essenty](https://github.com/arkivanov/Essenty) library. Essenty is implemented by the same author and provides very basic things like `Lifecycle`, `StateKeeper`, etc. Most important Essenty modules are added to the `decompose` module as `api` dependency, so you don't have to add them manually to your project. Please familiarise yourself with Essenty library.
 
-!!! note
-    If you are targetting Android, make sure you applied the [kotlin-parcelize](https://developer.android.com/kotlin/parcelize) Gradle plugin.
-
 ## Extensions for Jetpack and Multiplatform Compose
 
 Compose is currently published in two separate variants:
