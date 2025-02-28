@@ -4,7 +4,10 @@ import android.app.Activity
 import android.app.TaskStackBuilder
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.VmPolicy
 import androidx.core.os.bundleOf
 import androidx.savedstate.SavedStateRegistryOwner
 
@@ -74,14 +77,37 @@ private fun Activity.restartIfNeeded(): Boolean {
     // ensure we're in a predictably good state.
 
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-    TaskStackBuilder.create(this).addNextIntentWithParentStack(intent).startActivities()
+
+    withPermittedUnsafeIntentLaunch {
+        TaskStackBuilder.create(this).addNextIntentWithParentStack(intent).startActivities()
+    }
+
     finish()
+
     // Disable second animation in case where the Activity is created twice.
     @Suppress("DEPRECATION")
     overridePendingTransition(0, 0)
 
     return true
 }
+
+private inline fun withPermittedUnsafeIntentLaunch(block: () -> Unit) {
+    val savedVmPolicy = StrictMode.getVmPolicy()
+    StrictMode.setVmPolicy(savedVmPolicy.withPermittedUnsafeIntentLaunch())
+
+    try {
+        block()
+    } finally {
+        StrictMode.setVmPolicy(savedVmPolicy)
+    }
+}
+
+private fun VmPolicy.withPermittedUnsafeIntentLaunch(): VmPolicy =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        VmPolicy.Builder(this).permitUnsafeIntentLaunch().build()
+    } else {
+        this
+    }
 
 private const val KEY_SAVED_DEEP_LINK_STATE = "SAVED_DEEP_LINK_STATE"
 private const val KEY_DEEP_LINK_HANDLED = "DEEP_LINK_HANDLED"
