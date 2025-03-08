@@ -18,26 +18,6 @@ Please see the [project website](https://arkivanov.github.io/Decompose/) for doc
 
 Should you have any questions or ideas - there is [Discussions](https://github.com/arkivanov/Decompose/discussions) section. Also welcome to the Kotlin Slack channel - [#decompose](https://kotlinlang.slack.com/archives/C03H3N51SKT)!
 
-## ⚡⚡⚡ Where are all the stars, issues, discussions, pull requests, etc?
-
-Having spent 5 years working on a variety of projects for Badoo/Bumble, I’m now off to another adventure. As part of that transition I was asked to transfer this repository to [Badoo GitHub account](https://github.com/badoo).
-
-Now I **continue my work** on this project **as a copy**.
-
-There should be no breaking changes related to this transfer. Most of the external links should not be broken. The repository link is also the same: [arkivanov/Decompose](https://github.com/arkivanov/Decompose). Please file an issue in this repository, if you think something is broken or does not work properly.
-
-Here is what is mostly affected by the transfer:
-
-- All the stars were transferred
-- All the issues and discussions were transferred as well. I will do all my best to fill the gap here.
-- All pull requests with all the comment history are also gone.
-
-I will continue doing all my best for this project and for the community! Business as usual!
-
-Additional resources:
-
-- [A thread on Hacker News](https://news.ycombinator.com/item?id=29447854)
-
 ## Why Decompose?
 
 * Decompose breaks the code down into small and independent components and organizes them into trees. Each parent component is only aware of its immediate children.
