@@ -44,7 +44,7 @@ Please check the [Installation](https://arkivanov.github.io/Decompose/getting-st
 
 ### Supported platforms
 
-In general, Decompose supports the following targets: `android`, `jvm`, `ios`, `watchos`, `tvos`, `macos`, `wasmJs`, `js`. However, some modules do not support all targets or the support depends on the Decompose version. Please see the Installation docs for details.
+In general, Decompose supports the following targets: `android`, `jvm`, `ios`, `watchos`, `tvos`, `macos`, `wasmJs`, `js`. However, some modules do not support all targets or the support depends on the Decompose version. Please see the installation docs for details.
 
 ## Overview
 
@@ -55,11 +55,18 @@ Here are some key concepts of the library, more details can be found in the docu
 * [Child Stack](https://arkivanov.github.io/Decompose/navigation/stack/overview/) - enables navigation between child components, nested navigation is also supported
 * [Child Slot](https://arkivanov.github.io/Decompose/navigation/slot/overview/) - allows only one child component at a time, or none
 * [Child Pages](https://arkivanov.github.io/Decompose/navigation/pages/overview/) - a list of child components with one selected component (e.g. pager-like navigation)
+* [Child Panels](https://arkivanov.github.io/Decompose/navigation/panels/overview/) - a multi-pane navigation 
 * [Generic Navigation](https://arkivanov.github.io/Decompose/navigation/children/overview/) - provides a way to create your own custom navigation model, when none of the predefined models fit your needs
 * [Lifecycle](https://arkivanov.github.io/Decompose/component/lifecycle/) - provides a way to listen for lifecycle events in components
 * [StateKeeper](https://arkivanov.github.io/Decompose/component/state-preservation/) - makes it possible to preserve state or data in a component when it gets destroyed
 * [InstanceKeeper](https://arkivanov.github.io/Decompose/component/instance-retaining/) - retains instances in your components (similar to AndroidX `ViewModel`)
 * [BackPressedHandler](https://arkivanov.github.io/Decompose/component/back-button/) - provides a way to handle and intercept back button presses
+
+### Decompose is a library
+
+Decompose is a library that can be used as a framework. In its core, Decompose just manipulates instances of `ComponentContext` with strict parent-child relationship, which is also called "navigation". The possibility of creating custom implementations of the `ComponentContext` interface allows adding custom properties and functions, as well as storing additional data in each instance of `ComponentContext. This makes it a very powerful tool with various use cases.
+
+The "component" term is just one of the possible usages, the recommended one. The [Decompose-Router](https://github.com/xxfast/Decompose-Router) library is a great example of leveraging Decompose to create a custom navigation solution a with completely different API.
 
 ### Component hierarchy
 

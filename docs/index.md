@@ -26,3 +26,9 @@ Decompose is a Kotlin Multiplatform library for breaking down your code into lif
 - Components in the back stack are not destroyed, they continue working in background without UI
 - Components and UI state preservation (mostly useful in Android)
 - Instances retaining (aka ViewModels) over configuration changes (mostly useful in Android)
+
+### Decompose is a library
+
+Decompose is a library that can be used as a framework. In its core, Decompose just manipulates instances of [ComponentContext](https://arkivanov.github.io/Decompose/component/overview/#componentcontext) with strict parent-child relationship, which is also called "navigation". The possibility of creating custom implementations of the `ComponentContext` interface allows adding custom properties and functions, as well as storing additional data in each instance of `ComponentContext. This makes it a very powerful tool with various use cases.
+
+The "component" term is just one of the possible usages, the recommended one. The [Decompose-Router](https://github.com/xxfast/Decompose-Router) library is a great example of leveraging Decompose to create a custom navigation solution a with completely different API.
