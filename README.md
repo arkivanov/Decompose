@@ -64,9 +64,9 @@ Here are some key concepts of the library, more details can be found in the docu
 
 ### Decompose is a library
 
-Decompose is a library that can be used as a framework. In its core, Decompose just manipulates instances of `ComponentContext` with strict parent-child relationship, which is also called "navigation". The possibility of creating custom implementations of the `ComponentContext` interface allows adding custom properties and functions, as well as storing additional data in each instance of `ComponentContext. This makes it a very powerful tool with various use cases.
+Decompose is a library that can be used as a framework. In its core, Decompose just manipulates instances of `ComponentContext` with strict parent-child relationship, which is also called "navigation". The possibility of creating custom implementations of the `ComponentContext` interface allows adding custom properties and functions, as well as storing additional data in each instance of `ComponentContext`. This makes it a very powerful tool with various use cases.
 
-The "component" term is just one of the possible usages, the recommended one. The [Decompose-Router](https://github.com/xxfast/Decompose-Router) library is a great example of leveraging Decompose to create a custom navigation solution a with completely different API.
+The "component" term is just one of the possible usages, the recommended one. The [Decompose-Router](https://github.com/xxfast/Decompose-Router) library is a great example of leveraging Decompose to create a custom navigation solution with a completely different API.
 
 ### Component hierarchy
 

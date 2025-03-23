@@ -2,13 +2,14 @@
 
 Decompose provides the ability to create [permanent child components](../navigation/stack/overview.md) using the `childStack` extension function. But if you need to dynamically switch child components, then navigation comes in handy.
 
-Currently, Decompose provides two predefined navigation models:
+Currently, Decompose provides several predefined navigation models:
 
-- [Child Stack](../navigation/stack/overview.md) - prefer this way if you need to organize child components in a stack and navigate between them.
-- [Child Slot](../navigation/slot/overview.md) - prefer this way if you need to activate-dismiss one child component at a time.
-- [Child Pages](../navigation/pages/overview.md) - prefer this way if you need to organize child components in a list with one selected component.
+- [Child Stack](../navigation/stack/overview.md) - if you need to organize child components in a stack and navigate between them.
+- [Child Slot](../navigation/slot/overview.md) - if you need to activate-dismiss one child component at a time.
+- [Child Pages](../navigation/pages/overview.md) - if you need to organize child components in a list with one selected component.
+- [Child Panels](../navigation/panels/overview.md) - if you need to organize child components in a multi-pane mode with dynamic switching.
 
-If none of this fit your needs, Decompose introduces [Generic Navigation](https://arkivanov.github.io/Decompose/navigation/children/overview/) that can be used to create your own custom navigation models.
+If none of this fit your needs, Decompose provides [Generic Navigation](https://arkivanov.github.io/Decompose/navigation/children/overview/) that can be used to create your own custom navigation models.
 It offers a flexible API and allows you to create almost any kind of navigation.
 
 It is possible to have more than one navigation model in a parent component. Make sure that you supplied different keys (the `key` argument) if you have two or more navigation models of the same kind (e.g. you have two `Child Stacks` in one parent component).
