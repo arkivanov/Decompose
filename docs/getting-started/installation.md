@@ -54,6 +54,23 @@ Decompose provides extensions for Compose and depends on Multiplatform Compose, 
 
 Supported multiplatform targets: Android, JVM/Desktop, Native/iOS, Native/macOS, JS/Canvas and JS/Wasm.
 
+### Experimental extensions for Jetpack and Multiplatform Compose
+
+There is also a small set of experimental extensions available for Compose, enabling features like shared transitions, etc. For more information please refer to the corresponding [documentation page](../extensions/compose.md).
+
+=== "Groovy"
+
+    ``` groovy
+    implementation "com.arkivanov.decompose:extensions-compose-experimental:<version>"
+    ```
+=== "Kotlin"
+
+    ``` kotlin
+    implementation("com.arkivanov.decompose:extensions-compose-experimental:<version>")
+    ```
+
+Supported multiplatform targets: Android, JVM/Desktop, Native/iOS, Native/macOS, JS/Canvas and JS/Wasm.
+
 ## Extensions for Android views
 
 The `extensions-android` module provides extensions to connect Android views (older alternative to Compose UI) to Decompose components. Please head to the corresponding [documentation page](../extensions/android.md) for more information.
