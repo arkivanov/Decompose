@@ -51,13 +51,15 @@ import androidx.savedstate.SavedStateRegistryOwner
 fun <A, T : Any> A.handleDeepLink(
     block: (Uri?) -> T,
 ): T? where A : Activity, A : SavedStateRegistryOwner {
-    if (restartIfNeeded()) {
+    val intentData: Uri? = intent.data
+
+    if ((intentData != null) && restartIfNeeded()) {
         return null
     }
 
     val savedState: Bundle? = savedStateRegistry.consumeRestoredStateForKey(key = KEY_SAVED_DEEP_LINK_STATE)
     val isDeepLinkHandled = savedState?.getBoolean(KEY_DEEP_LINK_HANDLED) ?: false
-    val deepLink = intent.data.takeUnless { isDeepLinkHandled }
+    val deepLink = intentData?.takeUnless { isDeepLinkHandled }
 
     savedStateRegistry.registerSavedStateProvider(key = KEY_SAVED_DEEP_LINK_STATE) {
         bundleOf(KEY_DEEP_LINK_HANDLED to (isDeepLinkHandled || (deepLink != null)))
