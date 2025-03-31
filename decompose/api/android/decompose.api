@@ -47,6 +47,8 @@ public abstract interface class com/arkivanov/decompose/ComponentContext : com/a
 
 public final class com/arkivanov/decompose/ComponentContextExtKt {
 	public static final fun childContext (Lcom/arkivanov/decompose/GenericComponentContext;Ljava/lang/String;Lcom/arkivanov/essenty/lifecycle/Lifecycle;)Lcom/arkivanov/decompose/GenericComponentContext;
+	public static final fun childContext (Lcom/arkivanov/decompose/GenericComponentContext;Ljava/lang/String;Lcom/arkivanov/essenty/lifecycle/Lifecycle;I)Lcom/arkivanov/decompose/GenericComponentContext;
+	public static synthetic fun childContext$default (Lcom/arkivanov/decompose/GenericComponentContext;Ljava/lang/String;Lcom/arkivanov/essenty/lifecycle/Lifecycle;IILjava/lang/Object;)Lcom/arkivanov/decompose/GenericComponentContext;
 	public static synthetic fun childContext$default (Lcom/arkivanov/decompose/GenericComponentContext;Ljava/lang/String;Lcom/arkivanov/essenty/lifecycle/Lifecycle;ILjava/lang/Object;)Lcom/arkivanov/decompose/GenericComponentContext;
 }
 
