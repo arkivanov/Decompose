@@ -1,6 +1,6 @@
 package com.arkivanov.decompose.lifecycle
 
-import com.arkivanov.decompose.lifecycle.MergedLifecycleTest.TestLifecycleCallbacks.Event
+import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.create
@@ -504,50 +504,6 @@ class MergedLifecycleTest {
 
         fun assertNoSubscribers() {
             assertEquals(emptySet(), callbacks)
-        }
-    }
-
-    private class TestLifecycleCallbacks : Lifecycle.Callbacks {
-        private val events = ArrayList<Event>()
-
-        override fun onCreate() {
-            events += Event.ON_CREATE
-        }
-
-        override fun onStart() {
-            events += Event.ON_START
-        }
-
-        override fun onResume() {
-            events += Event.ON_RESUME
-        }
-
-        override fun onPause() {
-            events += Event.ON_PAUSE
-        }
-
-        override fun onStop() {
-            events += Event.ON_STOP
-        }
-
-        override fun onDestroy() {
-            events += Event.ON_DESTROY
-        }
-
-        fun assertEvents(vararg events: Event) {
-            assertEquals(events.toList(), this.events)
-        }
-
-        fun assertNoEvents() {
-            assertEquals(emptyList(), events)
-        }
-
-        fun clear() {
-            events.clear()
-        }
-
-        enum class Event {
-            ON_CREATE, ON_START, ON_RESUME, ON_PAUSE, ON_STOP, ON_DESTROY
         }
     }
 }

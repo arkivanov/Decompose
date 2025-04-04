@@ -9,6 +9,7 @@ import com.arkivanov.essenty.lifecycle.subscribe
 internal interface ChildBackHandler : BackHandler {
 
     var isEnabled: Boolean
+    var priority: Int
 
     fun start()
 
