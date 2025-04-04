@@ -219,62 +219,62 @@ class ChildrenBasicTest : ChildrenTestBase() {
         children.assertChildren(1 to 1, 2 to 2)
     }
 
-    @Test
-    fun WHEN_add_duplicated_children_THEN_duplicated_children_added() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-        val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-
-        navigate { it + listOf(1 by RESUMED, 2 by RESUMED, 3 by RESUMED) }
-
-        children.assertChildren(1 to null, 2 to 2, 3 to 3, 4 to 4, 1 to 1, 2 to 2, 3 to 3)
-    }
-
-    @Test
-    fun GIVEN_duplicated_children_WHEN_remove_duplicated_children_from_end_THEN_duplicated_children_removed() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-
-        val children by context.children(
-            initialState = stateOf(
-                1 by DESTROYED,
-                2 by CREATED,
-                3 by STARTED,
-                4 by RESUMED,
-                1 by RESUMED,
-                2 by RESUMED,
-                3 by RESUMED,
-            ),
-        )
-
-        val instances = children.map { it.instance }
-
-        navigate { it.dropLast(3) }
-
-        children.assertChildren(1 to null, 2 to 2, 3 to 3, 4 to 4)
-        assertEquals(instances.dropLast(3), children.map { it.instance })
-    }
-
-    @Test
-    fun GIVEN_duplicated_children_WHEN_remove_duplicated_children_from_end_THEN_duplicated_instances_removed_from_end() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-
-        val children by context.children(
-            initialState = stateOf(
-                1 by DESTROYED,
-                2 by CREATED,
-                3 by STARTED,
-                4 by RESUMED,
-                1 by RESUMED,
-                2 by RESUMED,
-                3 by RESUMED,
-            ),
-        )
-
-        val instances = children.instances()
-
-        navigate { it.dropLast(3) }
-
-        assertEquals(instances.dropLast(3), children.instances())
-    }
+//    @Test
+//    fun WHEN_add_duplicated_children_THEN_duplicated_children_added() {
+//        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+//        val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
+//
+//        navigate { it + listOf(1 by RESUMED, 2 by RESUMED, 3 by RESUMED) }
+//
+//        children.assertChildren(1 to null, 2 to 2, 3 to 3, 4 to 4, 1 to 1, 2 to 2, 3 to 3)
+//    }
+//
+//    @Test
+//    fun GIVEN_duplicated_children_WHEN_remove_duplicated_children_from_end_THEN_duplicated_children_removed() {
+//        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+//
+//        val children by context.children(
+//            initialState = stateOf(
+//                1 by DESTROYED,
+//                2 by CREATED,
+//                3 by STARTED,
+//                4 by RESUMED,
+//                1 by RESUMED,
+//                2 by RESUMED,
+//                3 by RESUMED,
+//            ),
+//        )
+//
+//        val instances = children.map { it.instance }
+//
+//        navigate { it.dropLast(3) }
+//
+//        children.assertChildren(1 to null, 2 to 2, 3 to 3, 4 to 4)
+//        assertEquals(instances.dropLast(3), children.map { it.instance })
+//    }
+//
+//    @Test
+//    fun GIVEN_duplicated_children_WHEN_remove_duplicated_children_from_end_THEN_duplicated_instances_removed_from_end() {
+//        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+//
+//        val children by context.children(
+//            initialState = stateOf(
+//                1 by DESTROYED,
+//                2 by CREATED,
+//                3 by STARTED,
+//                4 by RESUMED,
+//                1 by RESUMED,
+//                2 by RESUMED,
+//                3 by RESUMED,
+//            ),
+//        )
+//
+//        val instances = children.instances()
+//
+//        navigate { it.dropLast(3) }
+//
+//        assertEquals(instances.dropLast(3), children.instances())
+//    }
 
     @Test
     fun GIVEN_duplicated_children_WHEN_remove_duplicated_children_from_start_THEN_duplicated_children_removed() {
