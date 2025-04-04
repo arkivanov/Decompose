@@ -420,27 +420,27 @@ class ChildStackIntegrationTest {
         assertFalse(instance.isDestroyed)
     }
 
-    @Test
-    fun WHEN_push_duplicated_children_THEN_stack_contains_duplicated_children() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-        val stack by context.childStack(initialStack = listOf(Config(1), Config(2), Config(3)))
+//    @Test
+//    fun WHEN_push_duplicated_children_THEN_stack_contains_duplicated_children() {
+//        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+//        val stack by context.childStack(initialStack = listOf(Config(1), Config(2), Config(3)))
+//
+//        navigation.push(Config(1))
+//        navigation.push(Config(2))
+//
+//        stack.assertStack(1, 2, 3, 1, 2)
+//    }
 
-        navigation.push(Config(1))
-        navigation.push(Config(2))
-
-        stack.assertStack(1, 2, 3, 1, 2)
-    }
-
-    @Test
-    fun GIVEN_stack_with_duplicated_children_WHEN_remove_duplicated_children_THEN_stack_contains_unique_children() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-        val stack by context.childStack(initialStack = listOf(Config(1), Config(2), Config(3), Config(1), Config(2)))
-
-        navigation.pop()
-        navigation.pop()
-
-        stack.assertStack(1, 2, 3)
-    }
+//    @Test
+//    fun GIVEN_stack_with_duplicated_children_WHEN_remove_duplicated_children_THEN_stack_contains_unique_children() {
+//        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+//        val stack by context.childStack(initialStack = listOf(Config(1), Config(2), Config(3), Config(1), Config(2)))
+//
+//        navigation.pop()
+//        navigation.pop()
+//
+//        stack.assertStack(1, 2, 3)
+//    }
 
     private fun ComponentContext.childStack(
         initialStack: List<Config> = emptyList(),

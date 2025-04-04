@@ -8,7 +8,6 @@ import com.arkivanov.decompose.mainthread.checkMainThread
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
-import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.consumeRequired
@@ -237,12 +236,9 @@ private fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, N : NavState<
             val restoredNavState: N? = savedState?.navState?.let(restoreState)
 
             ChildrenNavigator(
-                lifecycle = lifecycle,
-                retainedInstanceSupplier = { factory -> instanceKeeper.getOrCreate(key = key, factory = factory) },
-                childItemFactory = DefaultChildItemFactory(
-                    contextFactory = componentContextFactory,
-                    lifecycle = lifecycle,
-                    backHandler = backHandler.child(priority = BackCallback.PRIORITY_DEFAULT + 1),
+                controller = ChildController(
+                    componentContext = this,
+                    key = key,
                     childFactory = childFactory,
                 ),
                 navState = restoredNavState ?: initialState(),
