@@ -1,11 +1,14 @@
 package com.arkivanov.sample.shared.sharedtransitions.gallery
 
-import com.arkivanov.sample.shared.sharedtransitions.photo.Image
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.router.items.LazyChildItems
+import com.arkivanov.sample.shared.sharedtransitions.Image
+import com.arkivanov.sample.shared.sharedtransitions.thumbnail.ThumbnailComponent
 
 interface GalleryComponent {
 
-    val images: List<Image>
+    @OptIn(ExperimentalDecomposeApi::class)
+    val items: LazyChildItems<Image, ThumbnailComponent>
 
-    fun onImageClicked(index: Int)
     fun onCloseClicked()
 }

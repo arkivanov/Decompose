@@ -5,6 +5,13 @@ import com.arkivanov.decompose.DecomposeExperimentFlags
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.DelicateDecomposeApi
 import com.arkivanov.decompose.consume
+import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks
+import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_CREATE
+import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_DESTROY
+import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_PAUSE
+import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_RESUME
+import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_START
+import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_STOP
 import com.arkivanov.decompose.register
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
@@ -421,6 +428,108 @@ class ChildStackIntegrationTest {
     }
 
     @Test
+    fun WHEN_created_with_multiple_children_THEN_lifecycles_events_in_correct_order() {
+        val events = ArrayList<Pair<Int, TestLifecycleCallbacks.Event>>()
+
+        context.childStack(initialStack = listOf(Config(1), Config(2), Config(3))) { cfg, ctx ->
+            ctx.lifecycle.subscribe(TestLifecycleCallbacks { events += cfg.id to it })
+            Component(cfg, ctx)
+        }
+
+        assertEquals(listOf(1 to ON_CREATE, 2 to ON_CREATE, 3 to ON_CREATE, 3 to ON_START, 3 to ON_RESUME), events)
+    }
+
+    @Test
+    fun WHEN_child_pushed_THEN_lifecycles_events_in_correct_order() {
+        val events = ArrayList<Pair<Int, TestLifecycleCallbacks.Event>>()
+
+        context.childStack(initialStack = listOf(Config(1))) { cfg, ctx ->
+            ctx.lifecycle.subscribe(TestLifecycleCallbacks { events += cfg.id to it })
+            Component(cfg, ctx)
+        }
+
+        events.clear()
+
+        navigation.push(Config(2))
+
+        assertEquals(listOf(2 to ON_CREATE, 1 to ON_PAUSE, 1 to ON_STOP, 2 to ON_START, 2 to ON_RESUME), events)
+    }
+
+    @Test
+    fun WHEN_child_popped_THEN_lifecycles_events_in_correct_order() {
+        val events = ArrayList<Pair<Int, TestLifecycleCallbacks.Event>>()
+
+        context.childStack(initialStack = listOf(Config(1), Config(2))) { cfg, ctx ->
+            ctx.lifecycle.subscribe(TestLifecycleCallbacks { events += cfg.id to it })
+            Component(cfg, ctx)
+        }
+
+        events.clear()
+
+        navigation.pop()
+
+        assertEquals(listOf(2 to ON_PAUSE, 2 to ON_STOP, 2 to ON_DESTROY, 1 to ON_START, 1 to ON_RESUME), events)
+    }
+
+    @Test
+    fun WHEN_child_replaced_THEN_lifecycles_events_in_correct_order() {
+        val events = ArrayList<Pair<Int, TestLifecycleCallbacks.Event>>()
+
+        context.childStack(initialStack = listOf(Config(1))) { cfg, ctx ->
+            ctx.lifecycle.subscribe(TestLifecycleCallbacks { events += cfg.id to it })
+            Component(cfg, ctx)
+        }
+
+        events.clear()
+        navigation.navigate { listOf(Config(2)) }
+
+        assertEquals(listOf(2 to ON_CREATE, 1 to ON_PAUSE, 1 to ON_STOP, 1 to ON_DESTROY, 2 to ON_START, 2 to ON_RESUME), events)
+    }
+
+    @Test
+    fun WHEN_multiple_children_popped_THEN_lifecycles_events_in_correct_order() {
+        val events = ArrayList<Pair<Int, TestLifecycleCallbacks.Event>>()
+
+        context.childStack(initialStack = listOf(Config(1), Config(2), Config(3))) { cfg, ctx ->
+            ctx.lifecycle.subscribe(TestLifecycleCallbacks { events += cfg.id to it })
+            Component(cfg, ctx)
+        }
+
+        events.clear()
+
+        navigation.navigate { listOf(Config(1)) }
+
+        assertEquals(listOf(2 to ON_DESTROY, 3 to ON_PAUSE, 3 to ON_STOP, 3 to ON_DESTROY, 1 to ON_START, 1 to ON_RESUME), events)
+    }
+
+    @Test
+    fun WHEN_multiple_children_popped_and_pushed_THEN_lifecycles_events_in_correct_order() {
+        val events = ArrayList<Pair<Int, TestLifecycleCallbacks.Event>>()
+
+        context.childStack(initialStack = listOf(Config(1), Config(2), Config(3))) { cfg, ctx ->
+            ctx.lifecycle.subscribe(TestLifecycleCallbacks { events += cfg.id to it })
+            Component(cfg, ctx)
+        }
+
+        events.clear()
+
+        navigation.navigate { listOf(Config(1), Config(4), Config(5)) }
+
+        assertEquals(
+            listOf(
+                4 to ON_CREATE,
+                5 to ON_CREATE,
+                2 to ON_DESTROY,
+                3 to ON_PAUSE,
+                3 to ON_STOP,
+                3 to ON_DESTROY,
+                5 to ON_START,
+                5 to ON_RESUME,
+            ), events
+        )
+    }
+
+    @Test
     fun WHEN_push_duplicated_children_THEN_stack_contains_duplicated_children() {
         DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
         val stack by context.childStack(initialStack = listOf(Config(1), Config(2), Config(3)))
@@ -445,13 +554,14 @@ class ChildStackIntegrationTest {
     private fun ComponentContext.childStack(
         initialStack: List<Config> = emptyList(),
         persistent: Boolean = true,
+        childFactory: (Config, ComponentContext) -> Component = ::Component,
     ): Value<ChildStack<Config, Component>> =
         childStack(
             source = navigation,
             serializer = Config.serializer().takeIf { persistent },
             initialStack = { initialStack },
             handleBackButton = true,
-            childFactory = ::Component,
+            childFactory = childFactory,
         )
 
     private val ChildStack<Config, Component>.children: List<Pair<Int, Int>>

@@ -2,6 +2,11 @@ public final class com/arkivanov/decompose/extensions/compose/SubscribeAsStateKt
 	public static final fun subscribeAsState (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/runtime/SnapshotMutationPolicy;Landroidx/compose/runtime/Composer;II)Landroidx/compose/runtime/State;
 }
 
+public final class com/arkivanov/decompose/extensions/compose/lazyitems/ChildItemsLifecycleControllerKt {
+	public static final fun ChildItemsLifecycleController (Lcom/arkivanov/decompose/router/items/LazyChildItems;Landroidx/compose/foundation/lazy/LazyListState;Lkotlin/jvm/functions/Function1;IILandroidx/compose/runtime/Composer;II)V
+	public static final fun ChildItemsLifecycleController (Lcom/arkivanov/decompose/router/items/LazyChildItems;Landroidx/compose/foundation/lazy/grid/LazyGridState;Lkotlin/jvm/functions/Function1;IILandroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/arkivanov/decompose/extensions/compose/pages/ChildPagesKt {
 	public static final fun ChildPages (Lcom/arkivanov/decompose/router/pages/ChildPages;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/pages/PagesScrollAnimation;Lkotlin/jvm/functions/Function6;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function5;Landroidx/compose/runtime/Composer;II)V
 	public static final fun ChildPages (Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/pages/PagesScrollAnimation;Lkotlin/jvm/functions/Function6;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function5;Landroidx/compose/runtime/Composer;II)V

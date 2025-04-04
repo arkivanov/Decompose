@@ -1,6 +1,7 @@
 package com.arkivanov.sample.shared.sharedtransitions.photo
 
 import com.arkivanov.sample.shared.ImageResourceId
+import com.arkivanov.sample.shared.sharedtransitions.Image
 
 class PreviewPhotoComponent : PhotoComponent {
 

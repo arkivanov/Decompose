@@ -2,6 +2,11 @@ public final class com/arkivanov/decompose/extensions/compose/SubscribeAsStateKt
 	public static final fun subscribeAsState (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/runtime/SnapshotMutationPolicy;Landroidx/compose/runtime/Composer;II)Landroidx/compose/runtime/State;
 }
 
+public final class com/arkivanov/decompose/extensions/compose/lazyitems/ChildItemsLifecycleControllerKt {
+	public static final fun ChildItemsLifecycleController (Lcom/arkivanov/decompose/router/items/LazyChildItems;Landroidx/compose/foundation/lazy/LazyListState;Lkotlin/jvm/functions/Function1;IILandroidx/compose/runtime/Composer;II)V
+	public static final fun ChildItemsLifecycleController (Lcom/arkivanov/decompose/router/items/LazyChildItems;Landroidx/compose/foundation/lazy/grid/LazyGridState;Lkotlin/jvm/functions/Function1;IILandroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/arkivanov/decompose/extensions/compose/lifecycle/LifecycleControllerKt {
 	public static final fun LifecycleController (Lcom/arkivanov/essenty/lifecycle/LifecycleRegistry;Landroidx/compose/ui/window/WindowState;Landroidx/compose/ui/platform/WindowInfo;Landroidx/compose/runtime/Composer;II)V
 }
