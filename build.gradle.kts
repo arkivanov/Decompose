@@ -43,8 +43,8 @@ setupDefaults(
     },
     androidConfig = AndroidConfig(
         minSdkVersion = 21,
-        compileSdkVersion = 34,
-        targetSdkVersion = 34,
+        compileSdkVersion = 35,
+        targetSdkVersion = 35,
     ),
     binaryCompatibilityValidatorConfig = BinaryCompatibilityValidatorConfig(
         nonPublicMarkers = listOf("com.arkivanov.decompose.InternalDecomposeApi"),
