@@ -71,6 +71,7 @@ kotlin {
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
+            implementation(deps.jetbrains.compose.material.materialIconsCore)
         }
 
         jvm.main.dependencies {
