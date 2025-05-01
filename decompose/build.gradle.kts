@@ -12,6 +12,7 @@ plugins {
     id("com.android.library")
     id("kotlinx-serialization")
     id("com.arkivanov.gradle.setup")
+    id("com.dropbox.dependency-guard")
 }
 
 setupMultiplatform()
@@ -20,6 +21,10 @@ setupBinaryCompatibilityValidator()
 
 android {
     namespace = "com.arkivanov.decompose"
+}
+
+dependencyGuard {
+    configuration("androidReleaseRuntimeClasspath")
 }
 
 kotlin {

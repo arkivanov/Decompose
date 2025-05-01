@@ -6,6 +6,7 @@ plugins {
     id("com.android.library")
     id("kotlin-android")
     id("com.arkivanov.gradle.setup")
+    id("com.dropbox.dependency-guard")
 }
 
 setupAndroidLibrary()
@@ -14,6 +15,10 @@ setupBinaryCompatibilityValidator()
 
 android {
     namespace = "com.arkivanov.decompose.extensions.android"
+}
+
+dependencyGuard {
+    configuration("releaseRuntimeClasspath")
 }
 
 dependencies {

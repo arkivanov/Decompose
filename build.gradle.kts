@@ -22,6 +22,7 @@ buildscript {
         classpath(deps.jetbrains.kotlin.composeCompilerGradlePlug)
         classpath(deps.jetbrains.kotlinx.binaryCompatibilityValidator)
         classpath(deps.jetbrains.kotlin.serializationGradlePlug)
+        classpath(deps.dropbox.dependencyGuard)
     }
 }
 

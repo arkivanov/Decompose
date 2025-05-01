@@ -19,6 +19,7 @@ androidxCore = "1.9.0"
 androidxAppcompat = "1.6.0"
 androidxActivity = "1.8.2"
 androidxFragment = "1.6.2"
+dependencyGuard = "0.5.0"
 
 [libraries]
 
@@ -59,3 +60,5 @@ androidx-core-coreKtx  = { group = "androidx.core", name = "core-ktx", version.r
 androidx-appcompat-appcompat  = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppcompat" }
 androidx-activity-activityCompose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-fragment-fragmentKtx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragment" }
+
+dropbox-dependencyGuard = { group = "com.dropbox.dependency-guard", name = "dependency-guard", version.ref = "dependencyGuard" }

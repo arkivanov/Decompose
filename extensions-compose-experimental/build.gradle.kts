@@ -12,6 +12,7 @@ plugins {
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.arkivanov.gradle.setup")
+    id("com.dropbox.dependency-guard")
 }
 
 setupMultiplatform {
@@ -28,6 +29,10 @@ setupBinaryCompatibilityValidator()
 
 android {
     namespace = "com.arkivanov.decompose.extensions.compose.experimental"
+}
+
+dependencyGuard {
+    configuration("androidReleaseRuntimeClasspath")
 }
 
 kotlin {
