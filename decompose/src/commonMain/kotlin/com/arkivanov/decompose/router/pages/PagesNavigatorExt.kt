@@ -1,5 +1,7 @@
 package com.arkivanov.decompose.router.pages
 
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+
 /**
  * A convenience method for [PagesNavigator.navigate].
  */
@@ -101,6 +103,45 @@ fun <C : Any> PagesNavigator<C>.clear(onComplete: (newPages: Pages<C>, oldPages:
         transformer = { Pages() },
         onComplete = onComplete,
     )
+}
+
+/**
+ * Replaces the components with the provided list. The [Pages.selectedIndex] parameter
+ * is automatically coerced within the new list's range.
+ *
+ * @param items a transformer function from the current item list to a new one.
+ * See [Pages.items].
+ * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
+ */
+@ExperimentalDecomposeApi
+inline fun <C : Any> PagesNavigator<C>.setItems(
+    crossinline items: (List<C>) -> List<C>,
+    crossinline onComplete: (newPages: Pages<C>, oldPages: Pages<C>) -> Unit,
+) {
+    navigate(
+        transformer = {
+            val newItems = items(it.items)
+            it.copy(
+                items = newItems,
+                selectedIndex = if (newItems.isNotEmpty()) it.selectedIndex.coerceIn(newItems.indices) else -1,
+            )
+        },
+        onComplete = { newPages, oldPages -> onComplete(newPages, oldPages) },
+    )
+}
+
+/**
+ * Replaces the components with the provided list. The [Pages.selectedIndex] parameter
+ * is automatically coerced within the new list's range.
+ *
+ * @param items a transformer function from the current item list to a new one.
+ * See [Pages.items].
+ */
+@ExperimentalDecomposeApi
+inline fun <C : Any> PagesNavigator<C>.setItems(
+    crossinline items: (List<C>) -> List<C>,
+) {
+    setItems(items = items, onComplete = { _, _ -> })
 }
 
 private inline fun <C : Any> Pages<C>.coerceSelectedIndex(circular: Boolean = false, update: (Int) -> Int): Pages<C> =
