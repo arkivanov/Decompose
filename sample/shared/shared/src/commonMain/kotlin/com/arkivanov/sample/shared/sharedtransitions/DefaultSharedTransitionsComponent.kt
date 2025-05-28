@@ -20,7 +20,6 @@ import com.arkivanov.sample.shared.sharedtransitions.SharedTransitionsComponent.
 import com.arkivanov.sample.shared.sharedtransitions.SharedTransitionsComponent.Child.PhotoChild
 import com.arkivanov.sample.shared.sharedtransitions.gallery.DefaultGalleryComponent
 import com.arkivanov.sample.shared.sharedtransitions.photo.DefaultPhotoComponent
-import com.arkivanov.sample.shared.sharedtransitions.photo.Image
 import kotlinx.serialization.Serializable
 
 class DefaultSharedTransitionsComponent(
@@ -45,7 +44,7 @@ class DefaultSharedTransitionsComponent(
             serializer = Config.serializer(),
             initialStack = { getInitialStack(deepLinkUrl) },
             handleBackButton = true,
-            childFactory = { config, _ -> child(config) },
+            childFactory = ::child,
         )
 
     override val stack: Value<ChildStack<*, Child>> = _stack
@@ -66,11 +65,12 @@ class DefaultSharedTransitionsComponent(
             onBeforeNavigate = { false },
         )
 
-    private fun child(config: Config): Child =
+    private fun child(config: Config, ctx: ComponentContext): Child =
         when (config) {
             is Config.Gallery ->
                 GalleryChild(
                     DefaultGalleryComponent(
+                        componentContext = ctx,
                         images = images,
                         onImageSelected = { nav.pushNew(Config.Photo(id = it)) },
                         onFinished = onFinished,

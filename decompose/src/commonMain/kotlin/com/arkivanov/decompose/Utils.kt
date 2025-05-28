@@ -25,3 +25,19 @@ internal fun <T : Any, C : Any> List<T>.keyed(configuration: (T) -> C): Map<Any,
         config to number
     }
 }
+
+internal fun <T : Any> Iterable<T>.findFirstDuplicate(set: Set<T>): Pair<Int, T>? {
+    val iter1 = iterator()
+    val iter2 = set.iterator()
+    var index = 0
+
+    while (iter1.hasNext()) {
+        val item = iter1.next()
+        if (!iter2.hasNext() || (iter2.next() != item)) {
+            return index to item
+        }
+        index++
+    }
+
+    return null
+}

@@ -1,5 +1,9 @@
 package com.arkivanov.decompose.router.children
 
+import com.arkivanov.decompose.TestBackCallback
+import com.arkivanov.decompose.TestBackCallback.Event.OnBack
+import com.arkivanov.decompose.assertEvents
+import com.arkivanov.decompose.assertNoEvents
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
@@ -384,5 +388,57 @@ class ChildrenBackPressedTest : ChildrenTestBase() {
         backDispatcher.back()
 
         children.assertChildren(1 to 1, 3 to 3)
+    }
+
+    @Test
+    fun GIVEN_callback_registered_in_context_and_in_child_WHEN_back_THEN_child_callback_called() {
+        val children by context.children(initialState = stateOf(1 by RESUMED))
+
+        backDispatcher.register(TestBackCallback())
+        val callback = TestBackCallback()
+        children.getByConfig(1).requireInstance().backHandler.register(callback)
+
+        backDispatcher.back()
+
+        callback.assertEvents(OnBack)
+    }
+
+    @Test
+    fun GIVEN_callback_registered_in_context_and_in_child_WHEN_back_THEN_context_callback_not_called() {
+        val children by context.children(initialState = stateOf(1 by RESUMED))
+
+        val callback = TestBackCallback()
+        backDispatcher.register(callback)
+        children.getByConfig(1).requireInstance().backHandler.register(TestBackCallback())
+
+        backDispatcher.back()
+
+        callback.assertNoEvents()
+    }
+
+    @Test
+    fun GIVEN_callback_registered_in_child_and_in_context_WHEN_back_THEN_child_callback_called() {
+        val children by context.children(initialState = stateOf(1 by RESUMED))
+
+        val callback = TestBackCallback()
+        children.getByConfig(1).requireInstance().backHandler.register(callback)
+        backDispatcher.register(TestBackCallback())
+
+        backDispatcher.back()
+
+        callback.assertEvents(OnBack)
+    }
+
+    @Test
+    fun GIVEN_callback_registered_in_child_and_in_context_WHEN_back_THEN_context_callback_not_called() {
+        val children by context.children(initialState = stateOf(1 by RESUMED))
+
+        children.getByConfig(1).requireInstance().backHandler.register(TestBackCallback())
+        val callback = TestBackCallback()
+        backDispatcher.register(callback)
+
+        backDispatcher.back()
+
+        callback.assertNoEvents()
     }
 }

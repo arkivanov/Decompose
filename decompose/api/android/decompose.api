@@ -143,6 +143,16 @@ public abstract interface class com/arkivanov/decompose/router/children/NavState
 	public abstract fun getChildren ()Ljava/util/List;
 }
 
+public abstract interface class com/arkivanov/decompose/router/children/NavStateSaver {
+	public abstract fun restoreState (Lcom/arkivanov/essenty/statekeeper/SerializableContainer;)Ljava/lang/Object;
+	public abstract fun saveState (Ljava/lang/Object;)Lcom/arkivanov/essenty/statekeeper/SerializableContainer;
+}
+
+public final class com/arkivanov/decompose/router/children/NavStateSaverKt {
+	public static final fun NavStateSaver (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/router/children/NavStateSaver;
+	public static final fun NavStateSaver (Lkotlinx/serialization/KSerializer;)Lcom/arkivanov/decompose/router/children/NavStateSaver;
+}
+
 public abstract interface class com/arkivanov/decompose/router/children/NavigationSource {
 	public abstract fun subscribe (Lkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/Cancellation;
 }
@@ -164,6 +174,106 @@ public final class com/arkivanov/decompose/router/children/SimpleNavigation : co
 	public fun <init> ()V
 	public final fun navigate (Ljava/lang/Object;)V
 	public fun subscribe (Lkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/Cancellation;
+}
+
+public final class com/arkivanov/decompose/router/children/TransientNavStateSaverKt {
+	public static final fun transientNavStateSaver ()Lcom/arkivanov/decompose/router/children/NavStateSaver;
+}
+
+public final class com/arkivanov/decompose/router/items/ChildItems {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/List;Ljava/util/Map;)V
+	public synthetic fun <init> (Ljava/util/List;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun copy (Ljava/util/List;Ljava/util/Map;)Lcom/arkivanov/decompose/router/items/ChildItems;
+	public static synthetic fun copy$default (Lcom/arkivanov/decompose/router/items/ChildItems;Ljava/util/List;Ljava/util/Map;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/items/ChildItems;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActiveItems ()Ljava/util/Map;
+	public final fun getItems ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/arkivanov/decompose/router/items/ChildItemsFactoryKt {
+	public static final fun childItems (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lcom/arkivanov/decompose/router/children/NavStateSaver;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/router/items/LazyChildItems;
+	public static final fun childItems (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/router/items/LazyChildItems;
+	public static synthetic fun childItems$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lcom/arkivanov/decompose/router/children/NavStateSaver;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/items/LazyChildItems;
+	public static synthetic fun childItems$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/items/LazyChildItems;
+}
+
+public final class com/arkivanov/decompose/router/items/Items {
+	public static final field Companion Lcom/arkivanov/decompose/router/items/Items$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/util/List;Ljava/util/Map;)V
+	public synthetic fun <init> (Ljava/util/List;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun copy (Ljava/util/List;Ljava/util/Map;)Lcom/arkivanov/decompose/router/items/Items;
+	public static synthetic fun copy$default (Lcom/arkivanov/decompose/router/items/Items;Ljava/util/List;Ljava/util/Map;ILjava/lang/Object;)Lcom/arkivanov/decompose/router/items/Items;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActiveItems ()Ljava/util/Map;
+	public final fun getItems ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public synthetic class com/arkivanov/decompose/router/items/Items$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public fun <init> (Lkotlinx/serialization/KSerializer;)V
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/arkivanov/decompose/router/items/Items;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/arkivanov/decompose/router/items/Items;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/arkivanov/decompose/router/items/Items$ActiveLifecycleState : java/lang/Enum {
+	public static final field CREATED Lcom/arkivanov/decompose/router/items/Items$ActiveLifecycleState;
+	public static final field RESUMED Lcom/arkivanov/decompose/router/items/Items$ActiveLifecycleState;
+	public static final field STARTED Lcom/arkivanov/decompose/router/items/Items$ActiveLifecycleState;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/arkivanov/decompose/router/items/Items$ActiveLifecycleState;
+	public static fun values ()[Lcom/arkivanov/decompose/router/items/Items$ActiveLifecycleState;
+}
+
+public final class com/arkivanov/decompose/router/items/Items$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class com/arkivanov/decompose/router/items/ItemsNavigation : com/arkivanov/decompose/router/children/NavigationSource, com/arkivanov/decompose/router/items/ItemsNavigator {
+}
+
+public final class com/arkivanov/decompose/router/items/ItemsNavigation$Event {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getOnComplete ()Lkotlin/jvm/functions/Function2;
+	public final fun getTransformer ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class com/arkivanov/decompose/router/items/ItemsNavigationKt {
+	public static final fun ItemsNavigation ()Lcom/arkivanov/decompose/router/items/ItemsNavigation;
+}
+
+public abstract interface class com/arkivanov/decompose/router/items/ItemsNavigator {
+	public abstract fun navigate (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+}
+
+public final class com/arkivanov/decompose/router/items/ItemsNavigatorExtKt {
+	public static final fun navigate (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;)V
+	public static final fun setActiveItems (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;)V
+	public static final fun setActiveItems (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun setActiveItems$default (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun setItems (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;)V
+	public static final fun setItems (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun setItems$default (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public abstract class com/arkivanov/decompose/router/items/LazyChildItems : com/arkivanov/decompose/value/Value, com/arkivanov/decompose/router/items/ItemsNavigator {
+	public fun <init> ()V
+	public abstract fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public abstract fun navigate (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class com/arkivanov/decompose/router/pages/ChildPages {
