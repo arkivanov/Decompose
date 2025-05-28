@@ -47,6 +47,9 @@ nav:
     - Child Panels:
         - Overview: navigation/panels/overview.md
         - Navigation: navigation/panels/navigation.md
+    - Child Items:
+        - Overview: navigation/items/overview.md
+        - Navigation: navigation/items/navigation.md
     - Generic Navigation:
         - Overview: navigation/children/overview.md
     - Web Navigation: navigation/web-navigation.md

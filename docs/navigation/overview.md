@@ -8,6 +8,7 @@ Currently, Decompose provides several predefined navigation models:
 - [Child Slot](../navigation/slot/overview.md) - if you need to activate-dismiss one child component at a time.
 - [Child Pages](../navigation/pages/overview.md) - if you need to organize child components in a list with one selected component.
 - [Child Panels](../navigation/panels/overview.md) - if you need to organize child components in a multi-pane mode with dynamic switching.
+- [Child Items](../navigation/items/overview.md) - if you need an arbitrary list of child components, e.g., a lazy list.
 
 If none of this fit your needs, Decompose provides [Generic Navigation](https://arkivanov.github.io/Decompose/navigation/children/overview/) that can be used to create your own custom navigation models.
 It offers a flexible API and allows you to create almost any kind of navigation.
