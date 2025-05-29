@@ -21,7 +21,7 @@ fun <C : Any> ItemsNavigator<C>.navigate(transformer: (Items<C>) -> Items<C>) {
 @ExperimentalDecomposeApi
 inline fun <C : Any> ItemsNavigator<C>.setItems(
     crossinline items: (List<C>) -> List<C>,
-    crossinline onComplete: (newItems: Items<C>, oldItems: Items<C>) -> Unit = { _, _ -> },
+    crossinline onComplete: (newItems: Items<C>, oldItems: Items<C>) -> Unit,
 ) {
     navigate(
         transformer = { oldItems ->
@@ -42,7 +42,9 @@ inline fun <C : Any> ItemsNavigator<C>.setItems(
  * See [Items.items].
  */
 @ExperimentalDecomposeApi
-fun <C : Any> ItemsNavigator<C>.setItems(items: (List<C>) -> List<C>) {
+inline fun <C : Any> ItemsNavigator<C>.setItems(
+    crossinline items: (List<C>) -> List<C>,
+) {
     setItems(items = items, onComplete = { _, _ -> })
 }
 
@@ -57,7 +59,7 @@ fun <C : Any> ItemsNavigator<C>.setItems(items: (List<C>) -> List<C>) {
 @ExperimentalDecomposeApi
 inline fun <C : Any> ItemsNavigator<C>.setActiveItems(
     crossinline activeItems: (Map<C, ActiveLifecycleState>) -> Map<C, ActiveLifecycleState>,
-    crossinline onComplete: (newItems: Items<C>, oldItems: Items<C>) -> Unit = { _, _ -> },
+    crossinline onComplete: (newItems: Items<C>, oldItems: Items<C>) -> Unit,
 ) {
     navigate(
         transformer = { it.copy(activeItems = activeItems(it.activeItems)) },
