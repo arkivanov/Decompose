@@ -244,10 +244,8 @@ public final class com/arkivanov/decompose/router/items/ItemsNavigatorExtKt {
 	public static final fun navigate (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;)V
 	public static final fun setActiveItems (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;)V
 	public static final fun setActiveItems (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
-	public static synthetic fun setActiveItems$default (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 	public static final fun setItems (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;)V
 	public static final fun setItems (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
-	public static synthetic fun setItems$default (Lcom/arkivanov/decompose/router/items/ItemsNavigator;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
 public abstract class com/arkivanov/decompose/router/items/LazyChildItems : com/arkivanov/decompose/value/Value, com/arkivanov/decompose/router/items/ItemsNavigator {
