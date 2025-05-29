@@ -360,6 +360,8 @@ public final class com/arkivanov/decompose/router/pages/PagesNavigatorExtKt {
 	public static synthetic fun selectNext$default (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 	public static final fun selectPrev (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ZLkotlin/jvm/functions/Function2;)V
 	public static synthetic fun selectPrev$default (Lcom/arkivanov/decompose/router/pages/PagesNavigator;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun setItems (Lcom/arkivanov/decompose/router/pages/PagesNavigator;Lkotlin/jvm/functions/Function1;)V
+	public static final fun setItems (Lcom/arkivanov/decompose/router/pages/PagesNavigator;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class com/arkivanov/decompose/router/pages/PagesWebNavigationKt {
