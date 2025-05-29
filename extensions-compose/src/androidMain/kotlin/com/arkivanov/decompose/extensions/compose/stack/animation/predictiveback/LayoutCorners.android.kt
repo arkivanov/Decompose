@@ -5,12 +5,12 @@ import android.os.Build
 import android.view.RoundedCorner
 import android.view.View
 import android.view.WindowManager
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -22,25 +22,25 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 
-internal actual fun Modifier.withLayoutCorners(block: Modifier.(LayoutCorners) -> Modifier): Modifier =
-    composed {
-        val context = LocalContext.current
-        val density = LocalDensity.current
-        val screenInfo = remember(context) { context.getScreenInfo(density) }
+@Composable
+internal actual fun Modifier.withLayoutCorners(block: @Composable Modifier.(LayoutCorners) -> Modifier): Modifier {
+    val context = LocalContext.current
+    val density = LocalDensity.current
+    val screenInfo = remember(context) { context.getScreenInfo(density) }
 
-        if (screenInfo != null) {
-            val rootView = LocalView.current
-            val layoutDirection = LocalLayoutDirection.current
-            var positionOnScreen by remember { mutableStateOf<Rect?>(null) }
-            val corners = getLayoutCorners(screenInfo, positionOnScreen, layoutDirection)
-
-            onGloballyPositioned { coords ->
-                positionOnScreen = getBoundsOnScreen(rootView = rootView, boundsInRoot = coords.boundsInRoot())
-            }.block(corners)
-        } else {
-            block(LayoutCorners())
-        }
+    if (screenInfo == null) {
+        return block(LayoutCorners())
     }
+
+    val rootView = LocalView.current
+    val layoutDirection = LocalLayoutDirection.current
+    var positionOnScreen by remember { mutableStateOf<Rect?>(null) }
+    val corners = getLayoutCorners(screenInfo, positionOnScreen, layoutDirection)
+
+    return onGloballyPositioned { coords ->
+        positionOnScreen = getBoundsOnScreen(rootView = rootView, boundsInRoot = coords.boundsInRoot())
+    }.block(corners)
+}
 
 private fun Context.getScreenInfo(density: Density): ScreenInfo? {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {

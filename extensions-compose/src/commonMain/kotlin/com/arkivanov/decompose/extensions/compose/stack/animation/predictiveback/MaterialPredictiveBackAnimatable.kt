@@ -1,18 +1,26 @@
 package com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.layout.offset
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
@@ -53,13 +61,13 @@ private class MaterialPredictiveBackAnimatable(
 
     override val exitModifier: Modifier
         get() =
-            if (exitShape == null) {
-                Modifier.withLayoutCorners { corners ->
-                    graphicsLayer { setupExitGraphicLayer(corners.toShape(progress)) }
-                }
-            } else {
-                Modifier.graphicsLayer {
-                    setupExitGraphicLayer(exitShape.invoke(progress, edge))
+            Modifier.composed {
+                if (exitShape == null) {
+                    withLayoutCorners { corners ->
+                        exitModifier(corners.toShape(progress))
+                    }
+                } else {
+                    exitModifier(exitShape.invoke(progress, edge))
                 }
             }
 
@@ -70,36 +78,45 @@ private class MaterialPredictiveBackAnimatable(
                 drawRect(color = Color.Black.copy(alpha = finishProgress * 0.25F))
             }
 
-    private fun GraphicsLayerScope.setupExitGraphicLayer(layoutShape: Shape) {
-        val pivotFractionX =
+    @Composable
+    private fun Modifier.exitModifier(shape: Shape): Modifier {
+        var size by remember { mutableStateOf(IntSize.Zero) }
+        val scaleFactor = 1F - progress / 10F
+
+        return this
+            .scale(scaleFactor)
+            .onPlaced { size = it.size }
+            .offset { exitOffset(size = size, scaleFactor = scaleFactor) }
+            .alpha(finishProgress)
+            .clip(shape)
+    }
+
+    private fun Density.exitOffset(size: IntSize, scaleFactor: Float): IntOffset {
+        if (size == IntSize.Zero) {
+            return IntOffset.Zero
+        }
+
+        val scaledWidth = size.width.toFloat() * scaleFactor
+
+        val offsetX =
             when (edge) {
-                BackEvent.SwipeEdge.LEFT -> 1F
-                BackEvent.SwipeEdge.RIGHT -> 0F
-                BackEvent.SwipeEdge.UNKNOWN -> 0.5F
-            }
+                BackEvent.SwipeEdge.LEFT ->
+                    (size.width.toFloat() - scaledWidth) / 2F - 8.dp.toPx() * progress
 
-        transformOrigin = TransformOrigin(pivotFractionX = pivotFractionX, pivotFractionY = 0.5F)
+                BackEvent.SwipeEdge.RIGHT ->
+                    (scaledWidth - size.width.toFloat()) / 2F + 8.dp.toPx() * progress
 
-        val scale = 1F - progress / 10F
-        scaleX = scale
-        scaleY = scale
-
-        val translationXLimit =
-            when (edge) {
-                BackEvent.SwipeEdge.LEFT -> -8.dp.toPx()
-                BackEvent.SwipeEdge.RIGHT -> 8.dp.toPx()
                 BackEvent.SwipeEdge.UNKNOWN -> 0F
             }
 
-        translationX = translationXLimit * progress
-
         val translationYLimit = size.height / 20F - 8.dp.toPx()
-        val translationYFactor = ((touchY - initialEvent.touchY) / size.height) * (progress * 3F).coerceAtMost(1f)
-        translationY = translationYLimit * translationYFactor
 
-        alpha = finishProgress
-        shape = layoutShape
-        clip = true
+        val translationYFactor =
+            ((touchY - initialEvent.touchY) / size.height) * (progress * 3F).coerceAtMost(1f)
+
+        val offsetY = translationYLimit * translationYFactor
+
+        return IntOffset(x = offsetX.toInt(), y = offsetY.toInt())
     }
 
     override suspend fun animate(event: BackEvent) {
