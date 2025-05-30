@@ -27,7 +27,7 @@ fun <C : Any, T : Any> ChildPages(
     onPageSelected: (index: Int) -> Unit,
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
-    pager: Pager = defaultHorizontalPager(),
+    pager: ChildPagesPager = defaultHorizontalPager(),
     key: (Child<C, T>) -> Any = Child<*, *>::keyHashString,
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
@@ -53,7 +53,7 @@ fun <C : Any, T : Any> ChildPages(
     onPageSelected: (index: Int) -> Unit,
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
-    pager: Pager = defaultHorizontalPager(),
+    pager: ChildPagesPager = defaultHorizontalPager(),
     key: (Child<C, T>) -> Any = Child<*, *>::keyHashString,
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
@@ -100,7 +100,7 @@ fun <C : Any, T : Any> ChildPages(
     }
 }
 
-fun defaultHorizontalPager(): Pager =
+fun defaultHorizontalPager(): ChildPagesPager =
     { modifier, state, key, pageContent ->
         HorizontalPager(
             modifier = modifier,
@@ -110,7 +110,7 @@ fun defaultHorizontalPager(): Pager =
         )
     }
 
-fun defaultVerticalPager(): Pager =
+fun defaultVerticalPager(): ChildPagesPager =
     { modifier, state, key, pageContent ->
         VerticalPager(
             modifier = modifier,
@@ -120,7 +120,7 @@ fun defaultVerticalPager(): Pager =
         )
     }
 
-internal typealias Pager =
+typealias ChildPagesPager =
     @Composable (
         Modifier,
         PagerState,
