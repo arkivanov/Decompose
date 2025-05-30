@@ -57,7 +57,7 @@ fun <C : Any, T : Any> ChildPages(
     key: (Child<C, T>) -> Any = Child<*, *>::keyHashString,
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
-    val selectedIndex = pages.selectedIndex
+    val selectedIndex = pages.selectedIndex.coerceAtLeast(0)
     val state = rememberPagerState(
         initialPage = selectedIndex,
         pageCount = { pages.items.size },
