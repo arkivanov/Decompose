@@ -5,7 +5,11 @@ import com.arkivanov.decompose.recreate
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
 import com.arkivanov.essenty.instancekeeper.getOrCreate
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertNotSame
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 @Suppress("TestFunctionName")
 class LazyItemsRetainedInstanceTest {

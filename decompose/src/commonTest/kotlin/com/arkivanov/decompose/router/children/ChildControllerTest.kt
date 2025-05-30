@@ -13,7 +13,6 @@ import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.serializeAndDeserialize
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.Lifecycle
-import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -22,6 +21,7 @@ import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
+import kotlinx.serialization.builtins.serializer
 
 @Suppress("TestFunctionName")
 class ChildControllerTest {

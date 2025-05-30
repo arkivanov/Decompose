@@ -3,13 +3,13 @@ package com.arkivanov.decompose.router.children
 import com.arkivanov.decompose.DecomposeExperimentFlags
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.consume
+import com.arkivanov.decompose.getValue
 import com.arkivanov.decompose.register
-import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
-import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
+import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
+import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.STARTED
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
-import com.arkivanov.decompose.value.getValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -336,7 +336,10 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_not_saving_state_WHEN_recreated_THEN_child_states_not_restored() {
         val oldStateKeeper = TestStateKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
-        val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED), saveState = { null })
+        val oldChildren by oldContext.children(
+            initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED),
+            saveState = { null },
+        )
         oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
         oldChildren.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
         oldChildren.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") { 40 }
@@ -366,7 +369,10 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
-        val newChildren by newContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED), restoreState = { null })
+        val newChildren by newContext.children(
+            initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED),
+            restoreState = { null },
+        )
         val restoredState2 = newChildren.getByConfig(config = 2).requireInstance().stateKeeper.consume<Int>(key = "key")
         val restoredState3 = newChildren.getByConfig(config = 3).requireInstance().stateKeeper.consume<Int>(key = "key")
         val restoredState4 = newChildren.getByConfig(config = 4).requireInstance().stateKeeper.consume<Int>(key = "key")

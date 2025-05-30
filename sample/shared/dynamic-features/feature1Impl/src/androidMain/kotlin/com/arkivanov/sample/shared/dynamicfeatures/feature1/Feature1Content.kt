@@ -7,18 +7,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.value.getValue
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeatureContent
 
+@Suppress("unused") // Used via reflection
 class Feature1Content : DynamicFeatureContent<Feature1> {
 
     @Suppress("ComposableNaming")
     @Composable
     override fun invoke(component: Feature1, modifier: Modifier) {
-        val model by component.models
+        val model by component.models.subscribeAsState()
 
         Column(
             modifier = modifier,
