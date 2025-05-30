@@ -1,14 +1,22 @@
 package com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.layout.offset
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.GraphicsLayerScope
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.util.lerp
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
@@ -58,49 +66,51 @@ private class AndroidPredictiveBackAnimatable(
 
     override val exitModifier: Modifier
         get() =
-            if (exitShape == null) {
-                Modifier.withLayoutCorners { corners ->
-                    graphicsLayer {
-                        setupExitGraphicLayer { progress, _ -> corners.toShape(progress) }
+            Modifier.composed {
+                if (exitShape == null) {
+                    withLayoutCorners { corners ->
+                        exitModifier { progress, _ -> corners.toShape(progress) }
                     }
-                }
-            } else {
-                Modifier.graphicsLayer {
-                    setupExitGraphicLayer(exitShape)
+                } else {
+                    exitModifier(exitShape)
                 }
             }
 
     override val enterModifier: Modifier
         get() =
-            if (enterShape == null) {
-                Modifier.withLayoutCorners { corners ->
-                    graphicsLayer {
-                        setupEnterGraphicLayer { progress, _ -> corners.toShape(1F - progress) }
+            Modifier.composed {
+                if (enterShape == null) {
+                    withLayoutCorners { corners ->
+                        enterModifier { progress, _ -> corners.toShape(1F - progress) }
                     }
-                }
-            } else {
-                Modifier.graphicsLayer {
-                    setupEnterGraphicLayer(enterShape)
+                } else {
+                    enterModifier(enterShape)
                 }
             }
 
-    private fun GraphicsLayerScope.setupExitGraphicLayer(layoutShape: (progress: Float, edge: BackEvent.SwipeEdge) -> Shape) {
-        alpha = 1F - exitProgress
-        scaleX = 1F - exitProgress * 0.1F
-        scaleY = scaleX
-        translationX = size.width * 0.5F * exitProgress
-        shape = layoutShape(exitProgress, edge)
-        clip = true
+    @Composable
+    private fun Modifier.exitModifier(layoutShape: (progress: Float, edge: BackEvent.SwipeEdge) -> Shape): Modifier {
+        var size by remember { mutableStateOf(IntSize.Zero) }
+
+        return this
+            .scale(1F - exitProgress * 0.1F)
+            .onPlaced { size = it.size }
+            .offset { IntOffset(x = (size.width * 0.5F * exitProgress).toInt(), y = 0) }
+            .alpha(1F - exitProgress)
+            .clip(layoutShape(exitProgress, edge))
     }
 
-    private fun GraphicsLayerScope.setupEnterGraphicLayer(layoutShape: (progress: Float, edge: BackEvent.SwipeEdge) -> Shape) {
+    @Composable
+    private fun Modifier.enterModifier(layoutShape: (progress: Float, edge: BackEvent.SwipeEdge) -> Shape): Modifier {
         val totalProgress = lerp(start = enterProgress, stop = 1F, fraction = finishProgress)
-        alpha = totalProgress
-        scaleX = lerp(start = lerp(start = 0.95F, stop = 0.90F, fraction = enterProgress), stop = 1F, fraction = finishProgress)
-        scaleY = scaleX
-        translationX = lerp(start = -size.width * 0.15F, stop = 0F, fraction = totalProgress)
-        shape = layoutShape(finishProgress, edge)
-        clip = true
+        var size by remember { mutableStateOf(IntSize.Zero) }
+
+        return this
+            .scale(lerp(start = lerp(start = 0.95F, stop = 0.90F, fraction = enterProgress), stop = 1F, fraction = finishProgress))
+            .onPlaced { size = it.size }
+            .offset { IntOffset(x = lerp(start = -size.width * 0.15F, stop = 0F, fraction = totalProgress).toInt(), y = 0) }
+            .alpha(totalProgress)
+            .clip(layoutShape(finishProgress, edge))
     }
 
     override suspend fun animate(event: BackEvent) {

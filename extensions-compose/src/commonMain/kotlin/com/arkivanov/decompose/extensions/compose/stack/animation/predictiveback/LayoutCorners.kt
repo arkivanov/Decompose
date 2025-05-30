@@ -1,11 +1,13 @@
 package com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-internal expect fun Modifier.withLayoutCorners(block: Modifier.(LayoutCorners) -> Modifier): Modifier
+@Composable
+internal expect fun Modifier.withLayoutCorners(block: @Composable Modifier.(LayoutCorners) -> Modifier): Modifier
 
 internal data class LayoutCorners(
     val topStart: LayoutCorner = LayoutCorner(),
