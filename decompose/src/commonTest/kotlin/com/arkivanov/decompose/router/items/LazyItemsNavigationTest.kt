@@ -1,8 +1,13 @@
 package com.arkivanov.decompose.router.items
 
 import com.arkivanov.decompose.TestComponentContext
-import com.arkivanov.decompose.router.items.LazyComponentState.*
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
+import com.arkivanov.decompose.router.items.LazyComponentState.CREATED
+import com.arkivanov.decompose.router.items.LazyComponentState.DESTROYED
+import com.arkivanov.decompose.router.items.LazyComponentState.PENDING
+import com.arkivanov.decompose.router.items.LazyComponentState.REMOVED
+import com.arkivanov.decompose.router.items.LazyComponentState.RESUMED
+import com.arkivanov.decompose.router.items.LazyComponentState.STARTED
 import kotlin.test.Test
 
 @Suppress("TestFunctionName")

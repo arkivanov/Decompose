@@ -2,13 +2,13 @@ package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.DecomposeExperimentFlags
 import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.getValue
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.STARTED
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
-import com.arkivanov.decompose.value.getValue
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.doOnDestroy
@@ -294,6 +294,7 @@ class ChildrenBasicTest : ChildrenTestBase() {
 
         children.assertChildren(3 to 3, 1 to 1, 2 to 2)
     }
+
     @Test
     fun GIVEN_duplicated_children_WHEN_remove_duplicated_children_from_start_THEN_duplicated_instances_removed_from_end() {
         DecomposeExperimentFlags.duplicateConfigurationsEnabled = true

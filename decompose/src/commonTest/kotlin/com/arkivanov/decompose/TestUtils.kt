@@ -1,9 +1,11 @@
 package com.arkivanov.decompose
 
+import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
+import kotlin.reflect.KProperty
 
 internal val json =
     Json {
@@ -27,3 +29,5 @@ fun StateKeeperDispatcher.recreate(isConfigurationChange: Boolean = false): Stat
     StateKeeperDispatcher(
         savedState = save().let { if (isConfigurationChange) it else it.serializeAndDeserialize() },
     )
+
+operator fun <T : Any> Value<T>.getValue(thisRef: Any?, property: KProperty<*>): T = value

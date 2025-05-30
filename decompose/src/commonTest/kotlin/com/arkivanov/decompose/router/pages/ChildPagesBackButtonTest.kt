@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.router.pages
 
 import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.value.getValue
+import com.arkivanov.decompose.getValue
 import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume

@@ -4,11 +4,11 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.consume
+import com.arkivanov.decompose.getValue
 import com.arkivanov.decompose.register
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.getValue
 import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.instancekeeper.getOrCreate

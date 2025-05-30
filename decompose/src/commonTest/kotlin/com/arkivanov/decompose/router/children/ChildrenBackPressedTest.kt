@@ -4,11 +4,11 @@ import com.arkivanov.decompose.TestBackCallback
 import com.arkivanov.decompose.TestBackCallback.Event.OnBack
 import com.arkivanov.decompose.assertEvents
 import com.arkivanov.decompose.assertNoEvents
+import com.arkivanov.decompose.getValue
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.STARTED
-import com.arkivanov.decompose.value.getValue
 import com.arkivanov.essenty.backhandler.BackCallback
 import kotlin.test.Test
 import kotlin.test.assertContentEquals

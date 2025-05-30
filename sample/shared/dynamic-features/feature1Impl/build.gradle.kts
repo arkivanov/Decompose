@@ -31,6 +31,7 @@ kotlin {
 
         common.main.dependencies {
             implementation(project(":decompose"))
+            implementation(project(":extensions-compose"))
             implementation(project(":sample:shared:dynamic-features:api"))
             implementation(deps.reaktive.reaktive)
         }
