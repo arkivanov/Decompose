@@ -22,7 +22,7 @@ To convert Decompose [Value](https://github.com/arkivanov/Decompose/tree/master/
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.value.Value
 
 interface SomeComponent {
@@ -87,7 +87,7 @@ In most of the cases there is no need to manually observe the navigation state. 
 ```kotlin
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 
 @Composable
 fun RootContent(component: RootComponent) {
@@ -167,7 +167,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.value.Value
 
@@ -222,7 +222,7 @@ The Compose extension module provides the [ChildPages(...)](https://github.com/a
     import androidx.compose.runtime.Composable
     import com.arkivanov.decompose.extensions.compose.jetbrains.pages.Pages
     import com.arkivanov.decompose.extensions.compose.jetbrains.pages.PagesScrollAnimation
-    
+
     @Composable
     fun PagesContent(component: PagesComponent) {
         Pages(
@@ -233,7 +233,7 @@ The Compose extension module provides the [ChildPages(...)](https://github.com/a
             PageContent(page)
         }
     }
-    
+
     @Composable
     fun PageContent(component: PageComponent) {
         // Omitted code
@@ -246,7 +246,7 @@ The Compose extension module provides the [ChildPages(...)](https://github.com/a
     import androidx.compose.runtime.Composable
     import com.arkivanov.decompose.extensions.compose.jetbrains.pages.ChildPages
     import com.arkivanov.decompose.extensions.compose.jetbrains.pages.PagesScrollAnimation
-    
+
     @Composable
     fun PagesContent(component: PagesComponent) {
         ChildPages(
@@ -257,7 +257,7 @@ The Compose extension module provides the [ChildPages(...)](https://github.com/a
             PageContent(page)
         }
     }
-    
+
     @Composable
     fun PageContent(component: PageComponent) {
         // Omitted code
@@ -374,6 +374,89 @@ fun PanelsContent(component: PanelsComponent) {
 }
 ```
 
+## Child Items navigation with Compose
+
+!!!warning
+This navigation model is experimental and is available since version `3.4.0-alpha01`, the API is subject to change.
+
+The [Child Items](../navigation/items/overview.md) navigation model provides [ChildItems](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/items/ChildItems.kt) as `LazyChildItems` that extends both `Value<ChildItems>` and `ItemsNavigator`, meaning it can be observed and manipulated in a `Composable` component.
+
+The Compose extension module provides the [ChildItemsLifecycleController(...)](https://github.com/arkivanov/Decompose/blob/master/extensions-compose/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/lazyitems/ChildItemsLifecycleController.kt) function which has the following features:
+
+- It automatically manages the lifecycle states of child items in lazy lists and grids based on their visibility in the viewport.
+- Items within the viewport are moved to `RESUMED` state.
+- Items outside the viewport but within the preloading delta are moved to `CREATED` state.
+- Items outside the viewport and outside the preloading delta are destroyed.
+
+This is particularly useful for optimizing performance in lazy lists/grids by only keeping visible and nearby items active.
+
+The controller provides two main variants:
+
+1. For lazy lists (`LazyColumn`, `LazyRow`):
+
+```kotlin
+@Composable
+fun <C : Any> ChildItemsLifecycleController(
+    items: LazyChildItems<C, *>,
+    lazyListState: LazyListState,
+    itemIndexConverter: (Int) -> Int,
+    forwardPreloadCount: Int = 0,
+    backwardPreloadCount: Int = 0,
+)
+```
+
+2. For lazy grids (`LazyVerticalGrid`, `LazyHorizontalGrid`):
+
+```kotlin
+@Composable
+fun <C : Any> ChildItemsLifecycleController(
+    items: LazyChildItems<C, *>,
+    lazyGridState: LazyGridState,
+    itemIndexConverter: (Int) -> Int,
+    forwardPreloadCount: Int = 0,
+    backwardPreloadCount: Int = 0,
+)
+```
+
+Example:
+
+```kotlin title="Example"
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import com.arkivanov.decompose.extensions.compose.lazyitems.ChildItemsLifecycleController
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.arkivanov.sample.shared.foo.ItemComponent
+import com.arkivanov.sample.shared.foo.ItemsComponent
+
+@Composable
+fun ItemsContent(component: ItemsComponent) {
+    val childItems by component.items.subscribeAsState()
+    val lazyListState = rememberLazyListState()
+
+    LazyColumn(state = lazyListState) {
+        items(items = childItems.items) { config ->
+            ItemContent(component = component.items[config])
+        }
+    }
+
+    ChildItemsLifecycleController(
+        items = component.items,
+        lazyListState = lazyListState,
+        forwardPreloadCount = 3, // Preload 3 components forward
+        backwardPreloadCount = 3, // Preload 3 components backward
+        itemIndexConverter = { it },
+    )
+}
+
+@Composable
+fun ItemContent(component: ItemComponent) {
+    // Omitted code
+}
+```
+
 ## Animations
 
 Decompose provides [Child Animation API](https://github.com/arkivanov/Decompose/tree/master/extensions-compose/src/commonMain/kotlin/com/arkivanov/decompose/extensions/compose/stack/animation) for Compose, as well as some predefined animation specs. To enable child animations you need to pass the `animation` argument to the `Children` function. There are predefined animators provided by Decompose.
@@ -423,7 +506,7 @@ fun RootContent(rootComponent: RootComponent) {
     import com.arkivanov.decompose.extensions.compose.stack.Children
     import com.arkivanov.decompose.extensions.compose.stack.animation.fade
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         Children(
@@ -442,7 +525,7 @@ fun RootContent(rootComponent: RootComponent) {
     import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.fade
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         ChildStack(
@@ -465,7 +548,7 @@ fun RootContent(rootComponent: RootComponent) {
     import com.arkivanov.decompose.extensions.compose.stack.Children
     import com.arkivanov.decompose.extensions.compose.stack.animation.slide
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         Children(
@@ -484,7 +567,7 @@ fun RootContent(rootComponent: RootComponent) {
     import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.slide
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         ChildStack(
@@ -511,7 +594,7 @@ It is also possible to combine animators using the `plus` operator. Please note 
     import com.arkivanov.decompose.extensions.compose.stack.animation.plus
     import com.arkivanov.decompose.extensions.compose.stack.animation.scale
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         Children(
@@ -532,7 +615,7 @@ It is also possible to combine animators using the `plus` operator. Please note 
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         ChildStack(
@@ -560,7 +643,7 @@ Previous examples demonstrate simple cases when all children have the same anima
     import com.arkivanov.decompose.extensions.compose.stack.animation.scale
     import com.arkivanov.decompose.extensions.compose.stack.animation.slide
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         Children(
@@ -591,7 +674,7 @@ It is also possible to take into account the other child and the animation direc
     import androidx.compose.runtime.Composable
     import com.arkivanov.decompose.extensions.compose.stack.Children
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         Children(
@@ -611,7 +694,7 @@ It is also possible to take into account the other child and the animation direc
     import androidx.compose.runtime.Composable
     import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         ChildStack(
@@ -641,14 +724,14 @@ By default, the `Children` function (and all other functions with stack animatio
     import com.arkivanov.decompose.extensions.compose.stack.animation.scale
     import com.arkivanov.decompose.extensions.compose.stack.animation.slide
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-    
+
     @Composable
     fun App() {
         CompositionLocalProvider(LocalStackAnimationProvider provides DefaultStackAnimationProvider) {
             // The rest of the code
         }
     }
-    
+
     private object DefaultStackAnimationProvider : StackAnimationProvider {
         override fun <C : Any, T : Any> provide(): StackAnimation<C, T> =
             stackAnimation(slide() + scale())
@@ -667,14 +750,14 @@ By default, the `Children` function (and all other functions with stack animatio
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.slide
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
-    
+
     @Composable
     fun App() {
         CompositionLocalProvider(LocalStackAnimationProvider provides DefaultStackAnimationProvider) {
             // The rest of the code
         }
     }
-    
+
     private object DefaultStackAnimationProvider : StackAnimationProvider {
         override fun <C : Any, T : Any> provide(): StackAnimation<C, T> =
             stackAnimation(slide() + scale())
@@ -698,7 +781,7 @@ This is the most flexible low-level API. The animation block receives the curren
     import com.arkivanov.decompose.extensions.compose.stack.Children
     import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
     import com.arkivanov.decompose.router.stack.ChildStack
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         Children(
@@ -708,7 +791,7 @@ This is the most flexible low-level API. The animation block receives the curren
             // Omitted code
         }
     }
-    
+
     fun <C : Any, T : Any> someAnimation(): StackAnimation<C, T> =
         StackAnimation { stack: ChildStack<C, T>,
                          modifier: Modifier,
@@ -727,7 +810,7 @@ This is the most flexible low-level API. The animation block receives the curren
     import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimation
     import com.arkivanov.decompose.router.stack.ChildStack
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         ChildStack(
@@ -737,7 +820,7 @@ This is the most flexible low-level API. The animation block receives the curren
             // Omitted code
         }
     }
-    
+
     fun <C : Any, T : Any> someAnimation(): StackAnimation<C, T> =
         StackAnimation { stack: ChildStack<C, T>,
                          modifier: Modifier,
@@ -759,7 +842,7 @@ This is the most flexible low-level API. The animation block receives the curren
     import com.arkivanov.decompose.extensions.compose.stack.animation.Direction
     import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimator
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         Children(
@@ -769,7 +852,7 @@ This is the most flexible low-level API. The animation block receives the curren
             // Omitted code
         }
     }
-    
+
     fun someAnimator(): StackAnimator =
         StackAnimator { direction: Direction,
                         isInitial: Boolean,
@@ -789,7 +872,7 @@ This is the most flexible low-level API. The animation block receives the curren
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimator
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
     import com.arkivanov.decompose.extensions.compose.stack.animation.Direction
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         ChildStack(
@@ -799,7 +882,7 @@ This is the most flexible low-level API. The animation block receives the curren
             // Omitted code
         }
     }
-    
+
     fun someAnimator(): StackAnimator =
         StackAnimator { direction: Direction ->
             // Animate and return a Modifier for the given direction
@@ -820,7 +903,7 @@ This is the most flexible low-level API. The animation block receives the curren
     import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimator
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimator
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         Children(
@@ -830,7 +913,7 @@ This is the most flexible low-level API. The animation block receives the curren
             // Omitted code
         }
     }
-    
+
     fun someAnimator(): StackAnimator =
         stackAnimator { factor: Float,
                         direction: Direction,
@@ -850,7 +933,7 @@ This is the most flexible low-level API. The animation block receives the curren
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimator
     import com.arkivanov.decompose.extensions.compose.stack.animation.Direction
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         ChildStack(
@@ -860,7 +943,7 @@ This is the most flexible low-level API. The animation block receives the curren
             // Omitted code
         }
     }
-    
+
     fun someAnimator(): StackAnimator =
         stackAnimator { factor: Float, direction: Direction ->
             // Create and return a Modifier for the current frame
@@ -925,7 +1008,7 @@ class DefaultRootComponent(
     import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.predictiveBackAnimation
     import com.arkivanov.decompose.extensions.compose.stack.animation.scale
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         Children(
@@ -951,7 +1034,7 @@ class DefaultRootComponent(
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         ChildStack(
@@ -990,7 +1073,7 @@ class DefaultRootComponent(
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
     import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         ChildStack(
@@ -1028,7 +1111,7 @@ The `androidPredictiveBackAnimatable` API resembles the standard back gesture an
     import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.predictiveBackAnimation
     import com.arkivanov.decompose.extensions.compose.stack.animation.scale
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         Children(
@@ -1056,7 +1139,7 @@ The `androidPredictiveBackAnimatable` API resembles the standard back gesture an
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
     import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.androidPredictiveBackAnimatable
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         ChildStack(
@@ -1134,7 +1217,7 @@ Add the following code in your `commonMain` source set.
     import com.arkivanov.decompose.extensions.compose.stack.Children
     import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
     import com.arkivanov.essenty.backhandler.BackHandler
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         Children(
@@ -1147,7 +1230,7 @@ Add the following code in your `commonMain` source set.
             // Omitted code
         }
     }
-    
+
     expect fun <C : Any, T : Any> backAnimation(
         backHandler: BackHandler,
         onBack: () -> Unit,
@@ -1161,7 +1244,7 @@ Add the following code in your `commonMain` source set.
     import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimation
     import com.arkivanov.essenty.backhandler.BackHandler
-    
+
     @Composable
     fun RootContent(component: RootComponent) {
         ChildStack(
@@ -1174,7 +1257,7 @@ Add the following code in your `commonMain` source set.
             // Omitted code
         }
     }
-    
+
     expect fun <C : Any, T : Any> backAnimation(
         backHandler: BackHandler,
         onBack: () -> Unit,
@@ -1184,14 +1267,14 @@ Add the following code in your `commonMain` source set.
 Add the following code in your `androidMain` source set.
 
 === "Default API"
-    
+
     ```kotlin title="In androidMain source set"
     import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
     import com.arkivanov.decompose.extensions.compose.stack.animation.fade
     import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.predictiveBackAnimation
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
     import com.arkivanov.essenty.backhandler.BackHandler
-    
+
     actual fun <C : Any, T : Any> backAnimation(
         backHandler: BackHandler,
         onBack: () -> Unit,
@@ -1212,7 +1295,7 @@ Add the following code in your `androidMain` source set.
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
     import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
     import com.arkivanov.essenty.backhandler.BackHandler
-    
+
     actual fun <C : Any, T : Any> backAnimation(
         backHandler: BackHandler,
         onBack: () -> Unit,
@@ -1246,7 +1329,7 @@ Add the following code in your `iosMain` source set.
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
     import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimator
     import com.arkivanov.essenty.backhandler.BackHandler
-    
+
     actual fun <C : Any, T : Any> backAnimation(
         backHandler: BackHandler,
         onBack: () -> Unit,
@@ -1263,7 +1346,7 @@ Add the following code in your `iosMain` source set.
             },
             onBack = onBack,
         )
-    
+
     private fun iosLikeSlide(animationSpec: FiniteAnimationSpec<Float> = tween()): StackAnimator =
         stackAnimator(animationSpec = animationSpec) { factor, direction, content ->
             content(
@@ -1272,23 +1355,23 @@ Add the following code in your `iosMain` source set.
                     .offsetXFactor(factor = if (direction.isFront) factor else factor * 0.5F)
             )
         }
-    
+
     private fun Modifier.slideExitModifier(progress: Float): Modifier =
         offsetXFactor(progress)
-    
+
     private fun Modifier.slideEnterModifier(progress: Float): Modifier =
         fade(progress).offsetXFactor((progress - 1f) * 0.5f)
-    
+
     private fun Modifier.fade(factor: Float) =
         drawWithContent {
             drawContent()
             drawRect(color = Color(red = 0F, green = 0F, blue = 0F, alpha = (1F - factor) / 4F))
         }
-    
+
     private fun Modifier.offsetXFactor(factor: Float): Modifier =
         layout { measurable, constraints ->
             val placeable = measurable.measure(constraints)
-    
+
             layout(placeable.width, placeable.height) {
                 placeable.placeRelative(x = (placeable.width.toFloat() * factor).toInt(), y = 0)
             }
@@ -1311,7 +1394,7 @@ Add the following code in your `iosMain` source set.
     import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimator
     import com.arkivanov.decompose.extensions.compose.stack.animation.isFront
     import com.arkivanov.essenty.backhandler.BackHandler
-    
+
     actual fun <C : Any, T : Any> backAnimation(
         backHandler: BackHandler,
         onBack: () -> Unit,
@@ -1325,24 +1408,24 @@ Add the following code in your `iosMain` source set.
                 )
             },
         )
-    
+
     private fun iosLikeSlide(animationSpec: FiniteAnimationSpec<Float> = tween()): StackAnimator =
         stackAnimator(animationSpec = animationSpec) { factor, direction ->
             Modifier
                 .then(if (direction.isFront) Modifier else Modifier.fade(factor + 1F))
                 .offsetXFactor(factor = if (direction.isFront) factor else factor * 0.5F)
         }
-    
+
     private fun Modifier.fade(factor: Float) =
         drawWithContent {
             drawContent()
             drawRect(color = Color(red = 0F, green = 0F, blue = 0F, alpha = (1F - factor) / 4F))
         }
-    
+
     private fun Modifier.offsetXFactor(factor: Float): Modifier =
         layout { measurable, constraints ->
             val placeable = measurable.measure(constraints)
-    
+
             layout(placeable.width, placeable.height) {
                 placeable.placeRelative(x = (placeable.width.toFloat() * factor).toInt(), y = 0)
             }
