@@ -5,7 +5,8 @@
 `Child Items` is a navigation model for managing a list of components with flexible lifecycle states. The list can be empty.
 
 !!!warning
-    This navigation model is experimental and is available since version `3.4.0-alpha01`, the API is subject to change.
+
+    This navigation model is experimental and is available since version `3.4.0-alpha02`, the API is subject to change.
 
 Unlike other navigation models, `Child Items` allows you to have multiple active components with different lifecycle states at the same time. You can decide which components are active and what their lifecycle states are. A typical use case is a lazy list or grid where component lifecycles are automatically updated according to the current viewport.
 

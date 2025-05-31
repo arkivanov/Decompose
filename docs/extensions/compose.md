@@ -377,7 +377,8 @@ fun PanelsContent(component: PanelsComponent) {
 ## Child Items navigation with Compose
 
 !!!warning
-This navigation model is experimental and is available since version `3.4.0-alpha01`, the API is subject to change.
+
+    This navigation model is experimental and is available since version `3.4.0-alpha02`, the API is subject to change.
 
 The [Child Items](../navigation/items/overview.md) navigation model provides [ChildItems](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/router/items/ChildItems.kt) as `LazyChildItems` that extends both `Value<ChildItems>` and `ItemsNavigator`, meaning it can be observed and manipulated in a `Composable` component.
 
