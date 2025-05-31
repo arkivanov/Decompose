@@ -69,6 +69,49 @@ class ChildPagesTest {
     }
 
     @Test
+    fun GIVEN_pages_empty_WHEN_pages_added_THEN_current_page_updated() {
+        val state = mutableStateOf(ChildPages<Config, Config>())
+
+        setContent(
+            pages = state,
+            onPageSelected = { state.value = state.value.copy(selectedIndex = it) },
+            scrollAnimation = PagesScrollAnimation.Default,
+        )
+
+        state.updateOnIdle {
+            ChildPages(
+                items = listOf(
+                    Child.Created(Config.Config1, Config.Config1),
+                    Child.Created(Config.Config2, Config.Config2),
+                ),
+                selectedIndex = 0,
+            )
+        }
+
+        composeRule.onNodeWithText(text = "Page0", substring = true).assertExists()
+    }
+
+    @Test
+    fun GIVEN_pages_not_empty_WHEN_pages_cleared_THEN_current_page_updated() {
+        val state = mutableStateOf(
+            ChildPages(
+                items = listOf(Child.Created(Config.Config1, Config.Config1)),
+                selectedIndex = 0,
+            ),
+        )
+
+        setContent(
+            pages = state,
+            onPageSelected = { state.value = state.value.copy(selectedIndex = it) },
+            scrollAnimation = PagesScrollAnimation.Default,
+        )
+
+        state.updateOnIdle { ChildPages() }
+
+        composeRule.onNodeWithText(text = "Page0", substring = true).assertDoesNotExist()
+    }
+
+    @Test
     fun GIVEN_pages_without_animation_WHEN_page_changed_from_0_to_2_THEN_onPageSelected_called_with_index_2() {
         val state =
             mutableStateOf(
@@ -127,7 +170,7 @@ class ChildPagesTest {
     }
 
     @Test
-    fun GIVEN_pages_empty_WHEN_shown_THEN_onPageSelected_not_called() {
+    fun GIVEN_pages_empty_WHEN_shown_THEN_onPageSelected_called_with_index_0() {
         val state = mutableStateOf(ChildPages<Config, Config>())
 
         val indices = ArrayList<Int>()
@@ -138,7 +181,7 @@ class ChildPagesTest {
             scrollAnimation = PagesScrollAnimation.Default,
         )
 
-        assertContentEquals(emptyList(), indices)
+        assertContentEquals(listOf(0), indices)
     }
 
     private fun setContent(
