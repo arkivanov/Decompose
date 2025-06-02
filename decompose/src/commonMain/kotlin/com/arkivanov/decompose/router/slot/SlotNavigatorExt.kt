@@ -26,7 +26,7 @@ inline fun <C : Any> SlotNavigator<C>.activate(configuration: C, crossinline onC
  */
 inline fun SlotNavigator<*>.dismiss(crossinline onComplete: (isSuccess: Boolean) -> Unit = {}) {
     navigate(
-        transformer = { null },
+        transformer = { _: Any? -> null }, // Specifying the type explicitly here fixes CCE on wasmJS on Kotlin 2.2, see KT-77801
         onComplete = { _, oldConfiguration -> onComplete(oldConfiguration != null) },
     )
 }
