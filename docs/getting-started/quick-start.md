@@ -2,6 +2,8 @@
 
 Please see the [template repository](https://github.com/arkivanov/decompose-multiplatform-template) which can be used to kick-start your project.
 
+Should you have any questions or ideas - there is [Discussions](https://github.com/arkivanov/Decompose/discussions) section. Also welcome to the Kotlin Slack channel - [#decompose](https://kotlinlang.slack.com/archives/C03H3N51SKT)! You can also try using [DeepWiki](https://deepwiki.com/arkivanov/Decompose) to ask your questions live!
+
 ## A simplest component
 
 ```kotlin
