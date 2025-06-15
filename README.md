@@ -16,7 +16,7 @@ Decompose is a Kotlin Multiplatform library for breaking down your code into tre
 
 Please see the [project website](https://arkivanov.github.io/Decompose/) for documentation and APIs. 
 
-Should you have any questions or ideas - there is [Discussions](https://github.com/arkivanov/Decompose/discussions) section. Also welcome to the Kotlin Slack channel - [#decompose](https://kotlinlang.slack.com/archives/C03H3N51SKT)!
+Should you have any questions or ideas - there is [Discussions](https://github.com/arkivanov/Decompose/discussions) section. Also welcome to the Kotlin Slack channel - [#decompose](https://kotlinlang.slack.com/archives/C03H3N51SKT)! You can also try using [DeepWiki](https://deepwiki.com/arkivanov/Decompose)!
 
 ## Why Decompose?
 
