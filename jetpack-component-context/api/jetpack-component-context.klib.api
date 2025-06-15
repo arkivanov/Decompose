@@ -1,0 +1,23 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, watchosArm32, watchosArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <com.arkivanov.decompose:jetpack-component-context>
+abstract interface com.arkivanov.decompose.jetpackcomponentcontext/JetpackComponentContext : androidx.lifecycle/HasDefaultViewModelProviderFactory, androidx.lifecycle/LifecycleOwner, androidx.lifecycle/ViewModelStoreOwner, androidx.savedstate/SavedStateRegistryOwner, com.arkivanov.decompose/GenericComponentContext<com.arkivanov.decompose.jetpackcomponentcontext/JetpackComponentContext> { // com.arkivanov.decompose.jetpackcomponentcontext/JetpackComponentContext|null[0]
+    abstract val defaultViewModelCreationExtras // com.arkivanov.decompose.jetpackcomponentcontext/JetpackComponentContext.defaultViewModelCreationExtras|{}defaultViewModelCreationExtras[0]
+        abstract fun <get-defaultViewModelCreationExtras>(): androidx.lifecycle.viewmodel/MutableCreationExtras // com.arkivanov.decompose.jetpackcomponentcontext/JetpackComponentContext.defaultViewModelCreationExtras.<get-defaultViewModelCreationExtras>|<get-defaultViewModelCreationExtras>(){}[0]
+    abstract val lifecycle // com.arkivanov.decompose.jetpackcomponentcontext/JetpackComponentContext.lifecycle|{}lifecycle[0]
+        abstract fun <get-lifecycle>(): com.arkivanov.decompose.jetpackcomponentcontext/JetpackComponentContext.Lifecycle // com.arkivanov.decompose.jetpackcomponentcontext/JetpackComponentContext.lifecycle.<get-lifecycle>|<get-lifecycle>(){}[0]
+
+    abstract class Lifecycle : androidx.lifecycle/Lifecycle, com.arkivanov.essenty.lifecycle/Lifecycle { // com.arkivanov.decompose.jetpackcomponentcontext/JetpackComponentContext.Lifecycle|null[0]
+        constructor <init>() // com.arkivanov.decompose.jetpackcomponentcontext/JetpackComponentContext.Lifecycle.<init>|<init>(){}[0]
+    }
+}
+
+final fun <#A: androidx.lifecycle/ViewModel> (androidx.lifecycle/ViewModelStoreOwner).com.arkivanov.decompose.jetpackcomponentcontext/viewModel(kotlin.reflect/KClass<#A>, kotlin/String? = ..., androidx.lifecycle/ViewModelProvider.Factory? = ..., androidx.lifecycle.viewmodel/CreationExtras? = ...): #A // com.arkivanov.decompose.jetpackcomponentcontext/viewModel|viewModel@androidx.lifecycle.ViewModelStoreOwner(kotlin.reflect.KClass<0:0>;kotlin.String?;androidx.lifecycle.ViewModelProvider.Factory?;androidx.lifecycle.viewmodel.CreationExtras?){0§<androidx.lifecycle.ViewModel>}[0]
+final fun <#A: com.arkivanov.decompose/GenericComponentContext<#A>> (#A).com.arkivanov.decompose.jetpackcomponentcontext/asJetpackComponentContext(): com.arkivanov.decompose.jetpackcomponentcontext/JetpackComponentContext // com.arkivanov.decompose.jetpackcomponentcontext/asJetpackComponentContext|asJetpackComponentContext@0:0(){0§<com.arkivanov.decompose.GenericComponentContext<0:0>>}[0]
+final inline fun <#A: reified androidx.lifecycle/ViewModel> (androidx.lifecycle/ViewModelStoreOwner).com.arkivanov.decompose.jetpackcomponentcontext/viewModel(kotlin/String? = ..., androidx.lifecycle/ViewModelProvider.Factory? = ..., androidx.lifecycle.viewmodel/CreationExtras? = ...): #A // com.arkivanov.decompose.jetpackcomponentcontext/viewModel|viewModel@androidx.lifecycle.ViewModelStoreOwner(kotlin.String?;androidx.lifecycle.ViewModelProvider.Factory?;androidx.lifecycle.viewmodel.CreationExtras?){0§<androidx.lifecycle.ViewModel>}[0]
+final inline fun <#A: reified androidx.lifecycle/ViewModel> (androidx.lifecycle/ViewModelStoreOwner).com.arkivanov.decompose.jetpackcomponentcontext/viewModel(kotlin/String? = ..., noinline kotlin/Function1<androidx.lifecycle.viewmodel/CreationExtras, #A>): #A // com.arkivanov.decompose.jetpackcomponentcontext/viewModel|viewModel@androidx.lifecycle.ViewModelStoreOwner(kotlin.String?;kotlin.Function1<androidx.lifecycle.viewmodel.CreationExtras,0:0>){0§<androidx.lifecycle.ViewModel>}[0]

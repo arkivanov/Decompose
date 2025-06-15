@@ -1,0 +1,18 @@
+public abstract interface class com/arkivanov/decompose/jetpackcomponentcontext/JetpackComponentContext : androidx/lifecycle/HasDefaultViewModelProviderFactory, androidx/lifecycle/LifecycleOwner, androidx/lifecycle/ViewModelStoreOwner, androidx/savedstate/SavedStateRegistryOwner, com/arkivanov/decompose/GenericComponentContext {
+	public abstract fun getDefaultViewModelCreationExtras ()Landroidx/lifecycle/viewmodel/MutableCreationExtras;
+	public abstract fun getLifecycle ()Lcom/arkivanov/decompose/jetpackcomponentcontext/JetpackComponentContext$Lifecycle;
+}
+
+public abstract class com/arkivanov/decompose/jetpackcomponentcontext/JetpackComponentContext$Lifecycle : androidx/lifecycle/Lifecycle, com/arkivanov/essenty/lifecycle/Lifecycle {
+	public fun <init> ()V
+}
+
+public final class com/arkivanov/decompose/jetpackcomponentcontext/JetpackComponentContextKt {
+	public static final fun asJetpackComponentContext (Lcom/arkivanov/decompose/GenericComponentContext;)Lcom/arkivanov/decompose/jetpackcomponentcontext/JetpackComponentContext;
+}
+
+public final class com/arkivanov/decompose/jetpackcomponentcontext/ViewModelExtKt {
+	public static final fun viewModel (Landroidx/lifecycle/ViewModelStoreOwner;Lkotlin/reflect/KClass;Ljava/lang/String;Landroidx/lifecycle/ViewModelProvider$Factory;Landroidx/lifecycle/viewmodel/CreationExtras;)Landroidx/lifecycle/ViewModel;
+	public static synthetic fun viewModel$default (Landroidx/lifecycle/ViewModelStoreOwner;Lkotlin/reflect/KClass;Ljava/lang/String;Landroidx/lifecycle/ViewModelProvider$Factory;Landroidx/lifecycle/viewmodel/CreationExtras;ILjava/lang/Object;)Landroidx/lifecycle/ViewModel;
+}
+

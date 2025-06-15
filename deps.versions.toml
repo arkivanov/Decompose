@@ -13,13 +13,14 @@ jetbrainsKotlinxSerialization = "1.6.3"
 jetbrainsKotlinxBrowser = "0.3"
 jetbrainsBinaryCompatibilityValidator = "0.16.3"
 robolectric = "4.9.1"
-androidGradle = "8.7.3"
+androidGradle = "8.8.2"
 androidMaterial = "1.6.1"
 androidPlay = "1.10.3"
 androidxCore = "1.9.0"
 androidxAppcompat = "1.6.0"
 androidxActivity = "1.8.2"
 androidxFragment = "1.6.2"
+androidxLifecycle = "2.9.1"
 dependencyGuard = "0.5.0"
 
 [libraries]
@@ -62,5 +63,7 @@ androidx-core-coreKtx  = { group = "androidx.core", name = "core-ktx", version.r
 androidx-appcompat-appcompat  = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppcompat" }
 androidx-activity-activityCompose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-fragment-fragmentKtx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragment" }
+androidx-lifecycle-lifecycleRuntime = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime", version.ref = "androidxLifecycle" }
+androidx-lifecycle-lifecycleViewModelSavedState = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "androidxLifecycle" }
 
 dropbox-dependencyGuard = { group = "com.dropbox.dependency-guard", name = "dependency-guard", version.ref = "dependencyGuard" }
