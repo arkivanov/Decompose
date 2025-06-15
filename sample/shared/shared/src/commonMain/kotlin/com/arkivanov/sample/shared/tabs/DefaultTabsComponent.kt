@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.tabs
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -25,13 +25,13 @@ import com.arkivanov.sample.shared.tabs.TabsComponent.Child.MultiPaneChild
 import kotlinx.serialization.Serializable
 
 internal class DefaultTabsComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     deepLinkUrl: Url?,
     private val onDynamicFeaturesItemSelected: () -> Unit,
     private val onCustomNavigationItemSelected: () -> Unit,
     private val onPagesItemSelected: () -> Unit,
     private val onSharedTransitionsItemSelected: () -> Unit,
-) : TabsComponent, ComponentContext by componentContext {
+) : TabsComponent, JetpackComponentContext by componentContext {
 
     private val nav = StackNavigation<Config>()
 
@@ -63,7 +63,7 @@ internal class DefaultTabsComponent(
             },
         )
 
-    private fun child(config: Config, componentContext: ComponentContext): Child =
+    private fun child(config: Config, componentContext: JetpackComponentContext): Child =
         when (config) {
             is Config.Menu ->
                 MenuChild(

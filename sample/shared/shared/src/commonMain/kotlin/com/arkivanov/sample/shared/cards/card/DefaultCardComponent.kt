@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.cards.card
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
@@ -23,11 +23,11 @@ import kotlinx.serialization.builtins.serializer
 import kotlin.time.Duration.Companion.milliseconds
 
 class DefaultCardComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     color: Long,
     number: Int,
     tickScheduler: Scheduler = mainScheduler,
-) : CardComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
+) : CardComponent, JetpackComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
     @OptIn(ExperimentalStateKeeperApi::class)
     private val handler: Handler by saveable(serializer = Int.serializer(), state = { it.count.value }) { savedState ->

@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.root
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.webhistory.WebNavigationOwner
@@ -14,7 +14,7 @@ import com.arkivanov.sample.shared.tabs.PreviewTabsComponent
 @OptIn(ExperimentalDecomposeApi::class)
 class PreviewRootComponent :
     RootComponent,
-    ComponentContext by PreviewComponentContext,
+    JetpackComponentContext by PreviewComponentContext,
     WebNavigationOwner.NoOp {
 
     override val stack: Value<ChildStack<*, Child>> =

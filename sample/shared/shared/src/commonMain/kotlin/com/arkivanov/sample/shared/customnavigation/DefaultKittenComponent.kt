@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.customnavigation
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
@@ -18,9 +18,9 @@ import kotlinx.serialization.Serializable
 import kotlin.time.Duration.Companion.milliseconds
 
 class DefaultKittenComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     private val imageResourceId: ImageResourceId,
-) : KittenComponent, ComponentContext by componentContext {
+) : KittenComponent, JetpackComponentContext by componentContext {
 
     private val handler =
         retainedInstance {

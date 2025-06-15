@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +20,7 @@ import com.arkivanov.sample.shared.dialog.DialogContent
 
 @Composable
 internal fun CounterContent(component: CounterComponent, modifier: Modifier = Modifier) {
-    val model by component.model.subscribeAsState()
+    val model by component.model.collectAsState()
 
     Column(
         modifier = modifier,

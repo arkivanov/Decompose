@@ -1,7 +1,7 @@
 package com.arkivanov.sample.shared.customnavigation
 
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState
 import com.arkivanov.decompose.router.children.NavState
 import com.arkivanov.decompose.router.children.SimpleChildNavState
@@ -14,9 +14,9 @@ import com.arkivanov.sample.shared.customnavigation.CustomNavigationComponent.Mo
 import kotlinx.serialization.Serializable
 
 class DefaultCustomNavigationComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     private val onFinished: () -> Unit,
-) : CustomNavigationComponent, ComponentContext by componentContext {
+) : CustomNavigationComponent, JetpackComponentContext by componentContext {
 
     private val navigation = SimpleNavigation<(NavigationState) -> NavigationState>()
 

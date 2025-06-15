@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.sharedtransitions
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -10,6 +10,7 @@ import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.webhistory.WebNavigation
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.sample.shared.ImageResourceId
 import com.arkivanov.sample.shared.Url
 import com.arkivanov.sample.shared.consumePathSegment
@@ -23,10 +24,10 @@ import com.arkivanov.sample.shared.sharedtransitions.photo.DefaultPhotoComponent
 import kotlinx.serialization.Serializable
 
 class DefaultSharedTransitionsComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     deepLinkUrl: Url?,
     private val onFinished: () -> Unit,
-) : SharedTransitionsComponent, ComponentContext by componentContext {
+) : SharedTransitionsComponent, JetpackComponentContext by componentContext {
 
     private val images =
         List(100) { index ->
@@ -65,7 +66,18 @@ class DefaultSharedTransitionsComponent(
             onBeforeNavigate = { false },
         )
 
-    private fun child(config: Config, ctx: ComponentContext): Child =
+    init {
+        lifecycle.subscribe(
+            onCreate = { println("[MyTest] onCreate") },
+            onStart = { println("[MyTest] onStart") },
+            onResume = { println("[MyTest] onResume") },
+            onPause = { println("[MyTest] onPause") },
+            onStop = { println("[MyTest] onStop") },
+            onDestroy = { println("[MyTest] onDestroy") },
+        )
+    }
+
+    private fun child(config: Config, ctx: JetpackComponentContext): Child =
         when (config) {
             is Config.Gallery ->
                 GalleryChild(

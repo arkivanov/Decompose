@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.sharedtransitions.gallery
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.children.transientNavStateSaver
 import com.arkivanov.decompose.router.items.Items
@@ -13,11 +13,11 @@ import com.arkivanov.sample.shared.sharedtransitions.thumbnail.ThumbnailComponen
 
 @OptIn(ExperimentalDecomposeApi::class)
 class DefaultGalleryComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     private val images: List<Image>,
     private val onImageSelected: (id: Int) -> Unit,
     private val onFinished: () -> Unit,
-) : GalleryComponent, ComponentContext by componentContext {
+) : GalleryComponent, JetpackComponentContext by componentContext {
 
     private val nav = ItemsNavigation<Image>()
 
@@ -29,7 +29,7 @@ class DefaultGalleryComponent(
             childFactory = ::child,
         )
 
-    private fun child(image: Image, ctx: ComponentContext): ThumbnailComponent =
+    private fun child(image: Image, ctx: JetpackComponentContext): ThumbnailComponent =
         DefaultThumbnailComponent(
             componentContext = ctx,
             image = image,

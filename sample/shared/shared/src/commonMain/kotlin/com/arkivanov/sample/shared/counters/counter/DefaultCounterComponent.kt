@@ -1,45 +1,48 @@
 package com.arkivanov.sample.shared.counters.counter
 
-import com.arkivanov.decompose.ComponentContext
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.enableSavedStateHandles
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.slot.dismiss
-import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.operator.map
-import com.arkivanov.decompose.value.update
-import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import com.arkivanov.essenty.instancekeeper.retainedInstance
+import com.arkivanov.decompose.viewModel
 import com.arkivanov.sample.shared.counters.counter.CounterComponent.Model
 import com.arkivanov.sample.shared.dialog.DefaultDialogComponent
 import com.arkivanov.sample.shared.dialog.DialogComponent
 import com.badoo.reaktive.disposable.scope.DisposableScope
-import com.badoo.reaktive.observable.observableInterval
-import com.badoo.reaktive.scheduler.Scheduler
-import com.badoo.reaktive.scheduler.mainScheduler
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlin.time.Duration.Companion.milliseconds
 
 internal class DefaultCounterComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     private val title: String,
     private val isBackEnabled: Boolean,
     private val onNext: () -> Unit,
     private val onPrev: () -> Unit,
-    tickScheduler: Scheduler = mainScheduler,
-) : CounterComponent, ComponentContext by componentContext {
+) : CounterComponent, JetpackComponentContext by componentContext {
 
-    private val handler =
-        retainedInstance {
-            Handler(
-                initialState = stateKeeper.consume(key = KEY_STATE, strategy = State.serializer()) ?: State(),
-                tickScheduler = tickScheduler,
-            )
-        }
+    private val handler = viewModel { Handler(createSavedStateHandle()) }
 
-    override val model: Value<Model> = handler.state.map { it.toModel() }
+    override val model: StateFlow<Model> =
+        handler.state
+            .map { getModel(count = it) }
+            .stateIn(lifecycleScope, SharingStarted.Eagerly, Model())
 
     private val dialogNavigation = SlotNavigation<DialogConfig>()
 
@@ -60,14 +63,10 @@ internal class DefaultCounterComponent(
     override val dialogSlot: Value<ChildSlot<*, DialogComponent>> = _dialogSlot
 
     override fun onInfoClicked() {
-        dialogNavigation.activate(DialogConfig(count = handler.state.value.count))
+        dialogNavigation.activate(DialogConfig(count = handler.state.value))
     }
 
-    init {
-        stateKeeper.register(key = KEY_STATE, strategy = State.serializer()) { handler.state.value }
-    }
-
-    private fun State.toModel(): Model =
+    private fun getModel(count: Int): Model =
         Model(
             title = title,
             text = formatCount(count),
@@ -100,19 +99,17 @@ internal class DefaultCounterComponent(
     )
 
     private class Handler(
-        initialState: State,
-        tickScheduler: Scheduler,
-    ) : InstanceKeeper.Instance, DisposableScope by DisposableScope() {
-        val state: MutableValue<State> = MutableValue(initialState)
+        private val savedStateHandle: SavedStateHandle,
+    ) : ViewModel(), DisposableScope by DisposableScope() {
+        val state: MutableStateFlow<Int> = savedStateHandle.getMutableStateFlow(key = "state", initialValue = 0)
 
         init {
-            observableInterval(period = 250.milliseconds, scheduler = tickScheduler).subscribeScoped {
-                state.update { it.copy(count = it.count + 1) }
+            viewModelScope.launch {
+                while (true) {
+                    state.update { it + 1 }
+                    delay(250.milliseconds)
+                }
             }
-        }
-
-        override fun onDestroy() {
-            dispose()
         }
     }
 }

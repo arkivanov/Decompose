@@ -30,6 +30,7 @@ dependencyGuard {
 kotlin {
     setupSourceSets {
         val android by bundle()
+        val nonAndroid by bundle()
         val darwin by bundle()
         val itvos by bundle()
         val js by bundle()
@@ -37,6 +38,8 @@ kotlin {
         val nonWeb by bundle()
         val web by bundle()
 
+        nonAndroid dependsOn common
+        (allSet - android) dependsOn nonAndroid
         (darwin) dependsOn common
         nonWeb dependsOn common
         (allSet - js - wasmJs) dependsOn nonWeb
@@ -58,6 +61,10 @@ kotlin {
             api(deps.essenty.instanceKeeper)
             api(deps.essenty.backHandler)
             api(deps.jetbrains.kotlinx.kotlinxSerializationCore)
+            api("androidx.navigationevent:navigationevent:1.0.0-alpha02")
+            api("androidx.lifecycle:lifecycle-common:2.9.1")
+            api("androidx.lifecycle:lifecycle-runtime:2.9.1")
+            api("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.9.1")
         }
 
         common.test.dependencies {

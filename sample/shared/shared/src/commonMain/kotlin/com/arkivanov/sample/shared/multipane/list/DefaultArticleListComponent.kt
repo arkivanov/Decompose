@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.multipane.list
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
@@ -13,12 +13,12 @@ import com.badoo.reaktive.disposable.scope.DisposableScope
 import com.badoo.reaktive.observable.Observable
 
 internal class DefaultArticleListComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     database: ArticleDatabase,
     isToolbarVisible: Observable<Boolean>,
     selectedArticleId: Observable<Long?>,
     private val onArticleSelected: (articleId: Long) -> Unit,
-) : ArticleListComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
+) : ArticleListComponent, JetpackComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
     private val _models =
         MutableValue(

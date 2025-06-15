@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.dynamicfeatures
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
@@ -19,10 +19,10 @@ import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
 internal class DefaultDynamicFeaturesComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     private val featureInstaller: FeatureInstaller,
     private val onFinished: () -> Unit,
-) : DynamicFeaturesComponent, ComponentContext by componentContext {
+) : DynamicFeaturesComponent, JetpackComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
 
@@ -37,13 +37,13 @@ internal class DefaultDynamicFeaturesComponent(
 
     override val stack: Value<ChildStack<*, Child>> = _stack
 
-    private fun child(config: Config, componentContext: ComponentContext): Child =
+    private fun child(config: Config, componentContext: JetpackComponentContext): Child =
         when (config) {
             is Config.Feature1 -> Feature1Child(feature1(componentContext))
             is Config.Feature2 -> Feature2Child(feature2(config, componentContext))
         }
 
-    private fun feature1(componentContext: ComponentContext): DynamicFeatureComponent<Feature1> =
+    private fun feature1(componentContext: JetpackComponentContext): DynamicFeatureComponent<Feature1> =
         DefaultDynamicFeatureComponent(
             componentContext = componentContext,
             name = "feature1Impl",
@@ -56,7 +56,7 @@ internal class DefaultDynamicFeaturesComponent(
             }
         )
 
-    private fun feature2(config: Config.Feature2, componentContext: ComponentContext): DynamicFeatureComponent<Feature2> =
+    private fun feature2(config: Config.Feature2, componentContext: JetpackComponentContext): DynamicFeatureComponent<Feature2> =
         DefaultDynamicFeatureComponent(
             componentContext = componentContext,
             name = "feature2Impl",

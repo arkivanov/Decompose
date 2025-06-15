@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.cards
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
@@ -14,8 +14,8 @@ import com.arkivanov.sample.shared.cards.card.DefaultCardComponent
 import kotlinx.serialization.Serializable
 
 class DefaultCardsComponent(
-    componentContext: ComponentContext,
-) : CardsComponent, ComponentContext by componentContext {
+    componentContext: JetpackComponentContext,
+) : CardsComponent, JetpackComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
 
@@ -33,7 +33,7 @@ class DefaultCardsComponent(
 
     override val stack: Value<ChildStack<*, CardComponent>> = _stack
 
-    private fun card(config: Config, componentContext: ComponentContext): CardComponent =
+    private fun card(config: Config, componentContext: JetpackComponentContext): CardComponent =
         DefaultCardComponent(
             componentContext = componentContext,
             color = config.color,

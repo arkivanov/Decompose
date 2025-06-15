@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.counters
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
@@ -13,8 +13,8 @@ import com.arkivanov.sample.shared.counters.counter.DefaultCounterComponent
 import kotlinx.serialization.Serializable
 
 internal class DefaultCountersComponent(
-    componentContext: ComponentContext,
-) : CountersComponent, ComponentContext by componentContext {
+    componentContext: JetpackComponentContext,
+) : CountersComponent, JetpackComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
 
@@ -30,7 +30,7 @@ internal class DefaultCountersComponent(
 
     private fun child(
         config: Config,
-        componentContext: ComponentContext,
+        componentContext: JetpackComponentContext,
     ): CounterComponent =
         DefaultCounterComponent(
             componentContext = componentContext,

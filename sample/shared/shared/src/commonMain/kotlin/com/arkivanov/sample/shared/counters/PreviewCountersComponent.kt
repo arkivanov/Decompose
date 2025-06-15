@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.counters
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -8,7 +8,7 @@ import com.arkivanov.sample.shared.PreviewComponentContext
 import com.arkivanov.sample.shared.counters.counter.CounterComponent
 import com.arkivanov.sample.shared.counters.counter.PreviewCounterComponent
 
-class PreviewCountersComponent : CountersComponent, ComponentContext by PreviewComponentContext {
+class PreviewCountersComponent : CountersComponent, JetpackComponentContext by PreviewComponentContext {
 
     override val stack: Value<ChildStack<*, CounterComponent>> =
         MutableValue(

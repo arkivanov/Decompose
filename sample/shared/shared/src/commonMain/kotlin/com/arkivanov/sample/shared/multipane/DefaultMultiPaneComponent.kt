@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.multipane
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.panels.ChildPanels
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
@@ -34,9 +34,9 @@ import kotlinx.serialization.builtins.serializer
 
 @OptIn(ExperimentalDecomposeApi::class)
 internal class DefaultMultiPaneComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     deepLinkUrl: Url?,
-) : MultiPaneComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
+) : MultiPaneComponent, JetpackComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
     private val database = DefaultArticleDatabase()
     private val navigation = PanelsNavigation<Unit, Details, Extra>()
@@ -69,7 +69,7 @@ internal class DefaultMultiPaneComponent(
             },
         )
 
-    private fun listComponent(componentContext: ComponentContext): ArticleListComponent =
+    private fun listComponent(componentContext: JetpackComponentContext): ArticleListComponent =
         DefaultArticleListComponent(
             componentContext = componentContext,
             database = database,
@@ -85,7 +85,7 @@ internal class DefaultMultiPaneComponent(
             },
         )
 
-    private fun detailsComponent(config: Details, componentContext: ComponentContext): ArticleDetailsComponent =
+    private fun detailsComponent(config: Details, componentContext: JetpackComponentContext): ArticleDetailsComponent =
         DefaultArticleDetailsComponent(
             componentContext = componentContext,
             database = database,
@@ -95,7 +95,7 @@ internal class DefaultMultiPaneComponent(
             onFinished = navigation::pop,
         )
 
-    private fun authorComponent(config: Extra, componentContext: ComponentContext): ArticleAuthorComponent =
+    private fun authorComponent(config: Extra, componentContext: JetpackComponentContext): ArticleAuthorComponent =
         DefaultArticleAuthorComponent(
             componentContext = componentContext,
             database = database,

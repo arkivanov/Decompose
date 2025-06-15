@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.root
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -30,10 +30,10 @@ import com.arkivanov.sample.shared.tabs.DefaultTabsComponent
 import kotlinx.serialization.Serializable
 
 class DefaultRootComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     private val featureInstaller: FeatureInstaller,
     deepLinkUrl: Url? = null,
-) : RootComponent, ComponentContext by componentContext {
+) : RootComponent, JetpackComponentContext by componentContext {
 
     private val nav = StackNavigation<Config>()
 
@@ -65,7 +65,7 @@ class DefaultRootComponent(
             },
         )
 
-    private fun child(config: Config, componentContext: ComponentContext): Child =
+    private fun child(config: Config, componentContext: JetpackComponentContext): Child =
         when (config) {
             is Config.Tabs ->
                 TabsChild(

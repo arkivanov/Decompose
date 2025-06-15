@@ -26,11 +26,11 @@ internal fun ViewContext.CounterView(component: CounterComponent): View {
     nextButton.setOnClickListener { component.onNextClicked() }
     prevButton.setOnClickListener { component.onPrevClicked() }
 
-    component.model.subscribe(lifecycle) { model ->
-        titleText.text = model.title
-        counterText.text = model.text
-        prevButton.isEnabled = model.isBackEnabled
-    }
+//    component.model.subscribe(lifecycle) { model ->
+//        titleText.text = model.title
+//        counterText.text = model.text
+//        prevButton.isEnabled = model.isBackEnabled
+//    }
 
     var dialog: AlertDialog? = null
     component.dialogSlot.subscribe(lifecycle) { model ->

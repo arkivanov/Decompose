@@ -3,10 +3,11 @@ package com.arkivanov.sample.shared.counters.counter
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.dialog.DialogComponent
+import kotlinx.coroutines.flow.StateFlow
 
 interface CounterComponent {
 
-    val model: Value<Model>
+    val model: StateFlow<Model>
     val dialogSlot: Value<ChildSlot<*, DialogComponent>>
 
     fun onInfoClicked()

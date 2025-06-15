@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.pages
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.pages.ChildPages
 import com.arkivanov.decompose.router.pages.Pages
@@ -19,10 +19,10 @@ import com.arkivanov.sample.shared.customnavigation.DefaultKittenComponent
 import com.arkivanov.sample.shared.customnavigation.KittenComponent
 
 class DefaultPagesComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     deepLinkUrl: Url?,
     private val onFinished: () -> Unit,
-) : PagesComponent, ComponentContext by componentContext {
+) : PagesComponent, JetpackComponentContext by componentContext {
 
     private val nav = PagesNavigation<ImageResourceId>()
 

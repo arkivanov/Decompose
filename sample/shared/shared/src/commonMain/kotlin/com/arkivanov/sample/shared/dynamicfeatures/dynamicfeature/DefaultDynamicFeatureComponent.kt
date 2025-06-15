@@ -1,6 +1,6 @@
 package com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.JetpackComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
@@ -16,11 +16,11 @@ import com.badoo.reaktive.disposable.scope.disposableScope
 import kotlinx.serialization.Serializable
 
 internal class DefaultDynamicFeatureComponent<out T : Any>(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     private val name: String,
     private val featureInstaller: FeatureInstaller,
-    private val factory: (ComponentContext) -> T
-) : DynamicFeatureComponent<T>, ComponentContext by componentContext {
+    private val factory: (JetpackComponentContext) -> T
+) : DynamicFeatureComponent<T>, JetpackComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
 
@@ -34,14 +34,14 @@ internal class DefaultDynamicFeatureComponent<out T : Any>(
 
     override val childStack: Value<ChildStack<*, Child<T>>> get() = stack
 
-    private fun child(config: Config, componentContext: ComponentContext): Child<T> =
+    private fun child(config: Config, componentContext: JetpackComponentContext): Child<T> =
         when (config) {
             is Config.Loading -> loading(componentContext)
             is Config.Feature -> FeatureChild(factory(componentContext))
             is Config.Error -> ErrorChild(name = name)
         }
 
-    private fun loading(componentContext: ComponentContext): LoadingChild {
+    private fun loading(componentContext: JetpackComponentContext): LoadingChild {
         disposableScope {
             componentContext.lifecycle.subscribe(
                 onCreate = { loadFeature() },
