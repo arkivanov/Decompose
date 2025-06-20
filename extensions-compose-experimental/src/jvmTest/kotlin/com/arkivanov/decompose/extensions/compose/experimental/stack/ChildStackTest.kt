@@ -207,7 +207,9 @@ class ChildStackTest(
         },
     ) {
         composeRule.setContent {
-            ChildStack(stack = state.value, animation = animation, content = content)
+            ChildStack(stack = state.value, animation = animation) { child ->
+                content(child)
+            }
         }
 
         composeRule.runOnIdle {}

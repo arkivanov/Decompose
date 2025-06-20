@@ -11,6 +11,7 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.LocalStackAnimationProvider
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimation
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationContent
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.keyHashString
@@ -35,7 +36,7 @@ fun <C : Any, T : Any> ChildStack(
     stack: ChildStack<C, T>,
     modifier: Modifier = Modifier,
     animation: StackAnimation<C, T>? = null,
-    content: @Composable AnimatedVisibilityScope.(child: Child.Created<C, T>) -> Unit,
+    content: StackAnimationContent<C, T>,
 ) {
     val holder = rememberSaveableStateHolder()
 
@@ -46,7 +47,9 @@ fun <C : Any, T : Any> ChildStack(
 
     anim(stack = stack, modifier = modifier) { child ->
         holder.SaveableStateProvider(child.keyHashString()) {
-            content(child)
+            with(content) {
+                Content(child)
+            }
         }
     }
 }
@@ -69,7 +72,7 @@ fun <C : Any, T : Any> ChildStack(
     stack: Value<ChildStack<C, T>>,
     modifier: Modifier = Modifier,
     animation: StackAnimation<C, T>? = null,
-    content: @Composable AnimatedVisibilityScope.(child: Child.Created<C, T>) -> Unit,
+    content: StackAnimationContent<C, T>,
 ) {
     val state = stack.subscribeAsState()
 

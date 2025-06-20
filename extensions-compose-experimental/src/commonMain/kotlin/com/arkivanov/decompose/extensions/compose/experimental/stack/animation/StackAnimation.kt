@@ -18,8 +18,20 @@ fun interface StackAnimation<C : Any, T : Any> {
     operator fun invoke(
         stack: ChildStack<C, T>,
         modifier: Modifier,
-        content: @Composable AnimatedVisibilityScope.(child: Child.Created<C, T>) -> Unit,
+        content: StackAnimationContent<C, T>,
     )
+}
+
+/**
+ * This should be just an in-place Composable function.
+ * Temporary workaround for [b/418516940](https://partnerissuetracker.corp.google.com/issues/418516940).
+ * See [#874](https://github.com/arkivanov/Decompose/issues/874).
+ */
+@ExperimentalDecomposeApi
+fun interface StackAnimationContent<C : Any, T : Any> {
+
+    @Composable
+    fun AnimatedVisibilityScope.Content(child: Child.Created<C, T>)
 }
 
 /**
