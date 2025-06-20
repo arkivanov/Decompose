@@ -49,7 +49,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     override operator fun invoke(
         stack: ChildStack<C, T>,
         modifier: Modifier,
-        content: @Composable StackAnimationScope.(child: Child.Created<C, T>) -> Unit,
+        content: StackAnimationContent<C, T>,
     ) {
         var currentStack by remember { mutableStateOf(stack) }
         var items by remember { mutableStateOf(getAnimationItems(newStack = currentStack)) }
@@ -132,7 +132,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     private fun Child(
         item: AnimationItem<C, T>,
         onFinished: () -> Unit,
-        content: @Composable StackAnimationScope.(child: Child.Created<C, T>) -> Unit
+        content: StackAnimationContent<C, T>,
     ) {
         val transition = rememberTransition(item.transitionState)
         val isTransitionIdle = item.transitionState.isIdle()
@@ -145,7 +145,9 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
         WithStackAnimationScope(item.direction.takeUnless { isTransitionIdle }, transition) {
             Box(modifier = item.animator?.run { animate(item.direction) } ?: Modifier) {
-                content(item.child)
+                with(content) {
+                    Content(item.child)
+                }
             }
         }
     }
