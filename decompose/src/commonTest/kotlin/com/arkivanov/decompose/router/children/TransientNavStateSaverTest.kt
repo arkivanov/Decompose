@@ -1,6 +1,6 @@
 package com.arkivanov.decompose.router.children
 
-import com.arkivanov.decompose.serializeAndDeserialize
+import com.arkivanov.decompose.testutils.serializeAndDeserialize
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

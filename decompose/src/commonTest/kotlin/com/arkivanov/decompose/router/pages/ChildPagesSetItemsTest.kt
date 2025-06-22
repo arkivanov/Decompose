@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.router.pages
 
-import com.arkivanov.decompose.TestComponentContext
-import com.arkivanov.decompose.getValue
+import com.arkivanov.decompose.testutils.TestComponentContext
+import com.arkivanov.decompose.testutils.getValue
 import kotlin.test.Test
 
 @Suppress("TestFunctionName")

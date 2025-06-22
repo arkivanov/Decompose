@@ -1,11 +1,11 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.DecomposeExperimentFlags
-import com.arkivanov.decompose.getValue
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.STARTED
+import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.stop

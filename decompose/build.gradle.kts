@@ -61,8 +61,8 @@ kotlin {
         }
 
         common.test.dependencies {
+            implementation(project(":decompose-test-utils"))
             implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesCore)
-            implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
         }
 
         android.main.dependencies {

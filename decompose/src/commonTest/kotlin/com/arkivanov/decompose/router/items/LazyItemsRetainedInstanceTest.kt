@@ -1,9 +1,9 @@
 package com.arkivanov.decompose.router.items
 
-import com.arkivanov.decompose.TestComponentContext
-import com.arkivanov.decompose.recreate
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
+import com.arkivanov.decompose.testutils.TestComponentContext
+import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import kotlin.test.Test
 import kotlin.test.assertFalse

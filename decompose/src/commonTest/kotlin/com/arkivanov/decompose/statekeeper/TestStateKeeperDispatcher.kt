@@ -1,6 +1,6 @@
 package com.arkivanov.decompose.statekeeper
 
-import com.arkivanov.decompose.serializeAndDeserialize
+import com.arkivanov.decompose.testutils.serializeAndDeserialize
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import kotlinx.serialization.SerializationStrategy

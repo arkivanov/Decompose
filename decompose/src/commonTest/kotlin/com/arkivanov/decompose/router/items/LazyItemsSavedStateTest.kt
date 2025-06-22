@@ -1,11 +1,11 @@
 package com.arkivanov.decompose.router.items
 
-import com.arkivanov.decompose.TestComponentContext
-import com.arkivanov.decompose.consume
-import com.arkivanov.decompose.recreate
-import com.arkivanov.decompose.register
 import com.arkivanov.decompose.router.children.transientNavStateSaver
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
+import com.arkivanov.decompose.testutils.TestComponentContext
+import com.arkivanov.decompose.testutils.consume
+import com.arkivanov.decompose.testutils.recreate
+import com.arkivanov.decompose.testutils.register
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

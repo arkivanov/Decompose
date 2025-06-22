@@ -1,5 +1,8 @@
-package com.arkivanov.decompose
+package com.arkivanov.decompose.testutils
 
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.ComponentContextFactory
+import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -8,7 +11,7 @@ import com.arkivanov.essenty.lifecycle.create
 import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
-internal class TestComponentContext(
+class TestComponentContext(
     override val lifecycle: LifecycleRegistry = LifecycleRegistry(Lifecycle.State.RESUMED),
     override val stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(),
     override val instanceKeeper: InstanceKeeperDispatcher = InstanceKeeperDispatcher(),
@@ -19,7 +22,7 @@ internal class TestComponentContext(
         ComponentContextFactory(::DefaultComponentContext)
 }
 
-internal fun TestComponentContext.recreate(isConfigurationChange: Boolean = false): TestComponentContext {
+fun TestComponentContext.recreate(isConfigurationChange: Boolean = false): TestComponentContext {
     val oldLifecycleState = lifecycle.state
 
     if (oldLifecycleState == Lifecycle.State.INITIALIZED) {

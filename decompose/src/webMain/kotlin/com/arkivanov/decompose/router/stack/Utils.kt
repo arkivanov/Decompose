@@ -22,10 +22,10 @@ internal fun <T> List<T>.findFirstDifferentIndex(other: List<T>): Int {
     val minSize = min(size, other.size)
 
     if (minSize <= 0) {
-        return -1;
+        return -1
     }
 
-    var i = 0;
+    var i = 0
     while ((i < minSize) && (this[i] == other[i])) {
         i++
     }

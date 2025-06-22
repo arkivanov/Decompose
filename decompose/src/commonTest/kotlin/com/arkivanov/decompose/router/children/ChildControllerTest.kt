@@ -3,16 +3,17 @@ package com.arkivanov.decompose.router.children
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.TestBackCallback
 import com.arkivanov.decompose.TestBackCallback.Event
-import com.arkivanov.decompose.TestComponentContext
 import com.arkivanov.decompose.assertEvents
 import com.arkivanov.decompose.assertNoEvents
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks
-import com.arkivanov.decompose.recreate
 import com.arkivanov.decompose.router.Component
 import com.arkivanov.decompose.router.TestInstance
-import com.arkivanov.decompose.serializeAndDeserialize
+import com.arkivanov.decompose.testutils.TestComponentContext
+import com.arkivanov.decompose.testutils.recreate
+import com.arkivanov.decompose.testutils.serializeAndDeserialize
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.Lifecycle
+import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -21,7 +22,6 @@ import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
-import kotlinx.serialization.builtins.serializer
 
 @Suppress("TestFunctionName")
 class ChildControllerTest {
