@@ -1,8 +1,8 @@
 package com.arkivanov.decompose.router.items
 
-import com.arkivanov.decompose.TestComponentContext
 import com.arkivanov.decompose.router.Component
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
+import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import kotlin.test.Test
 import kotlin.test.assertEquals

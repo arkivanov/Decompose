@@ -2,10 +2,10 @@ package com.arkivanov.decompose.router.items
 
 import com.arkivanov.decompose.TestBackCallback
 import com.arkivanov.decompose.TestBackCallback.Event.OnBack
-import com.arkivanov.decompose.TestComponentContext
 import com.arkivanov.decompose.assertEvents
 import com.arkivanov.decompose.assertNoEvents
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
+import com.arkivanov.decompose.testutils.TestComponentContext
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

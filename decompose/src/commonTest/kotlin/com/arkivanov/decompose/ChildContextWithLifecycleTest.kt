@@ -3,6 +3,8 @@ package com.arkivanov.decompose
 import com.arkivanov.decompose.backhandler.TestBackDispatcher
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.decompose.testutils.consume
+import com.arkivanov.decompose.testutils.register
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.instancekeeper.getOrCreate

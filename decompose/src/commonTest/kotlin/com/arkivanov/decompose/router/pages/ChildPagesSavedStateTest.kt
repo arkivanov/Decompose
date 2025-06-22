@@ -1,8 +1,8 @@
 package com.arkivanov.decompose.router.pages
 
 import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.getValue
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
 import kotlin.test.BeforeTest

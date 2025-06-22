@@ -4,8 +4,6 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeExperimentFlags
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.DelicateDecomposeApi
-import com.arkivanov.decompose.consume
-import com.arkivanov.decompose.getValue
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_CREATE
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_DESTROY
@@ -13,9 +11,11 @@ import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_PAUSE
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_RESUME
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_START
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_STOP
-import com.arkivanov.decompose.register
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.decompose.testutils.consume
+import com.arkivanov.decompose.testutils.getValue
+import com.arkivanov.decompose.testutils.register
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.backhandler.BackDispatcher

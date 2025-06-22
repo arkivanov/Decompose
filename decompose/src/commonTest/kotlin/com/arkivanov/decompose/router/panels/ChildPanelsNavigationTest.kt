@@ -1,10 +1,10 @@
 package com.arkivanov.decompose.router.panels
 
 import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.getValue
 import com.arkivanov.decompose.router.panels.ChildPanelsMode.DUAL
 import com.arkivanov.decompose.router.panels.ChildPanelsMode.SINGLE
 import com.arkivanov.decompose.router.panels.ChildPanelsMode.TRIPLE
+import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.essenty.lifecycle.Lifecycle.State.DESTROYED
 import kotlin.test.Test
 import kotlin.test.assertEquals

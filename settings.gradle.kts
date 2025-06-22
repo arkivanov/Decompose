@@ -27,6 +27,7 @@ pluginManagement {
 
 if (!startParameter.projectProperties.containsKey("check_publication")) {
     include(":decompose")
+    include(":decompose-test-utils")
     include(":extensions-compose")
     include(":extensions-compose-experimental")
     include(":extensions-android")
