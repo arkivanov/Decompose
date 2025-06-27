@@ -30,6 +30,11 @@ fun TestComponentContext.recreate(isConfigurationChange: Boolean = false): TestC
     }
 
     val newStateKeeper = stateKeeper.recreate(isConfigurationChange = isConfigurationChange)
+
+    if (!isConfigurationChange) {
+        instanceKeeper.destroy()
+    }
+
     val newInstanceKeeper = if (isConfigurationChange) instanceKeeper else InstanceKeeperDispatcher()
 
     lifecycle.destroy()
