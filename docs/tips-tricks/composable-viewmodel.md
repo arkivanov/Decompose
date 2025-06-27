@@ -356,3 +356,55 @@ class ItemDetailsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     val text: String = checkNotNull(savedStateHandle["text"])
 }
 ```
+
+## Composable functions with ViewModels using JetpackComponentContext
+
+The new [JetpackComponentContext](../component/jetpack-component-context.md) makes it easy to call Composable functions with ViewModels, regardless of whether `SavedStateHandle` is needed or not. The code from the above snippets can be simplified, i.e. `BundleSerializer` and `ViewModelStoreComponent` are no longer needed in this case.
+
+```kotlin
+import androidx.lifecycle.DEFAULT_ARGS_KEY
+import androidx.savedstate.savedState
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.jetpackcomponentcontext.JetpackComponentContext
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pushNew
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.sample.app.RootComponent.Child
+import com.arkivanov.sample.app.RootComponent.Child.ListChild
+import com.arkivanov.sample.app.RootComponent.Child.MainChild
+import kotlinx.serialization.Serializable
+
+@OptIn(ExperimentalDecomposeApi::class)
+class DefaultRootComponent(
+    componentContext: JetpackComponentContext, // Pass JetpackComponentContext instead of ComponentContext
+) : RootComponent, JetpackComponentContext by componentContext {
+
+    private val nav = StackNavigation<Config>()
+
+    override val childStack: Value<ChildStack<*, Child>> =
+        childStack(
+            source = nav,
+            serializer = Config.serializer(),
+            initialConfiguration = Config.Main,
+        ) { config, ctx ->
+            when (config) {
+                is Config.Main -> ListChild(...) // Same as above
+
+                is Config.Details ->
+                    MainChild(
+                        component = ctx.apply {
+                            defaultViewModelCreationExtras[DEFAULT_ARGS_KEY] =
+                                savedState {
+                                    putString("text", config.text) // Pass arguments to DetailsViewModel
+                                }
+                        },
+                    )
+            }
+        }
+
+    @Serializable
+    private sealed interface Config { ... }
+}
+```

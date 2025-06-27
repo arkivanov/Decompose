@@ -89,6 +89,24 @@ The `extensions-android` module provides extensions to connect Android views (ol
     implementation("com.arkivanov.decompose:extensions-android:<version>")
     ```
 
+## JetpackComponentContext
+
+If you want to use AndroidX Architecture Components (such as AndroidX `Lifecycle`, `ViewModel` and `Saved State`) together with Decompose, you can leverage [JetpackComponentContext](../component/jetpack-component-context.md) provided by `jetpack-component-context` module.
+
+### Gradle setup
+
+=== "Groovy"
+
+    ``` groovy
+    implementation "com.arkivanov.decompose:jetpack-component-context:<version>"
+    ```
+
+=== "Kotlin"
+
+    ``` kotlin
+    implementation("com.arkivanov.decompose:jetpack-component-context:<version>")
+    ```
+
 ## Exporting Decompose to iOS Framework
 
 For using Decompose on your iOS project you need to export it to the iOS Framework.
