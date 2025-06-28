@@ -30,6 +30,7 @@ nav:
     - Back button: component/back-button.md
     - Scoping jobs and subscriptions: component/scopes.md
     - Custom ComponentContext: component/custom-component-context.md
+    - JetpackComponentContext: component/jetpack-component-context.md
 
   - Navigation:
     - Overview: navigation/overview.md
