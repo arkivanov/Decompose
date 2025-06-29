@@ -3,7 +3,6 @@ import com.arkivanov.gradle.setupAndroidApp
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-parcelize")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.arkivanov.gradle.setup")
