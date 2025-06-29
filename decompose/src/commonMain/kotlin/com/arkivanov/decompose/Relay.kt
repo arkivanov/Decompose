@@ -6,9 +6,14 @@ internal class Relay<T> {
     private val queue = ArrayDeque<T>()
     private var isDraining = false
     private var observers = emptySet<(T) -> Unit>()
+    private var error: Throwable? = null
 
     fun accept(value: T) {
         lock.synchronized {
+            error?.also {
+                throw IllegalStateException("Can't process the event due to a previous failure", it)
+            }
+
             queue.addLast(value)
 
             if (isDraining) {
@@ -36,8 +41,17 @@ internal class Relay<T> {
                 observersCopy = observers
             }
 
-            observersCopy.forEach { observer ->
-                observer(value)
+            try {
+                observersCopy.forEach { observer ->
+                    observer(value)
+                }
+            } catch (e: Throwable) {
+                lock.synchronized {
+                    queue.clear()
+                    isDraining = false
+                    error = e
+                    throw e
+                }
             }
         }
     }

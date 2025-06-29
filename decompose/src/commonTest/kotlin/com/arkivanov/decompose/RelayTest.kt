@@ -2,6 +2,9 @@ package com.arkivanov.decompose
 
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
+import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 
 @Suppress("TestFunctionName")
@@ -60,6 +63,103 @@ class RelayTest {
         relay.accept(1)
 
         assertContentEquals(listOf(1, 2), list)
+    }
+
+    @Test
+    fun GIVEN_observer_throws_WHEN_accept_THEN_exception_thrown() {
+        val relay = Relay<Int>()
+        val error = Exception()
+        relay.subscribe { throw error }
+
+        val throwError = assertFails { relay.accept(1) }
+
+        assertEquals(error, throwError)
+    }
+
+    @Test
+    fun GIVEN_two_observers_and_first_throws_WHEN_accept_THEN_exception_thrown() {
+        val relay = Relay<Int>()
+        val error = Exception()
+        relay.subscribe { throw error }
+        relay.subscribe {}
+
+        val throwError = assertFails { relay.accept(1) }
+
+        assertEquals(error, throwError)
+    }
+
+    @Test
+    fun GIVEN_two_observers_and_first_throws_WHEN_accept_THEN_second_observer_not_called() {
+        val relay = Relay<Int>()
+        val error = Exception()
+        relay.subscribe { throw error }
+        var isSecondObserverCalled = false
+        relay.subscribe { isSecondObserverCalled = true }
+
+        runCatching { relay.accept(1) }
+
+        assertFalse(isSecondObserverCalled)
+    }
+
+    @Test
+    fun GIVEN_observer_sends_recursively_and_throws_WHEN_accept_THEN_exception_thrown() {
+        val relay = Relay<Int>()
+        val error = Exception()
+
+        relay.subscribe {
+            relay.accept(2)
+            throw error
+        }
+
+        val throwError = assertFails { relay.accept(1) }
+
+        assertEquals(error, throwError)
+    }
+
+    @Test
+    fun GIVEN_observer_sends_recursively_and_throws_WHEN_accept_THEN_observer_called_only_once() {
+        val relay = Relay<Int>()
+        val error = Exception()
+        val values = ArrayList<Int>()
+
+        relay.subscribe {
+            values += it
+            relay.accept(2)
+            throw error
+        }
+
+        runCatching { relay.accept(1) }
+
+        assertEquals(listOf(1), values)
+    }
+
+    @Test
+    fun GIVEN_observer_throws_WHEN_accept_second_time_THEN_exception_thrown_with_cause() {
+        val relay = Relay<Int>()
+        val error = Exception()
+        relay.subscribe { throw error }
+        runCatching { relay.accept(1) }
+
+        val thrownError = assertFailsWith<IllegalStateException> { relay.accept(2) }
+
+        assertEquals(error, thrownError.cause)
+    }
+
+    @Test
+    fun GIVEN_observer_throws_WHEN_accept_twice_THEN_observer_called_only_once() {
+        val relay = Relay<Int>()
+        val error = Exception()
+        var callCount = 0
+
+        relay.subscribe {
+            callCount++
+            throw error
+        }
+
+        runCatching { relay.accept(1) }
+        runCatching { relay.accept(2) }
+
+        assertEquals(1, callCount)
     }
 
     private fun <T> Relay<T>.subscribe(): List<T> {
