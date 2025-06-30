@@ -3,6 +3,7 @@ package com.arkivanov.decompose.router.panels
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.Component
+import com.arkivanov.decompose.router.children.BackStrategy
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackDispatcher
@@ -94,7 +95,7 @@ abstract class BaseChildPanelsTest {
             source = nav,
             initialPanels = { initialPanels },
             serializers = if (persistent) Triple(Int.serializer(), Int.serializer(), Int.serializer()) else null,
-            handleBackButton = handleBackButton,
+            backStrategy = if (handleBackButton) PanelsBackStrategy.popInSingleMode() else BackStrategy.disabled(),
             mainFactory = ::Component,
             detailsFactory = ::Component,
             extraFactory = ::Component,
