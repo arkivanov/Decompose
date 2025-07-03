@@ -97,6 +97,15 @@ public final class com/arkivanov/decompose/errorhandler/ErrorHandlersKt {
 	public static final fun setOnDecomposeError (Lkotlin/jvm/functions/Function1;)V
 }
 
+public abstract interface class com/arkivanov/decompose/router/children/BackStrategy {
+	public static final field Companion Lcom/arkivanov/decompose/router/children/BackStrategy$Companion;
+	public abstract fun transformBack (Ljava/lang/Object;)Lkotlin/jvm/functions/Function0;
+}
+
+public final class com/arkivanov/decompose/router/children/BackStrategy$Companion {
+	public final fun disabled ()Lcom/arkivanov/decompose/router/children/BackStrategy;
+}
+
 public abstract interface class com/arkivanov/decompose/router/children/ChildNavState {
 	public abstract fun getConfiguration ()Ljava/lang/Object;
 	public abstract fun getStatus ()Lcom/arkivanov/decompose/router/children/ChildNavState$Status;
@@ -366,14 +375,14 @@ public final class com/arkivanov/decompose/router/panels/ChildPanels {
 }
 
 public final class com/arkivanov/decompose/router/panels/ChildPanelsFactoryKt {
-	public static final fun childPanels (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/Pair;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
-	public static final fun childPanels (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/Triple;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
-	public static final fun childPanels (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
-	public static final fun childPanels (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
-	public static synthetic fun childPanels$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/Pair;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
-	public static synthetic fun childPanels$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/Triple;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
-	public static synthetic fun childPanels$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
-	public static synthetic fun childPanels$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun childPanels (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/Pair;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lcom/arkivanov/decompose/router/children/BackStrategy;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun childPanels (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/Triple;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lcom/arkivanov/decompose/router/children/BackStrategy;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun childPanels (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lcom/arkivanov/decompose/router/children/BackStrategy;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static final fun childPanels (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lcom/arkivanov/decompose/router/children/BackStrategy;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childPanels$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/Pair;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lcom/arkivanov/decompose/router/children/BackStrategy;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childPanels$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/Triple;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lcom/arkivanov/decompose/router/children/BackStrategy;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childPanels$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lcom/arkivanov/decompose/router/children/BackStrategy;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
+	public static synthetic fun childPanels$default (Lcom/arkivanov/decompose/GenericComponentContext;Lcom/arkivanov/decompose/router/children/NavigationSource;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lcom/arkivanov/decompose/router/children/BackStrategy;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/value/Value;
 }
 
 public final class com/arkivanov/decompose/router/panels/ChildPanelsMode : java/lang/Enum {
@@ -423,6 +432,17 @@ public synthetic class com/arkivanov/decompose/router/panels/Panels$$serializer 
 
 public final class com/arkivanov/decompose/router/panels/Panels$Companion {
 	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/arkivanov/decompose/router/panels/PanelsBackHandlerKt {
+	public static final fun popInSingleMode (Lcom/arkivanov/decompose/router/panels/PanelsBackStrategy$Companion;)Lcom/arkivanov/decompose/router/panels/PanelsBackStrategy;
+}
+
+public abstract interface class com/arkivanov/decompose/router/panels/PanelsBackStrategy : com/arkivanov/decompose/router/children/BackStrategy {
+	public static final field Companion Lcom/arkivanov/decompose/router/panels/PanelsBackStrategy$Companion;
+}
+
+public final class com/arkivanov/decompose/router/panels/PanelsBackStrategy$Companion {
 }
 
 public abstract interface class com/arkivanov/decompose/router/panels/PanelsNavigation : com/arkivanov/decompose/router/children/NavigationSource, com/arkivanov/decompose/router/panels/PanelsNavigator {

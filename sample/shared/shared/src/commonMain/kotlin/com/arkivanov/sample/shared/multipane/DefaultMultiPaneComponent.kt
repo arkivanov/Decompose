@@ -6,6 +6,7 @@ import com.arkivanov.decompose.router.panels.ChildPanels
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
 import com.arkivanov.decompose.router.panels.ChildPanelsMode.TRIPLE
 import com.arkivanov.decompose.router.panels.Panels
+import com.arkivanov.decompose.router.panels.PanelsBackStrategy
 import com.arkivanov.decompose.router.panels.PanelsNavigation
 import com.arkivanov.decompose.router.panels.activateExtra
 import com.arkivanov.decompose.router.panels.childPanels
@@ -14,6 +15,7 @@ import com.arkivanov.decompose.router.panels.isDual
 import com.arkivanov.decompose.router.panels.isSingle
 import com.arkivanov.decompose.router.panels.navigate
 import com.arkivanov.decompose.router.panels.pop
+import com.arkivanov.decompose.router.panels.popInSingleMode
 import com.arkivanov.decompose.router.webhistory.WebNavigation
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.reaktive.disposableScope
@@ -49,7 +51,7 @@ internal class DefaultMultiPaneComponent(
             initialPanels = { getInitialPanels(deepLinkUrl) },
             serializers = SERIALIZERS,
             onStateChanged = { newState, _ -> _navState.onNext(newState) },
-            handleBackButton = true,
+            backStrategy = PanelsBackStrategy.popInSingleMode(),
             mainFactory = { _, ctx -> listComponent(ctx) },
             detailsFactory = ::detailsComponent,
             extraFactory = ::authorComponent,

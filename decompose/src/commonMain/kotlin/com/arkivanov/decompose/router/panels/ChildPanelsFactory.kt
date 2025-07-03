@@ -3,6 +3,7 @@ package com.arkivanov.decompose.router.panels
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.GenericComponentContext
+import com.arkivanov.decompose.router.children.BackStrategy
 import com.arkivanov.decompose.router.children.ChildNavState
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
@@ -32,9 +33,7 @@ import kotlinx.serialization.builtins.NothingSerializer
  * used in the same component.
  * @param onStateChanged called every time the navigation state changes, `oldState` is `null` when
  * called first time during initialisation.
- * @param handleBackButton determines whether the previous component should be automatically
- * selected on back button press or not, default is `false`.
- * Only works if [Panels.mode] is [ChildPanelsMode.SINGLE].
+ * @param backStrategy see [PanelsBackStrategy].
  * @param mainFactory a factory function that creates new instances of the Main component.
  * @param detailsFactory a factory function that creates new instances of the Details component.
  * @return an observable [Value] of [ChildPanels].
@@ -47,7 +46,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any>
     initialPanels: () -> Panels<MC, DC, Nothing>,
     key: String = "DefaultChildPanels",
     onStateChanged: (newState: Panels<MC, DC, Nothing>, oldState: Panels<MC, DC, Nothing>?) -> Unit = { _, _ -> },
-    handleBackButton: Boolean = false,
+    backStrategy: BackStrategy<Panels<MC, DC, Nothing>> = BackStrategy.disabled(),
     mainFactory: (configuration: MC, Ctx) -> MT,
     detailsFactory: (configuration: DC, Ctx) -> DT,
 ): Value<ChildPanels<MC, MT, DC, DT, Nothing, Nothing>> =
@@ -57,7 +56,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any>
         serializers = serializers?.let { Triple(it.first, it.second, NothingSerializer()) },
         key = key,
         onStateChanged = onStateChanged,
-        handleBackButton = handleBackButton,
+        backStrategy = backStrategy,
         mainFactory = mainFactory,
         detailsFactory = detailsFactory,
         extraFactory = { _, _ -> error("Can't instantiate Nothing") },
@@ -82,9 +81,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any>
  * used in the same component.
  * @param onStateChanged called every time the navigation state changes, `oldState` is `null` when
  * called first time during initialisation.
- * @param handleBackButton determines whether the previous component should be automatically
- * selected on back button press or not, default is `false`.
- * Only works if [Panels.mode] is [ChildPanelsMode.SINGLE].
+ * @param backStrategy see [PanelsBackStrategy].
  * @param mainFactory a factory function that creates new instances of the Main component.
  * @param detailsFactory a factory function that creates new instances of the Details component.
  * @return an observable [Value] of [ChildPanels].
@@ -97,7 +94,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
     restorePanels: (SerializableContainer) -> Panels<MC, DC, EC>?,
     key: String = "DefaultChildPanels",
     onStateChanged: (newState: Panels<MC, DC, EC>, oldState: Panels<MC, DC, EC>?) -> Unit = { _, _ -> },
-    handleBackButton: Boolean = false,
+    backStrategy: BackStrategy<Panels<MC, DC, EC>> = BackStrategy.disabled(),
     mainFactory: (configuration: MC, Ctx) -> MT,
     detailsFactory: (configuration: DC, Ctx) -> DT,
 ): Value<ChildPanels<MC, MT, DC, DT, EC, ET>> =
@@ -108,7 +105,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
         restorePanels = restorePanels,
         key = key,
         onStateChanged = onStateChanged,
-        handleBackButton = handleBackButton,
+        backStrategy = backStrategy,
         mainFactory = mainFactory,
         detailsFactory = detailsFactory,
         extraFactory = { _, _ -> error("Can't instantiate Nothing") },
@@ -130,9 +127,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
  * used in the same component.
  * @param onStateChanged called every time the navigation state changes, `oldState` is `null` when
  * called first time during initialisation.
- * @param handleBackButton determines whether the previous component should be automatically
- * selected on back button press or not, default is `false`.
- * Only works if [Panels.mode] is [ChildPanelsMode.SINGLE].
+ * @param backStrategy see [PanelsBackStrategy].
  * @param mainFactory a factory function that creates new instances of the Main component.
  * @param detailsFactory a factory function that creates new instances of the Details component.
  * @param extraFactory a factory function that creates new instances of the Extra component.
@@ -145,7 +140,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
     initialPanels: () -> Panels<MC, DC, EC>,
     key: String = "DefaultChildPanels",
     onStateChanged: (newState: Panels<MC, DC, EC>, oldState: Panels<MC, DC, EC>?) -> Unit = { _, _ -> },
-    handleBackButton: Boolean = false,
+    backStrategy: BackStrategy<Panels<MC, DC, EC>> = BackStrategy { null },
     mainFactory: (configuration: MC, Ctx) -> MT,
     detailsFactory: (configuration: DC, Ctx) -> DT,
     extraFactory: (configuration: EC, Ctx) -> ET,
@@ -166,7 +161,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
         },
         key = key,
         onStateChanged = onStateChanged,
-        handleBackButton = handleBackButton,
+        backStrategy = backStrategy,
         mainFactory = mainFactory,
         detailsFactory = detailsFactory,
         extraFactory = extraFactory,
@@ -191,9 +186,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
  * used in the same component.
  * @param onStateChanged called every time the navigation state changes, `oldState` is `null` when
  * called first time during initialisation.
- * @param handleBackButton determines whether the previous component should be automatically
- * selected on back button press or not, default is `false`.
- * Only works if [Panels.mode] is [ChildPanelsMode.SINGLE].
+ * @param backTransformer see [PanelsBackStrategy].
  * @param mainFactory a factory function that creates new instances of the Main component.
  * @param detailsFactory a factory function that creates new instances of the Details component.
  * @param extraFactory a factory function that creates new instances of the Extra component.
@@ -207,7 +200,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
     restorePanels: (SerializableContainer) -> Panels<MC, DC, EC>?,
     key: String = "DefaultChildPanels",
     onStateChanged: (newState: Panels<MC, DC, EC>, oldState: Panels<MC, DC, EC>?) -> Unit = { _, _ -> },
-    handleBackButton: Boolean = false,
+    backStrategy: BackStrategy<Panels<MC, DC, EC>> = BackStrategy.disabled(),
     mainFactory: (configuration: MC, Ctx) -> MT,
     detailsFactory: (configuration: DC, Ctx) -> DT,
     extraFactory: (configuration: EC, Ctx) -> ET,
@@ -234,20 +227,8 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
         onStateChanged = { newState, oldState -> onStateChanged(newState.panels, oldState?.panels) },
         onEventComplete = { event, newState, oldState -> event.onComplete(newState.panels, oldState.panels) },
         backTransformer = { state ->
-            val panels = state.panels
-
-            when {
-                !handleBackButton -> null
-
-                (panels.mode == ChildPanelsMode.SINGLE) && (panels.extra != null) -> {
-                    { state.copy(panels = panels.copy(extra = null)) }
-                }
-
-                (panels.mode == ChildPanelsMode.SINGLE) && (panels.details != null) -> {
-                    { state.copy(panels = panels.copy(details = null)) }
-                }
-
-                else -> null
+            backStrategy.transformBack(state.panels)?.let { handler ->
+                { state.copy(panels = handler()) }
             }
         },
         childFactory = { config, ctx ->
