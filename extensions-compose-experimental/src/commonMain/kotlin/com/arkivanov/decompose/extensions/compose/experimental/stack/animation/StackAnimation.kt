@@ -31,7 +31,13 @@ fun interface StackAnimation<C : Any, T : Any> {
 fun interface StackAnimationContent<C : Any, T : Any> {
 
     @Composable
-    fun AnimatedVisibilityScope.Content(child: Child.Created<C, T>)
+    fun StackAnimationScope.Content(child: Child.Created<C, T>)
+}
+
+@ExperimentalDecomposeApi
+interface StackAnimationScope : AnimatedVisibilityScope {
+
+    val stackAnimationDirection: Direction?
 }
 
 /**
