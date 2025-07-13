@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.extensions.compose.experimental.stack
 
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
@@ -11,6 +10,7 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.LocalStackAnimationProvider
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimation
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationScope
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.keyHashString
@@ -26,7 +26,7 @@ import com.arkivanov.decompose.value.Value
  * then a default [StackAnimation] is obtained from [LocalStackAnimationProvider].
  * If that is also `null`, then there is no animation.
  * @param content a `Composable` function that displays the provided [Child][Child.Created] component.
- * The receiver [AnimatedVisibilityScope] can be used for additional animations, such as
+ * The receiver [StackAnimationScope] can be used for additional animations, such as
  * [Shared Element Transitions](https://developer.android.com/develop/ui/compose/animation/shared-elements).
  */
 @ExperimentalDecomposeApi
@@ -35,7 +35,7 @@ fun <C : Any, T : Any> ChildStack(
     stack: ChildStack<C, T>,
     modifier: Modifier = Modifier,
     animation: StackAnimation<C, T>? = null,
-    content: @Composable AnimatedVisibilityScope.(child: Child.Created<C, T>) -> Unit,
+    content: @Composable StackAnimationScope.(child: Child.Created<C, T>) -> Unit,
 ) {
     val holder = rememberSaveableStateHolder()
 
@@ -60,7 +60,7 @@ fun <C : Any, T : Any> ChildStack(
  * then a default [StackAnimation] is obtained from [LocalStackAnimationProvider].
  * If that is also `null`, then there is no animation.
  * @param content a `Composable` function that displays the provided [Child][Child.Created] component.
- * The receiver [AnimatedVisibilityScope] can be used for additional animations, such as
+ * The receiver [StackAnimationScope] can be used for additional animations, such as
  * [Shared Element Transitions](https://developer.android.com/develop/ui/compose/animation/shared-elements).
  */
 @ExperimentalDecomposeApi
@@ -69,7 +69,7 @@ fun <C : Any, T : Any> ChildStack(
     stack: Value<ChildStack<C, T>>,
     modifier: Modifier = Modifier,
     animation: StackAnimation<C, T>? = null,
-    content: @Composable AnimatedVisibilityScope.(child: Child.Created<C, T>) -> Unit,
+    content: @Composable StackAnimationScope.(child: Child.Created<C, T>) -> Unit,
 ) {
     val state = stack.subscribeAsState()
 

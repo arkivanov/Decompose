@@ -88,8 +88,12 @@ public final class com/arkivanov/decompose/extensions/compose/experimental/stack
 	public static final fun getLocalStackAnimationProvider ()Landroidx/compose/runtime/ProvidableCompositionLocal;
 }
 
+public abstract interface class com/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimationScope : androidx/compose/animation/AnimatedVisibilityScope {
+	public abstract fun getStackAnimationDirection ()Lcom/arkivanov/decompose/extensions/compose/stack/animation/Direction;
+}
+
 public abstract interface class com/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimator {
-	public abstract fun animate (Landroidx/compose/animation/AnimatedVisibilityScope;Lcom/arkivanov/decompose/extensions/compose/stack/animation/Direction;Landroidx/compose/runtime/Composer;I)Landroidx/compose/ui/Modifier;
+	public abstract fun animate (Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimationScope;Lcom/arkivanov/decompose/extensions/compose/stack/animation/Direction;Landroidx/compose/runtime/Composer;I)Landroidx/compose/ui/Modifier;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimatorKt {

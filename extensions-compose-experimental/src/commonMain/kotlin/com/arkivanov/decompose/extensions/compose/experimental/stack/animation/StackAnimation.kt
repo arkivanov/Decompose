@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.extensions.compose.experimental.stack.animation
 
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
@@ -18,7 +17,7 @@ fun interface StackAnimation<C : Any, T : Any> {
     operator fun invoke(
         stack: ChildStack<C, T>,
         modifier: Modifier,
-        content: @Composable AnimatedVisibilityScope.(child: Child.Created<C, T>) -> Unit,
+        content: @Composable StackAnimationScope.(child: Child.Created<C, T>) -> Unit,
     )
 }
 

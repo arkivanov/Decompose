@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.extensions.compose.experimental.stack.animation
 
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.SeekableTransitionState
@@ -20,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.experimental.stack.WithAnimatedVisibilityScope
+import com.arkivanov.decompose.extensions.compose.experimental.stack.WithStackAnimationScope
 import com.arkivanov.decompose.extensions.compose.experimental.stack.awaitAll
 import com.arkivanov.decompose.extensions.compose.experimental.stack.dropLast
 import com.arkivanov.decompose.extensions.compose.experimental.stack.size
@@ -50,7 +49,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     override operator fun invoke(
         stack: ChildStack<C, T>,
         modifier: Modifier,
-        content: @Composable AnimatedVisibilityScope.(child: Child.Created<C, T>) -> Unit,
+        content: @Composable StackAnimationScope.(child: Child.Created<C, T>) -> Unit,
     ) {
         var currentStack by remember { mutableStateOf(stack) }
         var items by remember { mutableStateOf(getAnimationItems(newStack = currentStack)) }
@@ -133,7 +132,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     private fun Child(
         item: AnimationItem<C, T>,
         onFinished: () -> Unit,
-        content: @Composable AnimatedVisibilityScope.(child: Child.Created<C, T>) -> Unit
+        content: @Composable StackAnimationScope.(child: Child.Created<C, T>) -> Unit
     ) {
         val transition = rememberTransition(item.transitionState)
 
@@ -143,7 +142,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             }
         }
 
-        WithAnimatedVisibilityScope(transition) {
+        WithStackAnimationScope(item.direction, transition) {
             Box(modifier = item.animator?.run { animate(item.direction) } ?: Modifier) {
                 content(item.child)
             }
@@ -393,7 +392,7 @@ private class SimpleStackAnimator(
     private val modifier: () -> Modifier,
 ) : StackAnimator {
     @Composable
-    override fun AnimatedVisibilityScope.animate(direction: Direction): Modifier =
+    override fun StackAnimationScope.animate(direction: Direction): Modifier =
         modifier()
 }
 

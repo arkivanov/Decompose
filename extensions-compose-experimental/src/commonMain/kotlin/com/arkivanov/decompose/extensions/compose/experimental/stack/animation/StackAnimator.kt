@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.extensions.compose.experimental.stack.animation
 
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
@@ -20,7 +19,7 @@ fun interface StackAnimator {
      * @param direction the [Direction] in which the animation should run.
      */
     @Composable
-    fun AnimatedVisibilityScope.animate(direction: Direction): Modifier
+    fun StackAnimationScope.animate(direction: Direction): Modifier
 }
 
 /**
@@ -63,7 +62,7 @@ private class PlusStackAnimator(
 ) : StackAnimator {
 
     @Composable
-    override fun AnimatedVisibilityScope.animate(direction: Direction): Modifier {
+    override fun StackAnimationScope.animate(direction: Direction): Modifier {
         val firstModifier = with(first) { animate(direction) }
         val secondModifier = with(second) { animate(direction) }
 
