@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.extensions.compose.experimental.stack.animation
 
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.animateFloat
@@ -19,7 +18,7 @@ internal class DefaultStackAnimator(
 ) : StackAnimator {
 
     @Composable
-    override fun AnimatedVisibilityScope.animate(direction: Direction): Modifier {
+    override fun StackAnimationScope.animate(direction: Direction): Modifier {
         val factor by transition.animateFloat(transitionSpec = { animationSpec }) { state ->
             when (state) {
                 EnterExitState.Visible -> 0F

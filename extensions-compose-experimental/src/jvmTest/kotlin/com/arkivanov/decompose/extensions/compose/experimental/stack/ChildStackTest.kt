@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.extensions.compose.experimental.stack
 
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -18,6 +17,7 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.PredictiveBackParams
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimation
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationScope
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
@@ -202,7 +202,7 @@ class ChildStackTest(
 
     private fun setContent(
         state: State<ChildStack<Config, Any>>,
-        content: @Composable AnimatedVisibilityScope.(Child.Created<Config, Any>) -> Unit = {
+        content: @Composable StackAnimationScope.(Child.Created<Config, Any>) -> Unit = {
             Child(name = it.key.toString())
         },
     ) {
