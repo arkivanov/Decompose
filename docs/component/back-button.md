@@ -4,7 +4,7 @@ Some devices (e.g. Android) have hardware back buttons. A very common use case i
 
 ## Navigation with back button
 
-`Child Stack` and `Child Pages` can automatically navigate back when the back button is pressed. All you need to do is to supply the `handleBackButton=true` argument when you initialize a navigation model.
+Most of the navigation models (such as Child Stack) can automatically navigate back when the back button is pressed. All you need to do is to supply the `handleBackButton = true` argument when you initialize a navigation model.
 
 Similarly, `Child Slot` can automatically dismiss the child component when the back button is pressed. See the [Child Slot](../navigation/slot/overview.md) documentation page for more information.
 
@@ -116,6 +116,51 @@ import androidx.compose.runtime.Composable
 fun SomeContent(component: SomeComponent) {
     BackHandler(backHandler = component.backHandler) {
         // Handle the back button here
+    }
+}
+```
+
+## Back button handling in Compose for Desktop
+
+When using Compose for Desktop, it might be necessary to simulate back button navigation when the user presses a certain key (e.g. the Escape key). We can listen for unconsumed key events using `onKeyEvent` callback of the `Window {}` Composable function and call `BackDispatcher#back` when needed. 
+
+```kotlin
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.essenty.backhandler.BackDispatcher
+import com.arkivanov.sample.shared.root.DefaultRootComponent
+
+fun main() {
+    val backDispatcher = BackDispatcher() // Create BackDispatcher
+
+    val root =
+        runOnUiThread {
+            DefaultRootComponent(
+                componentContext = DefaultComponentContext(
+                    lifecycle = ...,
+                    backHandler = backDispatcher, // Pass BackDispatcher to root ComponentContext
+                ),
+            )
+        }
+
+    application {
+        Window(
+            onCloseRequest = ::exitApplication,
+            onKeyEvent = { event ->
+                if ((event.key == Key.Escape) && (event.type == KeyEventType.KeyUp)) {
+                    backDispatcher.back() // Call BackDispatcher on Escape key up event
+                } else {
+                    false
+                }
+            },
+        ) {
+            ...
+        }
     }
 }
 ```
