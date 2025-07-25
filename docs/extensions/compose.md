@@ -11,7 +11,7 @@ Please see the corresponding [Installation docs section](../getting-started/inst
 If you support Compose for Desktop, you will need to add the following rule for ProGuard, so that the app works correctly in release mode. See [Minification & obfuscation](https://github.com/JetBrains/compose-multiplatform/tree/master/tutorials/Native_distributions_and_local_execution#minification--obfuscation) section in Compose docs for more information.
 
 ```
--keep class com.arkivanov.decompose.extensions.compose.jetbrains.mainthread.SwingMainThreadChecker
+-keep class com.arkivanov.decompose.extensions.compose.mainthread.SwingMainThreadChecker
 ```
 
 ## Converting Value to State
