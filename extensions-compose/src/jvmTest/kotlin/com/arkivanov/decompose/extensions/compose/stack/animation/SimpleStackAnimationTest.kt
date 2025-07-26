@@ -51,7 +51,7 @@ class SimpleStackAnimationTest {
         composeRule.setContent {
             anim(stack = stack, modifier = Modifier) {
                 val pair = composeRule.mainClock.currentTime to LocalProgress.current
-                when (it.key) {
+                when (it.configuration) {
                     1 -> values1 += pair
                     2 -> values2 += pair
                 }
@@ -95,7 +95,7 @@ class SimpleStackAnimationTest {
 
         composeRule.setContent {
             anim(stack = stack, modifier = Modifier) {
-                if (it.key == 1) {
+                if (it.configuration == 1) {
                     LaunchedEffect(Unit) {
                         counter++
                     }

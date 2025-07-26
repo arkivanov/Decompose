@@ -65,22 +65,6 @@ class DefaultWebHistoryControllerTest {
         assertStack(listOf("/0", "/1"))
     }
 
-    @Suppress("OPT_IN_USAGE")
-    @Test
-    fun WHEN_router_push_same_config_THEN_url_pushed_to_history() {
-        if (isNodeJs()) {
-            return
-        }
-
-        val router = TestStackRouter(listOf(Config(0)))
-        attach(router)
-
-        router.push(Config(0))
-        history.runPendingOperations()
-
-        assertStack(listOf("/0", "/0"))
-    }
-
     @Test
     fun GIVEN_router_with_initial_stack_of_two_configs_WHEN_router_pop_THEN_history_changed_to_previous_page() {
         if (isNodeJs()) {

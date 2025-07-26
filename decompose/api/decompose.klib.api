@@ -410,7 +410,6 @@ final class <#A: out kotlin/Any, #B: out kotlin/Any> com.arkivanov.decompose.rou
 
 final class <#A: out kotlin/Any, #B: out kotlin/Any> com.arkivanov.decompose.router.stack/ChildStack { // com.arkivanov.decompose.router.stack/ChildStack|null[0]
     constructor <init>(#A, #B) // com.arkivanov.decompose.router.stack/ChildStack.<init>|<init>(1:0;1:1){}[0]
-    constructor <init>(#A, #B, kotlin/Any) // com.arkivanov.decompose.router.stack/ChildStack.<init>|<init>(1:0;1:1;kotlin.Any){}[0]
     constructor <init>(com.arkivanov.decompose/Child.Created<#A, #B>, kotlin.collections/List<com.arkivanov.decompose/Child.Created<#A, #B>> = ...) // com.arkivanov.decompose.router.stack/ChildStack.<init>|<init>(com.arkivanov.decompose.Child.Created<1:0,1:1>;kotlin.collections.List<com.arkivanov.decompose.Child.Created<1:0,1:1>>){}[0]
 
     final val active // com.arkivanov.decompose.router.stack/ChildStack.active|{}active[0]
@@ -503,25 +502,18 @@ sealed class <#A: out kotlin/Any, #B: out kotlin/Any> com.arkivanov.decompose/Ch
         abstract fun <get-configuration>(): #A // com.arkivanov.decompose/Child.configuration.<get-configuration>|<get-configuration>(){}[0]
     abstract val instance // com.arkivanov.decompose/Child.instance|{}instance[0]
         abstract fun <get-instance>(): #B? // com.arkivanov.decompose/Child.instance.<get-instance>|<get-instance>(){}[0]
-    abstract val key // com.arkivanov.decompose/Child.key|{}key[0]
-        abstract fun <get-key>(): kotlin/Any // com.arkivanov.decompose/Child.key.<get-key>|<get-key>(){}[0]
 
     final class <#A1: out kotlin/Any, #B1: out kotlin/Any> Created : com.arkivanov.decompose/Child<#A1, #B1> { // com.arkivanov.decompose/Child.Created|null[0]
         constructor <init>(#A1, #B1) // com.arkivanov.decompose/Child.Created.<init>|<init>(1:0;1:1){}[0]
-        constructor <init>(#A1, #B1, kotlin/Any) // com.arkivanov.decompose/Child.Created.<init>|<init>(1:0;1:1;kotlin.Any){}[0]
 
         final val configuration // com.arkivanov.decompose/Child.Created.configuration|{}configuration[0]
             final fun <get-configuration>(): #A1 // com.arkivanov.decompose/Child.Created.configuration.<get-configuration>|<get-configuration>(){}[0]
         final val instance // com.arkivanov.decompose/Child.Created.instance|{}instance[0]
             final fun <get-instance>(): #B1 // com.arkivanov.decompose/Child.Created.instance.<get-instance>|<get-instance>(){}[0]
-        final val key // com.arkivanov.decompose/Child.Created.key|{}key[0]
-            final fun <get-key>(): kotlin/Any // com.arkivanov.decompose/Child.Created.key.<get-key>|<get-key>(){}[0]
 
         final fun component1(): #A1 // com.arkivanov.decompose/Child.Created.component1|component1(){}[0]
         final fun component2(): #B1 // com.arkivanov.decompose/Child.Created.component2|component2(){}[0]
-        final fun component3(): kotlin/Any // com.arkivanov.decompose/Child.Created.component3|component3(){}[0]
-        final fun copy(#A1 = ..., #B1 = ..., kotlin/Any = ...): com.arkivanov.decompose/Child.Created<#A1, #B1> // com.arkivanov.decompose/Child.Created.copy|copy(1:0;1:1;kotlin.Any){}[0]
-        final fun copy(#A1, #B1): com.arkivanov.decompose/Child<#A1, #B1> // com.arkivanov.decompose/Child.Created.copy|copy(1:0;1:1){}[0]
+        final fun copy(#A1 = ..., #B1 = ...): com.arkivanov.decompose/Child.Created<#A1, #B1> // com.arkivanov.decompose/Child.Created.copy|copy(1:0;1:1){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // com.arkivanov.decompose/Child.Created.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.arkivanov.decompose/Child.Created.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.arkivanov.decompose/Child.Created.toString|toString(){}[0]
@@ -529,30 +521,21 @@ sealed class <#A: out kotlin/Any, #B: out kotlin/Any> com.arkivanov.decompose/Ch
 
     final class <#A1: out kotlin/Any> Destroyed : com.arkivanov.decompose/Child<#A1, kotlin/Nothing> { // com.arkivanov.decompose/Child.Destroyed|null[0]
         constructor <init>(#A1) // com.arkivanov.decompose/Child.Destroyed.<init>|<init>(1:0){}[0]
-        constructor <init>(#A1, kotlin/Any) // com.arkivanov.decompose/Child.Destroyed.<init>|<init>(1:0;kotlin.Any){}[0]
 
         final val configuration // com.arkivanov.decompose/Child.Destroyed.configuration|{}configuration[0]
             final fun <get-configuration>(): #A1 // com.arkivanov.decompose/Child.Destroyed.configuration.<get-configuration>|<get-configuration>(){}[0]
         final val instance // com.arkivanov.decompose/Child.Destroyed.instance|{}instance[0]
             final fun <get-instance>(): kotlin/Nothing? // com.arkivanov.decompose/Child.Destroyed.instance.<get-instance>|<get-instance>(){}[0]
-        final val key // com.arkivanov.decompose/Child.Destroyed.key|{}key[0]
-            final fun <get-key>(): kotlin/Any // com.arkivanov.decompose/Child.Destroyed.key.<get-key>|<get-key>(){}[0]
 
         final fun component1(): #A1 // com.arkivanov.decompose/Child.Destroyed.component1|component1(){}[0]
-        final fun component2(): kotlin/Any // com.arkivanov.decompose/Child.Destroyed.component2|component2(){}[0]
-        final fun copy(#A1 = ..., kotlin/Any = ...): com.arkivanov.decompose/Child.Destroyed<#A1> // com.arkivanov.decompose/Child.Destroyed.copy|copy(1:0;kotlin.Any){}[0]
-        final fun copy(#A1): com.arkivanov.decompose/Child<#A1, kotlin/Nothing> // com.arkivanov.decompose/Child.Destroyed.copy|copy(1:0){}[0]
+        final fun copy(#A1 = ...): com.arkivanov.decompose/Child.Destroyed<#A1> // com.arkivanov.decompose/Child.Destroyed.copy|copy(1:0){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // com.arkivanov.decompose/Child.Destroyed.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // com.arkivanov.decompose/Child.Destroyed.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // com.arkivanov.decompose/Child.Destroyed.toString|toString(){}[0]
     }
 }
 
-final object com.arkivanov.decompose/DecomposeExperimentFlags { // com.arkivanov.decompose/DecomposeExperimentFlags|null[0]
-    final var duplicateConfigurationsEnabled // com.arkivanov.decompose/DecomposeExperimentFlags.duplicateConfigurationsEnabled|{}duplicateConfigurationsEnabled[0]
-        final fun <get-duplicateConfigurationsEnabled>(): kotlin/Boolean // com.arkivanov.decompose/DecomposeExperimentFlags.duplicateConfigurationsEnabled.<get-duplicateConfigurationsEnabled>|<get-duplicateConfigurationsEnabled>(){}[0]
-        final fun <set-duplicateConfigurationsEnabled>(kotlin/Boolean) // com.arkivanov.decompose/DecomposeExperimentFlags.duplicateConfigurationsEnabled.<set-duplicateConfigurationsEnabled>|<set-duplicateConfigurationsEnabled>(kotlin.Boolean){}[0]
-}
+final object com.arkivanov.decompose/DecomposeExperimentFlags // com.arkivanov.decompose/DecomposeExperimentFlags|null[0]
 
 final val com.arkivanov.decompose.router.panels/isDual // com.arkivanov.decompose.router.panels/isDual|@com.arkivanov.decompose.router.panels.ChildPanelsMode{}isDual[0]
     final fun (com.arkivanov.decompose.router.panels/ChildPanelsMode).<get-isDual>(): kotlin/Boolean // com.arkivanov.decompose.router.panels/isDual.<get-isDual>|<get-isDual>@com.arkivanov.decompose.router.panels.ChildPanelsMode(){}[0]

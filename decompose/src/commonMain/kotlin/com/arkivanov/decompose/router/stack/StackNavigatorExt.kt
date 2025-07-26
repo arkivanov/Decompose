@@ -15,9 +15,6 @@ fun <C : Any> StackNavigator<C>.navigate(transformer: (stack: List<C>) -> List<C
  * Decompose will throw an exception if the provided [configuration] is already present in the stack.
  * This usually happens when a component is pushed on user interaction (e.g. a button click).
  * Consider using [pushNew] instead.
- * You can also try enabling the experimental
- * [Duplicate Configurations][com.arkivanov.decompose.DecomposeExperimentFlags.duplicateConfigurationsEnabled] feature
- * to avoid the error. But still, pushing duplicated components on top of the stack might be wrong.
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
@@ -31,9 +28,7 @@ inline fun <C : Any> StackNavigator<C>.push(configuration: C, crossinline onComp
  * [configuration] is already on top of the stack.
  *
  * Decompose will throw an exception if the provided [configuration] is already present in the
- * back stack (not at the top of the stack). You can also try enabling the experimental
- * [Duplicate Configurations][com.arkivanov.decompose.DecomposeExperimentFlags.duplicateConfigurationsEnabled] feature
- * to avoid the error.
+ * back stack (not at the top of the stack).
  *
  * This can be useful when pushing a component on button click, to avoid pushing the same component
  * if the user clicks the same button quickly multiple times.

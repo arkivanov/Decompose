@@ -30,9 +30,9 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
     override operator fun invoke(stack: ChildStack<C, T>, modifier: Modifier, content: @Composable (child: Child.Created<C, T>) -> Unit) {
         var currentStack by remember { mutableStateOf(stack) }
         var items by remember { mutableStateOf(getAnimationItems(newStack = currentStack, oldStack = null)) }
-        var nextItems: Map<Any, AnimationItem<C, T>>? by remember { mutableStateOf(null) }
+        var nextItems: Map<C, AnimationItem<C, T>>? by remember { mutableStateOf(null) }
 
-        if (stack.active.key != currentStack.active.key || stack.active.instance != currentStack.active.instance) {
+        if (stack.active.configuration != currentStack.active.configuration || stack.active.instance != currentStack.active.instance) {
             val oldStack = currentStack
             currentStack = stack
 
@@ -78,12 +78,12 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
         }
     }
 
-    private fun getAnimationItems(newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>?): Map<Any, AnimationItem<C, T>> =
+    private fun getAnimationItems(newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>?): Map<C, AnimationItem<C, T>> =
         when {
-            (oldStack == null) || (newStack.active.key == oldStack.active.key) ->
+            (oldStack == null) || (newStack.active.configuration == oldStack.active.configuration) ->
                 listOf(AnimationItem(child = newStack.active, direction = Direction.ENTER_FRONT, isInitial = true))
 
-            (newStack.size < oldStack.size) && (newStack.active.key in oldStack.backStack) ->
+            (newStack.size < oldStack.size) && (newStack.active.configuration in oldStack.backStack) ->
                 listOf(
                     AnimationItem(child = newStack.active, direction = Direction.ENTER_BACK, otherChild = oldStack.active),
                     AnimationItem(child = oldStack.active, direction = Direction.EXIT_FRONT, otherChild = newStack.active),
@@ -94,13 +94,13 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
                     AnimationItem(child = oldStack.active, direction = Direction.EXIT_BACK, otherChild = newStack.active),
                     AnimationItem(child = newStack.active, direction = Direction.ENTER_FRONT, otherChild = oldStack.active),
                 )
-        }.associateBy { it.child.key }
+        }.associateBy { it.child.configuration }
 
     private val ChildStack<*, *>.size: Int
         get() = items.size
 
-    private operator fun <C : Any> Iterable<Child<C, *>>.contains(key: Any): Boolean =
-        any { it.key == key }
+    private operator fun <C : Any> Iterable<Child<C, *>>.contains(configuration: C): Boolean =
+        any { it.configuration == configuration }
 
     protected data class AnimationItem<out C : Any, out T : Any>(
         val child: Child.Created<C, T>,
