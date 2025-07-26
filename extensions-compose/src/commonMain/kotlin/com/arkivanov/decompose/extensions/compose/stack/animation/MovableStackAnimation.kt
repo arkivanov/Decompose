@@ -5,14 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.remember
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 
 internal class MovableStackAnimation<C : Any, T : Any>(
     disableInputDuringAnimation: Boolean,
     private val selector: (child: Child.Created<C, T>, otherChild: Child.Created<C, T>, direction: Direction) -> StackAnimator?,
 ) : AbstractStackAnimation<C, T>(disableInputDuringAnimation = disableInputDuringAnimation) {
 
-    @OptIn(ExperimentalDecomposeApi::class)
     @Composable
     override fun Child(
         item: AnimationItem<C, T>,
@@ -20,7 +18,7 @@ internal class MovableStackAnimation<C : Any, T : Any>(
         content: @Composable (child: Child.Created<C, T>) -> Unit,
     ) {
         val animator =
-            remember(item.child.key, item.otherChild?.key, item.direction) {
+            remember(item.child.configuration, item.otherChild?.configuration, item.direction) {
                 if (item.otherChild == null) {
                     EmptyStackAnimator
                 } else {

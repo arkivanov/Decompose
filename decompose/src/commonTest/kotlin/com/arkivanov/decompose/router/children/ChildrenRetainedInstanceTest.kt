@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.router.children
 
-import com.arkivanov.decompose.DecomposeExperimentFlags
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
@@ -261,45 +260,5 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
         newContext.children(restoreState = { stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by DESTROYED) })
 
         assertTrue(instance.isDestroyed)
-    }
-
-    @Test
-    fun WHEN_duplicated_children_recreated_THEN_instances_retained() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val instanceKeeper = InstanceKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
-        val oldChildren by oldContext.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
-        val oldInstance1 = oldChildren.first().requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
-        val oldInstance3 = oldChildren.last().requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
-
-        val savedState = oldStateKeeper.save()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
-        val newChildren by newContext.children()
-        val newInstance1 = newChildren.first().requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
-        val newInstance3 = newChildren.last().requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
-
-        assertSame(oldInstance1, newInstance1)
-        assertSame(oldInstance3, newInstance3)
-    }
-
-    @Test
-    fun WHEN_duplicated_children_recreated_THEN_instances_not_destroyed() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val instanceKeeper = InstanceKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
-        val oldChildren by oldContext.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
-        val oldInstance1 = oldChildren.first().requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
-        val oldInstance3 = oldChildren.last().requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
-
-        val savedState = oldStateKeeper.save()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
-        newContext.children()
-
-        assertFalse(oldInstance1.isDestroyed)
-        assertFalse(oldInstance3.isDestroyed)
     }
 }

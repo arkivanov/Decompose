@@ -53,9 +53,9 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     ) {
         var currentStack by remember { mutableStateOf(stack) }
         var items by remember { mutableStateOf(getAnimationItems(newStack = currentStack)) }
-        var nextItems: Map<Any, AnimationItem<C, T>>? by remember { mutableStateOf(null) }
-        val stackKeys = remember(stack) { stack.items.map { it.key } }
-        val currentStackKeys = remember(currentStack) { currentStack.items.map { it.key } }
+        var nextItems: Map<C, AnimationItem<C, T>>? by remember { mutableStateOf(null) }
+        val stackConfigs = remember(stack) { stack.items.map { it.configuration } }
+        val currentStackConfigs = remember(currentStack) { currentStack.items.map { it.configuration } }
 
         if (stack != currentStack) {
             val oldStack = currentStack
@@ -63,12 +63,12 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
             val updateItems =
                 when {
-                    stack.active.key == oldStack.active.key ->
-                        (items.keys.singleOrNull() != stack.active.key) ||
+                    stack.active.configuration == oldStack.active.configuration ->
+                        (items.keys.singleOrNull() != stack.active.configuration) ||
                             (items.values.singleOrNull()?.child?.instance != stack.active.instance)
 
-                    items.size == 1 -> items.keys.single() != stack.active.key
-                    else -> items.keys.toList() != stackKeys
+                    items.size == 1 -> items.keys.single() != stack.active.configuration
+                    else -> items.keys.toList() != stackConfigs
                 }
 
             if (updateItems) {
@@ -115,9 +115,9 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         }
 
         if (currentStack.backStack.isNotEmpty()) {
-            val predictiveBackParams = remember(currentStackKeys) { predictiveBackParams(currentStack) }
+            val predictiveBackParams = remember(currentStackConfigs) { predictiveBackParams(currentStack) }
             if (predictiveBackParams != null) {
-                key(currentStackKeys) {
+                key(currentStackConfigs) {
                     PredictiveBackController(
                         stack = currentStack,
                         predictiveBackParams = predictiveBackParams,
@@ -149,10 +149,10 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         }
     }
 
-    private fun getAnimationItems(newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>? = null): Map<Any, AnimationItem<C, T>> =
+    private fun getAnimationItems(newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>? = null): Map<C, AnimationItem<C, T>> =
         when {
-            (oldStack == null) || (newStack.active.key == oldStack.active.key) ->
-                keyedItemsOf(
+            (oldStack == null) || (newStack.active.configuration == oldStack.active.configuration) ->
+                associateByConfig(
                     AnimationItem(
                         child = newStack.active,
                         direction = Direction.ENTER_FRONT,
@@ -160,8 +160,8 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                     )
                 )
 
-            (newStack.size < oldStack.size) && oldStack.backStack.any { it.key == newStack.active.key } ->
-                keyedItemsOf(
+            (newStack.size < oldStack.size) && oldStack.backStack.any { it.configuration == newStack.active.configuration } ->
+                associateByConfig(
                     AnimationItem(
                         child = newStack.active,
                         direction = Direction.ENTER_BACK,
@@ -177,7 +177,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                 )
 
             else ->
-                keyedItemsOf(
+                associateByConfig(
                     AnimationItem(
                         child = oldStack.active,
                         direction = Direction.EXIT_BACK,
@@ -198,7 +198,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     private fun PredictiveBackController(
         stack: ChildStack<C, T>,
         predictiveBackParams: PredictiveBackParams,
-        setItems: (Map<Any, AnimationItem<C, T>>) -> Unit,
+        setItems: (Map<C, AnimationItem<C, T>>) -> Unit,
     ) {
         val scope = rememberCoroutineScope()
 
@@ -241,7 +241,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         private val stack: ChildStack<C, T>,
         private val scope: CoroutineScope,
         private val predictiveBackParams: PredictiveBackParams,
-        private val setItems: (Map<Any, AnimationItem<C, T>>) -> Unit,
+        private val setItems: (Map<C, AnimationItem<C, T>>) -> Unit,
     ) : BackCallback() {
         private var animationHandler: AnimationHandler? = null
         private var initialBackEvent: BackEvent? = null
@@ -268,7 +268,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             val enterChild = stack.backStack.last()
 
             setItems(
-                keyedItemsOf(
+                associateByConfig(
                     AnimationItem(
                         child = enterChild,
                         direction = Direction.ENTER_BACK,
@@ -379,8 +379,8 @@ private data class AnimationItem<out C : Any, out T : Any>(
 )
 
 @ExperimentalDecomposeApi
-private fun <C : Any, T : Any> keyedItemsOf(vararg items: AnimationItem<C, T>): Map<Any, AnimationItem<C, T>> =
-    items.associateBy { it.child.key }
+private fun <C : Any, T : Any> associateByConfig(vararg items: AnimationItem<C, T>): Map<C, AnimationItem<C, T>> =
+    items.associateBy { it.child.configuration }
 
 /*
  * Can't be anonymous. See:

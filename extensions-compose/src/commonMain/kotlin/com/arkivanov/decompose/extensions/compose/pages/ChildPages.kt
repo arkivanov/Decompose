@@ -88,7 +88,7 @@ fun <C : Any, T : Any> ChildPages(
     ) { pageIndex ->
         val item = pages.items[pageIndex]
 
-        val pageRef = remember(item.key) { Ref(item.instance) }
+        val pageRef = remember(item.configuration) { Ref(item.instance) }
         if (item.instance != null) {
             pageRef.value = item.instance
         }

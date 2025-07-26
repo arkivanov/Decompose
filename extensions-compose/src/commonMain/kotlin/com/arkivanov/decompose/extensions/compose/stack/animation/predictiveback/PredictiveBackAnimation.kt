@@ -67,20 +67,20 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
 
     @Composable
     override fun invoke(stack: ChildStack<C, T>, modifier: Modifier, content: @Composable (child: Child.Created<C, T>) -> Unit) {
-        val activeKeys = remember { HashSet<Any>() }
-        val handler = rememberHandler(stack = stack, isGestureEnabled = { activeKeys.size == 1 })
+        val activeConfigurations = remember { HashSet<C>() }
+        val handler = rememberHandler(stack = stack, isGestureEnabled = { activeConfigurations.size == 1 })
         val animationProvider = LocalStackAnimationProvider.current
         val anim = animation ?: remember(animationProvider, animationProvider::provide) ?: emptyStackAnimation()
 
         val childContent =
             remember(content) {
                 movableContentOf<Child.Created<C, T>> { child ->
-                    key(child.key) {
+                    key(child.configuration) {
                         content(child)
 
                         DisposableEffect(Unit) {
-                            activeKeys += child.key
-                            onDispose { activeKeys -= child.key }
+                            activeConfigurations += child.configuration
+                            onDispose { activeConfigurations -= child.configuration }
                         }
                     }
                 }
