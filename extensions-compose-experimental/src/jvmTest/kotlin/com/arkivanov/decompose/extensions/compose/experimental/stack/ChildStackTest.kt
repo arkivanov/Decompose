@@ -62,16 +62,6 @@ class ChildStackTest(
     }
 
     @Test
-    fun GIVEN_child_A1_displayed_WHEN_push_child_A2_THEN_child_A2_displayed() {
-        val state = mutableStateOf(routerState("A1" to Config.A))
-        setContent(state)
-
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
-
-        composeRule.onNodeWithText(text = "ChildA2", substring = true).assertExists()
-    }
-
-    @Test
     fun GIVEN_child_B_displayed_and_child_A_in_back_stack_WHEN_pop_child_B_THEN_child_A_displayed() {
         val state = mutableStateOf(routerState(Config.A))
         setContent(state)
@@ -83,25 +73,13 @@ class ChildStackTest(
     }
 
     @Test
-    fun GIVEN_child_A2_displayed_and_child_A1_in_back_stack_WHEN_pop_child_A2_THEN_child_A1_displayed() {
-        val state = mutableStateOf(routerState("A1" to Config.A))
-        setContent(state)
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
-
-
-        state.setValueOnIdle(routerState("A1" to Config.A))
-
-        composeRule.onNodeWithText(text = "ChildA1", substring = true).assertExists()
-    }
-
-    @Test
     fun GIVEN_child_displayed_WHEN_new_child_instance_with_the_same_key_THEN_new_child_instance_displayed() {
-        val state = mutableStateOf(routerState(Child.Created(configuration = Config.A, instance = Any(), key = "A")))
+        val state = mutableStateOf(routerState(Child.Created(configuration = Config.A, instance = Any())))
         var lastInstance: Any? = null
         setContent(state) { lastInstance = it.instance }
 
         val instance2 = Any()
-        state.setValueOnIdle(routerState(Child.Created(configuration = Config.A, instance = instance2, key = "A")))
+        state.setValueOnIdle(routerState(Child.Created(configuration = Config.A, instance = instance2)))
 
         assertSame(instance2, lastInstance)
     }
@@ -119,18 +97,6 @@ class ChildStackTest(
     }
 
     @Test
-    fun GIVEN_child_A2_displayed_and_child_A1_in_back_stack_WHEN_pop_child_A2_THEN_state_restored_for_child_A1() {
-        val state = mutableStateOf(routerState("A1" to Config.A))
-        setContent(state)
-        composeRule.onNodeWithText(text = "ChildA1=0").performClick()
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
-
-        state.setValueOnIdle(routerState("A1" to Config.A))
-
-        composeRule.onNodeWithText(text = "ChildA1=1").assertExists()
-    }
-
-    @Test
     fun GIVEN_child_B_displayed_and_child_A_in_back_stack_WHEN_pop_child_B_and_push_child_B_THEN_state_not_restored_for_child_B() {
         val state = mutableStateOf(routerState(Config.A))
         setContent(state)
@@ -145,20 +111,6 @@ class ChildStackTest(
     }
 
     @Test
-    fun GIVEN_child_A2_displayed_and_child_A1_in_back_stack_WHEN_pop_child_A2_and_push_child_A2_THEN_state_not_restored_for_child_A2() {
-        val state = mutableStateOf(routerState("A1" to Config.A))
-        setContent(state)
-
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
-        composeRule.onNodeWithText(text = "ChildA2=0").performClick()
-
-        state.setValueOnIdle(routerState("A1" to Config.A))
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
-
-        composeRule.onNodeWithText(text = "ChildA2=0").assertExists()
-    }
-
-    @Test
     fun GIVEN_child_A_displayed_WHEN_push_child_B_THEN_child_A_disposed() {
         val state = mutableStateOf(routerState(Config.A))
         setContent(state)
@@ -166,16 +118,6 @@ class ChildStackTest(
         state.setValueOnIdle(routerState(Config.A, Config.B))
 
         composeRule.onNodeWithText(text = "ChildA", substring = true).assertDoesNotExist()
-    }
-
-    @Test
-    fun GIVEN_child_A1_displayed_WHEN_push_child_A2_THEN_child_A1_disposed() {
-        val state = mutableStateOf(routerState("A1" to Config.A))
-        setContent(state)
-
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
-
-        composeRule.onNodeWithText(text = "ChildA1", substring = true).assertDoesNotExist()
     }
 
     @Test
@@ -189,21 +131,10 @@ class ChildStackTest(
         composeRule.onNodeWithText(text = "ChildB", substring = true).assertDoesNotExist()
     }
 
-    @Test
-    fun GIVEN_child_A2_displayed_and_child_A1_in_back_stack_WHEN_pop_child_A2_THEN_child_A2_disposed() {
-        val state = mutableStateOf(routerState("A1" to Config.A))
-        setContent(state)
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
-
-        state.setValueOnIdle(routerState("A1" to Config.A))
-
-        composeRule.onNodeWithText(text = "ChildA2", substring = true).assertDoesNotExist()
-    }
-
     private fun setContent(
         state: State<ChildStack<Config, Any>>,
         content: @Composable StackAnimationScope.(Child.Created<Config, Any>) -> Unit = {
-            Child(name = it.key.toString())
+            Child(name = it.configuration.toString())
         },
     ) {
         composeRule.setContent {
@@ -235,7 +166,7 @@ class ChildStackTest(
         )
 
     private fun Pair<Any, Config>.toChild(): Child.Created<Config, Config> =
-        Child.Created(configuration = second, instance = second, key = first)
+        Child.Created(configuration = second, instance = second)
 
     @Composable
     private fun Child(name: String) {

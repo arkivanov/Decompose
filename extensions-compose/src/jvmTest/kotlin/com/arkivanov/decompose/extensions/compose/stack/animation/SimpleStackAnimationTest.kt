@@ -1,14 +1,8 @@
 package com.arkivanov.decompose.extensions.compose.stack.animation
 
-import androidx.compose.animation.EnterExitState
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.Transition
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -117,16 +111,6 @@ class SimpleStackAnimationTest {
             advanceTimeByFrame()
         }
     }
-
-    @Composable
-    private fun Transition<EnterExitState>.animateFloat(durationMillis: Int): State<Float> =
-        animateFloat(transitionSpec = { tween(durationMillis = durationMillis, easing = LinearEasing) }) { state ->
-            when (state) {
-                EnterExitState.PreEnter -> 0F
-                EnterExitState.Visible -> 1F
-                EnterExitState.PostExit -> 0F
-            }
-        }
 
     private fun child(config: Int): Child.Created<Int, Any> =
         Child.Created(configuration = config, instance = Any())

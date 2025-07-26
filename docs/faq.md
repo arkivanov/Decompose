@@ -36,13 +36,3 @@ This exception is thrown when duplicated component configurations are detected b
 
 - Prefer `pushNew` function instead of `push` when showing a component on a button click, it will properly handle accidental double clicks.
 - Prefer `pushToFront` to prevent duplicated components with the same data (configurations) in the stack.
-
-### The experimental Duplicate Configurations mode
-
-You can also try enabling the experimental Duplicate Configurations mode using the following flag:
-
-```kotlin
-DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-```
-
-This will allow having duplicate configurations in all navigation models. Please keep in mind that this feature is experimental.

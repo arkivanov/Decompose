@@ -8,7 +8,7 @@ The navigation is performed by transforming the current `NavState` to a new one.
 
 ## ChildNavState
 
-`ChildNavState` represents a state of a child component. It holds a `Configuration` that works as a key of the child component, and a `Status` that represents the required lifecycle status of the child component. As mentioned earlier, the `Configuration` must be unique within the `NavState`, unless `DecomposeExperimentFlags.duplicateConfigurationsEnabled` flag is enabled.
+`ChildNavState` represents a state of a child component. It holds a `Configuration` that works as a key of the child component, and a `Status` that represents the required lifecycle status of the child component. As mentioned earlier, the `Configuration` must unique within the `NavState`.
 
 The `Status` can be one of the following:
 
