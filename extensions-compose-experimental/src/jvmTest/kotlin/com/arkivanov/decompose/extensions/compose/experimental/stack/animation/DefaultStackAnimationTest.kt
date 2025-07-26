@@ -40,7 +40,7 @@ class DefaultStackAnimationTest {
                 val value by transition.animateFloat(durationMillis = 1000)
                 val pair = composeRule.mainClock.currentTime to value
 
-                when (it.key) {
+                when (it.configuration) {
                     1 -> values1 += pair
                     2 -> values2 += pair
                 }
@@ -87,7 +87,7 @@ class DefaultStackAnimationTest {
             anim(stack = stack, modifier = Modifier) {
                 transition.animateFloat(durationMillis = 1000)
 
-                if (it.key == 1) {
+                if (it.configuration == 1) {
                     LaunchedEffect(Unit) {
                         counter++
                     }

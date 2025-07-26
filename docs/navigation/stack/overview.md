@@ -21,16 +21,6 @@ Each component created and managed by the `Child Stack` has a configuration, ple
 
 - Configurations must be unique (by equality) within the `Child Stack`.
 
-### The experimental Duplicate Configurations mode
-
-You can also try enabling the experimental Duplicate Configurations mode using the following flag:
-
-```kotlin
-DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-```
-
-This will allow having duplicate configurations in all navigation models. Please keep in mind that this feature is experimental.
-
 ### Initializing the Child Stack
 
 There are three steps to initialize the `Child Stack`:
