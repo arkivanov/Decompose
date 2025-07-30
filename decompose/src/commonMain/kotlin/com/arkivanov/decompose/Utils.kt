@@ -4,8 +4,8 @@ import com.arkivanov.essenty.lifecycle.Lifecycle
 import kotlin.reflect.KClass
 
 @InternalDecomposeApi
-fun Child<*, *>.keyHashString(): String =
-    "${configuration::class.uniqueName ?: configuration::class.simpleName}_${configuration.hashCode().toString(radix = 36)}"
+fun Any.keyHashString(): String =
+    "${this::class.uniqueName ?: this::class.simpleName}_${hashCode().toString(radix = 36)}"
 
 internal expect val KClass<*>.uniqueName: String?
 

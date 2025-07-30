@@ -7,13 +7,18 @@ import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.STARTED
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.getValue
+import com.arkivanov.decompose.testutils.keys
+import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
 
 @Suppress("TestFunctionName")
 class ChildrenBasicTest : ChildrenTestBase() {
@@ -215,5 +220,141 @@ class ChildrenBasicTest : ChildrenTestBase() {
         }
 
         children.assertChildren(1 to 1, 2 to 2)
+    }
+
+    @Test
+    fun foo() {
+        val children by context.children(initialState = stateOf(1 by DESTROYED))
+        val keys = children.keys
+
+        navigate { it + listOf(2 by CREATED) }
+
+        assertEquals(keys, children.keys.dropLast(1))
+        children.assertKeysUnique()
+    }
+
+    @Test
+    fun foo7() {
+        val children by context.children(initialState = stateOf(1 by DESTROYED))
+        val keys = children.keys
+
+        navigate { listOf(2 by CREATED) + it }
+
+        assertEquals(keys, children.keys.drop(1))
+        children.assertKeysUnique()
+    }
+
+    @Test
+    fun foo2() {
+        val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED))
+        val keys = children.keys
+
+        navigate { it + listOf(3 by RESUMED) }
+
+        assertEquals(keys, children.keys.dropLast(1))
+        children.assertKeysUnique()
+    }
+
+    @Test
+    fun foo8() {
+        val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED))
+        val keys = children.keys
+
+        navigate { listOf(3 by RESUMED) + it }
+
+        assertEquals(keys, children.keys.drop(1))
+        children.assertKeysUnique()
+    }
+
+    @Test
+    fun foo3() {
+        val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED))
+        val keys = children.keys
+
+        navigate { it.dropLast(1) }
+
+        assertEquals(keys.dropLast(1), children.keys)
+        children.assertKeysUnique()
+    }
+
+    @Test
+    fun foo9() {
+        val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED))
+        val keys = children.keys
+
+        navigate { it.drop(1) }
+
+        assertEquals(keys.drop(1), children.keys)
+        children.assertKeysUnique()
+    }
+
+    @Test
+    fun foo4() {
+        val children by context.children(initialState = stateOf(1 by DESTROYED))
+        val keys = children.keys
+
+        navigate { listOf(2 by DESTROYED) }
+
+        assertNotEquals(keys, children.keys)
+        children.assertKeysUnique()
+    }
+
+    @Test
+    fun foo5() {
+        val children by context.children(initialState = stateOf(1 by CREATED))
+        val keys = children.keys
+
+        navigate { listOf(2 by RESUMED) }
+
+        assertNotEquals(keys, children.keys)
+        children.assertKeysUnique()
+    }
+
+    @Test
+    fun foo6() {
+        val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED))
+        val keys = children.keys
+
+        navigate { listOf(1 by CREATED, 3 by DESTROYED) }
+
+        assertEquals(keys.dropLast(1), children.keys.dropLast(1))
+        assertNotEquals(keys, children.keys)
+        children.assertKeysUnique()
+    }
+
+    @Test
+    fun foo10() {
+        val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED))
+        val keys = children.keys
+
+        navigate { listOf(3 by CREATED, 2 by DESTROYED) }
+
+        assertEquals(keys.drop(1), children.keys.drop(1))
+        assertNotEquals(keys, children.keys)
+        children.assertKeysUnique()
+    }
+
+    @Test
+    fun foo11() {
+        var ctx = TestComponentContext()
+        var children = ctx.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
+        val keys = children.value.keys
+
+        ctx = ctx.recreate(isConfigurationChange = true)
+        children = ctx.children()
+
+        assertEquals(keys, children.value.keys)
+    }
+
+    @Test
+    fun foo12() {
+        var ctx = TestComponentContext()
+        var children = ctx.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
+        val keys = children.value.keys
+
+        ctx = ctx.recreate(isConfigurationChange = false)
+        children = ctx.children()
+
+        assertEquals(keys, children.value.keys)
     }
 }

@@ -17,10 +17,11 @@ data class ChildStack<out C : Any, out T : Any>(
     /**
      * Creates [ChildStack] with only one child with the specified [configuration] and [instance].
      */
-    constructor(configuration: C, instance: T) : this(
+    constructor(configuration: C, instance: T, key: String = "") : this(
         active = Child.Created(
             configuration = configuration,
-            instance = instance
+            instance = instance,
+            key = key,
         ),
     )
 
