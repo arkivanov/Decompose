@@ -220,16 +220,23 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
         restoreState = { restorePanels(it)?.let(::PanelsNavState) },
         navTransformer = { state, event -> PanelsNavState(event.transformer(state.panels)) },
         stateMapper = { state, children ->
-            val main = children.firstNotNullOf { it.instance as? Panel.Main }
-            val details = children.firstNotNullOfOrNull { it.instance as? Panel.Details }
-            val extra = children.firstNotNullOfOrNull { it.instance as? Panel.Extra }
+            var main: Child.Created<MC, MT>? = null
+            var details: Child.Created<DC, DT>? = null
+            var extra: Child.Created<EC, ET>? = null
 
-            ChildPanels(
-                main = Child.Created(configuration = main.config, instance = main.instance),
-                details = details?.let { Child.Created(configuration = it.config, instance = it.instance) },
-                extra = extra?.let { Child.Created(configuration = it.config, instance = it.instance) },
-                mode = state.panels.mode,
-            )
+            children.forEach { child ->
+                if (child is Child.Created) {
+                    when (val instance = child.instance) {
+                        is Panel.Main -> main = Child.Created(instance.config, instance.instance, child.key)
+                        is Panel.Details -> details = Child.Created(instance.config, instance.instance, child.key)
+                        is Panel.Extra -> extra = Child.Created(instance.config, instance.instance, child.key)
+                    }
+                }
+            }
+
+            checkNotNull(main) { "Main panel not found: $state, $children" }
+
+            ChildPanels(main = main, details = details, extra = extra, mode = state.panels.mode)
         },
         onStateChanged = { newState, oldState -> onStateChanged(newState.panels, oldState?.panels) },
         onEventComplete = { event, newState, oldState -> event.onComplete(newState.panels, oldState.panels) },

@@ -19,6 +19,7 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
 
     override fun invoke(
         configuration: C,
+        key: String,
         savedState: SerializableContainer?,
         instanceKeeperDispatcher: InstanceKeeperDispatcher?
     ): ChildItem.Created<C, T> {
@@ -41,6 +42,7 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
 
         return ChildItem.Created(
             configuration = configuration,
+            key = key,
             instance = component,
             lifecycleRegistry = componentLifecycleRegistry,
             stateKeeperDispatcher = stateKeeperDispatcher,

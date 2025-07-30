@@ -1,6 +1,7 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.mapped
 import com.arkivanov.decompose.router.children.ChildItem.Created
 import com.arkivanov.decompose.router.children.ChildItem.Destroyed
 import com.arkivanov.decompose.router.children.ChildNavState.Status
@@ -14,13 +15,14 @@ import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.start
 import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.essenty.statekeeper.SerializableContainer
+import kotlinx.serialization.Serializable
 
 internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     lifecycle: Lifecycle,
     retainedInstanceSupplier: (factory: () -> InstanceKeeper.Instance) -> InstanceKeeper.Instance,
     private val childItemFactory: ChildItemFactory<C, T>,
     navState: N,
-    savedChildState: List<SerializableContainer?>?,
+    savedChildState: List<SavedChildState>?,
 ) {
     var navState: N = navState
         private set
@@ -32,9 +34,9 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             items.map { item ->
                 val instance = item.instance
                 if (instance != null) {
-                    Child.Created(configuration = item.configuration, instance = instance)
+                    Child.Created(configuration = item.configuration, instance = instance, key = item.key)
                 } else {
-                    Child.Destroyed(configuration = item.configuration)
+                    Child.Destroyed(configuration = item.configuration, key = item.key)
                 }
             }
 
@@ -63,20 +65,32 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         }
     }
 
-    private fun restore(navState: N, savedStates: List<SerializableContainer?>) {
-        val retainedChildren = retainedInstance.items.associateByTo(HashMap(), Created<C, *>::configuration)
+    private fun restore(navState: N, savedStates: List<SavedChildState>) {
+        val retainedChildren = HashMap<Int, Created<C, T>>()
+        retainedInstance.items.forEachIndexed(retainedChildren::put)
+        val restoreRetainedChildren = navState.children.mapped { it.configuration } == retainedInstance.items.mapped { it.configuration }
         retainedInstance.items.clear()
 
-        navState.children.zip(savedStates).forEach { (childNavState, savedState) ->
+        navState.children.zip(savedStates).forEachIndexed { index, (childNavState, savedState) ->
             items +=
                 restoreItem(
                     status = childNavState.status,
-                    getDestroyedItem = { Destroyed(configuration = childNavState.configuration, savedState = savedState) },
+                    getDestroyedItem = {
+                        Destroyed(
+                            configuration = childNavState.configuration,
+                            key = savedState.key,
+                            savedState = savedState.savedState,
+                        )
+                    },
                     getCreatedItem = {
                         childItemFactory(
                             configuration = childNavState.configuration,
-                            savedState = savedState,
-                            instanceKeeperDispatcher = retainedChildren.remove(childNavState.configuration)?.instanceKeeperDispatcher,
+                            key = savedState.key,
+                            savedState = savedState.savedState,
+                            instanceKeeperDispatcher = retainedChildren
+                                .takeIf { restoreRetainedChildren }
+                                ?.remove(index)
+                                ?.instanceKeeperDispatcher,
                         ).also {
                             retainedInstance.items += it
                         }
@@ -113,12 +127,18 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
                 }
         }
 
-    fun saveChildState(): List<SerializableContainer?> =
+    fun saveChildState(): List<SavedChildState> =
         items.map { item ->
-            when (item) {
-                is Created -> item.stateKeeperDispatcher.save()
-                is Destroyed -> item.savedState
-            }
+            SavedChildState(
+                key = item.key,
+                savedState = item.saveState(),
+            )
+        }
+
+    private fun ChildItem<C, T>.saveState(): SerializableContainer? =
+        when (this) {
+            is Created -> stateKeeperDispatcher.save()
+            is Destroyed -> savedState
         }
 
     fun navigate(navState: N) {
@@ -127,26 +147,22 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     }
 
     private fun switch(newStates: List<ChildNavState<C>>) {
-        val newConfigurations = newStates.mapTo(HashSet(), ChildNavState<C>::configuration)
-        check(newConfigurations.size == newStates.size) {
-            "Configurations must be unique: ${newStates.map(ChildNavState<C>::configuration)}."
-        }
-
-        val oldItems = items.associateBy(ChildItem<C, *>::configuration)
-        val newItems = prepareNewItems(newStates = newStates, oldItems = oldItems)
-        destroyOldItems(newConfigurations = newConfigurations, oldItems = oldItems.values)
+        val newKeyedStates = newStates.keyed { it.configuration }
+        val oldKeyedItems = items.keyed { it.configuration }
+        val newItems = prepareNewItems(newStates = newKeyedStates, oldItems = oldKeyedItems)
+        destroyOldItems(newKeys = newKeyedStates.keys, oldItems = oldKeyedItems)
         processNewItems(newItems = newItems)
     }
 
     private fun prepareNewItems(
-        newStates: List<ChildNavState<C>>,
-        oldItems: Map<C, ChildItem<C, T>>,
+        newStates: Map<Any, ChildNavState<C>>,
+        oldItems: Map<Any, ChildItem<C, T>>,
     ): List<Pair<ChildItem<C, T>, Status>> {
         val newItems = ArrayList<Pair<ChildItem<C, T>, Status>>(newStates.size)
 
-        newStates.forEach { state ->
+        newStates.forEach { (key, state) ->
             newItems +=
-                when (val child = oldItems[state.configuration]) {
+                when (val child = oldItems[key]) {
                     is Created -> child to state.status
 
                     is Destroyed ->
@@ -157,21 +173,24 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
                             Status.STARTED,
                             Status.RESUMED ->
                                 Pair(
-                                    first = childItemFactory(configuration = state.configuration, savedState = child.savedState)
-                                        .apply { lifecycleRegistry.create() },
+                                    first = childItemFactory(
+                                        configuration = state.configuration,
+                                        key = child.key,
+                                        savedState = child.savedState
+                                    ).apply { lifecycleRegistry.create() },
                                     second = state.status,
                                 )
                         }
 
                     null ->
                         when (state.status) {
-                            Status.DESTROYED -> Destroyed(configuration = state.configuration) to state.status
+                            Status.DESTROYED -> Destroyed(configuration = state.configuration, key = randomKey()) to state.status
 
                             Status.CREATED,
                             Status.STARTED,
                             Status.RESUMED ->
                                 Pair(
-                                    first = childItemFactory(configuration = state.configuration)
+                                    first = childItemFactory(configuration = state.configuration, key = randomKey())
                                         .apply { lifecycleRegistry.create() },
                                     second = state.status,
                                 )
@@ -183,12 +202,12 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     }
 
     private fun destroyOldItems(
-        newConfigurations: Set<C>,
-        oldItems: Collection<ChildItem<C, T>>,
+        newKeys: Set<Any>,
+        oldItems: Map<Any, ChildItem<C, T>>,
     ) {
-        for (item in oldItems) {
+        for ((key, item) in oldItems) {
             val child = item as? Created ?: continue
-            if (item.configuration !in newConfigurations) {
+            if (key !in newKeys) {
                 child.destroy()
             }
         }
@@ -212,7 +231,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             Status.DESTROYED -> {
                 val savedState = item.stateKeeperDispatcher.save()
                 item.destroy()
-                Destroyed(configuration = item.configuration, savedState = savedState)
+                item.toDestroyed(savedState = savedState)
             }
 
             Status.CREATED -> {
@@ -261,6 +280,12 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         instanceKeeperDispatcher.destroy()
     }
 
+    @Serializable
+    data class SavedChildState(
+        val key: String,
+        val savedState: SerializableContainer?,
+    )
+
     private class RetainedInstance<C : Any, T : Any> : InstanceKeeper.Instance {
         val items: MutableList<Created<C, T>> = ArrayList()
 
@@ -268,5 +293,16 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             items.forEach { it.instanceKeeperDispatcher.destroy() }
             items.clear()
         }
+    }
+}
+
+private fun <T : Any, C : Any> List<T>.keyed(configuration: (T) -> C): Map<Any, T> {
+    val numbers = HashMap<C, Int>()
+
+    return associateBy { item ->
+        val config = configuration(item)
+        val number = (numbers[config] ?: 0) + 1
+        numbers[config] = number
+        config to number
     }
 }
