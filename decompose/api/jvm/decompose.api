@@ -5,39 +5,41 @@ public abstract interface class com/arkivanov/decompose/Cancellation {
 public abstract class com/arkivanov/decompose/Child {
 	public abstract fun getConfiguration ()Ljava/lang/Object;
 	public abstract fun getInstance ()Ljava/lang/Object;
-	public abstract fun getKey ()Ljava/lang/Object;
+	public abstract fun getKey ()Ljava/lang/String;
 }
 
 public final class com/arkivanov/decompose/Child$Created : com/arkivanov/decompose/Child {
 	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;)V
-	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/Object;
 	public final fun component2 ()Ljava/lang/Object;
-	public final fun component3 ()Ljava/lang/Object;
+	public final fun component3 ()Ljava/lang/String;
 	public final synthetic fun copy (Ljava/lang/Object;Ljava/lang/Object;)Lcom/arkivanov/decompose/Child;
-	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/arkivanov/decompose/Child$Created;
-	public static synthetic fun copy$default (Lcom/arkivanov/decompose/Child$Created;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;ILjava/lang/Object;)Lcom/arkivanov/decompose/Child$Created;
+	public final synthetic fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/arkivanov/decompose/Child$Created;
+	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;)Lcom/arkivanov/decompose/Child$Created;
+	public static synthetic fun copy$default (Lcom/arkivanov/decompose/Child$Created;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;ILjava/lang/Object;)Lcom/arkivanov/decompose/Child$Created;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getConfiguration ()Ljava/lang/Object;
 	public fun getInstance ()Ljava/lang/Object;
-	public fun getKey ()Ljava/lang/Object;
+	public fun getKey ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/arkivanov/decompose/Child$Destroyed : com/arkivanov/decompose/Child {
 	public fun <init> (Ljava/lang/Object;)V
-	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;)V
+	public fun <init> (Ljava/lang/Object;Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/Object;
-	public final fun component2 ()Ljava/lang/Object;
+	public final fun component2 ()Ljava/lang/String;
 	public final synthetic fun copy (Ljava/lang/Object;)Lcom/arkivanov/decompose/Child;
-	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;)Lcom/arkivanov/decompose/Child$Destroyed;
-	public static synthetic fun copy$default (Lcom/arkivanov/decompose/Child$Destroyed;Ljava/lang/Object;Ljava/lang/Object;ILjava/lang/Object;)Lcom/arkivanov/decompose/Child$Destroyed;
+	public final synthetic fun copy (Ljava/lang/Object;Ljava/lang/Object;)Lcom/arkivanov/decompose/Child$Destroyed;
+	public final fun copy (Ljava/lang/Object;Ljava/lang/String;)Lcom/arkivanov/decompose/Child$Destroyed;
+	public static synthetic fun copy$default (Lcom/arkivanov/decompose/Child$Destroyed;Ljava/lang/Object;Ljava/lang/String;ILjava/lang/Object;)Lcom/arkivanov/decompose/Child$Destroyed;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getConfiguration ()Ljava/lang/Object;
 	public synthetic fun getInstance ()Ljava/lang/Object;
 	public fun getInstance ()Ljava/lang/Void;
-	public fun getKey ()Ljava/lang/Object;
+	public fun getKey ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -547,7 +549,7 @@ public final class com/arkivanov/decompose/router/stack/ChildStack {
 	public fun <init> (Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;)V
 	public synthetic fun <init> (Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;)V
-	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;)V
 	public final fun component1 ()Lcom/arkivanov/decompose/Child$Created;
 	public final fun component2 ()Ljava/util/List;
 	public final fun copy (Lcom/arkivanov/decompose/Child$Created;Ljava/util/List;)Lcom/arkivanov/decompose/router/stack/ChildStack;
