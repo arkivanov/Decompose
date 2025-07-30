@@ -4,7 +4,7 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 
-class TestStackRouter<C : Any>(stack: List<C>) : TestStackNavigator<C>(stack) {
+class TestStackRouter<C : TestStackRouter.Keyed>(stack: List<C>) : TestStackNavigator<C>(stack) {
 
     private val _stack = MutableValue(stack.toRouterState())
     val stack: Value<ChildStack<C, Any>> = _stack
@@ -20,12 +20,18 @@ class TestStackRouter<C : Any>(stack: List<C>) : TestStackNavigator<C>(stack) {
             active = Child.Created(
                 configuration = last(),
                 instance = last(),
+                key = last().key,
             ),
             backStack = dropLast(1).map {
                 Child.Created(
                     configuration = it,
                     instance = it,
+                    key = it.key,
                 )
             }
         )
+
+    interface Keyed {
+        val key: String
+    }
 }
