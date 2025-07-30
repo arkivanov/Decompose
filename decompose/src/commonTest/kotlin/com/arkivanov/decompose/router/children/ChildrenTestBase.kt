@@ -5,6 +5,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.decompose.testutils.keys
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
@@ -16,6 +17,7 @@ import kotlinx.serialization.Serializable
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
 
 open class ChildrenTestBase {
 
@@ -32,7 +34,7 @@ open class ChildrenTestBase {
         )
 
     @BeforeTest
-    fun before() {
+    open fun before() {
         lifecycle.resume()
     }
 
@@ -106,6 +108,12 @@ open class ChildrenTestBase {
                 }
             }
         )
+
+        assertKeysUnique()
+    }
+
+    protected fun List<Child<Int, Component>>.assertKeysUnique() {
+        assertEquals(keys, keys.distinct(), "Keys must be unique: $this")
     }
 
     protected fun List<Child<Int, Component>>.getByConfig(config: Int): Child<Int, Component> =

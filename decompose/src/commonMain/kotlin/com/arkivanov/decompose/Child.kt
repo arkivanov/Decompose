@@ -1,24 +1,35 @@
 package com.arkivanov.decompose
 
+/**
+ * A holder class for child [configuration], [instance] and [key].
+ */
 sealed class Child<out C : Any, out T : Any> {
 
+    /**
+     * A configuration object the child was originally created with.
+     */
     abstract val configuration: C
+
+    /**
+     * The actual child instance.
+     */
     abstract val instance: T?
 
-    @ExperimentalDecomposeApi
-    abstract val key: Any
+    /**
+     * A key of the child, unique within the navigation model managing the child.
+     */
+    abstract val key: String
 
-    data class Created<out C : Any, out T : Any> @ExperimentalDecomposeApi constructor(
+    data class Created<out C : Any, out T : Any>(
         override val configuration: C,
         override val instance: T,
-
-        @property:ExperimentalDecomposeApi
-        override val key: Any,
+        override val key: String,
     ) : Child<C, T>() {
+        // TODO: Annotate with @VisibleForTesting in version 4.0
         constructor(configuration: C, instance: T) : this(
             configuration = configuration,
             instance = instance,
-            key = configuration,
+            key = configuration.hashString(),
         )
 
         @Deprecated(message = "For binary compatibility", level = DeprecationLevel.HIDDEN)
@@ -28,13 +39,12 @@ sealed class Child<out C : Any, out T : Any> {
 
     data class Destroyed<out C : Any> @ExperimentalDecomposeApi constructor(
         override val configuration: C,
-
-        @property:ExperimentalDecomposeApi
-        override val key: Any,
+        override val key: String,
     ) : Child<C, Nothing>() {
+        // TODO: Annotate with @VisibleForTesting in version 4.0
         constructor(configuration: C) : this(
             configuration = configuration,
-            key = configuration,
+            key = configuration.hashString(),
         )
 
         override val instance: Nothing? = null
