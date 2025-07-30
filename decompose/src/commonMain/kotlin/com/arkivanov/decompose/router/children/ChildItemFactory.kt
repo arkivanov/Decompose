@@ -7,6 +7,7 @@ internal interface ChildItemFactory<C : Any, out T : Any> {
 
     operator fun invoke(
         configuration: C,
+        key: String,
         savedState: SerializableContainer? = null,
         instanceKeeperDispatcher: InstanceKeeperDispatcher? = null,
     ): ChildItem.Created<C, T>

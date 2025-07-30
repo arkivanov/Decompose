@@ -15,11 +15,13 @@ class PreviewCardsComponent : CardsComponent {
                 active = Child.Created(
                     configuration = 1,
                     instance = PreviewCardComponent(color = 0xFFFF0000),
+                    key = "",
                 ),
                 backStack = listOf(
                     Child.Created(
                         configuration = 2,
                         instance = PreviewCardComponent(color = 0xFF0000FF),
+                        key = "",
                     )
                 ),
             )

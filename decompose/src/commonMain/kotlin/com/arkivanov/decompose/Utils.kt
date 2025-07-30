@@ -3,10 +3,6 @@ package com.arkivanov.decompose
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import kotlin.reflect.KClass
 
-@InternalDecomposeApi
-fun Child<*, *>.keyHashString(): String =
-    "${configuration::class.uniqueName ?: configuration::class.simpleName}_${configuration.hashCode().toString(radix = 36)}"
-
 internal expect val KClass<*>.uniqueName: String?
 
 internal val Lifecycle.isDestroyed: Boolean get() = state == Lifecycle.State.DESTROYED

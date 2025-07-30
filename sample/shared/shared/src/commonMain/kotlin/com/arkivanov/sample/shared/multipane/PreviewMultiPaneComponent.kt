@@ -25,8 +25,12 @@ class PreviewMultiPaneComponent(
     override val panels: Value<ChildPanels<Any, ArticleListComponent, Any, ArticleDetailsComponent, Any, ArticleAuthorComponent>> =
         MutableValue(
             ChildPanels(
-                main = Child.Created(configuration = Unit, instance = PreviewArticleListComponent()),
-                details = if (isMultiPane) Child.Created(configuration = Unit, instance = PreviewArticleDetailsComponent()) else null,
+                main = Child.Created(configuration = Unit, instance = PreviewArticleListComponent(), key = ""),
+                details = if (isMultiPane) Child.Created(
+                    configuration = Unit,
+                    instance = PreviewArticleDetailsComponent(),
+                    key = ""
+                ) else null,
                 mode = if (isMultiPane) ChildPanelsMode.DUAL else ChildPanelsMode.SINGLE,
             )
         )
