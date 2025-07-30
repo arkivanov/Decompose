@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.Ref
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.arkivanov.decompose.keyHashString
 import com.arkivanov.decompose.router.pages.ChildPages
 import com.arkivanov.decompose.value.Value
 
@@ -28,7 +27,7 @@ fun <C : Any, T : Any> ChildPages(
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     pager: ChildPagesPager = defaultHorizontalPager(),
-    key: (Child<C, T>) -> Any = Child<*, *>::keyHashString,
+    key: (Child<C, T>) -> Any = Child<*, *>::key,
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
     val state by pages.subscribeAsState()
@@ -54,7 +53,7 @@ fun <C : Any, T : Any> ChildPages(
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     pager: ChildPagesPager = defaultHorizontalPager(),
-    key: (Child<C, T>) -> Any = Child<*, *>::keyHashString,
+    key: (Child<C, T>) -> Any = Child<*, *>::key,
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
     val selectedIndex = pages.selectedIndex.coerceAtLeast(0)

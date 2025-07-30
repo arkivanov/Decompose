@@ -4,43 +4,29 @@ sealed class Child<out C : Any, out T : Any> {
 
     abstract val configuration: C
     abstract val instance: T?
-
-    @ExperimentalDecomposeApi
-    abstract val key: Any
+    abstract val key: String
 
     data class Created<out C : Any, out T : Any> @ExperimentalDecomposeApi constructor(
         override val configuration: C,
         override val instance: T,
-
-        @property:ExperimentalDecomposeApi
-        override val key: Any,
+        override val key: String,
     ) : Child<C, T>() {
         constructor(configuration: C, instance: T) : this(
             configuration = configuration,
             instance = instance,
-            key = configuration,
+            key = configuration.keyHashString(),
         )
-
-        @Deprecated(message = "For binary compatibility", level = DeprecationLevel.HIDDEN)
-        fun copy(configuration: @UnsafeVariance C, instance: @UnsafeVariance T): Child<C, T> =
-            copy(configuration = configuration, instance = instance)
     }
 
     data class Destroyed<out C : Any> @ExperimentalDecomposeApi constructor(
         override val configuration: C,
-
-        @property:ExperimentalDecomposeApi
-        override val key: Any,
+        override val key: String,
     ) : Child<C, Nothing>() {
         constructor(configuration: C) : this(
             configuration = configuration,
-            key = configuration,
+            key = configuration.keyHashString(),
         )
 
         override val instance: Nothing? = null
-
-        @Deprecated(message = "For binary compatibility", level = DeprecationLevel.HIDDEN)
-        fun copy(configuration: @UnsafeVariance C): Child<C, Nothing> =
-            copy(configuration = configuration)
     }
 }
