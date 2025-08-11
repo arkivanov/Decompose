@@ -11,6 +11,7 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.consumeRequired
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
 
 /**
  * Initializes and manages a slot for one child component.
@@ -40,15 +41,15 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childSlot(
     childSlot(
         source = source,
         saveConfiguration = { configuration ->
-            if ((serializer != null) && (configuration != null)) {
-                SerializableContainer(value = configuration, strategy = serializer)
+            if (serializer != null) {
+                SerializableContainer(value = SavedState(configuration), strategy = SavedState.serializer(serializer))
             } else {
                 null
             }
         },
         restoreConfiguration = { container ->
             if (serializer != null) {
-                container.consumeRequired(strategy = serializer)
+                container.consumeRequired(strategy = SavedState.serializer(serializer)).configuration
             } else {
                 null
             }
@@ -115,3 +116,6 @@ private data class SlotNavState<out C : Any>(
             listOf(SimpleChildNavState(configuration = configuration, status = Status.RESUMED))
         }
 }
+
+@Serializable
+private class SavedState<C : Any>(val configuration: C?)
