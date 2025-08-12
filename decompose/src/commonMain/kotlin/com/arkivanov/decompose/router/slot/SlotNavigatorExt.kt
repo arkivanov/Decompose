@@ -24,9 +24,10 @@ inline fun <C : Any> SlotNavigator<C>.activate(configuration: C, crossinline onC
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  * The `isSuccess` argument is `true` if there was an active child component, `false` otherwise.
  */
+@Suppress("UNCHECKED_CAST") // Temporary workaround until Kotlin 2.2.0, see: https://youtrack.jetbrains.com/issue/KT-77801
 inline fun SlotNavigator<*>.dismiss(crossinline onComplete: (isSuccess: Boolean) -> Unit = {}) {
-    navigate(
-        transformer = { _: Any? -> null }, // Specifying the type explicitly here fixes CCE on wasmJS on Kotlin 2.2, see KT-77801
+    (this as SlotNavigator<Any>).navigate(
+        transformer = { null },
         onComplete = { _, oldConfiguration -> onComplete(oldConfiguration != null) },
     )
 }
