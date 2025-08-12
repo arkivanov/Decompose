@@ -9,7 +9,6 @@ import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.children
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.statekeeper.SerializableContainer
-import com.arkivanov.essenty.statekeeper.consumeRequired
 import kotlinx.serialization.KSerializer
 
 /**
@@ -40,7 +39,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childSlot(
     childSlot(
         source = source,
         saveConfiguration = { configuration ->
-            if ((serializer != null) && (configuration != null)) {
+            if (serializer != null) {
                 SerializableContainer(value = configuration, strategy = serializer)
             } else {
                 null
@@ -48,7 +47,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childSlot(
         },
         restoreConfiguration = { container ->
             if (serializer != null) {
-                container.consumeRequired(strategy = serializer)
+                container.consume(strategy = serializer)
             } else {
                 null
             }
