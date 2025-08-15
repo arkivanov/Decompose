@@ -4,13 +4,14 @@ import com.arkivanov.gradle.setupSourceSets
 
 plugins {
     id("kotlin-multiplatform")
+    id("kotlinx-serialization")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.arkivanov.gradle.setup")
 }
 
 setupMultiplatform {
-    js {
+    wasmJs {
         browser()
         binaries.executable()
     }
@@ -18,18 +19,14 @@ setupMultiplatform {
 
 kotlin {
     setupSourceSets {
-        val js by bundle()
+        val wasmJs by bundle()
 
-        js.main.dependencies {
+        wasmJs.main.dependencies {
             implementation(project(":decompose"))
             implementation(project(":extensions-compose"))
-            implementation(project(":sample:shared:shared"))
-            implementation(project(":sample:shared:compose"))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
-            implementation(project.dependencies.enforcedPlatform(deps.jetbrains.kotlinWrappers.kotlinWrappersBom.get()))
-            implementation("org.jetbrains.kotlin-wrappers:kotlin-browser")
         }
     }
 }
