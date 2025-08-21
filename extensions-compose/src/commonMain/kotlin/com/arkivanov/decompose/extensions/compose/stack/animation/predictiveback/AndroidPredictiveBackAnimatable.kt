@@ -1,7 +1,6 @@
 package com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -10,12 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onPlaced
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.util.lerp
 import com.arkivanov.decompose.ExperimentalDecomposeApi
@@ -91,26 +88,38 @@ private class AndroidPredictiveBackAnimatable(
     @Composable
     private fun Modifier.exitModifier(layoutShape: (progress: Float, edge: BackEvent.SwipeEdge) -> Shape): Modifier {
         var size by remember { mutableStateOf(IntSize.Zero) }
+        val scaleFactor = 1F - exitProgress * 0.1F
 
         return this
-            .scale(1F - exitProgress * 0.1F)
             .onPlaced { size = it.size }
-            .offset { IntOffset(x = (size.width * 0.5F * exitProgress).toInt(), y = 0) }
-            .alpha(1F - exitProgress)
-            .clip(layoutShape(exitProgress, edge))
+            .graphicsLayer(
+                scaleX = scaleFactor,
+                scaleY = scaleFactor,
+                alpha = 1F - exitProgress,
+                translationX = size.width * 0.5F * exitProgress,
+                shape = layoutShape(exitProgress, edge),
+                clip = true,
+                compositingStrategy = CompositingStrategy.Offscreen,
+            )
     }
 
     @Composable
     private fun Modifier.enterModifier(layoutShape: (progress: Float, edge: BackEvent.SwipeEdge) -> Shape): Modifier {
         val totalProgress = lerp(start = enterProgress, stop = 1F, fraction = finishProgress)
         var size by remember { mutableStateOf(IntSize.Zero) }
+        val scaleFactor = lerp(start = lerp(start = 0.95F, stop = 0.90F, fraction = enterProgress), stop = 1F, fraction = finishProgress)
 
         return this
-            .scale(lerp(start = lerp(start = 0.95F, stop = 0.90F, fraction = enterProgress), stop = 1F, fraction = finishProgress))
             .onPlaced { size = it.size }
-            .offset { IntOffset(x = lerp(start = -size.width * 0.15F, stop = 0F, fraction = totalProgress).toInt(), y = 0) }
-            .alpha(totalProgress)
-            .clip(layoutShape(finishProgress, edge))
+            .graphicsLayer(
+                scaleX = scaleFactor,
+                scaleY = scaleFactor,
+                alpha = totalProgress,
+                translationX = lerp(start = -size.width * 0.15F, stop = 0F, fraction = totalProgress),
+                shape = layoutShape(finishProgress, edge),
+                clip = true,
+                compositingStrategy = CompositingStrategy.Offscreen,
+            ) // Not using `graphicsLayer {}` with lambda due to https://github.com/arkivanov/Decompose/issues/877
     }
 
     override suspend fun animate(event: BackEvent) {

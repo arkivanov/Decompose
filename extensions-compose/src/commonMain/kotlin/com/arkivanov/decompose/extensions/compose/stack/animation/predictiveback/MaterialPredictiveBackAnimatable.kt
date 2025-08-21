@@ -1,7 +1,6 @@
 package com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -11,17 +10,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
 import kotlinx.coroutines.coroutineScope
@@ -80,43 +79,47 @@ private class MaterialPredictiveBackAnimatable(
 
     @Composable
     private fun Modifier.exitModifier(shape: Shape): Modifier {
-        var size by remember { mutableStateOf(IntSize.Zero) }
+        var size by remember { mutableStateOf(Size.Zero) }
         val scaleFactor = 1F - progress / 10F
+        val density = LocalDensity.current
 
         return this
-            .scale(scaleFactor)
-            .onPlaced { size = it.size }
-            .offset { exitOffset(size = size, scaleFactor = scaleFactor) }
-            .alpha(finishProgress)
-            .clip(shape)
+            .onPlaced { size = it.size.toSize() }
+            .graphicsLayer(
+                scaleX = scaleFactor,
+                scaleY = scaleFactor,
+                alpha = finishProgress,
+                translationX = density.exitOffsetX(width = size.width, scaleFactor = scaleFactor),
+                translationY = density.exitOffsetY(height = size.height),
+                shape = shape,
+                clip = true,
+                compositingStrategy = CompositingStrategy.Offscreen,
+            ) // Not using `graphicsLayer {}` with lambda due to https://github.com/arkivanov/Decompose/issues/877
     }
 
-    private fun Density.exitOffset(size: IntSize, scaleFactor: Float): IntOffset {
-        if (size == IntSize.Zero) {
-            return IntOffset.Zero
+    private fun Density.exitOffsetX(width: Float, scaleFactor: Float): Float {
+        if (width == 0F) {
+            return 0F
         }
 
-        val scaledWidth = size.width.toFloat() * scaleFactor
+        val scaledWidth = width * scaleFactor
 
-        val offsetX =
-            when (edge) {
-                BackEvent.SwipeEdge.LEFT ->
-                    (size.width.toFloat() - scaledWidth) / 2F - 8.dp.toPx() * progress
+        return when (edge) {
+            BackEvent.SwipeEdge.LEFT -> (width - scaledWidth) / 2F - 8.dp.toPx() * progress
+            BackEvent.SwipeEdge.RIGHT -> (scaledWidth - width) / 2F + 8.dp.toPx() * progress
+            BackEvent.SwipeEdge.UNKNOWN -> 0F
+        }
+    }
 
-                BackEvent.SwipeEdge.RIGHT ->
-                    (scaledWidth - size.width.toFloat()) / 2F + 8.dp.toPx() * progress
+    private fun Density.exitOffsetY(height: Float): Float {
+        if (height == 0F) {
+            return 0F
+        }
 
-                BackEvent.SwipeEdge.UNKNOWN -> 0F
-            }
+        val translationYLimit = height / 20F - 8.dp.toPx()
+        val translationYFactor = ((touchY - initialEvent.touchY) / height) * (progress * 3F).coerceAtMost(1f)
 
-        val translationYLimit = size.height / 20F - 8.dp.toPx()
-
-        val translationYFactor =
-            ((touchY - initialEvent.touchY) / size.height) * (progress * 3F).coerceAtMost(1f)
-
-        val offsetY = translationYLimit * translationYFactor
-
-        return IntOffset(x = offsetX.toInt(), y = offsetY.toInt())
+        return translationYLimit * translationYFactor
     }
 
     override suspend fun animate(event: BackEvent) {
