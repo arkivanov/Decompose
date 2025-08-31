@@ -18,6 +18,7 @@ import com.arkivanov.essenty.backhandler.BackHandler
  *
  * @see com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
  * @see com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.androidPredictiveBackAnimatableV1
+ * @see com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.androidPredictiveBackAnimatableV2
  */
 @ExperimentalDecomposeApi
 class PredictiveBackParams(
