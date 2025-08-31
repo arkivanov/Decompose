@@ -78,7 +78,7 @@ private class AndroidPredictiveBackAnimatable(
             Modifier.composed {
                 if (enterShape == null) {
                     withLayoutCorners { corners ->
-                        enterModifier { progress, _ -> corners.toShape(1F - progress) }
+                        enterModifier { progress, _ -> corners.toShape(progress) }
                     }
                 } else {
                     enterModifier(enterShape)
@@ -116,7 +116,7 @@ private class AndroidPredictiveBackAnimatable(
                 scaleY = scaleFactor,
                 alpha = totalProgress,
                 translationX = lerp(start = -size.width * 0.15F, stop = 0F, fraction = totalProgress),
-                shape = layoutShape(finishProgress, edge),
+                shape = layoutShape(lerp(start = enterProgress, stop = 0F, fraction = finishProgress), edge),
                 clip = true,
                 compositingStrategy = CompositingStrategy.Offscreen,
             ) // Not using `graphicsLayer {}` with lambda due to https://github.com/arkivanov/Decompose/issues/877
