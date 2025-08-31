@@ -121,6 +121,8 @@ public final class com/arkivanov/decompose/extensions/compose/stack/animation/St
 public final class com/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/AndroidPredictiveBackAnimatableKt {
 	public static final fun androidPredictiveBackAnimatable (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
 	public static synthetic fun androidPredictiveBackAnimatable$default (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
+	public static final fun androidPredictiveBackAnimatableV1 (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
+	public static synthetic fun androidPredictiveBackAnimatableV1$default (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/MaterialPredictiveBackAnimatableKt {
