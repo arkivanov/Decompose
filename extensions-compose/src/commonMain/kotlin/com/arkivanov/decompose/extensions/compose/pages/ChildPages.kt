@@ -64,7 +64,7 @@ fun <C : Any, T : Any> ChildPages(
     )
 
     LaunchedEffect(selectedIndex) {
-        if (state.currentPage != selectedIndex) {
+        if (!state.isScrollInProgress) {
             when (scrollAnimation) {
                 is PagesScrollAnimation.Disabled -> state.scrollToPage(selectedIndex)
                 is PagesScrollAnimation.Default -> state.animateScrollToPage(page = selectedIndex)
