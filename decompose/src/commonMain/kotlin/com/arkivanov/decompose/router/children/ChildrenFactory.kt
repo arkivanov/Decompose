@@ -69,8 +69,12 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState
  * The API is based around [NavState] and [ChildNavState] interfaces that should be implemented by
  * clients. [NavState] represents a persistent state of the navigation. It also holds a navigation
  * state for each child - [ChildNavState]. Both [NavState] and [ChildNavState] must be immutable, and
- * correctly implement `equals` and `hashCode` methods (or just be data classes). There must be no
- * duplicated (by equality) [ChildNavState.configuration] within a [NavState].
+ * correctly implement `equals` and `hashCode` methods (or just be data classes).
+ *
+ * By default, having duplicate (by equality) configurations ([ChildNavState.configuration]) within
+ * a [NavState] is prohibited. Decompose will throw an exception when detected. However, duplicate
+ * configurations can be enabled by setting the
+ * [com.arkivanov.decompose.DecomposeSettings.duplicateConfigurationsEnabled] flag to `true`.
  *
  * The navigation is performed by transforming the current [NavState] to a new one. The implementation
  * calculates diffs between the old list of [ChildNavState] and the new one, and manipulates child

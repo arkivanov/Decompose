@@ -17,6 +17,10 @@ import kotlinx.serialization.Serializable
  * Initializes and manages a list of components with one selected (active) component.
  * The list can be empty.
  *
+ * By default, having duplicate (by equality) configurations [C] within [Pages.items] is prohibited.
+ * Decompose will throw an exception when detected. However, duplicate configurations can be enabled
+ * by setting [com.arkivanov.decompose.DecomposeSettings.duplicateConfigurationsEnabled] flag to `true`.
+ *
  * **It is strongly recommended to call this method on the Main thread.**
  *
  * @param source a source of navigation events.
@@ -83,6 +87,10 @@ private class SerializablePages<out C : Any>(
 /**
  * Initializes and manages a list of components with one selected (active) component.
  * The list can be empty.
+ *
+ * By default, having duplicate (by equality) configurations [C] within [Pages.items] is prohibited.
+ * Decompose will throw an exception when detected. However, duplicate configurations can be enabled
+ * by setting [com.arkivanov.decompose.DecomposeSettings.duplicateConfigurationsEnabled] flag to `true`.
  *
  * **It is strongly recommended to call this method on the Main thread.**
  *
