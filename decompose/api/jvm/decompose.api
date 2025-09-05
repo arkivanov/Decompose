@@ -62,6 +62,10 @@ public abstract interface class com/arkivanov/decompose/ComponentContextFactoryO
 
 public final class com/arkivanov/decompose/DecomposeExperimentFlags {
 	public static final field INSTANCE Lcom/arkivanov/decompose/DecomposeExperimentFlags;
+}
+
+public final class com/arkivanov/decompose/DecomposeParameters {
+	public static final field INSTANCE Lcom/arkivanov/decompose/DecomposeParameters;
 	public final fun getDuplicateConfigurationsEnabled ()Z
 	public final fun setDuplicateConfigurationsEnabled (Z)V
 }
