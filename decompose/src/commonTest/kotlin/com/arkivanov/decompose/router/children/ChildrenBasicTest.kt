@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.router.children
 
-import com.arkivanov.decompose.DecomposeExperimentFlags
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
@@ -221,7 +220,6 @@ class ChildrenBasicTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_add_duplicated_children_THEN_duplicated_children_added() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
 
         navigate { it + listOf(1 by RESUMED, 2 by RESUMED, 3 by RESUMED) }
@@ -231,8 +229,6 @@ class ChildrenBasicTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_duplicated_children_WHEN_remove_duplicated_children_from_end_THEN_duplicated_children_removed() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-
         val children by context.children(
             initialState = stateOf(
                 1 by DESTROYED,
@@ -255,8 +251,6 @@ class ChildrenBasicTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_duplicated_children_WHEN_remove_duplicated_children_from_end_THEN_duplicated_instances_removed_from_end() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-
         val children by context.children(
             initialState = stateOf(
                 1 by DESTROYED,
@@ -278,8 +272,6 @@ class ChildrenBasicTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_duplicated_children_WHEN_remove_duplicated_children_from_start_THEN_duplicated_children_removed() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-
         val children by context.children(
             initialState = stateOf(
                 1 by CREATED,
@@ -297,8 +289,6 @@ class ChildrenBasicTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_duplicated_children_WHEN_remove_duplicated_children_from_start_THEN_duplicated_instances_removed_from_end() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-
         val children by context.children(
             initialState = stateOf(
                 1 by CREATED,
