@@ -135,14 +135,15 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         content: @Composable StackAnimationScope.(child: Child.Created<C, T>) -> Unit
     ) {
         val transition = rememberTransition(item.transitionState)
+        val isTransitionIdle = item.transitionState.isIdle()
 
-        if (item.transitionState.isIdle()) {
+        if (isTransitionIdle) {
             LaunchedEffect(Unit) {
                 onFinished()
             }
         }
 
-        WithStackAnimationScope(item.direction, transition) {
+        WithStackAnimationScope(item.direction.takeUnless { isTransitionIdle }, transition) {
             Box(modifier = item.animator?.run { animate(item.direction) } ?: Modifier) {
                 content(item.child)
             }
