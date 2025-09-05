@@ -17,13 +17,17 @@ import kotlinx.serialization.builtins.ListSerializer
 /**
  * Initializes and manages a stack of components.
  *
+ * By default, having duplicate (by equality) configurations [C] within the stack is prohibited.
+ * Decompose will throw an exception when detected. However, duplicate configurations can be enabled
+ * by setting [com.arkivanov.decompose.DecomposeParameters.duplicateConfigurationsEnabled] flag to `true`.
+ *
  * **It is strongly recommended to call this method on the Main thread.**
  *
  * @param source a source of navigation events.
  * @param serializer an optional [KSerializer] to be used for serializing and deserializing configurations.
  * If `null` then the navigation state will not be preserved.
  * @param initialStack a stack of component configurations (ordered from tail to head) that should be set
- * if there is no saved state, must be not empty and unique.
+ * if there is no saved state, must be not empty and unique (unless duplicate configurations were enabled).
  * @param key a key of the navigation, must be unique if there are multiple stacks in the same component.
  * @param handleBackButton determines whether the stack should be automatically popped on back button press or not,
  * default is `false`.
@@ -61,9 +65,23 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
     )
 
 /**
- * A convenience extension function for [ComponentContext.childStack].
+ * Initializes and manages a stack of components.
+ *
+ * By default, having duplicate (by equality) configurations [C] within the stack is prohibited.
+ * Decompose will throw an exception when detected. However, duplicate configurations can be enabled
+ * by setting [com.arkivanov.decompose.DecomposeParameters.duplicateConfigurationsEnabled] flag to `true`.
  *
  * **It is strongly recommended to call this method on the Main thread.**
+ *
+ * @param source a source of navigation events.
+ * @param serializer an optional [KSerializer] to be used for serializing and deserializing configurations.
+ * If `null` then the navigation state will not be preserved.
+ * @param initialConfiguration an initial configuration that should be set if there is no saved state.
+ * @param key a key of the navigation, must be unique if there are multiple stacks in the same component.
+ * @param handleBackButton determines whether the stack should be automatically popped on back button press or not,
+ * default is `false`.
+ * @param childFactory a factory function that creates new child instances.
+ * @return an observable [Value] of [ChildStack].
  */
 fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
     source: NavigationSource<StackNavigation.Event<C>>,
@@ -85,11 +103,15 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
 /**
  * Initializes and manages a stack of components.
  *
+ * By default, having duplicate (by equality) configurations [C] within the stack is prohibited.
+ * Decompose will throw an exception when detected. However, duplicate configurations can be enabled
+ * by setting [com.arkivanov.decompose.DecomposeParameters.duplicateConfigurationsEnabled] flag to `true`.
+ *
  * **It is strongly recommended to call this method on the Main thread.**
  *
  * @param source a source of navigation events.
  * @param initialStack a stack of component configurations (ordered from tail to head) that should be set
- * if there is no saved state, must be not empty and unique.
+ * if there is no saved state, must be not empty and unique (unless duplicate configurations were enabled).
  * @param saveStack a function that saves the provided stack of configurations into [SerializableContainer].
  * The navigation state is not saved if `null` is returned.
  * @param restoreStack a function that restores the stack of configuration from the provided [SerializableContainer].

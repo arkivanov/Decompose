@@ -548,10 +548,12 @@ sealed class <#A: out kotlin/Any, #B: out kotlin/Any> com.arkivanov.decompose/Ch
     }
 }
 
-final object com.arkivanov.decompose/DecomposeExperimentFlags { // com.arkivanov.decompose/DecomposeExperimentFlags|null[0]
-    final var duplicateConfigurationsEnabled // com.arkivanov.decompose/DecomposeExperimentFlags.duplicateConfigurationsEnabled|{}duplicateConfigurationsEnabled[0]
-        final fun <get-duplicateConfigurationsEnabled>(): kotlin/Boolean // com.arkivanov.decompose/DecomposeExperimentFlags.duplicateConfigurationsEnabled.<get-duplicateConfigurationsEnabled>|<get-duplicateConfigurationsEnabled>(){}[0]
-        final fun <set-duplicateConfigurationsEnabled>(kotlin/Boolean) // com.arkivanov.decompose/DecomposeExperimentFlags.duplicateConfigurationsEnabled.<set-duplicateConfigurationsEnabled>|<set-duplicateConfigurationsEnabled>(kotlin.Boolean){}[0]
+final object com.arkivanov.decompose/DecomposeExperimentFlags // com.arkivanov.decompose/DecomposeExperimentFlags|null[0]
+
+final object com.arkivanov.decompose/DecomposeParameters { // com.arkivanov.decompose/DecomposeParameters|null[0]
+    final var duplicateConfigurationsEnabled // com.arkivanov.decompose/DecomposeParameters.duplicateConfigurationsEnabled|{}duplicateConfigurationsEnabled[0]
+        final fun <get-duplicateConfigurationsEnabled>(): kotlin/Boolean // com.arkivanov.decompose/DecomposeParameters.duplicateConfigurationsEnabled.<get-duplicateConfigurationsEnabled>|<get-duplicateConfigurationsEnabled>(){}[0]
+        final fun <set-duplicateConfigurationsEnabled>(kotlin/Boolean) // com.arkivanov.decompose/DecomposeParameters.duplicateConfigurationsEnabled.<set-duplicateConfigurationsEnabled>|<set-duplicateConfigurationsEnabled>(kotlin.Boolean){}[0]
 }
 
 final val com.arkivanov.decompose.router.panels/isDual // com.arkivanov.decompose.router.panels/isDual|@com.arkivanov.decompose.router.panels.ChildPanelsMode{}isDual[0]
