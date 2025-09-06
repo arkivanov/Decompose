@@ -1099,7 +1099,9 @@ class DefaultRootComponent(
 
 #### Standard Android-like system animation
 
-The `androidPredictiveBackAnimatable` API resembles the standard back gesture animation used on some Android devices (e.g. in system settings on Pixel phones).
+The `androidPredictiveBackAnimatable` API resembles the standard back gesture animation used on some Android Upside Down Cake devices (e.g. in system settings on Pixel phones).
+
+Starting with Decompose version `3.4.0-alpha04` the function has been renamed to `androidPredictiveBackAnimatableV1`. Plus, `androidPredictiveBackAnimatableV2` was added, resembling the standard back gesture animation from Android Vanilla Ice Cream and Baklava.
 
 === "Default API"
 
@@ -1161,7 +1163,13 @@ The `androidPredictiveBackAnimatable` API resembles the standard back gesture an
     }
     ```
 
-<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureAndroid.mp4" type="video/mp4"></video>
+Example of `androidPredictiveBackAnimatableV1` animation:
+
+<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureAndroidV1.mp4" type="video/mp4"></video>
+
+Example of `androidPredictiveBackAnimatableV2` animation:
+
+<video width="192" autoplay loop muted><source src="/Decompose/media/BackGestureAndroidV2.mp4" type="video/mp4"></video>
 
 ### Predictive Back Gesture on Android
 
