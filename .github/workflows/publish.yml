@@ -4,24 +4,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  create-staging-repository:
-    runs-on: ubuntu-latest
-    name: Create staging repository
-    outputs:
-      repository_id: ${{ steps.create.outputs.repository_id }}
-    steps:
-      - id: create
-        uses: nexus-actions/create-nexus-staging-repo@v1.3.0
-        with:
-          username: arkivanov
-          password: ${{ secrets.SONATYPE_PASSWORD }}
-          staging_profile_id: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
-          description: Created by GitHub Actions
-          base_url: https://oss.sonatype.org/service/local/
   publish:
     name: Publish
     runs-on: macos-14
-    needs: create-staging-repository
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -31,35 +16,14 @@ jobs:
           java-version: 17
       - name: Publish
         env:
-          SONATYPE_REPOSITORY_ID: ${{ needs.create-staging-repository.outputs.repository_id }}
           SONATYPE_USER_NAME: ${{ secrets.SONATYPE_USER_NAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
         run: ./gradlew publish
-  close-staging-repository:
-    name: Close staging repository
-    runs-on: ubuntu-latest
-    needs: [ create-staging-repository, publish ]
-    steps:
       - name: Close staging repository
-        uses: nexus-actions/release-nexus-staging-repo@v1.1
-        with:
-          username: arkivanov
-          password: ${{ secrets.SONATYPE_PASSWORD }}
-          staging_repository_id: ${{ needs.create-staging-repository.outputs.repository_id }}
-          base_url: https://oss.sonatype.org/service/local/
-          close_only: 'true'
-  check-publication:
-    name: Check publication
-    runs-on: macos-14
-    needs: close-staging-repository
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
+        run: 'curl -H "Authorization: Bearer ${{ secrets.SONATYPE_AUTH_BASE64 }}" -X POST https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/com.arkivanov.decompose'
       - name: Check publication
+        env:
+          SONATYPE_AUTH_BASE64: ${{ secrets.SONATYPE_AUTH_BASE64 }}
         run: ./gradlew kotlinUpgradeYarnLock :tools:check-publication:build -Pcheck_publication
