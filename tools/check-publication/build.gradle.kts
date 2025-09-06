@@ -11,10 +11,14 @@ plugins {
 }
 
 repositories {
-    maven("https://oss.sonatype.org/content/groups/staging/") {
-        credentials {
-            username = "arkivanov"
-            password = System.getenv("SONATYPE_PASSWORD")
+    maven("https://central.sonatype.com/api/v1/publisher/deployments/download/") {
+        name = "deployments"
+        credentials(HttpHeaderCredentials::class) {
+            name = "Authorization"
+            value = "Bearer ${System.getenv("SONATYPE_AUTH_BASE64")}"
+        }
+        authentication {
+            create<HttpHeaderAuthentication>("header")
         }
     }
 }
