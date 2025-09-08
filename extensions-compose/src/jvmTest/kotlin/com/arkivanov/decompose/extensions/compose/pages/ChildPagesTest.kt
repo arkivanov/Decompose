@@ -4,7 +4,9 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.arkivanov.decompose.Child
@@ -184,6 +186,43 @@ class ChildPagesTest {
         assertContentEquals(listOf(0), indices)
     }
 
+    @Test
+    fun GIVEN_nested_pages_WHEN_nested_pager_switched_while_inactive_and_then_activated_THEN_selected_page_shown() {
+        var outerState by mutableStateOf(childPages(items = listOf(1, 2)))
+        var innerState by mutableStateOf(childPages(items = listOf(1, 2)))
+
+        composeRule.setContent {
+            ChildPages(
+                pages = outerState,
+                onPageSelected = { outerState = outerState.copy(selectedIndex = it) },
+            ) { outerIndex, _ ->
+                if (outerIndex == 0) {
+                    ChildPages(
+                        pages = innerState,
+                        onPageSelected = { innerState = innerState.copy(selectedIndex = it) },
+                    ) { innerIndex, _ ->
+                        BasicText(text = "Page-$outerIndex-$innerIndex")
+                    }
+                } else {
+                    BasicText(text = "Page-$outerIndex")
+                }
+            }
+        }
+
+        composeRule.runOnIdle {
+            outerState = outerState.copy(selectedIndex = 1)
+        }
+
+        composeRule.runOnIdle {
+            innerState = innerState.copy(selectedIndex = 1)
+            outerState = outerState.copy(selectedIndex = 0)
+        }
+
+        composeRule.runOnIdle {}
+
+        composeRule.onNodeWithText(text = "Page-0-1").assertExists()
+    }
+
     private fun setContent(
         pages: State<ChildPages<Config, Config>>,
         onPageSelected: (index: Int) -> Unit = {},
@@ -211,6 +250,15 @@ class ChildPagesTest {
         composeRule.runOnIdle { value = func(value) }
         composeRule.runOnIdle {}
     }
+
+    private fun <T : Any> childPages(
+        items: List<T>,
+        selectedIndex: Int = if (items.isNotEmpty()) 0 else -1,
+    ): ChildPages<T, T> =
+        ChildPages(
+            items = items.map { Child.Created(configuration = it, instance = it) },
+            selectedIndex = selectedIndex,
+        )
 
     private sealed class Config {
         data object Config1 : Config()

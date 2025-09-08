@@ -4,12 +4,12 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.Ref
@@ -58,10 +58,15 @@ fun <C : Any, T : Any> ChildPages(
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
 ) {
     val selectedIndex = pages.selectedIndex.coerceAtLeast(0)
-    val state = rememberPagerState(
-        initialPage = selectedIndex,
-        pageCount = { pages.items.size },
-    )
+    val pageCountState = rememberUpdatedState(pages.items.size)
+
+    val state =
+        remember {
+            PagerState(
+                currentPage = selectedIndex,
+                pageCount = { pageCountState.value },
+            )
+        }
 
     LaunchedEffect(selectedIndex) {
         if (!state.isScrollInProgress) {
