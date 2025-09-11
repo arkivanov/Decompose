@@ -761,6 +761,24 @@ class WebHistoryNavigationTest {
         assertHistory(nav = nav, urls = listOf("/1/11", "/1/22", "/1/33"), index = 0)
     }
 
+    @Test
+    fun GIVEN_three_levels_nested_with_one_child_each_WHEN_inner_pushed_and_go_back_and_inner_pushed_THEN_two_items_in_history() {
+        val nav =
+            TestWebNavigation(initialHistory = listOf(1)) {
+                TestWebNavigation(initialHistory = listOf(1)) {
+                    TestWebNavigation(initialHistory = listOf(1))
+                }
+            }
+
+        enableWebHistory(nav, history)
+
+        nav.requireChild(1).requireChild(1).navigate(listOf(1, 2))
+        history.navigate(delta = -1)
+        nav.requireChild(1).requireChild(1).navigate(listOf(1, 2))
+
+        assertHistory(nav = nav, urls = listOf("/1/1/1", "/1/1/2"))
+    }
+
     private fun assertHistory(nav: TestWebNavigation, urls: List<String>, index: Int = urls.lastIndex) {
         history.assertStack(urls = urls, index = index)
         nav.assertHistory(urls = urls.slice(0..index))
