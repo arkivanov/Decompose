@@ -5,3 +5,9 @@ fun interface Cancellation {
 
     fun cancel()
 }
+
+internal fun Cancellation.doOnCancel(block: () -> Unit): Cancellation =
+    Cancellation {
+        cancel()
+        block()
+    }

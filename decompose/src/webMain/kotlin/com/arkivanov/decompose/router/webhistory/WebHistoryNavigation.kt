@@ -2,6 +2,7 @@ package com.arkivanov.decompose.router.webhistory
 
 import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.Json
+import com.arkivanov.decompose.doOnCancel
 import com.arkivanov.decompose.encodeURIComponent
 import com.arkivanov.decompose.router.stack.startsWith
 import com.arkivanov.decompose.router.stack.subscribe
@@ -173,7 +174,7 @@ private fun <T : Any> WebNavigation<T>.subscribe(
                     onUpdateUrl(inactiveNodes + nodeOf(item = activeItem, children = childNodes))
                 },
             )
-    }
+    }.doOnCancel { activeChildCancellation?.cancel() }
 }
 
 private fun <T : Any> WebNavigation<T>.onHistoryChanged(
