@@ -8,7 +8,7 @@ import com.arkivanov.decompose.value.Value
  * Allows lazy instantiation of the child components.
  */
 @ExperimentalDecomposeApi
-abstract class LazyChildItems<C : Any, out T : Any> : Value<ChildItems<C, T>>(), ItemsNavigator<C> {
+abstract class LazyChildItems<K : Any, C : ChildConfiguration<K>, out T : Any> : Value<Items<K, C>>(), ItemsNavigator<K, C> {
 
     /**
      * Returns an instance of the child component corresponding to the provided [configuration],
@@ -23,5 +23,5 @@ abstract class LazyChildItems<C : Any, out T : Any> : Value<ChildItems<C, T>>(),
      */
     abstract operator fun get(configuration: C): T
 
-    abstract override fun navigate(transformer: (Items<C>) -> Items<C>, onComplete: (Items<C>, Items<C>) -> Unit)
+    abstract override fun navigate(transformer: (Items<K, C>) -> Items<K, C>, onComplete: (Items<K, C>, Items<K, C>) -> Unit)
 }

@@ -16,9 +16,9 @@ import kotlinx.serialization.Serializable
  */
 @ExperimentalDecomposeApi
 @Serializable
-data class Items<C : Any>(
+data class Items<K : Any, out C : ChildConfiguration<K>>(
     val items: List<C> = emptyList(),
-    val activeItems: Map<C, ActiveLifecycleState> = emptyMap(),
+    val activeItems: Map<K, ActiveLifecycleState> = emptyMap(),
 ) {
     enum class ActiveLifecycleState {
         CREATED,

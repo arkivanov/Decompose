@@ -3,7 +3,7 @@ package com.arkivanov.decompose.router.items
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 
 @ExperimentalDecomposeApi
-interface ItemsNavigator<C : Any> {
+interface ItemsNavigator<K : Any, C : ChildConfiguration<K>> {
 
     /**
      * Transforms the current [Items] state to a new one.
@@ -25,7 +25,7 @@ interface ItemsNavigator<C : Any> {
      * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
      */
     fun navigate(
-        transformer: (Items<C>) -> Items<C>,
-        onComplete: (newItems: Items<C>, oldItems: Items<C>) -> Unit,
+        transformer: (Items<K, C>) -> Items<K, C>,
+        onComplete: (newItems: Items<K, C>, oldItems: Items<K, C>) -> Unit,
     )
 }

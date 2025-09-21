@@ -26,17 +26,17 @@ import kotlinx.serialization.KSerializer
  * @return observable [LazyChildItems].
  */
 @ExperimentalDecomposeApi
-fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childItems(
-    source: NavigationSource<Event<C>>,
-    serializer: KSerializer<C>?,
-    initialItems: () -> Items<C>,
+fun <Ctx : GenericComponentContext<Ctx>, K : Any, C : ChildConfiguration<K>, T : Any> Ctx.childItems(
+    source: NavigationSource<Event<K, C>>,
+    serializers: Pair<KSerializer<K>, KSerializer<C>>?,
+    initialItems: () -> Items<K, C>,
     key: String = "DefaultChildItems",
     childFactory: (configuration: C, Ctx) -> T,
-): LazyChildItems<C, T> =
+): LazyChildItems<K, C, T> =
     childItems(
         source = source,
         initialItems = initialItems,
-        stateSaver = serializer?.let { NavStateSaver(Items.serializer(it)) },
+        stateSaver = serializers?.let { (k, c) -> NavStateSaver(Items.serializer(k, c)) },
         key = key,
         childFactory = childFactory,
     )
@@ -60,13 +60,13 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childItems(
  * @return observable [LazyChildItems].
  */
 @ExperimentalDecomposeApi
-fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childItems(
-    source: NavigationSource<Event<C>>,
-    stateSaver: NavStateSaver<Items<C>>?,
-    initialItems: () -> Items<C>,
+fun <Ctx : GenericComponentContext<Ctx>, K : Any, C : ChildConfiguration<K>, T : Any> Ctx.childItems(
+    source: NavigationSource<Event<K, C>>,
+    stateSaver: NavStateSaver<Items<K, C>>?,
+    initialItems: () -> Items<K, C>,
     key: String = "DefaultChildItems",
     childFactory: (configuration: C, Ctx) -> T,
-): LazyChildItems<C, T> {
+): LazyChildItems<K, C, T> {
     val navigator =
         ItemsController(
             controller = ChildController(

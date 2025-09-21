@@ -11,7 +11,11 @@ import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
  * See [ActiveLifecycleState].
  */
 @ExperimentalDecomposeApi
-data class ChildItems<C : Any, out T : Any>(
+data class ChildItems<out C : Any, out T : Any>(
     val items: List<C> = emptyList(),
-    val activeItems: Map<C, Pair<T, ActiveLifecycleState>> = emptyMap(),
 )
+
+interface ChildConfiguration<out K> {
+
+    val childKey: K
+}
