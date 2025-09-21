@@ -3,7 +3,7 @@ package com.arkivanov.decompose.router.items
 import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
 
-internal class DefaultLazyChildItems<C : Any, T : Any>(
+internal class DefaultLazyChildItems<C : ChildConfiguration, T : Any>(
     private val controller: ItemsController<C, T>,
 ) : LazyChildItems<C, T>(), ItemsNavigator<C> by controller {
     override val value: ChildItems<C, T> get() = controller.state.value

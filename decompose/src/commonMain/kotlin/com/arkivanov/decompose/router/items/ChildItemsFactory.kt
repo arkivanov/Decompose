@@ -26,7 +26,7 @@ import kotlinx.serialization.KSerializer
  * @return observable [LazyChildItems].
  */
 @ExperimentalDecomposeApi
-fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childItems(
+fun <Ctx : GenericComponentContext<Ctx>, C : ChildConfiguration, T : Any> Ctx.childItems(
     source: NavigationSource<Event<C>>,
     serializer: KSerializer<C>?,
     initialItems: () -> Items<C>,
@@ -60,7 +60,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childItems(
  * @return observable [LazyChildItems].
  */
 @ExperimentalDecomposeApi
-fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childItems(
+fun <Ctx : GenericComponentContext<Ctx>, C : ChildConfiguration, T : Any> Ctx.childItems(
     source: NavigationSource<Event<C>>,
     stateSaver: NavStateSaver<Items<C>>?,
     initialItems: () -> Items<C>,

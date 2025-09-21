@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
  */
 @ExperimentalDecomposeApi
 @Serializable
-data class Items<C : Any>(
+data class Items<C : ChildConfiguration>(
     val items: List<C> = emptyList(),
     val activeItems: Map<C, ActiveLifecycleState> = emptyMap(),
 ) {
@@ -25,4 +25,9 @@ data class Items<C : Any>(
         STARTED,
         RESUMED,
     }
+}
+
+interface ChildConfiguration {
+
+    val childKey: Any get() = this
 }

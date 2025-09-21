@@ -20,7 +20,7 @@ import kotlinx.serialization.serializer
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class TestLazyChildItems<C : Any>(
+class TestLazyChildItems<C : ChildConfiguration>(
     private val delegate: LazyChildItems<C, Component<C>>,
     val destroyedComponents: Map<C, Component<C>>,
     val removedComponents: Map<C, Component<C>>,
@@ -40,7 +40,7 @@ class TestLazyChildItems<C : Any>(
 fun <C : Any> Value<ChildItems<C, Component<C>>>.require(cfg: C): Component<C> =
     value.activeItems.getValue(cfg).first
 
-inline fun <reified C : Any> ComponentContext.childLazyItems(
+inline fun <reified C : ChildConfiguration> ComponentContext.childLazyItems(
     source: NavigationSource<ItemsNavigation.Event<C>> = ItemsNavigation(),
     initialItems: List<C> = emptyList(),
     activeItems: Map<C, ActiveLifecycleState> = emptyMap(),
@@ -88,7 +88,7 @@ inline fun <reified C : Any> ComponentContext.childLazyItems(
     )
 }
 
-fun <C : Any> TestLazyChildItems<C>.assertItems(
+fun <C : ChildConfiguration> TestLazyChildItems<C>.assertItems(
     vararg items: Pair<C, LazyComponentState>,
 ) {
 

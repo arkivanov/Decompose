@@ -4,7 +4,7 @@ import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.Relay
 import com.arkivanov.decompose.router.items.ItemsNavigation.Event
 
-internal class DefaultItemsNavigation<C : Any> : ItemsNavigation<C> {
+internal class DefaultItemsNavigation<C : ChildConfiguration> : ItemsNavigation<C> {
 
     private val relay = Relay<Event<C>>()
 

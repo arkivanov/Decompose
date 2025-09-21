@@ -8,7 +8,7 @@ import com.arkivanov.decompose.value.Value
  * Allows lazy instantiation of the child components.
  */
 @ExperimentalDecomposeApi
-abstract class LazyChildItems<C : Any, out T : Any> : Value<ChildItems<C, T>>(), ItemsNavigator<C> {
+abstract class LazyChildItems<C : ChildConfiguration, out T : Any> : Value<ChildItems<C, T>>(), ItemsNavigator<C> {
 
     /**
      * Returns an instance of the child component corresponding to the provided [configuration],

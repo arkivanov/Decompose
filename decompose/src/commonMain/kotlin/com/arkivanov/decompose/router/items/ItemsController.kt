@@ -14,7 +14,7 @@ import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import kotlinx.serialization.Serializable
 
-internal class ItemsController<C : Any, out T : Any>(
+internal class ItemsController<C : ChildConfiguration, out T : Any>(
     private val controller: ChildController<C, T, *>,
 ) : ItemsNavigator<C> {
 
@@ -129,9 +129,11 @@ internal class ItemsController<C : Any, out T : Any>(
                 instance to lifecycleState
             }
 
+        val newActiveItemKeys = newNavState.activeItems.keys.map { it.childKey }.toSet()
+
         oldNavState.activeItems.forEach { (cfg) ->
-            if (cfg !in newNavState.activeItems) {
-                val isExistingConfig = (newConfigs == null) || (cfg in newConfigs)
+            if (cfg.childKey !in newActiveItemKeys) {
+//                val isExistingConfig = (newConfigs == null) || (cfg in newConfigs)
                 if (isExistingConfig) {
                     controller.destroy(configuration = cfg)
                 } else {
@@ -157,12 +159,12 @@ internal class ItemsController<C : Any, out T : Any>(
         val childState: Map<Int, SerializableContainer>,
     )
 
-    private sealed interface NavEvent<C : Any> {
-        class Init<C : Any>(
+    private sealed interface NavEvent<C : ChildConfiguration> {
+        class Init<C : ChildConfiguration>(
             val initialState: Items<C>,
             val savedChildState: Map<Int, SerializableContainer>?,
         ) : NavEvent<C>
 
-        class Event<C : Any>(val event: ItemsNavigation.Event<C>) : NavEvent<C>
+        class Event<C : ChildConfiguration>(val event: ItemsNavigation.Event<C>) : NavEvent<C>
     }
 }

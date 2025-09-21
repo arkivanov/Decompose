@@ -5,6 +5,7 @@ import com.arkivanov.decompose.backhandler.ChildBackHandler
 import com.arkivanov.decompose.backhandler.child
 import com.arkivanov.decompose.backhandler.childBackHandler
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
+import com.arkivanov.decompose.router.items.ChildConfiguration
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
@@ -20,18 +21,18 @@ import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
-internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentContext<Ctx>>(
+internal class ChildController<C : ChildConfiguration, out T : Any, out Ctx : GenericComponentContext<Ctx>>(
     private val componentContext: Ctx,
     key: Any,
     private val childFactory: (C, Ctx) -> T,
 ) {
 
     private val retainedInstance =
-        componentContext.retainedInstance<RetainedInstance<C>>(key = key, factory = ::RetainedInstance)
+        componentContext.retainedInstance<RetainedInstance>(key = key, factory = ::RetainedInstance)
 
     private val childBackHandler = componentContext.backHandler.child(priority = BackCallback.PRIORITY_DEFAULT + 1)
 
-    private val items = HashMap<C, Item<T>>()
+    private val items = HashMap<Any, Item<C, T>>()
 
     fun init(dropState: Boolean = false, block: () -> Unit = {}) {
         if (dropState) {
@@ -42,9 +43,9 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
 
         val iter = retainedInstance.map.iterator()
         while (iter.hasNext()) {
-            val (cfg, instanceKeeper) = iter.next()
+            val (key, instanceKeeper) = iter.next()
 
-            if (items[cfg]?.instance == null) {
+            if (items[key]?.instance == null) {
                 instanceKeeper.destroy()
                 iter.remove()
             }
@@ -52,44 +53,46 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
     }
 
     fun saveState(configuration: C): SerializableContainer? =
-        items[configuration]?.saveState()
+        items[configuration.childKey]?.saveState()
 
-    private fun Item<*>.saveState(): SerializableContainer? =
+    private fun Item<*, *>.saveState(): SerializableContainer? =
         when (this) {
             is Item.Created -> stateKeeperDispatcher.save()
             is Item.Destroyed -> savedState
         }
 
     operator fun get(configuration: C): T? =
-        items[configuration]?.instance
+        items[configuration.childKey]?.instance
 
     fun getLifecycleState(configuration: C): Lifecycle.State? =
-        when (val item = items[configuration]) {
+        when (val item = items[configuration.childKey]) {
             is Item.Created -> item.lifecycleRegistry.state
             is Item.Destroyed -> Lifecycle.State.DESTROYED
             null -> null
         }
 
     fun remove(configuration: C) {
-        val item = items.remove(configuration) as? Item.Created ?: return
+        val key = configuration.childKey
+        val item = items.remove(key) as? Item.Created ?: return
 
         item.destroy()
-        retainedInstance.map -= configuration
+        retainedInstance.map -= key
     }
 
     fun destroy(configuration: C, savedState: SerializableContainer? = null) {
-        val item = items.remove(configuration) as? Item.Created
+        val key = configuration.childKey
+        val item = items.remove(key) as? Item.Created
 
         if (item == null) {
-            items[configuration] = Item.Destroyed(savedState)
+            items[key] = Item.Destroyed(configuration = configuration, savedState = savedState)
             return
         }
 
         val childSavedState = savedState ?: item.stateKeeperDispatcher.save()
         item.destroy()
-        retainedInstance.map -= configuration
+        retainedInstance.map -= key
 
-        items[configuration] = Item.Destroyed(childSavedState)
+        items[key] = Item.Destroyed(configuration = configuration, savedState = childSavedState)
     }
 
     fun create(configuration: C, savedState: SerializableContainer? = null): T =
@@ -129,17 +132,18 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         backHandlerPriority: Int = BackCallback.PRIORITY_DEFAULT,
         savedState: SerializableContainer? = null
     ): T =
-        when (val oldItem = items[configuration]) {
-            is Item.Created -> oldItem.apply { setState(lifecycleState, backHandlerPriority) }.instance
+        when (val oldItem = items[configuration.childKey]) {
+            is Item.Created -> {
+                if (oldItem.configuration == configuration) {
+                    oldItem.apply { setState(lifecycleState, backHandlerPriority) }.instance
+                } else {
+                    val savedState = oldItem.stateKeeperDispatcher.save()
+                    oldItem.destroy()
+                    activateNew(configuration, lifecycleState, backHandlerPriority, savedState)
+                }
+            }
 
-            is Item.Destroyed ->
-                activateNew(
-                    configuration,
-                    lifecycleState,
-                    backHandlerPriority,
-                    savedState ?: oldItem.savedState,
-                )
-
+            is Item.Destroyed -> activateNew(configuration, lifecycleState, backHandlerPriority, savedState ?: oldItem.savedState)
             null -> activateNew(configuration, lifecycleState, backHandlerPriority, savedState)
         }
 
@@ -149,15 +153,16 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         backHandlerPriority: Int = BackCallback.PRIORITY_DEFAULT,
         savedState: SerializableContainer? = null,
     ): T {
+        val key = configuration.childKey
         val item = item(configuration = configuration, savedState = savedState)
         item.setState(lifecycleState = lifecycleState, backHandlerPriority = backHandlerPriority)
-        retainedInstance.map[configuration] = item.instanceKeeperDispatcher
-        items[configuration] = item
+        retainedInstance.map[key] = item.instanceKeeperDispatcher
+        items[configuration.childKey] = item
 
         return item.instance
     }
 
-    private fun Item.Created<*>.setState(lifecycleState: ActiveLifecycleState, backHandlerPriority: Int) {
+    private fun Item.Created<*, *>.setState(lifecycleState: ActiveLifecycleState, backHandlerPriority: Int) {
         lifecycleRegistry.setState(lifecycleState)
         backHandler.setState(lifecycleState = lifecycleState, priority = backHandlerPriority)
     }
@@ -198,11 +203,12 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
     private fun item(
         configuration: C,
         savedState: SerializableContainer?,
-    ): Item.Created<T> {
+    ): Item.Created<C, T> {
+        val key = configuration.childKey
         val componentLifecycleRegistry = LifecycleRegistry()
         val mergedLifecycle = MergedLifecycle(componentContext.lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
-        val instanceKeeperDispatcher = retainedInstance.map[configuration] ?: InstanceKeeperDispatcher()
+        val instanceKeeperDispatcher = retainedInstance.map[key] ?: InstanceKeeperDispatcher()
         val backHandler = childBackHandler.childBackHandler()
 
         val component =
@@ -217,6 +223,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
             )
 
         return Item.Created(
+            configuration = configuration,
             instance = component,
             lifecycleRegistry = componentLifecycleRegistry,
             stateKeeperDispatcher = stateKeeperDispatcher,
@@ -225,7 +232,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         )
     }
 
-    private fun Item.Created<*>.destroy() {
+    private fun Item.Created<*, *>.destroy() {
         backHandler.stop()
         lifecycleRegistry.destroy()
         instanceKeeperDispatcher.destroy()
@@ -237,26 +244,29 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         RESUMED,
     }
 
-    private sealed interface Item<out T : Any> {
+    private sealed interface Item<out C : Any, out T : Any> {
+        val configuration: C
         val instance: T?
 
-        class Destroyed(
+        class Destroyed<out C : Any>(
+            override val configuration: C,
             val savedState: SerializableContainer? = null,
-        ) : Item<Nothing> {
+        ) : Item<C, Nothing> {
             override val instance: Nothing? = null
         }
 
-        class Created<out T : Any>(
+        class Created<out C : Any, out T : Any>(
+            override val configuration: C,
             override val instance: T,
             val lifecycleRegistry: LifecycleRegistry,
             val stateKeeperDispatcher: StateKeeperDispatcher,
             val instanceKeeperDispatcher: InstanceKeeperDispatcher,
             val backHandler: ChildBackHandler,
-        ) : Item<T>
+        ) : Item<C, T>
     }
 
-    private class RetainedInstance<C : Any> : InstanceKeeper.Instance {
-        val map: MutableMap<C, InstanceKeeperDispatcher> = HashMap()
+    private class RetainedInstance : InstanceKeeper.Instance {
+        val map: MutableMap<Any, InstanceKeeperDispatcher> = HashMap()
 
         override fun onDestroy() {
             map.values.forEach { it.destroy() }

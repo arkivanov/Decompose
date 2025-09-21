@@ -3,7 +3,7 @@ package com.arkivanov.decompose.router.items
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 
 @ExperimentalDecomposeApi
-interface ItemsNavigator<C : Any> {
+interface ItemsNavigator<C : ChildConfiguration> {
 
     /**
      * Transforms the current [Items] state to a new one.
