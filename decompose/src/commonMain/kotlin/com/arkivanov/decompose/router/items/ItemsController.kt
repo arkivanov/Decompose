@@ -2,41 +2,41 @@ package com.arkivanov.decompose.router.items
 
 import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.Relay
-import com.arkivanov.decompose.findFirstDuplicate
 import com.arkivanov.decompose.router.children.ChildController
 import com.arkivanov.decompose.router.children.NavStateSaver
 import com.arkivanov.decompose.router.children.NavigationSource
-import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
 import com.arkivanov.decompose.router.items.ItemsNavigation.Event
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import kotlinx.serialization.Serializable
 
-internal class ItemsController<C : Any, out T : Any>(
+internal class ItemsController<K : Any, C : Any, out T : Any>(
     private val controller: ChildController<C, T, *>,
-) : ItemsNavigator<C> {
+    private val itemKey: (C) -> K,
+) : ChildLazyItems<C, T>() {
 
     private val nav = Relay<NavEvent<C>>()
-    private val navState = MutableValue(Items<C>())
-
-    private val _state = MutableValue(ChildItems<C, T>())
-    val state: Value<ChildItems<C, T>> = _state
+    private var activeKeys = emptySet<K>() // FIXME: retain
+    private val state = MutableValue(State<K, C>(items = emptyList(), keyedItems = emptyMap()))
+    private val items: Value<Items<C>> = state.map { Items(it.items) }
+    override val value: Items<C> by items::value
 
     fun init(
         source: NavigationSource<Event<C>>,
-        initialState: () -> Items<C>,
+        initialState: () -> List<C>,
         key: String,
         stateKeeper: StateKeeper,
-        stateSaver: NavStateSaver<Items<C>>?,
+        stateSaver: NavStateSaver<List<C>>?,
     ): Cancellation {
         val restoredState = stateKeeper.consume(key = key, strategy = SavedState.serializer())
         val restoredNavState = restoredState?.let { stateSaver?.restoreState(it.navState) }
 
         if (stateSaver != null) {
             stateKeeper.register(key = key, SavedState.serializer()) {
-                stateSaver.saveState(navState.value)?.let { navState ->
+                stateSaver.saveState(state.value.items)?.let { navState ->
                     SavedState(navState = navState, childState = saveChildState())
                 }
             }
@@ -47,7 +47,7 @@ internal class ItemsController<C : Any, out T : Any>(
 
         nav.accept(
             NavEvent.Init(
-                initialState = restoredNavState ?: initialState(),
+                initialItems = restoredNavState ?: initialState(),
                 savedChildState = restoredState?.childState?.takeUnless { restoredNavState == null },
             ),
         )
@@ -55,14 +55,34 @@ internal class ItemsController<C : Any, out T : Any>(
         return cancellation
     }
 
-    override fun navigate(transformer: (Items<C>) -> Items<C>, onComplete: (Items<C>, Items<C>) -> Unit) {
-        nav.accept(NavEvent.Event(Event(transformer, onComplete)))
+    override fun subscribe(observer: (Items<C>) -> Unit): Cancellation =
+        items.subscribe(observer)
+
+    // FIXME: optimize
+    // FIXME: prevent recursive
+    override fun get(configuration: C): T {
+        val key = configuration.itemKey()
+        val cfg = state.value.keyedItems[key] ?: error("Item with the provided key was not found: $key")
+        return controller[cfg] ?: controller.resume(cfg)
+    }
+
+    // FIXME: prevent recursive
+    override fun setActiveItems(configurations: Set<C>) {
+        val keys = configurations.map { it.itemKey() }.toSet()
+        val keyedItems = state.value.keyedItems
+
+        activeKeys
+            .filterNot { it in keys }
+            .mapNotNull(keyedItems::get)
+            .forEach(controller::destroy)
+
+        activeKeys = keys
     }
 
     private fun saveChildState(): Map<Int, SerializableContainer> {
         val childState = HashMap<Int, SerializableContainer>()
 
-        navState.value.items.forEachIndexed { index, cfg ->
+        state.value.items.forEachIndexed { index, cfg ->
             controller.saveState(cfg)?.also {
                 childState[index] = it
             }
@@ -79,77 +99,64 @@ internal class ItemsController<C : Any, out T : Any>(
     }
 
     private fun onInit(event: NavEvent.Init<C>) {
-        val initialNavState = event.initialState
+        val initialItems = event.initialItems
         val savedChildState = event.savedChildState
-        val activeItems = HashMap<C, Pair<T, ActiveLifecycleState>>()
 
         controller.init(dropState = savedChildState == null) {
-            initialNavState.items.forEachIndexed { index, cfg ->
+            initialItems.forEachIndexed { index, cfg ->
                 val childSavedState = savedChildState?.get(index)
-                val lifecycleState = initialNavState.activeItems[cfg]
-                if (lifecycleState != null) {
-                    val instance = activateChild(cfg, lifecycleState, childSavedState)
-                    activeItems[cfg] = instance to lifecycleState
+                if (cfg.itemKey() in activeKeys) {
+                    activateChild(cfg, childSavedState)
                 } else {
                     controller.destroy(cfg, childSavedState)
                 }
             }
         }
 
-        setState(navState = initialNavState, activeItems = activeItems)
-    }
-
-    private fun setState(navState: Items<C>, activeItems: Map<C, Pair<T, ActiveLifecycleState>>) {
-        this.navState.value = navState
-        _state.value = ChildItems(items = navState.items, activeItems = activeItems)
+        state.value = State(items = initialItems, keyedItems = initialItems.associateBy { it.itemKey() })
     }
 
     private fun onEvent(event: Event<C>) {
-        val oldNavState = navState.value
-        var newNavState = event.transformer(oldNavState)
+        val (oldItems, oldItemsKeyed) = state.value
+        val newItems = event.transformer(oldItems)
+        val newItemsKeyed = newItems.associateBy { it.itemKey() } // FIXME: reuse the old list if same
 
-        val newConfigs = newNavState.items.takeUnless { it === oldNavState.items }?.toSet()
-
-        if (newConfigs != null) {
-            check(newConfigs.size == newNavState.items.size) {
-                val diff = newNavState.items.findFirstDuplicate(newConfigs)
-                "Configurations must be unique. " +
-                    "First duplicate: ${diff?.second} at index ${diff?.first}. List size: ${newNavState.items.size}."
-            }
-
-            val extraActiveItems = newNavState.activeItems.keys.filterNotTo(HashSet()) { it in newConfigs }
-            if (extraActiveItems.isNotEmpty()) {
-                newNavState = newNavState.copy(activeItems = newNavState.activeItems - extraActiveItems)
-            }
+        check(newItems.size == newItemsKeyed.size) {
+            "Child keys must be unique"
         }
 
-        val newActiveItems =
-            newNavState.activeItems.mapValues { (cfg, lifecycleState) ->
-                val instance = activateChild(cfg, lifecycleState)
-                instance to lifecycleState
-            }
+        activeKeys.forEach { key ->
+            val oldCfg = oldItemsKeyed[key]
+            val newCfg = newItemsKeyed[key]
 
-        oldNavState.activeItems.forEach { (cfg) ->
-            if (cfg !in newNavState.activeItems) {
-                val isExistingConfig = (newConfigs == null) || (cfg in newConfigs)
-                if (isExistingConfig) {
-                    controller.destroy(configuration = cfg)
+            if (oldCfg != null) {
+                if (newCfg != null) {
+                    if (newCfg != oldCfg) {
+                        val savedState = controller.saveState(oldCfg)
+                        controller.remove(oldCfg) // FIXME: recreate properly
+                        activateChild(newCfg, savedState)
+                    }
                 } else {
-                    controller.remove(configuration = cfg)
+                    controller.remove(oldCfg)
                 }
             }
         }
 
-        setState(navState = newNavState, activeItems = newActiveItems)
-        event.onComplete(newNavState, oldNavState)
+        activeKeys = activeKeys.intersect(newItemsKeyed.keys)
+        state.value = State(items = newItems, keyedItems = newItemsKeyed)
+        event.onComplete(newItems, oldItems)
     }
 
-    private fun activateChild(configuration: C, lifecycleState: ActiveLifecycleState, savedState: SerializableContainer? = null): T =
-        when (lifecycleState) {
-            ActiveLifecycleState.CREATED -> controller.create(configuration = configuration, savedState = savedState)
-            ActiveLifecycleState.STARTED -> controller.start(configuration = configuration, savedState = savedState)
-            ActiveLifecycleState.RESUMED -> controller.resume(configuration = configuration, savedState = savedState)
-        }
+    private fun activateChild(configuration: C, savedState: SerializableContainer? = null): T =
+        controller.resume(configuration = configuration, savedState = savedState)
+
+    private fun C.itemKey(): K =
+        itemKey(this)
+
+    private data class State<K : Any, C : Any>(
+        val items: List<C>,
+        val keyedItems: Map<K, C>,
+    )
 
     @Serializable
     private class SavedState(
@@ -157,9 +164,9 @@ internal class ItemsController<C : Any, out T : Any>(
         val childState: Map<Int, SerializableContainer>,
     )
 
-    private sealed interface NavEvent<C : Any> {
-        class Init<C : Any>(
-            val initialState: Items<C>,
+    private sealed interface NavEvent<out C : Any> {
+        class Init<out C : Any>(
+            val initialItems: List<C>,
             val savedChildState: Map<Int, SerializableContainer>?,
         ) : NavEvent<C>
 

@@ -8,6 +8,7 @@ import com.arkivanov.decompose.router.children.NavigationSource
 import com.arkivanov.decompose.router.items.ItemsNavigation.Event
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.ListSerializer
 
 
 /**
@@ -29,15 +30,17 @@ import kotlinx.serialization.KSerializer
 fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childItems(
     source: NavigationSource<Event<C>>,
     serializer: KSerializer<C>?,
-    initialItems: () -> Items<C>,
+    initialItems: () -> List<C>,
     key: String = "DefaultChildItems",
+    itemKey: (C) -> Any = { it },
     childFactory: (configuration: C, Ctx) -> T,
-): LazyChildItems<C, T> =
+): ChildLazyItems<C, T> =
     childItems(
         source = source,
         initialItems = initialItems,
-        stateSaver = serializer?.let { NavStateSaver(Items.serializer(it)) },
+        stateSaver = serializer?.let { NavStateSaver(ListSerializer(it)) },
         key = key,
+        itemKey = itemKey,
         childFactory = childFactory,
     )
 
@@ -62,22 +65,24 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childItems(
 @ExperimentalDecomposeApi
 fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childItems(
     source: NavigationSource<Event<C>>,
-    stateSaver: NavStateSaver<Items<C>>?,
-    initialItems: () -> Items<C>,
+    stateSaver: NavStateSaver<List<C>>?,
+    initialItems: () -> List<C>,
     key: String = "DefaultChildItems",
+    itemKey: (C) -> Any = { it },
     childFactory: (configuration: C, Ctx) -> T,
-): LazyChildItems<C, T> {
-    val navigator =
+): ChildLazyItems<C, T> {
+    val controller =
         ItemsController(
             controller = ChildController(
                 componentContext = this,
                 key = key,
                 childFactory = childFactory,
             ),
+            itemKey = itemKey,
         )
 
     val cancellation =
-        navigator.init(
+        controller.init(
             source = source,
             initialState = initialItems,
             key = key,
@@ -87,5 +92,5 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childItems(
 
     lifecycle.doOnDestroy(cancellation::cancel)
 
-    return DefaultLazyChildItems(navigator)
+    return controller
 }

@@ -11,8 +11,8 @@ import com.arkivanov.decompose.router.items.ItemsNavigation.Event
 interface ItemsNavigation<C : Any> : ItemsNavigator<C>, NavigationSource<Event<C>> {
 
     class Event<C : Any>(
-        val transformer: (Items<C>) -> Items<C>,
-        val onComplete: (newItems: Items<C>, oldItems: Items<C>) -> Unit = { _, _ -> },
+        val transformer: (List<C>) -> List<C>,
+        val onComplete: (newItems: List<C>, oldItems: List<C>) -> Unit = { _, _ -> },
     )
 }
 

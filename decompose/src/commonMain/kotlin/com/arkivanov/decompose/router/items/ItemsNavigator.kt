@@ -25,7 +25,7 @@ interface ItemsNavigator<C : Any> {
      * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
      */
     fun navigate(
-        transformer: (Items<C>) -> Items<C>,
-        onComplete: (newItems: Items<C>, oldItems: Items<C>) -> Unit,
+        transformer: (List<C>) -> List<C>,
+        onComplete: (newItems: List<C>, oldItems: List<C>) -> Unit,
     )
 }

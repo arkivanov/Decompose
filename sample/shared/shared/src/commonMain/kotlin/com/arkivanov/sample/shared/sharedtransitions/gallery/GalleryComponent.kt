@@ -1,6 +1,7 @@
 package com.arkivanov.sample.shared.sharedtransitions.gallery
 
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.router.items.ChildLazyItems
 import com.arkivanov.decompose.router.items.LazyChildItems
 import com.arkivanov.sample.shared.sharedtransitions.Image
 import com.arkivanov.sample.shared.sharedtransitions.thumbnail.ThumbnailComponent
@@ -8,7 +9,7 @@ import com.arkivanov.sample.shared.sharedtransitions.thumbnail.ThumbnailComponen
 interface GalleryComponent {
 
     @OptIn(ExperimentalDecomposeApi::class)
-    val items: LazyChildItems<Image, ThumbnailComponent>
+    val items: ChildLazyItems<Int, Image, ThumbnailComponent>
 
     fun onCloseClicked()
 }
