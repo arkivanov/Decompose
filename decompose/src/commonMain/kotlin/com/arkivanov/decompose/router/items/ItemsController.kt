@@ -19,7 +19,6 @@ internal class ItemsController<K : Any, C : Any, out T : Any>(
 ) : ChildLazyItems<C, T>() {
 
     private val nav = Relay<NavEvent<C>>()
-    private var activeKeys = emptySet<K>() // FIXME: retain
     private val state = MutableValue(State<K, C>(items = emptyList(), keyedItems = emptyMap()))
     private val items: Value<Items<C>> = state.map { Items(it.items) }
     override val value: Items<C> by items::value
