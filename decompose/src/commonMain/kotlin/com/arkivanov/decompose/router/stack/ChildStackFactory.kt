@@ -115,7 +115,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
         key = key,
         initialState = { StackNavState(configurations = initialStack()) },
         saveState = { saveStack(it.configurations) },
-        restoreState = { container -> StackNavState(configurations = restoreStack(container) ?: initialStack()) },
+        restoreState = { container -> restoreStack(container)?.let(::StackNavState) },
         navTransformer = { state, event -> StackNavState(configurations = event.transformer(state.configurations)) },
         stateMapper = { _, children ->
             @Suppress("UNCHECKED_CAST")

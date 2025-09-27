@@ -13,8 +13,10 @@ import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_START
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_STOP
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.getValue
+import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.register
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
@@ -24,7 +26,9 @@ import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
+import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -32,6 +36,8 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(DelicateDecomposeApi::class)
@@ -238,6 +244,80 @@ class ChildStackIntegrationTest {
         val newStack by newContext.childStack()
 
         newStack.assertStack(1, 2)
+    }
+
+    @Test
+    fun GIVEN_persistent_WHEN_recreated_with_new_initial_stack_and_state_not_restored_THEN_new_initial_stack_is_set() {
+        var ctx = TestComponentContext()
+        ctx.childStack(initialStack = listOf(Config(1)), persistent = true)
+
+        ctx = ctx.recreate()
+        val newStack by ctx.childStack(
+            source = navigation,
+            initialStack = { listOf(Config(2), Config(3)) },
+            saveStack = { SerializableContainer(it, ListSerializer(Config.serializer())) },
+            restoreStack = { null },
+            childFactory = ::Component,
+        )
+
+        newStack.assertStack(2, 3)
+    }
+
+    @Test
+    fun GIVEN_persistent_WHEN_recreated_with_same_initial_stack_and_state_not_restored_THEN_child_state_not_restored() {
+        var ctx = TestComponentContext()
+        val oldStack by ctx.childStack(initialStack = listOf(Config(1)), persistent = true)
+        oldStack.active.instance.stateKeeper.register("key") { 1 }
+
+        ctx = ctx.recreate()
+        val newStack by ctx.childStack(
+            source = navigation,
+            initialStack = { listOf(Config(1)) },
+            saveStack = { SerializableContainer(it, ListSerializer(Config.serializer())) },
+            restoreStack = { null },
+            childFactory = ::Component,
+        )
+
+        val restoredState = newStack.active.instance.stateKeeper.consume<Int>("key")
+
+        assertNull(restoredState)
+    }
+
+    @Test
+    fun GIVEN_persistent_WHEN_config_changed_with_same_initial_stack_and_state_not_restored_THEN_child_retained_instances_destroyed() {
+        var ctx = TestComponentContext()
+        val oldStack by ctx.childStack(initialStack = listOf(Config(1)), persistent = true)
+        val oldInstance = oldStack.active.instance.instanceKeeper.getOrCreate { TestInstance() }
+
+        ctx = ctx.recreate(isConfigurationChange = true)
+        ctx.childStack(
+            source = navigation,
+            initialStack = { listOf(Config(1)) },
+            saveStack = { SerializableContainer(it, ListSerializer(Config.serializer())) },
+            restoreStack = { null },
+            childFactory = ::Component,
+        )
+
+        assertTrue(oldInstance.isDestroyed)
+    }
+
+    @Test
+    fun GIVEN_persistent_WHEN_config_changed_with_same_initial_stack_and_state_not_restored_THEN_retained_instances_are_not_same() {
+        var ctx = TestComponentContext()
+        val oldStack by ctx.childStack(initialStack = listOf(Config(1)), persistent = true)
+        val oldInstance = oldStack.active.instance.instanceKeeper.getOrCreate { TestInstance() }
+
+        ctx = ctx.recreate(isConfigurationChange = true)
+        val newStack by ctx.childStack(
+            source = navigation,
+            initialStack = { listOf(Config(1)) },
+            saveStack = { SerializableContainer(it, ListSerializer(Config.serializer())) },
+            restoreStack = { null },
+            childFactory = ::Component,
+        )
+        val newInstance = newStack.active.instance.instanceKeeper.getOrCreate { TestInstance() }
+
+        assertNotSame(newInstance, oldInstance)
     }
 
     @Test
