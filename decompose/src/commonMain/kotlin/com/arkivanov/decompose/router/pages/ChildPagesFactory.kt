@@ -126,10 +126,12 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childPages(
         },
         saveState = { savePages(it.pages) },
         restoreState = { container ->
-            PagesNavState(
-                pages = restorePages(container) ?: initialPages(),
-                pageStatus = pageStatus,
-            )
+            restorePages(container)?.let { restoredPages ->
+                PagesNavState(
+                    pages = restoredPages,
+                    pageStatus = pageStatus,
+                )
+            }
         },
         navTransformer = { state, event ->
             PagesNavState(
