@@ -22,7 +22,7 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publish --no-configuration-cache --no-parallel
+        run: ./gradlew publish --no-configuration-cache --no-parallel --debug
       - name: Close staging repository
         run: 'curl -H "Authorization: Bearer ${{ secrets.SONATYPE_AUTH_BASE64 }}" -X POST https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/com.arkivanov.decompose'
       - name: Check publication
