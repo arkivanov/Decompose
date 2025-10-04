@@ -1,7 +1,12 @@
-import com.arkivanov.gradle.*
-import groovy.json.JsonSlurper
-import java.net.HttpURLConnection
-import java.net.URL
+import com.arkivanov.gradle.AndroidConfig
+import com.arkivanov.gradle.BinaryCompatibilityValidatorConfig
+import com.arkivanov.gradle.PublicationConfig
+import com.arkivanov.gradle.ensureUnreachableTasksDisabled
+import com.arkivanov.gradle.iosCompat
+import com.arkivanov.gradle.macosCompat
+import com.arkivanov.gradle.setupDefaults
+import com.arkivanov.gradle.tvosCompat
+import com.arkivanov.gradle.watchosCompat
 
 buildscript {
     repositories {
@@ -73,48 +78,4 @@ allprojects {
         google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
-}
-
-private val sonatypeBaseUrl = "https://ossrh-staging-api.central.sonatype.com"
-
-tasks.register("dropOpenSonatypeRepositories") {
-    getOpenSonatypeRepositoryKeys().forEach { key ->
-        requestDelete("/manual/drop/repository/$key")
-    }
-}
-
-tasks.register("closeSonatypeRepositories") {
-    getOpenSonatypeRepositoryKeys().forEach { key ->
-        requestPost("/manual/upload/repository/$key")
-    }
-}
-
-fun getOpenSonatypeRepositoryKeys(): List<String> {
-    val jsonBytes = requestGet("/manual/search/repositories?ip=any&profile_id=com.arkivanov.decompose")
-    val json = JsonSlurper().parse(jsonBytes) as Map<*, *>
-    val repositories = json["repositories"] as List<*>
-
-    return repositories.filterIsInstance<Map<*, *>>()
-        .filter { it["state"] == "open" }
-        .map { it["key"] as String }
-}
-
-fun requestGet(url: String): ByteArray =
-    startRequest(url = url, method = "GET").inputStream.readAllBytes()
-
-fun requestDelete(url: String) {
-    startRequest(url = url, method = "DELETE")
-}
-
-fun requestPost(url: String) {
-    startRequest(url = url, method = "POST")
-}
-
-fun startRequest(url: String, method: String): HttpURLConnection {
-    val connection = URL("$sonatypeBaseUrl$url").openConnection() as HttpURLConnection
-    connection.setRequestProperty("Authorization", "Bearer ${System.getenv("SONATYPE_AUTH_BASE64")}")
-    connection.requestMethod = method
-    check(connection.responseCode in 200..299) { "Invalid response code: ${connection.responseCode}" }
-
-    return connection
 }

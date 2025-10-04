@@ -16,6 +16,8 @@ jobs:
           java-version: 17
       - name: Drop open repositories
         env:
+          SONATYPE_USER_NAME: ${{ secrets.SONATYPE_USER_NAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SONATYPE_AUTH_BASE64: ${{ secrets.SONATYPE_AUTH_BASE64 }}
         run: ./gradlew dropOpenSonatypeRepositories
       - name: Publish
@@ -27,6 +29,8 @@ jobs:
         run: ./gradlew publish
       - name: Close staging repository
         env:
+          SONATYPE_USER_NAME: ${{ secrets.SONATYPE_USER_NAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SONATYPE_AUTH_BASE64: ${{ secrets.SONATYPE_AUTH_BASE64 }}
         run: ./gradlew closeSonatypeRepositories
       - name: Check publication
