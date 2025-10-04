@@ -14,17 +14,21 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
-      - name: Build
-        run: ./gradlew publishToMavenLocal
+      - name: Drop open repositories
+        env:
+          SONATYPE_AUTH_BASE64: ${{ secrets.SONATYPE_AUTH_BASE64 }}
+        run: ./gradlew dropOpenSonatypeRepositories
       - name: Publish
         env:
           SONATYPE_USER_NAME: ${{ secrets.SONATYPE_USER_NAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-        run: ./gradlew publish --no-configuration-cache --no-parallel --debug
+        run: ./gradlew publish
       - name: Close staging repository
-        run: 'curl -H "Authorization: Bearer ${{ secrets.SONATYPE_AUTH_BASE64 }}" -X POST https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/com.arkivanov.decompose'
+        env:
+          SONATYPE_AUTH_BASE64: ${{ secrets.SONATYPE_AUTH_BASE64 }}
+        run: ./gradlew closeSonatypeRepositories
       - name: Check publication
         env:
           SONATYPE_AUTH_BASE64: ${{ secrets.SONATYPE_AUTH_BASE64 }}
