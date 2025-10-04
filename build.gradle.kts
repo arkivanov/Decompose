@@ -83,7 +83,7 @@ tasks.register("dropOpenSonatypeRepositories") {
     }
 }
 
-tasks.register("closeSonatypeRespositories") {
+tasks.register("closeSonatypeRepositories") {
     getOpenSonatypeRepositoryKeys().forEach { key ->
         requestPost("/manual/upload/repository/$key")
     }
