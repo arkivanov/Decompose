@@ -342,7 +342,14 @@ private fun <EC : Any, ET : Any> ExtraPanel(
     placeholder: @Composable StackAnimationScope.() -> Unit,
 ) {
     ChildStack(
-        stack = stackOfNotNull(if (mode == SINGLE) EmptyChild1 else EmptyChild2, extra),
+        stack = stackOfNotNull(
+            when (mode) {
+                SINGLE -> EmptyChild1
+                DUAL -> EmptyChild2
+                TRIPLE -> EmptyChild3
+            },
+            extra,
+        ),
         modifier = Modifier.fillMaxSize(),
         animation = stackAnimation(
             animator = when (mode) {
@@ -355,7 +362,12 @@ private fun <EC : Any, ET : Any> ExtraPanel(
     ) {
         when (val child = it.instance) {
             is PanelChild.Panel -> content(child.child)
-            is PanelChild.Empty -> placeholder()
+
+            is PanelChild.Empty -> {
+                if (it == EmptyChild3) {
+                    placeholder()
+                }
+            }
         }
     }
 }
