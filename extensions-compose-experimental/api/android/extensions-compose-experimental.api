@@ -3,9 +3,11 @@ public final class com/arkivanov/decompose/extensions/compose/experimental/panel
 	public fun <init> ()V
 	public fun <init> (Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimator;Lkotlin/Pair;Lkotlin/Triple;)V
 	public synthetic fun <init> (Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimator;Lkotlin/Pair;Lkotlin/Triple;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getDual ()Lkotlin/Pair;
-	public final fun getSingle ()Lcom/arkivanov/decompose/extensions/compose/experimental/stack/animation/StackAnimator;
-	public final fun getTriple ()Lkotlin/Triple;
+	public fun <init> (Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getDetails ()Lkotlin/jvm/functions/Function4;
+	public final fun getExtra ()Lkotlin/jvm/functions/Function4;
+	public final fun getMain ()Lkotlin/jvm/functions/Function4;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/experimental/panels/ChildPanelsKt {
