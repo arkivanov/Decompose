@@ -13,6 +13,7 @@ import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.PredictiveBackParams
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationScope
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.experimental.stack.size
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.router.panels.ChildPanels
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
@@ -211,7 +212,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
     val details = remember(panels.details) { panels.details?.asPanelChild() }
     val extra = remember(panels.extra) { panels.extra?.asPanelChild() }
     val mode = panels.mode
-    val broadcastPredictiveBackParams = rememberBroadcastPredictiveBackParams(key = panels, count = 2) { predictiveBackParams(panels) }
+    val broadcastPredictiveBackParams = rememberBroadcastPredictiveBackParams(key = panels) { predictiveBackParams(panels) }
 
     Box(modifier = modifier) {
         layout.Layout(
@@ -255,7 +256,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
 @ExperimentalDecomposeApi
 @Composable
 private fun <MC : Any, MT : Any> MainPanel(
-    main: Child.Created<MC, PanelChild.Panel<MC, MT>>,
+    main: Child.Created<MC, PanelChild<MC, MT>>,
     mode: ChildPanelsMode,
     hasDetails: Boolean,
     hasExtra: Boolean,
@@ -276,12 +277,12 @@ private fun <MC : Any, MT : Any> MainPanel(
                 DUAL -> animators.dual.first
                 TRIPLE -> animators.triple.first
             },
-            predictiveBackParams = { if (it.active != main) predictiveBackParams.value else null },
+            predictiveBackParams = { if (it.items.size == 2) predictiveBackParams.value else null },
         ),
     ) {
-        when (val child = it.instance) {
-            is PanelChild.Panel -> content(child.child)
-            is PanelChild.Empty -> Unit // no-op
+        val child = it.instance.child
+        if (child != null) {
+            content(child)
         }
     }
 }
@@ -289,7 +290,7 @@ private fun <MC : Any, MT : Any> MainPanel(
 @ExperimentalDecomposeApi
 @Composable
 private fun <DC : Any, DT : Any> DetailsPanel(
-    details: Child.Created<DC, PanelChild.Panel<DC, DT>>?,
+    details: Child.Created<DC, PanelChild<DC, DT>>?,
     mode: ChildPanelsMode,
     hasExtra: Boolean,
     animators: ChildPanelsAnimators,
@@ -311,22 +312,19 @@ private fun <DC : Any, DT : Any> DetailsPanel(
                 TRIPLE -> animators.triple.second
             },
             predictiveBackParams = { stack ->
-                when {
-                    stack.active == EmptyChild2 -> predictiveBackParams.value
-                    (stack.active == details) && (stack.items.first() == EmptyChild1) -> predictiveBackParams.value
-                    else -> null
+                if ((stack.items.first() == EmptyChild1) && stack.items.any { !it.instance.isEmpty }) {
+                    predictiveBackParams.value
+                } else {
+                    null
                 }
             },
         ),
     ) {
-        when (val child = it.instance) {
-            is PanelChild.Panel -> content(child.child)
-
-            is PanelChild.Empty -> {
-                if (it == EmptyChild3) {
-                    placeholder()
-                }
-            }
+        val child = it.instance.child
+        if (child != null) {
+            content(child)
+        } else if (it == EmptyChild3) {
+            placeholder()
         }
     }
 }
@@ -334,7 +332,7 @@ private fun <DC : Any, DT : Any> DetailsPanel(
 @ExperimentalDecomposeApi
 @Composable
 private fun <EC : Any, ET : Any> ExtraPanel(
-    extra: Child.Created<EC, PanelChild.Panel<EC, ET>>?,
+    extra: Child.Created<EC, PanelChild<EC, ET>>?,
     mode: ChildPanelsMode,
     animators: ChildPanelsAnimators,
     predictiveBackParams: Lazy<PredictiveBackParams?>,
@@ -357,17 +355,20 @@ private fun <EC : Any, ET : Any> ExtraPanel(
                 DUAL -> animators.dual.second
                 TRIPLE -> animators.triple.third
             },
-            predictiveBackParams = { if (it.backStack.first() == EmptyChild1) predictiveBackParams.value else null },
+            predictiveBackParams = { stack ->
+                if ((stack.items.first() == EmptyChild1) && (stack.size > 1)) {
+                    predictiveBackParams.value
+                } else {
+                    null
+                }
+            },
         ),
     ) {
-        when (val child = it.instance) {
-            is PanelChild.Panel -> content(child.child)
-
-            is PanelChild.Empty -> {
-                if (it == EmptyChild3) {
-                    placeholder()
-                }
-            }
+        val child = it.instance.child
+        if (child != null) {
+            content(child)
+        } else if (it == EmptyChild3) {
+            placeholder()
         }
     }
 }
@@ -375,7 +376,6 @@ private fun <EC : Any, ET : Any> ExtraPanel(
 @Composable
 private fun rememberBroadcastPredictiveBackParams(
     key: Any,
-    count: Int,
     params: () -> PredictiveBackParams?
 ): Lazy<PredictiveBackParams?> =
     rememberLazy(key) {
@@ -385,7 +385,7 @@ private fun rememberBroadcastPredictiveBackParams(
             copy(
                 backHandler = BroadcastBackHandler(backHandler),
                 onBack = {
-                    if (++onBackCallCount == count) {
+                    if (++onBackCallCount == 2) {
                         onBackCallCount = 0
                         onBack()
                     }
@@ -399,8 +399,8 @@ private fun <C : Any, T : Any> stackOfNotNull(vararg stack: Child.Created<C, T>?
         ChildStack(active = it.last(), backStack = it.dropLast(1))
     }
 
-private fun <C : Any, T : Any> Child.Created<C, T>.asPanelChild(): Child.Created<C, PanelChild.Panel<C, T>> =
-    Child.Created(configuration = configuration, PanelChild.Panel(child = this))
+private fun <C : Any, T : Any> Child.Created<C, T>.asPanelChild(): Child.Created<C, PanelChild<C, T>> =
+    Child.Created(configuration = configuration, PanelChild(child = this))
 
 private val EmptyChild1 = Child.Created(configuration = EmptyConfig(value = 1), instance = PanelChild.Empty)
 private val EmptyChild2 = Child.Created(configuration = EmptyConfig(value = 2), instance = PanelChild.Empty)
@@ -409,7 +409,11 @@ private val EmptyChild4 = Child.Created(configuration = EmptyConfig(value = 4), 
 
 private data class EmptyConfig(val value: Any)
 
-private sealed interface PanelChild<out C : Any, out T : Any> {
-    class Panel<out C : Any, out T : Any>(val child: Child.Created<C, T>) : PanelChild<C, T>
-    data object Empty : PanelChild<Nothing, Nothing>
+private class PanelChild<out C : Any, out T : Any>(val child: Child.Created<C, T>?) {
+
+    companion object {
+        val Empty: PanelChild<Nothing, Nothing> = PanelChild(child = null)
+    }
 }
+
+private val PanelChild<*, *>.isEmpty: Boolean get() = child == null
