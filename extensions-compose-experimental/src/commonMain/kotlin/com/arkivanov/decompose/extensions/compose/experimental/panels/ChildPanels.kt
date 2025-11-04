@@ -54,7 +54,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
     modifier: Modifier = Modifier,
     secondPanelPlaceholder: @Composable StackAnimationScope.() -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
-    animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
+    animators: ChildPanelsAnimators<MC, MT, DC, DT, Nothing, Nothing> = remember { ChildPanelsAnimators() },
     predictiveBackParams: (ChildPanels<MC, MT, DC, DT, Nothing, Nothing>) -> PredictiveBackParams? = { null },
 ) {
     ChildPanels(
@@ -100,7 +100,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
     modifier: Modifier = Modifier,
     secondPanelPlaceholder: @Composable StackAnimationScope.() -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
-    animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
+    animators: ChildPanelsAnimators<MC, MT, DC, DT, Nothing, Nothing> = remember { ChildPanelsAnimators() },
     predictiveBackParams: (ChildPanels<MC, MT, DC, DT, Nothing, Nothing>) -> PredictiveBackParams? = { null },
 ) {
     ChildPanels(
@@ -151,7 +151,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
     secondPanelPlaceholder: @Composable StackAnimationScope.() -> Unit = {},
     thirdPanelPlaceholder: @Composable StackAnimationScope.() -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
-    animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
+    animators: ChildPanelsAnimators<MC, MT, DC, DT, EC, ET> = remember { ChildPanelsAnimators() },
     predictiveBackParams: (ChildPanels<MC, MT, DC, DT, EC, ET>) -> PredictiveBackParams? = { null },
 ) {
     val state = panels.subscribeAsState()
@@ -205,7 +205,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
     secondPanelPlaceholder: @Composable StackAnimationScope.() -> Unit = {},
     thirdPanelPlaceholder: @Composable StackAnimationScope.() -> Unit = {},
     layout: ChildPanelsLayout = remember { HorizontalChildPanelsLayout() },
-    animators: ChildPanelsAnimators = remember { ChildPanelsAnimators() },
+    animators: ChildPanelsAnimators<MC, MT, DC, DT, EC, ET> = remember { ChildPanelsAnimators() },
     predictiveBackParams: (ChildPanels<MC, MT, DC, DT, EC, ET>) -> PredictiveBackParams? = { null },
 ) {
     val main = remember(panels.main) { panels.main.asPanelChild() }
@@ -260,7 +260,7 @@ private fun <MC : Any, MT : Any> MainPanel(
     mode: ChildPanelsMode,
     hasDetails: Boolean,
     hasExtra: Boolean,
-    animators: ChildPanelsAnimators,
+    animators: ChildPanelsAnimators<MC, MT, *, *, *, *>,
     predictiveBackParams: Lazy<PredictiveBackParams?>,
     content: @Composable StackAnimationScope.(Child.Created<MC, MT>) -> Unit,
 ) {
@@ -272,12 +272,12 @@ private fun <MC : Any, MT : Any> MainPanel(
         },
         modifier = Modifier.fillMaxSize(),
         animation = stackAnimation(
-            animator = when (mode) {
-                SINGLE -> animators.single
-                DUAL -> animators.dual.first
-                TRIPLE -> animators.triple.first
-            },
             predictiveBackParams = { if (it.items.size == 2) predictiveBackParams.value else null },
+            selector = { child, _, direction, isPredictiveBack ->
+                child.instance.child?.let {
+                    animators.main(it, mode, direction, isPredictiveBack)
+                }
+            },
         ),
     ) {
         val child = it.instance.child
@@ -293,7 +293,7 @@ private fun <DC : Any, DT : Any> DetailsPanel(
     details: Child.Created<DC, PanelChild<DC, DT>>?,
     mode: ChildPanelsMode,
     hasExtra: Boolean,
-    animators: ChildPanelsAnimators,
+    animators: ChildPanelsAnimators<*, *, DC, DT, *, *>,
     predictiveBackParams: Lazy<PredictiveBackParams?>,
     content: @Composable StackAnimationScope.(Child.Created<DC, DT>) -> Unit,
     placeholder: @Composable StackAnimationScope.() -> Unit,
@@ -306,16 +306,16 @@ private fun <DC : Any, DT : Any> DetailsPanel(
         },
         modifier = Modifier.fillMaxSize(),
         animation = stackAnimation(
-            animator = when (mode) {
-                SINGLE -> animators.single
-                DUAL -> animators.dual.second
-                TRIPLE -> animators.triple.second
-            },
             predictiveBackParams = { stack ->
                 if ((stack.items.first() == EmptyChild1) && stack.items.any { !it.instance.isEmpty }) {
                     predictiveBackParams.value
                 } else {
                     null
+                }
+            },
+            selector = { child, _, direction, isPredictiveBack ->
+                child.instance.child?.let {
+                    animators.details(it, mode, direction, isPredictiveBack)
                 }
             },
         ),
@@ -334,7 +334,7 @@ private fun <DC : Any, DT : Any> DetailsPanel(
 private fun <EC : Any, ET : Any> ExtraPanel(
     extra: Child.Created<EC, PanelChild<EC, ET>>?,
     mode: ChildPanelsMode,
-    animators: ChildPanelsAnimators,
+    animators: ChildPanelsAnimators<*, *, *, *, EC, ET>,
     predictiveBackParams: Lazy<PredictiveBackParams?>,
     content: @Composable StackAnimationScope.(Child.Created<EC, ET>) -> Unit,
     placeholder: @Composable StackAnimationScope.() -> Unit,
@@ -350,16 +350,16 @@ private fun <EC : Any, ET : Any> ExtraPanel(
         ),
         modifier = Modifier.fillMaxSize(),
         animation = stackAnimation(
-            animator = when (mode) {
-                SINGLE -> animators.single
-                DUAL -> animators.dual.second
-                TRIPLE -> animators.triple.third
-            },
             predictiveBackParams = { stack ->
                 if ((stack.items.first() == EmptyChild1) && (stack.size > 1)) {
                     predictiveBackParams.value
                 } else {
                     null
+                }
+            },
+            selector = { child, _, direction, isPredictiveBack ->
+                child.instance.child?.let {
+                    animators.extra(it, mode, direction, isPredictiveBack)
                 }
             },
         ),
