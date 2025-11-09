@@ -12,12 +12,12 @@ fun <C : Any> StackNavigator<C>.navigate(transformer: (stack: List<C>) -> List<C
 /**
  * Pushes the provided [configuration] at the top of the stack.
  *
- * Decompose will throw an exception if the provided [configuration] is already present in the stack.
- * This usually happens when a component is pushed on user interaction (e.g. a button click).
- * Consider using [pushNew] instead.
- * You can also try enabling the experimental
- * [Duplicate Configurations][com.arkivanov.decompose.DecomposeExperimentFlags.duplicateConfigurationsEnabled] feature
- * to avoid the error. But still, pushing duplicated components on top of the stack might be wrong.
+ * By default, Decompose will throw an exception if the provided [configuration] is already present
+ * in the stack. However, duplicate configurations can be enabled by setting the
+ * [com.arkivanov.decompose.DecomposeSettings.duplicateConfigurationsEnabled] flag to `true`.
+ *
+ * To prevent pushing duplicated configurations accidentally (e.g., on a button double-click),
+ * consider using [pushNew] instead.
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  */
@@ -30,13 +30,12 @@ inline fun <C : Any> StackNavigator<C>.push(configuration: C, crossinline onComp
  * Pushes the provided [configuration] at the top of the stack. Does nothing if the provided
  * [configuration] is already on top of the stack.
  *
- * Decompose will throw an exception if the provided [configuration] is already present in the
- * back stack (not at the top of the stack). You can also try enabling the experimental
- * [Duplicate Configurations][com.arkivanov.decompose.DecomposeExperimentFlags.duplicateConfigurationsEnabled] feature
- * to avoid the error.
- *
  * This can be useful when pushing a component on button click, to avoid pushing the same component
  * if the user clicks the same button quickly multiple times.
+ *
+ * By default, Decompose will throw an exception if the provided [configuration] is already present
+ * in the back stack. However, duplicate configurations can be enabled by setting
+ * [com.arkivanov.decompose.DecomposeSettings.duplicateConfigurationsEnabled] flag to `true`.
  *
  * @param onComplete called when the navigation is finished (either synchronously or asynchronously).
  * The `isSuccess` argument is `true` if the component was pushed, `false` otherwise.
@@ -52,8 +51,8 @@ inline fun <C : Any> StackNavigator<C>.pushNew(
 }
 
 /**
- * Pushes the provided [configuration] to the top of the stack,
- * removing the [configuration] from the back stack, if any.
+ * Removes the last configuration found in the stack equal to the provided [configuration],
+ * and then pushes the [configuration] to the top of the stack.
  *
  * This API works similar to [bringToFront], except it compares configurations
  * by equality rather than by configuration class.
@@ -65,7 +64,16 @@ inline fun <C : Any> StackNavigator<C>.pushToFront(
     crossinline onComplete: () -> Unit = {},
 ) {
     navigate(
-        transformer = { stack -> stack - configuration + configuration },
+        transformer = { stack ->
+            stack.toMutableList().apply {
+                val existingIndex = lastIndexOf(configuration)
+                if (existingIndex >= 0) {
+                    removeAt(existingIndex)
+                }
+
+                add(configuration)
+            }
+        },
         onComplete = { _, _ -> onComplete() },
     )
 }
@@ -132,7 +140,7 @@ inline fun <C : Any> StackNavigator<C>.popTo(
 
 /**
  * Pops configurations at the top of the stack so that the first configuration becomes active (the new top of the stack).
- * Does nothing if there is only one component in the stack.
+ * Does nothing if there is only one configuration in the stack.
  *
  * Equivalent to `popTo(index = 0)`.
  *

@@ -1,6 +1,6 @@
 package com.arkivanov.decompose.router.children
 
-import com.arkivanov.decompose.DecomposeExperimentFlags
+import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
@@ -561,7 +561,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_first_and_last_children_duplicated_WHEN_recreated_THEN_states_restored() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
         val oldStateKeeper = TestStateKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
         val oldChildren by oldContext.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
@@ -582,7 +582,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_first_and_last_children_duplicated_WHEN_children_recreated_THEN_states_restored() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
         val children by context.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
         children.first().requireInstance().stateKeeper.register("key") { 10 }
         children.last().requireInstance().stateKeeper.register("key") { 30 }

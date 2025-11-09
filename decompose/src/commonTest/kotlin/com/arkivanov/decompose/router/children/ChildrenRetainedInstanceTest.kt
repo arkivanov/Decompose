@@ -1,6 +1,6 @@
 package com.arkivanov.decompose.router.children
 
-import com.arkivanov.decompose.DecomposeExperimentFlags
+import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
@@ -265,7 +265,7 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_duplicated_children_recreated_THEN_instances_retained() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
         val oldStateKeeper = TestStateKeeperDispatcher()
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
@@ -286,7 +286,7 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_duplicated_children_recreated_THEN_instances_not_destroyed() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
         val oldStateKeeper = TestStateKeeperDispatcher()
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)

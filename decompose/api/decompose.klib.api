@@ -482,6 +482,25 @@ final class <#A: out kotlin/Any> com.arkivanov.decompose.router.pages/Pages { //
     }
 }
 
+final class com.arkivanov.decompose/DecomposeSettings { // com.arkivanov.decompose/DecomposeSettings|null[0]
+    constructor <init>(kotlin/Boolean = ...) // com.arkivanov.decompose/DecomposeSettings.<init>|<init>(kotlin.Boolean){}[0]
+
+    final val duplicateConfigurationsEnabled // com.arkivanov.decompose/DecomposeSettings.duplicateConfigurationsEnabled|{}duplicateConfigurationsEnabled[0]
+        final fun <get-duplicateConfigurationsEnabled>(): kotlin/Boolean // com.arkivanov.decompose/DecomposeSettings.duplicateConfigurationsEnabled.<get-duplicateConfigurationsEnabled>|<get-duplicateConfigurationsEnabled>(){}[0]
+
+    final fun component1(): kotlin/Boolean // com.arkivanov.decompose/DecomposeSettings.component1|component1(){}[0]
+    final fun copy(kotlin/Boolean = ...): com.arkivanov.decompose/DecomposeSettings // com.arkivanov.decompose/DecomposeSettings.copy|copy(kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.arkivanov.decompose/DecomposeSettings.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.arkivanov.decompose/DecomposeSettings.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.arkivanov.decompose/DecomposeSettings.toString|toString(){}[0]
+
+    final object Companion { // com.arkivanov.decompose/DecomposeSettings.Companion|null[0]
+        final var settings // com.arkivanov.decompose/DecomposeSettings.Companion.settings|{}settings[0]
+            final fun <get-settings>(): com.arkivanov.decompose/DecomposeSettings // com.arkivanov.decompose/DecomposeSettings.Companion.settings.<get-settings>|<get-settings>(){}[0]
+            final fun <set-settings>(com.arkivanov.decompose/DecomposeSettings) // com.arkivanov.decompose/DecomposeSettings.Companion.settings.<set-settings>|<set-settings>(com.arkivanov.decompose.DecomposeSettings){}[0]
+    }
+}
+
 final class com.arkivanov.decompose/DefaultComponentContext : com.arkivanov.decompose/ComponentContext { // com.arkivanov.decompose/DefaultComponentContext|null[0]
     constructor <init>(com.arkivanov.essenty.lifecycle/Lifecycle) // com.arkivanov.decompose/DefaultComponentContext.<init>|<init>(com.arkivanov.essenty.lifecycle.Lifecycle){}[0]
     constructor <init>(com.arkivanov.essenty.lifecycle/Lifecycle, com.arkivanov.essenty.statekeeper/StateKeeper? = ..., com.arkivanov.essenty.instancekeeper/InstanceKeeper? = ..., com.arkivanov.essenty.backhandler/BackHandler? = ...) // com.arkivanov.decompose/DefaultComponentContext.<init>|<init>(com.arkivanov.essenty.lifecycle.Lifecycle;com.arkivanov.essenty.statekeeper.StateKeeper?;com.arkivanov.essenty.instancekeeper.InstanceKeeper?;com.arkivanov.essenty.backhandler.BackHandler?){}[0]

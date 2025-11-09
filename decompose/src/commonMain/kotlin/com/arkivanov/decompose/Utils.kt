@@ -15,16 +15,21 @@ internal expect val KClass<*>.uniqueName: String?
 
 internal val Lifecycle.isDestroyed: Boolean get() = state == Lifecycle.State.DESTROYED
 
-internal fun <T : Any, C : Any> List<T>.keyed(configuration: (T) -> C): Map<Any, T> {
-    val numbers = HashMap<C, Int>()
+internal fun <T : Any, C : Any> List<T>.keyed(configuration: (T) -> C): Map<ItemKey, T> {
+    val indices = HashMap<C, Int>()
 
     return associateBy { item ->
         val config = configuration(item)
-        val number = (numbers[config] ?: 0) + 1
-        numbers[config] = number
-        config to number
+        val index = indices[config]?.plus(1) ?: 0
+        indices[config] = index
+        ItemKey(config, index)
     }
 }
+
+internal data class ItemKey(
+    private val value: Any,
+    private val index: Int,
+)
 
 internal fun <T : Any> Iterable<T>.findFirstDuplicate(set: Set<T>): Pair<Int, T>? {
     val iter1 = iterator()
