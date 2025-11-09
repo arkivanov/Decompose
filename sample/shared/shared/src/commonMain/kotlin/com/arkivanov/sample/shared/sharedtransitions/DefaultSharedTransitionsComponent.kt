@@ -62,7 +62,6 @@ class DefaultSharedTransitionsComponent(
                     is Config.Photo -> mapOf("id" to config.id.toString())
                 }
             },
-            onBeforeNavigate = { false },
         )
 
     private fun child(config: Config, ctx: ComponentContext): Child =
