@@ -3,7 +3,7 @@ package com.arkivanov.decompose.sample.app
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.window.CanvasBasedWindow
+import androidx.compose.ui.window.ComposeViewport
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.webhistory.withWebHistory
@@ -35,7 +35,7 @@ fun main() {
     lifecycle.attachToDocument()
 
     onWasmReady {
-        CanvasBasedWindow(title = "Decompose Sample") {
+        ComposeViewport {
             RootContent(component = root, modifier = Modifier.fillMaxSize())
         }
     }
