@@ -1,9 +1,9 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.DecomposeExperimentFlags
+import com.arkivanov.decompose.DecomposeSettings
+import com.arkivanov.decompose.ItemKey
 import com.arkivanov.decompose.keyed
-import com.arkivanov.decompose.mapped
 import com.arkivanov.decompose.router.children.ChildItem.Created
 import com.arkivanov.decompose.router.children.ChildItem.Destroyed
 import com.arkivanov.decompose.router.children.ChildNavState.Status
@@ -28,38 +28,21 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     var navState: N = navState
         private set
 
-    private val items = ArrayList<ChildItem<C, T>>()
+    @Suppress("UNCHECKED_CAST")
+    private val retainedInstance = retainedInstanceSupplier { RetainedInstance<C, T>() } as RetainedInstance<C, T>
+
+    private val items by retainedInstance::items
 
     val children: List<Child<C, T>>
         get() =
-            if (DecomposeExperimentFlags.duplicateConfigurationsEnabled) {
-                getChildrenExperimental()
-            } else {
-                getChildrenDefault()
+            items.keyed { it.configuration }.map { (key, item) ->
+                val instance = item.instance
+                if (instance != null) {
+                    Child.Created(key = key, configuration = item.configuration, instance = instance)
+                } else {
+                    Child.Destroyed(key = key, configuration = item.configuration)
+                }
             }
-
-    private fun getChildrenDefault(): List<Child<C, T>> =
-        items.map { item ->
-            val instance = item.instance
-            if (instance != null) {
-                Child.Created(configuration = item.configuration, instance = instance)
-            } else {
-                Child.Destroyed(configuration = item.configuration)
-            }
-        }
-
-    private fun getChildrenExperimental(): List<Child<C, T>> =
-        items.keyed { it.configuration }.map { (key, item) ->
-            val instance = item.instance
-            if (instance != null) {
-                Child.Created(key = key, configuration = item.configuration, instance = instance)
-            } else {
-                Child.Destroyed(key = key, configuration = item.configuration)
-            }
-        }
-
-    @Suppress("UNCHECKED_CAST")
-    private val retainedInstance = retainedInstanceSupplier { RetainedInstance<C, T>() } as RetainedInstance<C, T>
 
     init {
         if (savedChildState == null) {
@@ -84,42 +67,8 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     }
 
     private fun restore(navState: N, savedStates: List<SerializableContainer?>) {
-        if (DecomposeExperimentFlags.duplicateConfigurationsEnabled) {
-            restoreExperimental(navState, savedStates)
-        } else {
-            restoreDefault(navState, savedStates)
-        }
-    }
-
-    private fun restoreDefault(navState: N, savedStates: List<SerializableContainer?>) {
-        val retainedChildren = retainedInstance.items.associateByTo(HashMap(), Created<C, *>::configuration)
-        retainedInstance.items.clear()
-
-        navState.children.zip(savedStates).forEach { (childNavState, savedState) ->
-            items +=
-                restoreItem(
-                    status = childNavState.status,
-                    getDestroyedItem = { Destroyed(configuration = childNavState.configuration, savedState = savedState) },
-                    getCreatedItem = {
-                        childItemFactory(
-                            configuration = childNavState.configuration,
-                            savedState = savedState,
-                            instanceKeeperDispatcher = retainedChildren.remove(childNavState.configuration)?.instanceKeeperDispatcher,
-                        ).also {
-                            retainedInstance.items += it
-                        }
-                    }
-                )
-        }
-
-        retainedChildren.values.forEach { it.instanceKeeperDispatcher.destroy() }
-    }
-
-    private fun restoreExperimental(navState: N, savedStates: List<SerializableContainer?>) {
-        val retainedChildren = HashMap<Int, Created<C, T>>()
-        retainedInstance.items.forEachIndexed(retainedChildren::put)
-        val restoreRetainedChildren = navState.children.mapped { it.configuration } == retainedInstance.items.mapped { it.configuration }
-        retainedInstance.items.clear()
+        val retainedItems = items.takeUnless(List<*>::isEmpty)?.mapIndexed(::Pair)?.toMap(HashMap())
+        items.clear()
 
         navState.children.zip(savedStates).forEachIndexed { index, (childNavState, savedState) ->
             items +=
@@ -130,18 +79,13 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
                         childItemFactory(
                             configuration = childNavState.configuration,
                             savedState = savedState,
-                            instanceKeeperDispatcher = retainedChildren
-                                .takeIf { restoreRetainedChildren }
-                                ?.remove(index)
-                                ?.instanceKeeperDispatcher,
-                        ).also {
-                            retainedInstance.items += it
-                        }
+                            instanceKeeperDispatcher = retainedItems?.remove(index)?.instanceKeeperDispatcher,
+                        )
                     }
                 )
         }
 
-        retainedChildren.values.forEach { it.instanceKeeperDispatcher.destroy() }
+        retainedItems?.values?.forEach { it.instanceKeeperDispatcher?.destroy() }
     }
 
     private inline fun restoreItem(
@@ -184,92 +128,24 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     }
 
     private fun switch(newStates: List<ChildNavState<C>>) {
-        if (DecomposeExperimentFlags.duplicateConfigurationsEnabled) {
-            switchExperimental(newStates)
-        } else {
-            switchDefault(newStates)
-        }
-    }
+        val newKeyedStates = newStates.keyed(ChildNavState<C>::configuration)
 
-    private fun switchDefault(newStates: List<ChildNavState<C>>) {
-        val newConfigurations = newStates.mapTo(HashSet(), ChildNavState<C>::configuration)
-        check(newConfigurations.size == newStates.size) {
-            "Configurations must be unique: ${newStates.map(ChildNavState<C>::configuration)}."
-        }
-
-        val oldItems = items.associateBy(ChildItem<C, *>::configuration)
-        val newItems = prepareNewItemsDefault(newStates = newStates, oldItems = oldItems)
-        destroyOldItemsDefault(newConfigurations = newConfigurations, oldItems = oldItems.values)
-        processNewItems(newItems = newItems)
-    }
-
-    private fun prepareNewItemsDefault(
-        newStates: List<ChildNavState<C>>,
-        oldItems: Map<C, ChildItem<C, T>>,
-    ): List<Pair<ChildItem<C, T>, Status>> {
-        val newItems = ArrayList<Pair<ChildItem<C, T>, Status>>(newStates.size)
-
-        newStates.forEach { state ->
-            newItems +=
-                when (val child = oldItems[state.configuration]) {
-                    is Created -> child to state.status
-
-                    is Destroyed ->
-                        when (state.status) {
-                            Status.DESTROYED -> child to state.status
-
-                            Status.CREATED,
-                            Status.STARTED,
-                            Status.RESUMED ->
-                                Pair(
-                                    first = childItemFactory(configuration = state.configuration, savedState = child.savedState)
-                                        .apply { lifecycleRegistry.create() },
-                                    second = state.status,
-                                )
-                        }
-
-                    null ->
-                        when (state.status) {
-                            Status.DESTROYED -> Destroyed(configuration = state.configuration) to state.status
-
-                            Status.CREATED,
-                            Status.STARTED,
-                            Status.RESUMED ->
-                                Pair(
-                                    first = childItemFactory(configuration = state.configuration)
-                                        .apply { lifecycleRegistry.create() },
-                                    second = state.status,
-                                )
-                        }
-                }
-        }
-
-        return newItems
-    }
-
-    private fun destroyOldItemsDefault(
-        newConfigurations: Set<C>,
-        oldItems: Collection<ChildItem<C, T>>,
-    ) {
-        for (item in oldItems) {
-            val child = item as? Created ?: continue
-            if (item.configuration !in newConfigurations) {
-                child.destroy()
+        if (!DecomposeSettings.settings.duplicateConfigurationsEnabled) {
+            val newConfigurations = newStates.mapTo(HashSet(), ChildNavState<C>::configuration)
+            check(newConfigurations.size == newStates.size) {
+                "Configurations must be unique: ${newStates.map(ChildNavState<C>::configuration)}."
             }
         }
-    }
 
-    private fun switchExperimental(newStates: List<ChildNavState<C>>) {
-        val newKeyedStates = newStates.keyed(ChildNavState<C>::configuration)
         val oldKeyedItems = items.keyed(ChildItem<C, *>::configuration)
-        val newItems = prepareNewItemsExperimental(newStates = newKeyedStates, oldItems = oldKeyedItems)
-        destroyOldItemsExperimental(newKeys = newKeyedStates.keys, oldItems = oldKeyedItems)
+        val newItems = prepareNewItems(newStates = newKeyedStates, oldItems = oldKeyedItems)
+        destroyOldItems(newKeys = newKeyedStates.keys, oldItems = oldKeyedItems)
         processNewItems(newItems = newItems)
     }
 
-    private fun prepareNewItemsExperimental(
-        newStates: Map<Any, ChildNavState<C>>,
-        oldItems: Map<Any, ChildItem<C, T>>,
+    private fun prepareNewItems(
+        newStates: Map<ItemKey, ChildNavState<C>>,
+        oldItems: Map<ItemKey, ChildItem<C, T>>,
     ): List<Pair<ChildItem<C, T>, Status>> {
         val newItems = ArrayList<Pair<ChildItem<C, T>, Status>>(newStates.size)
 
@@ -311,9 +187,9 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         return newItems
     }
 
-    private fun destroyOldItemsExperimental(
-        newKeys: Set<Any>,
-        oldItems: Map<Any, ChildItem<C, T>>,
+    private fun destroyOldItems(
+        newKeys: Set<ItemKey>,
+        oldItems: Map<ItemKey, ChildItem<C, T>>,
     ) {
         for ((key, item) in oldItems) {
             val child = item as? Created ?: continue
@@ -325,7 +201,6 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
     private fun processNewItems(newItems: List<Pair<ChildItem<C, T>, Status>>) {
         items.clear()
-        retainedInstance.items.clear()
 
         newItems.forEach { (item, status) ->
             items +=
@@ -345,8 +220,6 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             }
 
             Status.CREATED -> {
-                retainedInstance.items += item
-
                 if (item.lifecycleRegistry.state != Lifecycle.State.CREATED) {
                     item.backHandler.stop()
                     item.lifecycleRegistry.stop()
@@ -356,8 +229,6 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             }
 
             Status.STARTED -> {
-                retainedInstance.items += item
-
                 when {
                     item.lifecycleRegistry.state < Lifecycle.State.STARTED -> {
                         item.backHandler.start()
@@ -373,8 +244,6 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             }
 
             Status.RESUMED -> {
-                retainedInstance.items += item
-
                 if (item.lifecycleRegistry.state != Lifecycle.State.RESUMED) {
                     item.backHandler.start()
                     item.lifecycleRegistry.resume()
@@ -391,10 +260,10 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     }
 
     private class RetainedInstance<C : Any, T : Any> : InstanceKeeper.Instance {
-        val items: MutableList<Created<C, T>> = ArrayList()
+        val items: MutableList<ChildItem<C, T>> = ArrayList<ChildItem<C, T>>()
 
         override fun onDestroy() {
-            items.forEach { it.instanceKeeperDispatcher.destroy() }
+            items.toList().forEach { it.instanceKeeperDispatcher?.destroy() }
             items.clear()
         }
     }

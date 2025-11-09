@@ -1,6 +1,6 @@
 package com.arkivanov.decompose.router.children
 
-import com.arkivanov.decompose.DecomposeExperimentFlags
+import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
@@ -284,7 +284,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_first_and_last_children_duplicated_WHEN_last_child_removed_THEN_last_child_destroyed() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
         val children by context.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
         val child = children.last().requireInstance()
 
@@ -295,7 +295,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_first_and_last_children_duplicated_first_child_created_WHEN_last_child_removed_THEN_first_child_created() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
         val children by context.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
         val child = children.first().requireInstance()
 
@@ -306,7 +306,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_first_and_last_children_duplicated_WHEN_first_child_removed_THEN_last_child_destroyed() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
         val children by context.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
         val child = children.last().requireInstance()
 
@@ -317,7 +317,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_first_and_last_children_duplicated_and_last_child_resumed_WHEN_first_child_removed_THEN_first_child_resumed() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
         val children by context.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
         val child = children.first().requireInstance()
 

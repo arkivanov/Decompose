@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 /**
  * Represents a state of Child Items navigation model.
  *
- * @param items a list of child configurations, can be empty. Must be unique even if the
- * [com.arkivanov.decompose.DecomposeExperimentFlags.duplicateConfigurationsEnabled] flag is enabled.
+ * @param items a list of child configurations, can be empty. Must be unique.
+ * A runtime exception will be thrown if duplicate configurations are detected.
  * @param activeItems a map of lifecycle states of the instantiated (active) components.
  * Child components whose configurations are not present in this map are destroyed.
  * Configurations in the map should also be present in the [items] list,

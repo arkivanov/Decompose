@@ -2,7 +2,7 @@ package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.DecomposeExperimentFlags
+import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.decompose.value.Value
@@ -38,7 +38,7 @@ open class ChildrenTestBase {
 
     @AfterTest
     fun after() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = false
+        DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = false)
     }
 
     protected fun ComponentContext.children(

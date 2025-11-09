@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.DecomposeExperimentFlags
+import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.DelicateDecomposeApi
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks
@@ -65,7 +65,7 @@ class ChildStackIntegrationTest {
 
     @AfterTest
     fun after() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = false
+        DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = false)
     }
 
     @Test
@@ -611,7 +611,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun WHEN_push_duplicated_children_THEN_stack_contains_duplicated_children() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
         val stack by context.childStack(initialStack = listOf(Config(1), Config(2), Config(3)))
 
         navigation.push(Config(1))
@@ -622,7 +622,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_stack_with_duplicated_children_WHEN_remove_duplicated_children_THEN_stack_contains_unique_children() {
-        DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
+        DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
         val stack by context.childStack(initialStack = listOf(Config(1), Config(2), Config(3), Config(1), Config(2)))
 
         navigation.pop()

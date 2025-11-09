@@ -13,6 +13,9 @@ import kotlinx.serialization.KSerializer
 /**
  * Initializes and manages a list of components with arbitrary lifecycle states. Typically used for lazy lists.
  *
+ * Please note that this navigation model does not support duplicate (by equality) configurations.
+ * A runtime exception will be thrown if duplicate configurations are detected.
+ *
  * **It is strongly recommended to call this method on the Main thread.**
  *
  * @param source a source of navigation events.
@@ -43,6 +46,9 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childItems(
 
 /**
  * Initializes and manages a list of components with arbitrary lifecycle states. Typically used for lazy lists.
+ *
+ * Please note that this navigation model does not support duplicate (by equality) configurations.
+ * A runtime exception will be thrown if duplicate configurations are detected.
  *
  * **It is strongly recommended to call this method on the Main thread.**
  *
