@@ -27,7 +27,7 @@ class DefaultStackAnimationTest {
     @Test
     fun WHEN_animating_push_and_stack_popped_during_animation_THEN_animated_push_and_pop_fully() {
         val anim = defaultStackAnimation()
-        var stack by mutableStateOf(stack(1))
+        var stack by mutableStateOf(stack("1"))
         val values1 = ArrayList<Pair<Long, Float>>()
         val values2 = ArrayList<Pair<Long, Float>>()
 
@@ -37,15 +37,15 @@ class DefaultStackAnimationTest {
                 val pair = composeRule.mainClock.currentTime to value
 
                 when (it.key) {
-                    1 -> values1 += pair
-                    2 -> values2 += pair
+                    "1" -> values1 += pair
+                    "2" -> values2 += pair
                 }
             }
         }
 
-        stack = stack(1, 2)
+        stack = stack("1", "2")
         composeRule.mainClock.advanceFramesBy(millis = 500L)
-        stack = stack(1)
+        stack = stack("1")
         composeRule.waitForIdle()
 
         val v11 = values1.takeSorted(compareByDescending { it.second })
@@ -70,14 +70,14 @@ class DefaultStackAnimationTest {
     @Test
     fun WHEN_animating_push_and_stack_popped_during_animation_THEN_first_child_restarted() {
         val anim = defaultStackAnimation()
-        var stack by mutableStateOf(stack(1))
+        var stack by mutableStateOf(stack("1"))
         var counter = 0
 
         composeRule.setContent {
             anim(stack = stack, modifier = Modifier) {
                 transition.animateFloat(durationMillis = 1000)
 
-                if (it.key == 1) {
+                if (it.key == "1") {
                     LaunchedEffect(Unit) {
                         counter++
                     }
@@ -85,9 +85,9 @@ class DefaultStackAnimationTest {
             }
         }
 
-        stack = stack(1, 2)
+        stack = stack("1", "2")
         composeRule.mainClock.advanceFramesBy(millis = 500L)
-        stack = stack(1)
+        stack = stack("1")
         composeRule.waitForIdle()
 
         assertEquals(2, counter)
@@ -96,13 +96,13 @@ class DefaultStackAnimationTest {
     @Test
     fun WHEN_created_and_idle_THEN_stackAnimationDirection_is_null() {
         val anim = defaultStackAnimation()
-        var stack by mutableStateOf(stack(1))
+        var stack by mutableStateOf(stack("1"))
         var direction: Direction? = null
 
         composeRule.setContent {
             anim(stack = stack, modifier = Modifier) {
                 transition.animateFloat(durationMillis = 1000)
-                if (it.key == 1) {
+                if (it.key == "1") {
                     LaunchedEffect(stackAnimationDirection) {
                         direction = stackAnimationDirection
                     }
@@ -118,13 +118,13 @@ class DefaultStackAnimationTest {
     @Test
     fun WHEN_animating_push_THEN_new_stackAnimationDirection_is_ENTER_FRONT() {
         val anim = defaultStackAnimation()
-        var stack by mutableStateOf(stack(1))
+        var stack by mutableStateOf(stack("1"))
         var direction: Direction? = null
 
         composeRule.setContent {
             anim(stack = stack, modifier = Modifier) {
                 transition.animateFloat(durationMillis = 1000)
-                if (it.key == 2) {
+                if (it.key == "2") {
                     LaunchedEffect(stackAnimationDirection) {
                         direction = stackAnimationDirection
                     }
@@ -132,7 +132,7 @@ class DefaultStackAnimationTest {
             }
         }
 
-        stack = stack(1, 2)
+        stack = stack("1", "2")
         composeRule.mainClock.advanceFramesBy(millis = 500L)
 
         assertEquals(Direction.ENTER_FRONT, direction)
@@ -141,13 +141,13 @@ class DefaultStackAnimationTest {
     @Test
     fun WHEN_animating_push_THEN_old_stackAnimationDirection_is_EXIT_BACK() {
         val anim = defaultStackAnimation()
-        var stack by mutableStateOf(stack(1))
+        var stack by mutableStateOf(stack("1"))
         var direction: Direction? = null
 
         composeRule.setContent {
             anim(stack = stack, modifier = Modifier) {
                 transition.animateFloat(durationMillis = 1000)
-                if (it.key == 1) {
+                if (it.key == "1") {
                     LaunchedEffect(stackAnimationDirection) {
                         direction = stackAnimationDirection
                     }
@@ -155,7 +155,7 @@ class DefaultStackAnimationTest {
             }
         }
 
-        stack = stack(1, 2)
+        stack = stack("1", "2")
         composeRule.mainClock.advanceFramesBy(millis = 500L)
 
         assertEquals(Direction.EXIT_BACK, direction)
@@ -164,13 +164,13 @@ class DefaultStackAnimationTest {
     @Test
     fun WHEN_animated_push_and_idle_THEN_new_stackAnimationDirection_is_null() {
         val anim = defaultStackAnimation()
-        var stack by mutableStateOf(stack(1))
+        var stack by mutableStateOf(stack("1"))
         var direction: Direction? = null
 
         composeRule.setContent {
             anim(stack = stack, modifier = Modifier) {
                 transition.animateFloat(durationMillis = 1000)
-                if (it.key == 2) {
+                if (it.key == "2") {
                     LaunchedEffect(stackAnimationDirection) {
                         direction = stackAnimationDirection
                     }
@@ -178,7 +178,7 @@ class DefaultStackAnimationTest {
             }
         }
 
-        stack = stack(1, 2)
+        stack = stack("1", "2")
         composeRule.mainClock.advanceFramesBy(millis = 1000L)
         composeRule.waitForIdle()
 
@@ -188,13 +188,13 @@ class DefaultStackAnimationTest {
     @Test
     fun WHEN_animating_pop_THEN_old_stackAnimationDirection_is_EXIT_FRONT() {
         val anim = defaultStackAnimation()
-        var stack by mutableStateOf(stack(1, 2))
+        var stack by mutableStateOf(stack("1", "2"))
         var direction: Direction? = null
 
         composeRule.setContent {
             anim(stack = stack, modifier = Modifier) {
                 transition.animateFloat(durationMillis = 1000)
-                if (it.key == 2) {
+                if (it.key == "2") {
                     LaunchedEffect(stackAnimationDirection) {
                         direction = stackAnimationDirection
                     }
@@ -202,7 +202,7 @@ class DefaultStackAnimationTest {
             }
         }
 
-        stack = stack(1)
+        stack = stack("1")
         composeRule.mainClock.advanceFramesBy(millis = 500L)
 
         assertEquals(Direction.EXIT_FRONT, direction)
@@ -211,13 +211,13 @@ class DefaultStackAnimationTest {
     @Test
     fun WHEN_animating_pop_THEN_new_stackAnimationDirection_is_ENTER_BACK() {
         val anim = defaultStackAnimation()
-        var stack by mutableStateOf(stack(1, 2))
+        var stack by mutableStateOf(stack("1", "2"))
         var direction: Direction? = null
 
         composeRule.setContent {
             anim(stack = stack, modifier = Modifier) {
                 transition.animateFloat(durationMillis = 1000)
-                if (it.key == 1) {
+                if (it.key == "1") {
                     LaunchedEffect(stackAnimationDirection) {
                         direction = stackAnimationDirection
                     }
@@ -225,7 +225,7 @@ class DefaultStackAnimationTest {
             }
         }
 
-        stack = stack(1)
+        stack = stack("1")
         composeRule.mainClock.advanceFramesBy(millis = 500L)
 
         assertEquals(Direction.ENTER_BACK, direction)
@@ -234,13 +234,13 @@ class DefaultStackAnimationTest {
     @Test
     fun WHEN_animated_pop_and_idle_THEN_new_stackAnimationDirection_is_null() {
         val anim = defaultStackAnimation()
-        var stack by mutableStateOf(stack(1, 2))
+        var stack by mutableStateOf(stack("1", "2"))
         var direction: Direction? = null
 
         composeRule.setContent {
             anim(stack = stack, modifier = Modifier) {
                 transition.animateFloat(durationMillis = 1000)
-                if (it.key == 1) {
+                if (it.key == "1") {
                     LaunchedEffect(stackAnimationDirection) {
                         direction = stackAnimationDirection
                     }
@@ -248,14 +248,14 @@ class DefaultStackAnimationTest {
             }
         }
 
-        stack = stack(1)
+        stack = stack("1")
         composeRule.mainClock.advanceFramesBy(millis = 1000L)
         composeRule.waitForIdle()
 
         assertNull(direction)
     }
 
-    private fun defaultStackAnimation(): DefaultStackAnimation<Int, Any> =
+    private fun defaultStackAnimation(): DefaultStackAnimation<String, Any> =
         DefaultStackAnimation(
             disableInputDuringAnimation = true,
             predictiveBackParams = { null },
@@ -269,12 +269,12 @@ class DefaultStackAnimationTest {
         }
     }
 
-    private fun child(config: Int): Child.Created<Int, Any> =
-        Child.Created(configuration = config, instance = Any())
+    private fun child(key: String): Child.Created<String, Any> =
+        Child.Created(configuration = "Config", instance = Any(), key = key)
 
-    private fun stack(vararg stack: Int): ChildStack<Int, Any> =
+    private fun stack(vararg keys: String): ChildStack<String, Any> =
         ChildStack(
-            active = child(stack.last()),
-            backStack = stack.dropLast(1).map(::child),
+            active = child(keys.last()),
+            backStack = keys.dropLast(1).map(::child),
         )
 }

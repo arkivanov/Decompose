@@ -353,7 +353,7 @@ class DefaultWebHistoryControllerTest {
         history.go(delta = -1)
         history.runPendingOperations()
 
-        assertEquals(listOf(Config(0)), router.configurations)
+        assertEquals(listOf(Config(0)), router.stack.value.configurations())
     }
 
     @Test
@@ -391,7 +391,7 @@ class DefaultWebHistoryControllerTest {
         history.go(delta = 1)
         history.runPendingOperations()
 
-        assertEquals(listOf(Config(0), Config(1)), router.configurations)
+        assertEquals(listOf(Config(0), Config(1)), router.stack.value.configurations())
     }
 
     @Test
@@ -433,7 +433,7 @@ class DefaultWebHistoryControllerTest {
         history.go(delta = 1)
         history.runPendingOperations()
 
-        assertEquals(listOf(Config(2), Config(1)), router.configurations)
+        assertEquals(listOf(Config(2), Config(1)), router.stack.value.configurations())
     }
 
     @Test
@@ -450,7 +450,7 @@ class DefaultWebHistoryControllerTest {
         history.go(delta = 1)
         history.runPendingOperations()
 
-        assertEquals(listOf(Config(2), Config(1)), router.configurations)
+        assertEquals(listOf(Config(2), Config(1)), router.stack.value.configurations())
     }
 
     @Test
@@ -586,5 +586,7 @@ class DefaultWebHistoryControllerTest {
     }
 
     @Serializable
-    private data class Config(val value: Int)
+    private data class Config(val value: Int) : TestStackRouter.Keyed {
+        override val key: String = value.toString()
+    }
 }

@@ -400,12 +400,12 @@ private fun <C : Any, T : Any> stackOfNotNull(vararg stack: Child.Created<C, T>?
     }
 
 private fun <C : Any, T : Any> Child.Created<C, T>.asPanelChild(): Child.Created<C, PanelChild<C, T>> =
-    Child.Created(configuration = configuration, PanelChild(child = this))
+    Child.Created(configuration = configuration, instance = PanelChild(child = this), key = key)
 
-private val EmptyChild1 = Child.Created(configuration = EmptyConfig(value = 1), instance = PanelChild.Empty)
-private val EmptyChild2 = Child.Created(configuration = EmptyConfig(value = 2), instance = PanelChild.Empty)
-private val EmptyChild3 = Child.Created(configuration = EmptyConfig(value = 3), instance = PanelChild.Empty)
-private val EmptyChild4 = Child.Created(configuration = EmptyConfig(value = 4), instance = PanelChild.Empty)
+private val EmptyChild1 = Child.Created(configuration = EmptyConfig(value = 1), instance = PanelChild.Empty, key = "empty-child-1")
+private val EmptyChild2 = Child.Created(configuration = EmptyConfig(value = 2), instance = PanelChild.Empty, key = "empty-child-2")
+private val EmptyChild3 = Child.Created(configuration = EmptyConfig(value = 3), instance = PanelChild.Empty, key = "empty-child-3")
+private val EmptyChild4 = Child.Created(configuration = EmptyConfig(value = 4), instance = PanelChild.Empty, key = "empty-child-4")
 
 private data class EmptyConfig(val value: Any)
 

@@ -220,14 +220,15 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
         restoreState = { restorePanels(it)?.let(::PanelsNavState) },
         navTransformer = { state, event -> PanelsNavState(event.transformer(state.panels)) },
         stateMapper = { state, children ->
-            val main = children.firstNotNullOf { it.instance as? Panel.Main }
-            val details = children.firstNotNullOfOrNull { it.instance as? Panel.Details }
-            val extra = children.firstNotNullOfOrNull { it.instance as? Panel.Extra }
+            val createdChildren = children.mapNotNull { it as? Child.Created }
+            val main = createdChildren.firstNotNullOf { if (it.instance is Panel.Main) it.instance to it.key else null }
+            val details = createdChildren.firstNotNullOfOrNull { if (it.instance is Panel.Details) it.instance to it.key else null }
+            val extra = createdChildren.firstNotNullOfOrNull { if (it.instance is Panel.Extra) it.instance to it.key else null }
 
             ChildPanels(
-                main = Child.Created(configuration = main.config, instance = main.instance),
-                details = details?.let { Child.Created(configuration = it.config, instance = it.instance) },
-                extra = extra?.let { Child.Created(configuration = it.config, instance = it.instance) },
+                main = Child.Created(configuration = main.first.config, instance = main.first.instance, key = main.second),
+                details = details?.let { Child.Created(configuration = it.first.config, instance = it.first.instance, key = it.second) },
+                extra = extra?.let { Child.Created(configuration = it.first.config, instance = it.first.instance, key = it.second) },
                 mode = state.panels.mode,
             )
         },

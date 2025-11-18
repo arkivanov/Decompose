@@ -1,11 +1,12 @@
 package com.arkivanov.decompose.testutils
 
+import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
-import kotlin.reflect.KProperty
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
+import kotlin.reflect.KProperty
 
 @PublishedApi
 internal val json =
@@ -32,3 +33,5 @@ fun StateKeeperDispatcher.recreate(isConfigurationChange: Boolean = false): Stat
     )
 
 operator fun <T : Any> Value<T>.getValue(thisRef: Any?, property: KProperty<*>): T = value
+
+val List<Child<*, *>>.keys: List<String> get() = map { it.key }
