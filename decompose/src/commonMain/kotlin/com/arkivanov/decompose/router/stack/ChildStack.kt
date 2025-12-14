@@ -1,7 +1,6 @@
 package com.arkivanov.decompose.router.stack
 
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.GettingList
 
 /**
@@ -18,8 +17,7 @@ data class ChildStack<out C : Any, out T : Any>(
     /**
      * Creates [ChildStack] with only one child with the specified [configuration], [instance] and [key].
      */
-    @ExperimentalDecomposeApi
-    constructor(configuration: C, instance: T, key: Any) : this(
+    constructor(configuration: C, instance: T, key: String) : this(
         active = Child.Created(
             configuration = configuration,
             instance = instance,
@@ -30,10 +28,12 @@ data class ChildStack<out C : Any, out T : Any>(
     /**
      * Creates [ChildStack] with only one child with the specified [configuration] and [instance].
      */
+    // TODO: Annotate with @VisibleForTesting in version 4.0
     constructor(configuration: C, instance: T) : this(
-        configuration = configuration,
-        instance = instance,
-        key = configuration,
+        active = Child.Created(
+            configuration = configuration,
+            instance = instance,
+        ),
     )
 
     /**

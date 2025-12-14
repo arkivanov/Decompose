@@ -1,14 +1,8 @@
 package com.arkivanov.decompose.extensions.compose.stack.animation
 
-import androidx.compose.animation.EnterExitState
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.Transition
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +27,7 @@ class SimpleStackAnimationTest {
     @Test
     fun WHEN_animating_push_and_stack_popped_during_animation_THEN_animated_push_and_pop_fully() {
         val anim =
-            SimpleStackAnimation<Int, Any>(
+            SimpleStackAnimation<String, Any>(
                 disableInputDuringAnimation = true,
                 selector = {
                     stackAnimator(animationSpec = tween(durationMillis = 1000)) { factor, _, content ->
@@ -44,7 +38,7 @@ class SimpleStackAnimationTest {
                 },
             )
 
-        var stack by mutableStateOf(stack(1))
+        var stack by mutableStateOf(stack("1"))
         val values1 = ArrayList<Pair<Long, Float>>()
         val values2 = ArrayList<Pair<Long, Float>>()
 
@@ -52,15 +46,15 @@ class SimpleStackAnimationTest {
             anim(stack = stack, modifier = Modifier) {
                 val pair = composeRule.mainClock.currentTime to LocalProgress.current
                 when (it.key) {
-                    1 -> values1 += pair
-                    2 -> values2 += pair
+                    "1" -> values1 += pair
+                    "2" -> values2 += pair
                 }
             }
         }
 
-        stack = stack(1, 2)
+        stack = stack("1", "2")
         composeRule.mainClock.advanceFramesBy(millis = 500L)
-        stack = stack(1)
+        stack = stack("1")
         composeRule.waitForIdle()
 
         val v11 = values1.takeSorted(compareByDescending { it.second })
@@ -85,17 +79,17 @@ class SimpleStackAnimationTest {
     @Test
     fun WHEN_animating_push_and_stack_popped_during_animation_THEN_first_child_restarted() {
         val anim =
-            SimpleStackAnimation<Int, Any>(
+            SimpleStackAnimation<String, Any>(
                 disableInputDuringAnimation = true,
                 selector = { fade(animationSpec = tween(durationMillis = 1000)) },
             )
 
-        var stack by mutableStateOf(stack(1))
+        var stack by mutableStateOf(stack("1"))
         var counter = 0
 
         composeRule.setContent {
             anim(stack = stack, modifier = Modifier) {
-                if (it.key == 1) {
+                if (it.key == "1") {
                     LaunchedEffect(Unit) {
                         counter++
                     }
@@ -103,9 +97,9 @@ class SimpleStackAnimationTest {
             }
         }
 
-        stack = stack(1, 2)
+        stack = stack("1", "2")
         composeRule.mainClock.advanceFramesBy(millis = 500L)
-        stack = stack(1)
+        stack = stack("1")
         composeRule.waitForIdle()
 
         assertEquals(counter, 2)
@@ -118,23 +112,13 @@ class SimpleStackAnimationTest {
         }
     }
 
-    @Composable
-    private fun Transition<EnterExitState>.animateFloat(durationMillis: Int): State<Float> =
-        animateFloat(transitionSpec = { tween(durationMillis = durationMillis, easing = LinearEasing) }) { state ->
-            when (state) {
-                EnterExitState.PreEnter -> 0F
-                EnterExitState.Visible -> 1F
-                EnterExitState.PostExit -> 0F
-            }
-        }
+    private fun child(key: String): Child.Created<String, Any> =
+        Child.Created(configuration = "Config", instance = Any(), key = key)
 
-    private fun child(config: Int): Child.Created<Int, Any> =
-        Child.Created(configuration = config, instance = Any())
-
-    private fun stack(vararg stack: Int): ChildStack<Int, Any> =
+    private fun stack(vararg keys: String): ChildStack<String, Any> =
         ChildStack(
-            active = child(stack.last()),
-            backStack = stack.dropLast(1).map(::child),
+            active = child(keys.last()),
+            backStack = keys.dropLast(1).map(::child),
         )
 
     private companion object {

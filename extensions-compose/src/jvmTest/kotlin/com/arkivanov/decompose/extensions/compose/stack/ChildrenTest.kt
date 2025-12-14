@@ -31,7 +31,7 @@ import kotlin.test.assertSame
 @Suppress("TestFunctionName")
 @RunWith(Parameterized::class)
 class ChildrenTest(
-    private val animation: StackAnimation<Config, Any>?,
+    private val animation: StackAnimation<String, Any>?,
 ) {
 
     @get:Rule
@@ -39,7 +39,7 @@ class ChildrenTest(
 
     @Test
     fun WHEN_active_child_and_no_back_stack_THEN_active_child_displayed() {
-        val state = mutableStateOf(routerState(Config.A))
+        val state = mutableStateOf(routerState("A"))
 
         setContent(state)
 
@@ -48,157 +48,157 @@ class ChildrenTest(
 
     @Test
     fun GIVEN_child_A_displayed_WHEN_push_child_B_THEN_child_B_displayed() {
-        val state = mutableStateOf(routerState(Config.A))
+        val state = mutableStateOf(routerState("A"))
         setContent(state)
 
-        state.setValueOnIdle(routerState(Config.A, Config.B))
+        state.setValueOnIdle(routerState("A", "B"))
 
         composeRule.onNodeWithText(text = "ChildB", substring = true).assertExists()
     }
 
     @Test
     fun GIVEN_child_A1_displayed_WHEN_push_child_A2_THEN_child_A2_displayed() {
-        val state = mutableStateOf(routerState("A1" to Config.A))
+        val state = mutableStateOf(routerState("A1"))
         setContent(state)
 
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
+        state.setValueOnIdle(routerState("A1", "A2"))
 
         composeRule.onNodeWithText(text = "ChildA2", substring = true).assertExists()
     }
 
     @Test
     fun GIVEN_child_B_displayed_and_child_A_in_back_stack_WHEN_pop_child_B_THEN_child_A_displayed() {
-        val state = mutableStateOf(routerState(Config.A))
+        val state = mutableStateOf(routerState("A"))
         setContent(state)
-        state.setValueOnIdle(routerState(Config.A, Config.B))
+        state.setValueOnIdle(routerState("A", "B"))
 
-        state.setValueOnIdle(routerState(Config.A))
+        state.setValueOnIdle(routerState("A"))
 
         composeRule.onNodeWithText(text = "ChildA", substring = true).assertExists()
     }
 
     @Test
     fun GIVEN_child_A2_displayed_and_child_A1_in_back_stack_WHEN_pop_child_A2_THEN_child_A1_displayed() {
-        val state = mutableStateOf(routerState("A1" to Config.A))
+        val state = mutableStateOf(routerState("A1"))
         setContent(state)
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
+        state.setValueOnIdle(routerState("A1", "A2"))
 
 
-        state.setValueOnIdle(routerState("A1" to Config.A))
+        state.setValueOnIdle(routerState("A1"))
 
         composeRule.onNodeWithText(text = "ChildA1", substring = true).assertExists()
     }
 
     @Test
     fun GIVEN_child_displayed_WHEN_new_child_instance_with_the_same_key_THEN_new_child_instance_displayed() {
-        val state = mutableStateOf(routerState(Child.Created(configuration = Config.A, instance = Any(), key = "A")))
+        val state = mutableStateOf(routerState(Child.Created(configuration = "Config", instance = Any(), key = "A")))
         var lastInstance: Any? = null
         setContent(state) { lastInstance = it.instance }
 
         val instance2 = Any()
-        state.setValueOnIdle(routerState(Child.Created(configuration = Config.A, instance = instance2, key = "A")))
+        state.setValueOnIdle(routerState(Child.Created(configuration = "Config", instance = instance2, key = "A")))
 
         assertSame(instance2, lastInstance)
     }
 
     @Test
     fun GIVEN_child_B_displayed_and_child_A_in_back_stack_WHEN_pop_child_B_THEN_state_restored_for_child_A() {
-        val state = mutableStateOf(routerState(Config.A))
+        val state = mutableStateOf(routerState("A"))
         setContent(state)
         composeRule.onNodeWithText(text = "ChildA=0").performClick()
-        state.setValueOnIdle(routerState(Config.A, Config.B))
+        state.setValueOnIdle(routerState("A", "B"))
 
-        state.setValueOnIdle(routerState(Config.A))
+        state.setValueOnIdle(routerState("A"))
 
         composeRule.onNodeWithText(text = "ChildA=1").assertExists()
     }
 
     @Test
     fun GIVEN_child_A2_displayed_and_child_A1_in_back_stack_WHEN_pop_child_A2_THEN_state_restored_for_child_A1() {
-        val state = mutableStateOf(routerState("A1" to Config.A))
+        val state = mutableStateOf(routerState("A1"))
         setContent(state)
         composeRule.onNodeWithText(text = "ChildA1=0").performClick()
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
+        state.setValueOnIdle(routerState("A1", "A2"))
 
-        state.setValueOnIdle(routerState("A1" to Config.A))
+        state.setValueOnIdle(routerState("A1"))
 
         composeRule.onNodeWithText(text = "ChildA1=1").assertExists()
     }
 
     @Test
     fun GIVEN_child_B_displayed_and_child_A_in_back_stack_WHEN_pop_child_B_and_push_child_B_THEN_state_not_restored_for_child_B() {
-        val state = mutableStateOf(routerState(Config.A))
+        val state = mutableStateOf(routerState("A"))
         setContent(state)
 
-        state.setValueOnIdle(routerState(Config.A, Config.B))
+        state.setValueOnIdle(routerState("A", "B"))
         composeRule.onNodeWithText(text = "ChildB=0").performClick()
 
-        state.setValueOnIdle(routerState(Config.A))
-        state.setValueOnIdle(routerState(Config.A, Config.B))
+        state.setValueOnIdle(routerState("A"))
+        state.setValueOnIdle(routerState("A", "B"))
 
         composeRule.onNodeWithText(text = "ChildB=0").assertExists()
     }
 
     @Test
     fun GIVEN_child_A2_displayed_and_child_A1_in_back_stack_WHEN_pop_child_A2_and_push_child_A2_THEN_state_not_restored_for_child_A2() {
-        val state = mutableStateOf(routerState("A1" to Config.A))
+        val state = mutableStateOf(routerState("A1"))
         setContent(state)
 
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
+        state.setValueOnIdle(routerState("A1", "A2"))
         composeRule.onNodeWithText(text = "ChildA2=0").performClick()
 
-        state.setValueOnIdle(routerState("A1" to Config.A))
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
+        state.setValueOnIdle(routerState("A1"))
+        state.setValueOnIdle(routerState("A1", "A2"))
 
         composeRule.onNodeWithText(text = "ChildA2=0").assertExists()
     }
 
     @Test
     fun GIVEN_child_A_displayed_WHEN_push_child_B_THEN_child_A_disposed() {
-        val state = mutableStateOf(routerState(Config.A))
+        val state = mutableStateOf(routerState("A"))
         setContent(state)
 
-        state.setValueOnIdle(routerState(Config.A, Config.B))
+        state.setValueOnIdle(routerState("A", "B"))
 
         composeRule.onNodeWithText(text = "ChildA", substring = true).assertDoesNotExist()
     }
 
     @Test
     fun GIVEN_child_A1_displayed_WHEN_push_child_A2_THEN_child_A1_disposed() {
-        val state = mutableStateOf(routerState("A1" to Config.A))
+        val state = mutableStateOf(routerState("A1"))
         setContent(state)
 
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
+        state.setValueOnIdle(routerState("A1", "A2"))
 
         composeRule.onNodeWithText(text = "ChildA1", substring = true).assertDoesNotExist()
     }
 
     @Test
     fun GIVEN_child_B_displayed_and_child_A_in_back_stack_WHEN_pop_child_B_THEN_child_B_disposed() {
-        val state = mutableStateOf(routerState(Config.A))
+        val state = mutableStateOf(routerState("A"))
         setContent(state)
-        state.setValueOnIdle(routerState(Config.A, Config.B))
+        state.setValueOnIdle(routerState("A", "B"))
 
-        state.setValueOnIdle(routerState(Config.A))
+        state.setValueOnIdle(routerState("A"))
 
         composeRule.onNodeWithText(text = "ChildB", substring = true).assertDoesNotExist()
     }
 
     @Test
     fun GIVEN_child_A2_displayed_and_child_A1_in_back_stack_WHEN_pop_child_A2_THEN_child_A2_disposed() {
-        val state = mutableStateOf(routerState("A1" to Config.A))
+        val state = mutableStateOf(routerState("A1"))
         setContent(state)
-        state.setValueOnIdle(routerState("A1" to Config.A, "A2" to Config.A))
+        state.setValueOnIdle(routerState("A1", "A2"))
 
-        state.setValueOnIdle(routerState("A1" to Config.A))
+        state.setValueOnIdle(routerState("A1"))
 
         composeRule.onNodeWithText(text = "ChildA2", substring = true).assertDoesNotExist()
     }
 
     private fun setContent(
-        state: State<ChildStack<Config, Any>>,
-        content: @Composable (Child.Created<Config, Any>) -> Unit = {
-            Child(name = it.key.toString())
+        state: State<ChildStack<String, Any>>,
+        content: @Composable (Child.Created<String, Any>) -> Unit = {
+            Child(name = it.key)
         },
     ) {
         composeRule.setContent {
@@ -208,29 +208,20 @@ class ChildrenTest(
         composeRule.runOnIdle {}
     }
 
-    private fun routerState(vararg stack: Config): ChildStack<Config, Config> =
+    private fun routerState(vararg keys: String): ChildStack<String, Any> =
         ChildStack(
-            active = stack.last().toChild(),
-            backStack = stack.dropLast(1).map { it.toChild() },
+            active = child(key = keys.last()),
+            backStack = keys.dropLast(1).map { child(key = it) },
         )
 
-    private fun Config.toChild(): Child.Created<Config, Config> =
-        Child.Created(configuration = this, instance = this)
-
-    private fun routerState(vararg stack: Pair<Any, Config>): ChildStack<Config, Config> =
-        ChildStack(
-            active = stack.last().toChild(),
-            backStack = stack.dropLast(1).map { it.toChild() },
-        )
-
-    private fun routerState(vararg stack: Child.Created<Config, Any>): ChildStack<Config, Any> =
+    private fun routerState(vararg stack: Child.Created<String, Any>): ChildStack<String, Any> =
         ChildStack(
             active = stack.last(),
             backStack = stack.dropLast(1),
         )
 
-    private fun Pair<Any, Config>.toChild(): Child.Created<Config, Config> =
-        Child.Created(configuration = second, instance = second, key = first)
+    private fun child(key: String): Child.Created<String, Any> =
+        Child.Created(configuration = "Config", instance = Any(), key = key)
 
     @Composable
     private fun Child(name: String) {
@@ -254,7 +245,7 @@ class ChildrenTest(
             getParameters().map { arrayOf(it) }
 
         @OptIn(FaultyDecomposeApi::class)
-        private fun getParameters(): List<StackAnimation<Config, Any>?> =
+        private fun getParameters(): List<StackAnimation<String, Any>?> =
             listOf(
                 null,
                 stackAnimation { _, _, _ -> null },
@@ -268,10 +259,5 @@ class ChildrenTest(
                 stackAnimation { _ -> slide() },
                 stackAnimation { _ -> scale() + fade() + slide() },
             )
-    }
-
-    sealed class Config {
-        data object A : Config()
-        data object B : Config()
     }
 }

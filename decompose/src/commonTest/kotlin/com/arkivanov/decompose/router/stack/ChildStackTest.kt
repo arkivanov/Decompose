@@ -29,5 +29,5 @@ class ChildStackTest {
     }
 
     private fun child(configuration: String): Child.Created<String, String> =
-        Child.Created(configuration = configuration, instance = configuration)
+        Child.Created(configuration = configuration, instance = configuration, key = configuration)
 }

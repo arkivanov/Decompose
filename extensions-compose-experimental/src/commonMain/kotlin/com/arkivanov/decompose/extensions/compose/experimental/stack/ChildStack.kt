@@ -13,7 +13,6 @@ import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.S
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationScope
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.emptyStackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.arkivanov.decompose.keyHashString
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 
@@ -45,7 +44,7 @@ fun <C : Any, T : Any> ChildStack(
     val anim = animation ?: remember(animationProvider, animationProvider::provide) ?: emptyStackAnimation()
 
     anim(stack = stack, modifier = modifier) { child ->
-        holder.SaveableStateProvider(child.keyHashString()) {
+        holder.SaveableStateProvider(child.key) {
             content(child)
         }
     }
@@ -82,7 +81,7 @@ fun <C : Any, T : Any> ChildStack(
 }
 
 private fun ChildStack<*, *>.getKeys(): Set<String> =
-    items.mapTo(HashSet(), Child<*, *>::keyHashString)
+    items.mapTo(HashSet(), Child<*, *>::key)
 
 @Composable
 private fun SaveableStateHolder.retainStates(currentKeys: Set<String>) {
@@ -102,5 +101,5 @@ private fun SaveableStateHolder.retainStates(currentKeys: Set<String>) {
 }
 
 private class Keys(
-    var set: Set<Any>
+    var set: Set<String>,
 )

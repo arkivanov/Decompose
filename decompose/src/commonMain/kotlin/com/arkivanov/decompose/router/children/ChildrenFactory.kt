@@ -269,5 +269,5 @@ private fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, N : NavState<
 @Serializable
 private class SavedState(
     val navState: SerializableContainer,
-    val childState: List<SerializableContainer?>,
+    val childState: List<ChildrenNavigator.SavedChildState>,
 )
