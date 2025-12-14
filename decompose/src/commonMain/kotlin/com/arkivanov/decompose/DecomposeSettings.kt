@@ -17,7 +17,19 @@ data class DecomposeSettings(
 ) {
 
     companion object {
+        private val lock = Lock()
+
         @Volatile
         var settings: DecomposeSettings = DecomposeSettings()
+
+        /**
+         * Atomically updates the global [DecomposeSettings].
+         */
+        @ExperimentalDecomposeApi
+        fun update(function: (DecomposeSettings) -> DecomposeSettings) {
+            lock.synchronized {
+                settings = function(settings)
+            }
+        }
     }
 }

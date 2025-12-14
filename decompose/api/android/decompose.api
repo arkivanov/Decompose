@@ -87,6 +87,7 @@ public final class com/arkivanov/decompose/DecomposeSettings {
 public final class com/arkivanov/decompose/DecomposeSettings$Companion {
 	public final fun getSettings ()Lcom/arkivanov/decompose/DecomposeSettings;
 	public final fun setSettings (Lcom/arkivanov/decompose/DecomposeSettings;)V
+	public final fun update (Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class com/arkivanov/decompose/DeeplinkUtilsKt {
