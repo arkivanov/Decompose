@@ -20,6 +20,17 @@ import com.arkivanov.decompose.value.Value
 
 /**
  * Displays a list of pages represented by [ChildPages].
+ *
+ * @param pages an observable [ChildPages] to be displayed.
+ * @param onPageSelected a callback called when the selected page changes, e.g. by swiping the pager.
+ * The corresponding [ChildPages][com.arkivanov.decompose.router.pages.ChildPages] navigation model
+ * should be updated to reflect the change, usually by calling
+ * [PagesNavigator#select][com.arkivanov.decompose.router.pages.select].
+ * @param modifier a [Modifier] to be applied to the underlying pager.
+ * @param scrollAnimation a [PagesScrollAnimation] to be used for pager scrolling when the
+ * selected page changes.
+ * @param key a stable and unique key representing the child.
+ * @param pageContent a composable function that displays the provided child.
  */
 @Composable
 fun <C : Any, T : Any> ChildPages(
@@ -44,6 +55,17 @@ fun <C : Any, T : Any> ChildPages(
 
 /**
  * Displays a list of pages represented by [ChildPages].
+ *
+ * @param pages an observable [ChildPages] to be displayed.
+ * @param onPageSelected a callback called when the selected page changes, e.g. by swiping the pager.
+ * The corresponding [ChildPages][com.arkivanov.decompose.router.pages.ChildPages] navigation model
+ * should be updated to reflect the change, usually by calling
+ * [PagesNavigator#select][com.arkivanov.decompose.router.pages.select].
+ * @param modifier a [Modifier] to be applied to the underlying pager.
+ * @param scrollAnimation a [PagesScrollAnimation] to be used for pager scrolling when the
+ * selected page changes.
+ * @param key a stable and unique key representing the child.
+ * @param pageContent a composable function that displays the provided child.
  */
 @ExperimentalDecomposeApi
 @Composable
@@ -53,7 +75,7 @@ fun <C : Any, T : Any> ChildPages(
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     pager: ChildPagesPager = defaultHorizontalPager(),
-    key: (Child<C, T>) -> Any = Child<*, *>::keyHashString,
+    key: (Child<C, T>) -> Any = Child<*, *>::key,
     pageContent: @Composable PagerScope.(index: Int, page: T, PagerState) -> Unit,
 ) {
     val state by pages.subscribeAsState()
@@ -71,6 +93,17 @@ fun <C : Any, T : Any> ChildPages(
 
 /**
  * Displays a list of pages represented by [ChildPages].
+ *
+ * @param pages [ChildPages] to be displayed.
+ * @param onPageSelected a callback called when the selected page changes, e.g. by swiping the pager.
+ * The corresponding [ChildPages][com.arkivanov.decompose.router.pages.ChildPages] navigation model
+ * should be updated to reflect the change, usually by calling
+ * [PagesNavigator#select][com.arkivanov.decompose.router.pages.select].
+ * @param modifier a [Modifier] to be applied to the underlying pager.
+ * @param scrollAnimation a [PagesScrollAnimation] to be used for pager scrolling when the
+ * selected page changes.
+ * @param key a stable and unique key representing the child.
+ * @param pageContent a composable function that displays the provided child.
  */
 @Composable
 fun <C : Any, T : Any> ChildPages(
@@ -95,6 +128,17 @@ fun <C : Any, T : Any> ChildPages(
 
 /**
  * Displays a list of pages represented by [ChildPages].
+ *
+ * @param pages [ChildPages] to be displayed.
+ * @param onPageSelected a callback called when the selected page changes, e.g. by swiping the pager.
+ * The corresponding [ChildPages][com.arkivanov.decompose.router.pages.ChildPages] navigation model
+ * should be updated to reflect the change, usually by calling
+ * [PagesNavigator#select][com.arkivanov.decompose.router.pages.select].
+ * @param modifier a [Modifier] to be applied to the underlying pager.
+ * @param scrollAnimation a [PagesScrollAnimation] to be used for pager scrolling when the
+ * selected page changes.
+ * @param key a stable and unique key representing the child.
+ * @param pageContent a composable function that displays the provided child.
  */
 @ExperimentalDecomposeApi
 @Composable
@@ -104,7 +148,7 @@ fun <C : Any, T : Any> ChildPages(
     modifier: Modifier = Modifier,
     scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
     pager: ChildPagesPager = defaultHorizontalPager(),
-    key: (Child<C, T>) -> Any = Child<*, *>::keyHashString,
+    key: (Child<C, T>) -> Any = Child<*, *>::key,
     pageContent: @Composable PagerScope.(index: Int, page: T, PagerState) -> Unit,
 ) {
     val selectedIndex = pages.selectedIndex.coerceAtLeast(0)
