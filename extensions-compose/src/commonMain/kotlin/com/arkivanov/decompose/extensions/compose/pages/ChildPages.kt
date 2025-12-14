@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.Ref
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.keyHashString
@@ -30,6 +31,31 @@ fun <C : Any, T : Any> ChildPages(
     pager: ChildPagesPager = defaultHorizontalPager(),
     key: (Child<C, T>) -> Any = Child<*, *>::keyHashString,
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
+) {
+    ChildPages(
+        pages = pages,
+        onPageSelected = onPageSelected,
+        modifier = modifier,
+        scrollAnimation = scrollAnimation,
+        pager = pager,
+        key = key,
+        pageContent = { index, page, _ -> pageContent(index, page) },
+    )
+}
+
+/**
+ * Displays a list of pages represented by [ChildPages].
+ */
+@ExperimentalDecomposeApi
+@Composable
+fun <C : Any, T : Any> ChildPages(
+    pages: Value<ChildPages<C, T>>,
+    onPageSelected: (index: Int) -> Unit,
+    modifier: Modifier = Modifier,
+    scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
+    pager: ChildPagesPager = defaultHorizontalPager(),
+    key: (Child<C, T>) -> Any = Child<*, *>::keyHashString,
+    pageContent: @Composable PagerScope.(index: Int, page: T, PagerState) -> Unit,
 ) {
     val state by pages.subscribeAsState()
 
@@ -56,6 +82,31 @@ fun <C : Any, T : Any> ChildPages(
     pager: ChildPagesPager = defaultHorizontalPager(),
     key: (Child<C, T>) -> Any = Child<*, *>::keyHashString,
     pageContent: @Composable PagerScope.(index: Int, page: T) -> Unit,
+) {
+    ChildPages(
+        pages = pages,
+        onPageSelected = onPageSelected,
+        modifier = modifier,
+        scrollAnimation = scrollAnimation,
+        pager = pager,
+        key = key,
+        pageContent = { index, page, _ -> pageContent(index, page) },
+    )
+}
+
+/**
+ * Displays a list of pages represented by [ChildPages].
+ */
+@ExperimentalDecomposeApi
+@Composable
+fun <C : Any, T : Any> ChildPages(
+    pages: ChildPages<C, T>,
+    onPageSelected: (index: Int) -> Unit,
+    modifier: Modifier = Modifier,
+    scrollAnimation: PagesScrollAnimation = PagesScrollAnimation.Disabled,
+    pager: ChildPagesPager = defaultHorizontalPager(),
+    key: (Child<C, T>) -> Any = Child<*, *>::keyHashString,
+    pageContent: @Composable PagerScope.(index: Int, page: T, PagerState) -> Unit,
 ) {
     val selectedIndex = pages.selectedIndex.coerceAtLeast(0)
     val pageCountState = rememberUpdatedState(pages.items.size)
@@ -100,7 +151,7 @@ fun <C : Any, T : Any> ChildPages(
 
         val page = pageRef.value
         if (page != null) {
-            pageContent(pageIndex, page)
+            pageContent(pageIndex, page, state)
         }
     }
 }
