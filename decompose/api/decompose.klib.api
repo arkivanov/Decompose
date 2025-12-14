@@ -483,7 +483,7 @@ final class <#A: out kotlin/Any> com.arkivanov.decompose.router.pages/Pages { //
 }
 
 final class com.arkivanov.decompose/DecomposeSettings { // com.arkivanov.decompose/DecomposeSettings|null[0]
-    constructor <init>(kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Function1<kotlin/Exception, kotlin/Unit> = ...) // com.arkivanov.decompose/DecomposeSettings.<init>|<init>(kotlin.Boolean;kotlin.Boolean;kotlin.Function1<kotlin.Exception,kotlin.Unit>){}[0]
+    constructor <init>(kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Function1<kotlin/Exception, kotlin/Unit> = ..., kotlin/Function1<kotlin/Exception, kotlin/Nothing> = ...) // com.arkivanov.decompose/DecomposeSettings.<init>|<init>(kotlin.Boolean;kotlin.Boolean;kotlin.Function1<kotlin.Exception,kotlin.Unit>;kotlin.Function1<kotlin.Exception,kotlin.Nothing>){}[0]
 
     final val duplicateConfigurationsEnabled // com.arkivanov.decompose/DecomposeSettings.duplicateConfigurationsEnabled|{}duplicateConfigurationsEnabled[0]
         final fun <get-duplicateConfigurationsEnabled>(): kotlin/Boolean // com.arkivanov.decompose/DecomposeSettings.duplicateConfigurationsEnabled.<get-duplicateConfigurationsEnabled>|<get-duplicateConfigurationsEnabled>(){}[0]
@@ -491,11 +491,14 @@ final class com.arkivanov.decompose/DecomposeSettings { // com.arkivanov.decompo
         final fun <get-mainThreadCheckEnabled>(): kotlin/Boolean // com.arkivanov.decompose/DecomposeSettings.mainThreadCheckEnabled.<get-mainThreadCheckEnabled>|<get-mainThreadCheckEnabled>(){}[0]
     final val onDecomposeError // com.arkivanov.decompose/DecomposeSettings.onDecomposeError|{}onDecomposeError[0]
         final fun <get-onDecomposeError>(): kotlin/Function1<kotlin/Exception, kotlin/Unit> // com.arkivanov.decompose/DecomposeSettings.onDecomposeError.<get-onDecomposeError>|<get-onDecomposeError>(){}[0]
+    final val onDecomposeFatal // com.arkivanov.decompose/DecomposeSettings.onDecomposeFatal|{}onDecomposeFatal[0]
+        final fun <get-onDecomposeFatal>(): kotlin/Function1<kotlin/Exception, kotlin/Nothing> // com.arkivanov.decompose/DecomposeSettings.onDecomposeFatal.<get-onDecomposeFatal>|<get-onDecomposeFatal>(){}[0]
 
     final fun component1(): kotlin/Boolean // com.arkivanov.decompose/DecomposeSettings.component1|component1(){}[0]
     final fun component2(): kotlin/Boolean // com.arkivanov.decompose/DecomposeSettings.component2|component2(){}[0]
     final fun component3(): kotlin/Function1<kotlin/Exception, kotlin/Unit> // com.arkivanov.decompose/DecomposeSettings.component3|component3(){}[0]
-    final fun copy(kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Function1<kotlin/Exception, kotlin/Unit> = ...): com.arkivanov.decompose/DecomposeSettings // com.arkivanov.decompose/DecomposeSettings.copy|copy(kotlin.Boolean;kotlin.Boolean;kotlin.Function1<kotlin.Exception,kotlin.Unit>){}[0]
+    final fun component4(): kotlin/Function1<kotlin/Exception, kotlin/Nothing> // com.arkivanov.decompose/DecomposeSettings.component4|component4(){}[0]
+    final fun copy(kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Function1<kotlin/Exception, kotlin/Unit> = ..., kotlin/Function1<kotlin/Exception, kotlin/Nothing> = ...): com.arkivanov.decompose/DecomposeSettings // com.arkivanov.decompose/DecomposeSettings.copy|copy(kotlin.Boolean;kotlin.Boolean;kotlin.Function1<kotlin.Exception,kotlin.Unit>;kotlin.Function1<kotlin.Exception,kotlin.Nothing>){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.arkivanov.decompose/DecomposeSettings.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.arkivanov.decompose/DecomposeSettings.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.arkivanov.decompose/DecomposeSettings.toString|toString(){}[0]

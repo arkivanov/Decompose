@@ -12,11 +12,13 @@ import kotlin.concurrent.Volatile
  * If enabled, Decompose will log an error if it detects access from a background thread when it was expected from the main thread.
  * Default value is `true`.
  * @param onDecomposeError called when a non-fatal error has occurred in Decompose. By default, prints the error to logs.
+ * @param onDecomposeFatal called when a fatal error has occurred in Decompose. By default, throws the exception.
  */
 data class DecomposeSettings(
     val duplicateConfigurationsEnabled: Boolean = false,
     val mainThreadCheckEnabled: Boolean = true,
     val onDecomposeError: (Exception) -> Unit = ::printError,
+    val onDecomposeFatal: (Exception) -> Nothing = { throw it },
 ) {
 
     companion object {
