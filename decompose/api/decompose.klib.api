@@ -483,13 +483,16 @@ final class <#A: out kotlin/Any> com.arkivanov.decompose.router.pages/Pages { //
 }
 
 final class com.arkivanov.decompose/DecomposeSettings { // com.arkivanov.decompose/DecomposeSettings|null[0]
-    constructor <init>(kotlin/Boolean = ...) // com.arkivanov.decompose/DecomposeSettings.<init>|<init>(kotlin.Boolean){}[0]
+    constructor <init>(kotlin/Boolean = ..., kotlin/Boolean = ...) // com.arkivanov.decompose/DecomposeSettings.<init>|<init>(kotlin.Boolean;kotlin.Boolean){}[0]
 
     final val duplicateConfigurationsEnabled // com.arkivanov.decompose/DecomposeSettings.duplicateConfigurationsEnabled|{}duplicateConfigurationsEnabled[0]
         final fun <get-duplicateConfigurationsEnabled>(): kotlin/Boolean // com.arkivanov.decompose/DecomposeSettings.duplicateConfigurationsEnabled.<get-duplicateConfigurationsEnabled>|<get-duplicateConfigurationsEnabled>(){}[0]
+    final val mainThreadCheckEnabled // com.arkivanov.decompose/DecomposeSettings.mainThreadCheckEnabled|{}mainThreadCheckEnabled[0]
+        final fun <get-mainThreadCheckEnabled>(): kotlin/Boolean // com.arkivanov.decompose/DecomposeSettings.mainThreadCheckEnabled.<get-mainThreadCheckEnabled>|<get-mainThreadCheckEnabled>(){}[0]
 
     final fun component1(): kotlin/Boolean // com.arkivanov.decompose/DecomposeSettings.component1|component1(){}[0]
-    final fun copy(kotlin/Boolean = ...): com.arkivanov.decompose/DecomposeSettings // com.arkivanov.decompose/DecomposeSettings.copy|copy(kotlin.Boolean){}[0]
+    final fun component2(): kotlin/Boolean // com.arkivanov.decompose/DecomposeSettings.component2|component2(){}[0]
+    final fun copy(kotlin/Boolean = ..., kotlin/Boolean = ...): com.arkivanov.decompose/DecomposeSettings // com.arkivanov.decompose/DecomposeSettings.copy|copy(kotlin.Boolean;kotlin.Boolean){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // com.arkivanov.decompose/DecomposeSettings.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.arkivanov.decompose/DecomposeSettings.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // com.arkivanov.decompose/DecomposeSettings.toString|toString(){}[0]
