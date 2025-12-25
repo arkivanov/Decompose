@@ -93,7 +93,9 @@ public final class com/arkivanov/decompose/DecomposeSettings$Companion {
 }
 
 public final class com/arkivanov/decompose/DeeplinkUtilsKt {
+	public static final fun handleDeepLink (Landroid/app/Activity;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun handleDeepLink (Landroid/app/Activity;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static synthetic fun handleDeepLink$default (Landroid/app/Activity;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivanov/decompose/ComponentContext {
@@ -126,6 +128,11 @@ public abstract interface annotation class com/arkivanov/decompose/FaultyDecompo
 }
 
 public abstract interface class com/arkivanov/decompose/GenericComponentContext : com/arkivanov/decompose/ComponentContextFactoryOwner, com/arkivanov/essenty/backhandler/BackHandlerOwner, com/arkivanov/essenty/instancekeeper/InstanceKeeperOwner, com/arkivanov/essenty/lifecycle/LifecycleOwner, com/arkivanov/essenty/statekeeper/StateKeeperOwner {
+}
+
+public final class com/arkivanov/decompose/HandleDeepLinkDefaults {
+	public static final field INSTANCE Lcom/arkivanov/decompose/HandleDeepLinkDefaults;
+	public final fun shouldRestartInNewTask (Landroid/app/Activity;)Z
 }
 
 public abstract interface annotation class com/arkivanov/decompose/InternalDecomposeApi : java/lang/annotation/Annotation {
