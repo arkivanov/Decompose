@@ -102,3 +102,58 @@ private class RootViewModel(
     val state: MutableStateFlow<Int> = savedStateHandle.getMutableStateFlow(key = "state", initialValue = 0)
 }
 ```
+
+### LocalLifecycleOwner in Compose
+
+By default, Decompose does nothing with `LocalLifecycleOwner`. Most likely you will get the hosting Activity (or Fragment) `Lifecycle`, it will not respond to screen changes. You can use the following approach to overcome this limitation.
+
+```kotlin
+interface RootComponent {
+    val stack: Value<ChildStack<*, Child>>
+
+    // Child implements LifecycleOwner via delegation
+    sealed class Child(lifecycleOwner: LifecycleOwner) : LifecycleOwner by lifecycleOwner {
+        class HomeChild(val component: HomeComponent, lifecycleOwner: LifecycleOwner) : Child(lifecycleOwner)
+    }
+}
+
+class DefaultRootComponent(
+    componentContext: JetpackComponentContext,
+) : RootComponent, JetpackComponentContext by componentContext {
+
+    private val nav = StackNavigation<Config>()
+
+    override val stack: Value<ChildStack<*, RootComponent.Child>> =
+        childStack(
+            source = nav,
+            serializer = Config.serializer(),
+            initialConfiguration = Config.Home,
+        ) { cfg, ctx ->
+            when (cfg) {
+                is Config.Home ->
+                    RootComponent.Child.HomeChild(
+                        component = DefaultHomeComponent(ctx),
+                        lifecycleOwner = ctx, // The child JetpackComponentContext implements LifecycleOwner
+                    )
+            }
+        }
+
+    @Serializable
+    private sealed interface Config {
+        @Serializable
+        data object Home : Config
+    }
+}
+
+@Composable
+fun RootContent(component: RootComponent) {
+    Children(stack = component.stack) {
+        // Provide LocalLifecycleOwner for child screens
+        CompositionLocalProvider(LocalLifecycleOwner provides it.instance) {
+            when (val child = it.instance) {
+                is RootComponent.Child.HomeChild -> HomeContent(child.component)
+            }
+        }
+    }
+}
+```
