@@ -111,8 +111,7 @@ By default, Decompose does nothing with `LocalLifecycleOwner`. Most likely you w
 interface RootComponent {
     val stack: Value<ChildStack<*, Child>>
 
-    // Child implements LifecycleOwner via delegation
-    sealed class Child(lifecycleOwner: LifecycleOwner) : LifecycleOwner by lifecycleOwner {
+    sealed class Child(val lifecycleOwner: LifecycleOwner) {
         class HomeChild(val component: HomeComponent, lifecycleOwner: LifecycleOwner) : Child(lifecycleOwner)
     }
 }
@@ -149,7 +148,7 @@ class DefaultRootComponent(
 fun RootContent(component: RootComponent) {
     Children(stack = component.stack) {
         // Provide LocalLifecycleOwner for child screens
-        CompositionLocalProvider(LocalLifecycleOwner provides it.instance) {
+        CompositionLocalProvider(LocalLifecycleOwner provides it.instance.lifecycleOwner) {
             when (val child = it.instance) {
                 is RootComponent.Child.HomeChild -> HomeContent(child.component)
             }

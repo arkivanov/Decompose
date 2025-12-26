@@ -3,7 +3,6 @@ import com.arkivanov.gradle.setupAndroidApp
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlinx-serialization")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.arkivanov.gradle.setup")
@@ -28,9 +27,7 @@ android {
 
 dependencies {
     implementation(project(":decompose"))
-    implementation(project(":jetpack-component-context"))
     implementation(project(":extensions-android"))
-    implementation(project(":extensions-compose"))
     implementation(project(":sample:shared:shared"))
     implementation(project(":sample:shared:compose"))
     implementation(compose.runtime)
