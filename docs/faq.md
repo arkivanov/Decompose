@@ -37,12 +37,14 @@ This exception is thrown when duplicated component configurations are detected b
 - Prefer `pushNew` function instead of `push` when showing a component on a button click, it will properly handle accidental double clicks.
 - Prefer `pushToFront` to prevent duplicated components with the same data (configurations) in the stack.
 
-### The experimental Duplicate Configurations mode
+### The Duplicate Configurations mode
 
-You can also try enabling the experimental Duplicate Configurations mode using the following flag:
+!!!note
 
-```kotlin
-DecomposeExperimentFlags.duplicateConfigurationsEnabled = true
-```
+    The feature is stable since version `3.5.0-alpha01`.
 
-This will allow having duplicate configurations in all navigation models. Please keep in mind that this feature is experimental.
+Most navigation models (such as Child Stack and Child Pages) can support duplication configurations. The feature is opt-in, it can be enabled via the [DecomposeSettings](https://github.com/arkivanov/Decompose/blob/master/decompose/src/commonMain/kotlin/com/arkivanov/decompose/DecomposeSettings.kt) `duplicateConfigurationsEnabled` global property since version `3.5.0-alpha01` or via `DecomposeExperimentFlags#duplicateConfigurationsEnabled` flag on earlier versions.
+
+If this mode is enabled, Decompose will not throw errors when duplicate configurations are detected and will try its best to handle duplicates gracefully.
+
+The only navigation model that does not support duplicate configurations is Child Items.
