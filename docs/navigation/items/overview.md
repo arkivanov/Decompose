@@ -30,7 +30,7 @@ Similarly to other navigation models, each component created and managed by the 
 
 - Configurations must be unique (by equality) within `Child Items`.
 
-### The experimental Duplicate Configurations mode
+### The Duplicate Configurations mode
 
 Unlike other navigation models, the `Child Items` navigation model doesn't support the Duplicate Configurations mode. `IllegalStateException` is thrown if duplicate configurations are detected, regardless of the `DecomposeExperimentFlags.duplicateConfigurationsEnabled` flag.
 
