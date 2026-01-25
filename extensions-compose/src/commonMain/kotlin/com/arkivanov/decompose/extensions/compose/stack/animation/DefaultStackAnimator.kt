@@ -7,7 +7,9 @@ import androidx.compose.animation.core.isFinished
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 
 internal class DefaultStackAnimator(
@@ -22,6 +24,7 @@ internal class DefaultStackAnimator(
         onFinished: () -> Unit,
         content: @Composable (Modifier) -> Unit,
     ) {
+        val onFinishedRef by rememberUpdatedState(onFinished)
         val animationState = remember(direction, isInitial) { AnimationState(initialValue = if (isInitial) 0F else 1F) }
 
         LaunchedEffect(animationState) {
@@ -31,7 +34,7 @@ internal class DefaultStackAnimator(
                 sequentialAnimation = !animationState.isFinished,
             )
 
-            onFinished()
+            onFinishedRef()
         }
 
         val factor =

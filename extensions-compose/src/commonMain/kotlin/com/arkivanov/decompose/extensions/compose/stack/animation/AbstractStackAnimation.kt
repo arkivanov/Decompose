@@ -38,7 +38,10 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
 
             val newItems = getAnimationItems(newStack = currentStack, oldStack = oldStack)
             if (items.size == 1) {
-                items = newItems
+                val oldLastKey = items.keys.last()
+                val (newLastKey, newLastItem) = newItems.entries.last()
+                items = if ((newLastKey != oldLastKey) || newLastItem.direction.isExit) newItems else mapOf(newLastKey to newLastItem)
+                nextItems = null
             } else {
                 nextItems = newItems
             }
