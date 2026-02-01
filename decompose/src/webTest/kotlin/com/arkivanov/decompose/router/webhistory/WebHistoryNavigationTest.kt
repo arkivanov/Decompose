@@ -779,6 +779,25 @@ class WebHistoryNavigationTest {
         assertHistory(nav = nav, urls = listOf("/1/1/1", "/1/1/2"))
     }
 
+    @Test
+    fun GIVEN_created_one_root_and_two_children_WHEN_root_replaced_with_with_one_child_THEN_one_item_in_history() {
+        val nav =
+            TestWebNavigation(initialHistory = listOf(1)) { cfg ->
+                when (cfg) {
+                    1 ->  TestWebNavigation(initialHistory = listOf(12, 13))
+                    2 ->  TestWebNavigation(initialHistory = listOf(22))
+                    else -> null
+                }
+            }
+
+        enableWebHistory(nav, history)
+
+        nav.navigate(listOf(2))
+        history.runPendingOperations()
+
+        assertHistory(nav = nav, urls = listOf("/2/22"))
+    }
+
     private fun assertHistory(nav: TestWebNavigation, urls: List<String>, index: Int = urls.lastIndex) {
         history.assertStack(urls = urls, index = index)
         nav.assertHistory(urls = urls.slice(0..index))

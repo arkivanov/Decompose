@@ -1,6 +1,7 @@
 package com.arkivanov.decompose.router.webhistory
 
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class TestBrowserHistory : BrowserHistory {
 
@@ -13,7 +14,9 @@ class TestBrowserHistory : BrowserHistory {
 
     override fun go(delta: Int) {
         scheduleOperation {
+            val oldIndex = index
             index += delta
+            assertTrue(index in stack.indices, "Invalid go operation: delta=$delta, index=$oldIndex, range=${stack.indices}")
             onPopStateListener?.invoke(stack[index].data)
         }
     }
