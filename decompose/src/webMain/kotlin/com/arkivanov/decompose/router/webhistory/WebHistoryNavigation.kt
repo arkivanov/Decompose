@@ -60,15 +60,15 @@ internal fun <T : Any> enableWebHistory(navigation: WebNavigation<T>, browserHis
                 browserHistory.replaceState(nodes)
             }
         },
-        onRewrite = { oldSize, newHistory ->
-            if (oldSize > 1) {
+        onRewrite = { newHistory ->
+            val currentIndex = browserHistory.currentIndex()
+            if (currentIndex > 0) {
                 browserHistory.setOnPopStateListener {
                     browserHistory.setOnPopStateListener(::onPopState)
                     browserHistory.replaceState(newHistory.first())
                     newHistory.drop(1).forEach(browserHistory::pushState)
                 }
-
-                browserHistory.go(-oldSize + 1)
+                browserHistory.go(-currentIndex)
             } else {
                 browserHistory.replaceState(newHistory.first())
                 newHistory.drop(1).forEach(browserHistory::pushState)
@@ -135,7 +135,7 @@ private fun <T : Any> WebNavigation<T>.subscribe(
     isEnabled: () -> Boolean,
     onPush: (List<NodeHistory<T>>) -> Unit,
     onPop: (count: Int, NodeHistory<T>) -> Unit,
-    onRewrite: (oldSize: Int, newHistory: List<NodeHistory<T>>) -> Unit,
+    onRewrite: (newHistory: List<NodeHistory<T>>) -> Unit,
     onUpdateUrl: (NodeHistory<T>) -> Unit,
 ): Cancellation {
     var activeChildCancellation: Cancellation? = null
@@ -164,11 +164,8 @@ private fun <T : Any> WebNavigation<T>.subscribe(
                 onPop = { count, childNodes ->
                     onPop(count, inactiveNodes + nodeOf(item = activeItem, children = childNodes))
                 },
-                onRewrite = { oldSize, childHistory ->
-                    onRewrite(
-                        oldSize,
-                        childHistory.map { childNodes -> inactiveNodes + nodeOf(item = activeItem, children = childNodes) },
-                    )
+                onRewrite = { childHistory ->
+                    onRewrite(childHistory.map { childNodes -> inactiveNodes + nodeOf(item = activeItem, children = childNodes) })
                 },
                 onUpdateUrl = { childNodes ->
                     onUpdateUrl(inactiveNodes + nodeOf(item = activeItem, children = childNodes))
@@ -182,7 +179,7 @@ private fun <T : Any> WebNavigation<T>.onHistoryChanged(
     oldHistory: List<HistoryItem<T>>,
     onPush: (List<NodeHistory<T>>) -> Unit,
     onPop: (count: Int, NodeHistory<T>) -> Unit,
-    onRewrite: (oldSize: Int, newHistory: List<NodeHistory<T>>) -> Unit,
+    onRewrite: (newHistory: List<NodeHistory<T>>) -> Unit,
     onUpdateUrl: (NodeHistory<T>) -> Unit,
 ) {
     val newKeys = newHistory.map { it.key }
@@ -226,9 +223,7 @@ private fun <T : Any> WebNavigation<T>.onHistoryChanged(
                 previousNodes += itemHistory.last()
             }
 
-            val oldPaths = oldHistory.flatMap(::historyOf)
-
-            onRewrite(oldPaths.size, historyChange)
+            onRewrite(historyChange)
         }
     }
 }
