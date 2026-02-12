@@ -22,15 +22,15 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.util.lerp
-import com.arkivanov.essenty.backhandler.BackEvent
+import androidx.navigationevent.NavigationEvent
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 internal class AndroidPredictiveBackAnimatableV2(
-    private val initialEvent: BackEvent,
-    private val exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)?,
-    private val enterShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)?,
+    private val initialEvent: NavigationEvent,
+    private val exitShape: ((progress: Float, edge: Int) -> Shape)?,
+    private val enterShape: ((progress: Float, edge: Int) -> Shape)?,
 ) : PredictiveBackAnimatable {
 
     private val finishProgressAnimatable = Animatable(initialValue = 0F)
@@ -116,9 +116,8 @@ internal class AndroidPredictiveBackAnimatableV2(
 
         val initialOffsetX =
             when (edge) {
-                BackEvent.SwipeEdge.LEFT -> (width - width * initialScaleFactor()) / 2F - 8.dp.toPx() * progress
-                BackEvent.SwipeEdge.RIGHT -> 0F
-                BackEvent.SwipeEdge.UNKNOWN -> 0F
+                NavigationEvent.EDGE_LEFT -> (width - width * initialScaleFactor()) / 2F - 8.dp.toPx() * progress
+                else -> 0F
             }
 
         return lerp(start = initialOffsetX, stop = width * 0.2F, fraction = finishProgress)
@@ -141,7 +140,7 @@ internal class AndroidPredictiveBackAnimatableV2(
         return lerp(start = translationYLimit * translationYFactor, stop = 0F, fraction = finishProgress)
     }
 
-    override suspend fun animate(event: BackEvent) {
+    override suspend fun animate(event: NavigationEvent) {
         edge = event.swipeEdge
         touchY = event.touchY
         progressAnimatable.animateTo(event.progress)

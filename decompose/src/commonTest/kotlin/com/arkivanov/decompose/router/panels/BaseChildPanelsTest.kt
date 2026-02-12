@@ -3,28 +3,15 @@ package com.arkivanov.decompose.router.panels
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.Component
-import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.lifecycle.Lifecycle.State.CREATED
 import com.arkivanov.essenty.lifecycle.Lifecycle.State.RESUMED
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.essenty.lifecycle.resume
 import kotlinx.serialization.builtins.serializer
-import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 
 abstract class BaseChildPanelsTest {
 
     protected val nav: PanelsNavigation<Int, Int, Int> = PanelsNavigation()
-    protected val lifecycle: LifecycleRegistry = LifecycleRegistry()
-    protected val stateKeeper: TestStateKeeperDispatcher = TestStateKeeperDispatcher()
-    protected val backDispatcher: BackDispatcher = BackDispatcher()
-
-    @BeforeTest
-    fun before() {
-        lifecycle.resume()
-    }
 
     protected fun ChildPanels<Int, Component<Int>, Int, Component<Int>, Int, Component<Int>>.assertPanels(
         main: Int,

@@ -3,10 +3,15 @@ package com.arkivanov.decompose.extensions.compose.panels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.navigationevent.NavigationEvent
+import androidx.navigationevent.NavigationEventDispatcher
+import androidx.navigationevent.NavigationEventHandler
+import androidx.navigationevent.NavigationEventInfo
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.extensions.compose.BroadcastBackHandler
+import com.arkivanov.decompose.backhandler.addDirectInput
 import com.arkivanov.decompose.extensions.compose.rememberLazy
 import com.arkivanov.decompose.extensions.compose.stack.ChildStack
 import com.arkivanov.decompose.extensions.compose.stack.animation.PredictiveBackParams
@@ -207,7 +212,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
     val details = remember(panels.details) { panels.details?.asPanelChild() }
     val extra = remember(panels.extra) { panels.extra?.asPanelChild() }
     val mode = panels.mode
-    val broadcastPredictiveBackParams = rememberBroadcastPredictiveBackParams(key = panels) { predictiveBackParams(panels) }
+    val multicastPredictiveBackParams = rememberMulticastPredictiveBackParams(key = panels) { predictiveBackParams(panels) }
 
     Box(modifier = modifier) {
         layout.Layout(
@@ -219,7 +224,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
                     hasDetails = details != null,
                     hasExtra = extra != null,
                     animators = animators,
-                    predictiveBackParams = broadcastPredictiveBackParams,
+                    predictiveBackParams = { multicastPredictiveBackParams.value?.main },
                     content = mainChild,
                 )
             },
@@ -229,7 +234,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
                     mode = mode,
                     hasExtra = extra != null,
                     animators = animators,
-                    predictiveBackParams = broadcastPredictiveBackParams,
+                    predictiveBackParams = { multicastPredictiveBackParams.value?.details },
                     content = detailsChild,
                     placeholder = secondPanelPlaceholder,
                 )
@@ -239,7 +244,7 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
                     extra = extra,
                     mode = mode,
                     animators = animators,
-                    predictiveBackParams = broadcastPredictiveBackParams,
+                    predictiveBackParams = { multicastPredictiveBackParams.value?.extra },
                     content = extraChild,
                     placeholder = thirdPanelPlaceholder,
                 )
@@ -255,7 +260,7 @@ private fun <MC : Any, MT : Any> MainPanel(
     hasDetails: Boolean,
     hasExtra: Boolean,
     animators: ChildPanelsAnimators<MC, MT, *, *, *, *>,
-    predictiveBackParams: Lazy<PredictiveBackParams?>,
+    predictiveBackParams: () -> PredictiveBackParams?,
     content: @Composable StackAnimationScope.(Child.Created<MC, MT>) -> Unit,
 ) {
     ChildStack(
@@ -266,7 +271,7 @@ private fun <MC : Any, MT : Any> MainPanel(
         },
         modifier = Modifier.fillMaxSize(),
         animation = stackAnimation(
-            predictiveBackParams = { if (it.items.size == 2) predictiveBackParams.value else null },
+            predictiveBackParams = { if (it.items.size == 2) predictiveBackParams() else null },
             selector = { child, _, direction, isPredictiveBack ->
                 child.instance.child?.let {
                     animators.main(it, mode, direction, isPredictiveBack)
@@ -287,7 +292,7 @@ private fun <DC : Any, DT : Any> DetailsPanel(
     mode: ChildPanelsMode,
     hasExtra: Boolean,
     animators: ChildPanelsAnimators<*, *, DC, DT, *, *>,
-    predictiveBackParams: Lazy<PredictiveBackParams?>,
+    predictiveBackParams: () -> PredictiveBackParams?,
     content: @Composable StackAnimationScope.(Child.Created<DC, DT>) -> Unit,
     placeholder: @Composable StackAnimationScope.() -> Unit,
 ) {
@@ -301,7 +306,7 @@ private fun <DC : Any, DT : Any> DetailsPanel(
         animation = stackAnimation(
             predictiveBackParams = { stack ->
                 if ((stack.items.first() == EmptyChild1) && stack.items.any { !it.instance.isEmpty }) {
-                    predictiveBackParams.value
+                    predictiveBackParams()
                 } else {
                     null
                 }
@@ -327,7 +332,7 @@ private fun <EC : Any, ET : Any> ExtraPanel(
     extra: Child.Created<EC, PanelChild<EC, ET>>?,
     mode: ChildPanelsMode,
     animators: ChildPanelsAnimators<*, *, *, *, EC, ET>,
-    predictiveBackParams: Lazy<PredictiveBackParams?>,
+    predictiveBackParams: () -> PredictiveBackParams?,
     content: @Composable StackAnimationScope.(Child.Created<EC, ET>) -> Unit,
     placeholder: @Composable StackAnimationScope.() -> Unit,
 ) {
@@ -344,7 +349,7 @@ private fun <EC : Any, ET : Any> ExtraPanel(
         animation = stackAnimation(
             predictiveBackParams = { stack ->
                 if ((stack.items.first() == EmptyChild1) && (stack.size > 1)) {
-                    predictiveBackParams.value
+                    predictiveBackParams()
                 } else {
                     null
                 }
@@ -365,26 +370,94 @@ private fun <EC : Any, ET : Any> ExtraPanel(
     }
 }
 
+// FIXME: Dispose
+private fun MulticastPredictiveBackParams(params: PredictiveBackParams): MulticastPredictiveBackParams {
+    var onBackCallCount = 0
+
+    val newParams =
+        params.copy(
+            onBack = {
+                if (++onBackCallCount == 2) {
+                    onBackCallCount = 0
+                    params.onBack()
+                }
+            },
+        )
+
+    val handler = MulticastNavigationEventHandler()
+    params.navigationEventDispatcher.addHandler(handler)
+
+    return MulticastPredictiveBackParams(
+        main = newParams.copy(navigationEventDispatcher = handler.dispatcher1),
+        details = newParams.copy(navigationEventDispatcher = handler.dispatcher2),
+        extra = newParams.copy(navigationEventDispatcher = handler.dispatcher3),
+        onDispose = handler::remove,
+    )
+}
+
+private class MulticastPredictiveBackParams(
+    val main: PredictiveBackParams,
+    val details: PredictiveBackParams,
+    val extra: PredictiveBackParams,
+    val onDispose: () -> Unit,
+)
+
+private class MulticastNavigationEventHandler : NavigationEventHandler<NavigationEventInfo>(
+    initialInfo = NavigationEventInfo.None,
+    isBackEnabled = true,
+) {
+    val dispatcher1: NavigationEventDispatcher = NavigationEventDispatcher()
+    private val input1 = dispatcher1.addDirectInput()
+    val dispatcher2: NavigationEventDispatcher = NavigationEventDispatcher()
+    private val input2 = dispatcher2.addDirectInput()
+    val dispatcher3: NavigationEventDispatcher = NavigationEventDispatcher()
+    private val input3 = dispatcher3.addDirectInput()
+
+    private var backCallCount = 0
+
+    override fun onBackStarted(event: NavigationEvent) {
+        input1.backStarted(event)
+        input2.backStarted(event)
+        input3.backStarted(event)
+    }
+
+    override fun onBackProgressed(event: NavigationEvent) {
+        input1.backProgressed(event)
+        input2.backProgressed(event)
+        input3.backProgressed(event)
+    }
+
+    override fun onBackCancelled() {
+        input1.backCancelled()
+        input2.backCancelled()
+        input3.backCancelled()
+    }
+
+    override fun onBackCompleted() {
+        input1.backCompleted()
+        input2.backCompleted()
+        input3.backCompleted()
+    }
+}
+
 @Composable
-private fun rememberBroadcastPredictiveBackParams(
+private fun rememberMulticastPredictiveBackParams(
     key: Any,
     params: () -> PredictiveBackParams?
-): Lazy<PredictiveBackParams?> =
-    rememberLazy(key) {
-        params()?.run {
-            var onBackCallCount = 0
+): Lazy<MulticastPredictiveBackParams?> {
+    val holder = rememberLazy(key) { params()?.let(::MulticastPredictiveBackParams) }
 
-            copy(
-                backHandler = BroadcastBackHandler(backHandler),
-                onBack = {
-                    if (++onBackCallCount == 2) {
-                        onBackCallCount = 0
-                        onBack()
-                    }
-                },
-            )
+    // FIXME: Check old holder is disposed when key changed
+    DisposableEffect(holder) {
+        onDispose {
+            if (holder.isInitialized()) {
+                holder.value?.onDispose()
+            }
         }
     }
+
+    return holder
+}
 
 private fun <C : Any, T : Any> stackOfNotNull(vararg stack: Child.Created<C, T>?): ChildStack<C, T> =
     stack.filterNotNull().let {

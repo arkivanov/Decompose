@@ -125,10 +125,10 @@ public final class com/arkivanov/decompose/extensions/compose/stack/animation/Fa
 
 public final class com/arkivanov/decompose/extensions/compose/stack/animation/PredictiveBackParams {
 	public static final field $stable I
-	public fun <init> (Lcom/arkivanov/essenty/backhandler/BackHandler;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (Lcom/arkivanov/essenty/backhandler/BackHandler;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroidx/navigationevent/NavigationEventDispatcher;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Landroidx/navigationevent/NavigationEventDispatcher;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getAnimatable ()Lkotlin/jvm/functions/Function1;
-	public final fun getBackHandler ()Lcom/arkivanov/essenty/backhandler/BackHandler;
+	public final fun getNavigationEventDispatcher ()Landroidx/navigationevent/NavigationEventDispatcher;
 	public final fun getOnBack ()Lkotlin/jvm/functions/Function0;
 }
 
@@ -181,19 +181,19 @@ public final class com/arkivanov/decompose/extensions/compose/stack/animation/St
 }
 
 public final class com/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/AndroidPredictiveBackAnimatableKt {
-	public static final fun androidPredictiveBackAnimatableV1 (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
-	public static synthetic fun androidPredictiveBackAnimatableV1$default (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
-	public static final fun androidPredictiveBackAnimatableV2 (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
-	public static synthetic fun androidPredictiveBackAnimatableV2$default (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
+	public static final fun androidPredictiveBackAnimatableV1 (Landroidx/navigationevent/NavigationEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
+	public static synthetic fun androidPredictiveBackAnimatableV1$default (Landroidx/navigationevent/NavigationEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
+	public static final fun androidPredictiveBackAnimatableV2 (Landroidx/navigationevent/NavigationEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
+	public static synthetic fun androidPredictiveBackAnimatableV2$default (Landroidx/navigationevent/NavigationEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/MaterialPredictiveBackAnimatableKt {
-	public static final fun materialPredictiveBackAnimatable (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
-	public static synthetic fun materialPredictiveBackAnimatable$default (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
+	public static final fun materialPredictiveBackAnimatable (Landroidx/navigationevent/NavigationEvent;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
+	public static synthetic fun materialPredictiveBackAnimatable$default (Landroidx/navigationevent/NavigationEvent;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
 }
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable {
-	public abstract fun animate (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun animate (Landroidx/navigationevent/NavigationEvent;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun cancel (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun finish (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getEnterModifier ()Landroidx/compose/ui/Modifier;
@@ -201,7 +201,7 @@ public abstract interface class com/arkivanov/decompose/extensions/compose/stack
 }
 
 public final class com/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatableKt {
-	public static final fun predictiveBackAnimatable (Lcom/arkivanov/essenty/backhandler/BackEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
+	public static final fun predictiveBackAnimatable (Landroidx/navigationevent/NavigationEvent;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackAnimatable;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackGestureIconKt {
@@ -209,6 +209,6 @@ public final class com/arkivanov/decompose/extensions/compose/stack/animation/pr
 }
 
 public final class com/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/PredictiveBackGestureOverlayKt {
-	public static final fun PredictiveBackGestureOverlay-_UtchM0 (Lcom/arkivanov/essenty/backhandler/BackDispatcher;Lkotlin/jvm/functions/Function4;Landroidx/compose/ui/Modifier;ZZFFFLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun PredictiveBackGestureOverlay-_UtchM0 (Landroidx/navigationevent/NavigationEventDispatcher;Lkotlin/jvm/functions/Function4;Landroidx/compose/ui/Modifier;ZZFFFLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 }
 

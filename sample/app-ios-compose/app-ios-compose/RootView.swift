@@ -3,10 +3,10 @@ import Shared
 
 struct RootView: UIViewControllerRepresentable {
     let root: RootComponent
-    let backDispatcher: BackDispatcher
+    let navEventDispatcher: NavigationEventDispatcher
 
     func makeUIViewController(context: Context) -> UIViewController {
-        let controller = RootViewControllerKt.rootViewController(root: root, backDispatcher: backDispatcher)
+        let controller = RootViewControllerKt.rootViewController(root: root, navigationEventDispatcher: navEventDispatcher)
         controller.overrideUserInterfaceStyle = .light
         return controller
     }

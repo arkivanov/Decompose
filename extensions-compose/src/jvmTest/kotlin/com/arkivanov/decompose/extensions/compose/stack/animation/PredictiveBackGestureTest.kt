@@ -10,16 +10,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.navigationevent.NavigationEvent
+import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.backhandler.addDirectInput
 import com.arkivanov.decompose.extensions.compose.animateFloat
 import com.arkivanov.decompose.extensions.compose.assertTestTagToRootDoesNotExist
 import com.arkivanov.decompose.extensions.compose.assertTestTagToRootExists
-import com.arkivanov.decompose.extensions.compose.stack.dropLast
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.PredictiveBackAnimatable
+import com.arkivanov.decompose.extensions.compose.stack.dropLast
 import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.essenty.backhandler.BackDispatcher
-import com.arkivanov.essenty.backhandler.BackEvent
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.junit.Rule
 import kotlin.test.Test
@@ -28,13 +28,13 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @Suppress("TestFunctionName")
-@OptIn(ExperimentalDecomposeApi::class)
 class PredictiveBackGestureTest {
 
     @get:Rule
     val composeRule = createComposeRule()
 
-    private val backDispatcher = BackDispatcher()
+    private val backDispatcher = NavigationEventDispatcher()
+    private val input = backDispatcher.addDirectInput()
 
     @Test
     fun WHEN_gesture_not_started_THEN_active_child_shown_without_progress() {
@@ -63,7 +63,7 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
 
         composeRule.onNodeWithText("1").assertDoesNotExist()
@@ -82,10 +82,10 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
 
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        input.backProgressed(NavigationEvent(progress = 0.5F))
         composeRule.waitForIdle()
 
         composeRule.onNodeWithText("1").assertTestTagToRootExists(enterTestTag(progress = 0.5F))
@@ -103,12 +103,12 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        input.backProgressed(NavigationEvent(progress = 0.5F))
         composeRule.waitForIdle()
 
-        backDispatcher.back()
+        input.backCompleted()
         composeRule.waitForIdle()
 
         assertEquals(stack("1"), stack)
@@ -128,12 +128,12 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        input.backProgressed(NavigationEvent(progress = 0.5F))
         composeRule.waitForIdle()
 
-        backDispatcher.cancelPredictiveBack()
+        input.backCancelled()
         composeRule.waitForIdle()
 
         assertEquals(stack("1", "2"), stack)
@@ -153,7 +153,7 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
 
         stack = stack.dropLast()
@@ -176,7 +176,7 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
 
         stack = stack("1", "2", "3")
@@ -199,12 +199,12 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
 
         stack = stack.dropLast()
         composeRule.waitForIdle()
-        backDispatcher.back()
+        input.backCompleted()
         composeRule.waitForIdle()
 
         assertEquals(stack("1"), stack)
@@ -225,9 +225,9 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        input.backProgressed(NavigationEvent(progress = 0.5F))
         composeRule.waitForIdle()
 
         stack = stack.dropLast()
@@ -248,12 +248,12 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
 
         stack = stack("1", "2", "3")
         composeRule.waitForIdle()
-        backDispatcher.back()
+        input.backCompleted()
         composeRule.waitForIdle()
 
         assertEquals(stack("1", "2"), stack)
@@ -273,12 +273,12 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
 
         stack = stack.dropLast()
         composeRule.waitForIdle()
-        backDispatcher.cancelPredictiveBack()
+        input.backCancelled()
         composeRule.waitForIdle()
 
         assertEquals(stack("1", "2"), stack)
@@ -298,12 +298,12 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
 
         stack = stack("1", "2", "3")
         composeRule.waitForIdle()
-        backDispatcher.cancelPredictiveBack()
+        input.backCancelled()
         composeRule.waitForIdle()
 
         assertEquals(stack("1", "2", "3"), stack)
@@ -320,9 +320,9 @@ class PredictiveBackGestureTest {
 
         val animation =
             DefaultStackAnimation(
-                predictiveBackAnimatable = { initialBackEvent ->
+                predictiveBackAnimatable = { initialNavigationEvent ->
                     isAnimatableCreated = true
-                    TestAnimatable(initialBackEvent)
+                    TestAnimatable(initialNavigationEvent)
                 },
                 onBack = {
                     values.clear()
@@ -347,9 +347,9 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
-        backDispatcher.back()
+        input.backCompleted()
         composeRule.waitForIdle()
 
         assertFalse(isAnimatableCreated)
@@ -385,9 +385,9 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
-        backDispatcher.back()
+        input.backCompleted()
         composeRule.waitForIdle()
 
         assertTrue(values.any { it < 1F })
@@ -423,11 +423,11 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        input.backProgressed(NavigationEvent(progress = 0.5F))
         composeRule.waitForIdle()
-        backDispatcher.back()
+        input.backCompleted()
         composeRule.waitForIdle()
 
         assertFalse(values.any { it < 1F })
@@ -452,11 +452,11 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0.1F))
+        input.backStarted(NavigationEvent(progress = 0.1F))
         composeRule.waitForIdle()
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.2F))
+        input.backProgressed(NavigationEvent(progress = 0.2F))
         composeRule.waitForIdle()
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.3F))
+        input.backProgressed(NavigationEvent(progress = 0.3F))
         composeRule.waitForIdle()
 
         assertEquals(0F, values["1"])
@@ -482,11 +482,11 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0.1F))
+        input.backStarted(NavigationEvent(progress = 0.1F))
         composeRule.waitForIdle()
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.2F))
+        input.backProgressed(NavigationEvent(progress = 0.2F))
         composeRule.waitForIdle()
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.3F))
+        input.backProgressed(NavigationEvent(progress = 0.3F))
         composeRule.waitForIdle()
 
         assertEquals(0.3F, values["1"])
@@ -502,7 +502,7 @@ class PredictiveBackGestureTest {
             DefaultStackAnimation(
                 predictiveBackAnimatable = {
                     animationCount++
-                    TestAnimatable(initialBackEvent = it, finish = suspendForever())
+                    TestAnimatable(initialNavigationEvent = it, finish = suspendForever())
                 },
                 onBack = { stack = stack.dropLast() },
             )
@@ -513,15 +513,15 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        input.backProgressed(NavigationEvent(progress = 0.5F))
         composeRule.waitForIdle()
-        backDispatcher.back()
+        input.backCompleted()
         composeRule.waitForIdle()
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        input.backProgressed(NavigationEvent(progress = 0.5F))
         composeRule.waitForIdle()
 
         assertEquals(1, animationCount)
@@ -536,7 +536,7 @@ class PredictiveBackGestureTest {
             DefaultStackAnimation(
                 predictiveBackAnimatable = {
                     animationCount++
-                    TestAnimatable(initialBackEvent = it, finish = suspendForever())
+                    TestAnimatable(initialNavigationEvent = it, finish = suspendForever())
                 },
                 onBack = { stack = stack.dropLast() },
             )
@@ -547,13 +547,13 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        input.backProgressed(NavigationEvent(progress = 0.5F))
         composeRule.waitForIdle()
-        backDispatcher.back()
+        input.backCompleted()
         composeRule.waitForIdle()
-        backDispatcher.back()
+        input.backCompleted()
         composeRule.waitForIdle()
 
         assertEquals(stack("1", "2"), stack)
@@ -565,7 +565,7 @@ class PredictiveBackGestureTest {
 
         val animation =
             DefaultStackAnimation(
-                predictiveBackAnimatable = { TestAnimatable(initialBackEvent = it, cancel = suspendForever()) },
+                predictiveBackAnimatable = { TestAnimatable(initialNavigationEvent = it, cancel = suspendForever()) },
                 onBack = { stack = stack.dropLast() },
             )
 
@@ -575,13 +575,13 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        input.backProgressed(NavigationEvent(progress = 0.5F))
         composeRule.waitForIdle()
 
-        backDispatcher.cancelPredictiveBack()
-        backDispatcher.back()
+        input.backCancelled()
+        input.backCompleted()
         composeRule.waitForIdle()
 
         assertEquals(stack("1"), stack)
@@ -596,7 +596,7 @@ class PredictiveBackGestureTest {
 
         val animation =
             DefaultStackAnimation(
-                predictiveBackAnimatable = { TestAnimatable(initialBackEvent = it, cancel = suspendForever()) },
+                predictiveBackAnimatable = { TestAnimatable(initialNavigationEvent = it, cancel = suspendForever()) },
                 onBack = { stack = stack.dropLast() },
             )
 
@@ -606,14 +606,14 @@ class PredictiveBackGestureTest {
             }
         }
 
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        input.backStarted(NavigationEvent(progress = 0F))
         composeRule.waitForIdle()
-        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        input.backProgressed(NavigationEvent(progress = 0.5F))
         composeRule.waitForIdle()
 
-        backDispatcher.cancelPredictiveBack()
-        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
-        backDispatcher.back()
+        input.backCancelled()
+        input.backStarted(NavigationEvent(progress = 0F))
+        input.backCompleted()
         composeRule.waitForIdle()
 
         assertEquals(stack("1"), stack)
@@ -623,7 +623,7 @@ class PredictiveBackGestureTest {
     }
 
     private fun DefaultStackAnimation(
-        predictiveBackAnimatable: (initialBackEvent: BackEvent) -> PredictiveBackAnimatable? = ::TestAnimatable,
+        predictiveBackAnimatable: (initialNavigationEvent: NavigationEvent) -> PredictiveBackAnimatable? = ::TestAnimatable,
         animator: StackAnimator? = null,
         onBack: () -> Unit,
     ): DefaultStackAnimation<String, String> =
@@ -631,7 +631,7 @@ class PredictiveBackGestureTest {
             disableInputDuringAnimation = false,
             predictiveBackParams = {
                 PredictiveBackParams(
-                    backHandler = backDispatcher,
+                    navigationEventDispatcher = backDispatcher,
                     onBack = onBack,
                     animatable = predictiveBackAnimatable,
                 )
@@ -667,16 +667,16 @@ class PredictiveBackGestureTest {
     }
 
     private class TestAnimatable(
-        initialBackEvent: BackEvent,
+        initialNavigationEvent: NavigationEvent,
         private val finish: suspend () -> Unit = {},
         private val cancel: suspend () -> Unit = {},
     ) : PredictiveBackAnimatable {
-        private var progress by mutableStateOf(initialBackEvent.progress)
+        private var progress by mutableStateOf(initialNavigationEvent.progress)
 
         override val exitModifier: Modifier get() = Modifier.testTag(exitTestTag(progress = progress))
         override val enterModifier: Modifier get() = Modifier.testTag(enterTestTag(progress = progress))
 
-        override suspend fun animate(event: BackEvent) {
+        override suspend fun animate(event: NavigationEvent) {
             progress = event.progress
         }
 

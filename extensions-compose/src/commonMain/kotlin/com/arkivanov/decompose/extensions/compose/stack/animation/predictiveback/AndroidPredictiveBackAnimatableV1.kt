@@ -15,16 +15,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.util.lerp
-import com.arkivanov.essenty.backhandler.BackEvent
+import androidx.navigationevent.NavigationEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 internal class AndroidPredictiveBackAnimatableV1(
-    initialEvent: BackEvent,
-    private val exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
-    private val enterShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
+    initialEvent: NavigationEvent,
+    private val exitShape: ((progress: Float, edge: Int) -> Shape)? = null,
+    private val enterShape: ((progress: Float, edge: Int) -> Shape)? = null,
 ) : PredictiveBackAnimatable {
 
 
@@ -61,7 +61,7 @@ internal class AndroidPredictiveBackAnimatableV1(
             }
 
     @Composable
-    private fun Modifier.exitModifier(layoutShape: (progress: Float, edge: BackEvent.SwipeEdge) -> Shape): Modifier {
+    private fun Modifier.exitModifier(layoutShape: (progress: Float, edge: Int) -> Shape): Modifier {
         var size by remember { mutableStateOf(IntSize.Zero) }
         val scaleFactor = 1F - exitProgress * 0.1F
 
@@ -79,7 +79,7 @@ internal class AndroidPredictiveBackAnimatableV1(
     }
 
     @Composable
-    private fun Modifier.enterModifier(layoutShape: (progress: Float, edge: BackEvent.SwipeEdge) -> Shape): Modifier {
+    private fun Modifier.enterModifier(layoutShape: (progress: Float, edge: Int) -> Shape): Modifier {
         val totalProgress = lerp(start = enterProgress, stop = 1F, fraction = finishProgress)
         var size by remember { mutableStateOf(IntSize.Zero) }
         val scaleFactor = lerp(start = lerp(start = 0.95F, stop = 0.90F, fraction = enterProgress), stop = 1F, fraction = finishProgress)
@@ -97,7 +97,7 @@ internal class AndroidPredictiveBackAnimatableV1(
             ) // Not using `graphicsLayer {}` with lambda due to https://github.com/arkivanov/Decompose/issues/877
     }
 
-    override suspend fun animate(event: BackEvent) {
+    override suspend fun animate(event: NavigationEvent) {
         edge = event.swipeEdge
 
         awaitAll(

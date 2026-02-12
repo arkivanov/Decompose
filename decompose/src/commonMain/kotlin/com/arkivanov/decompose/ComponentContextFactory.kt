@@ -1,6 +1,6 @@
 package com.arkivanov.decompose
 
-import com.arkivanov.essenty.backhandler.BackHandler
+import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.statekeeper.StateKeeper
@@ -19,6 +19,6 @@ fun interface ComponentContextFactory<out T : Any> {
         lifecycle: Lifecycle,
         stateKeeper: StateKeeper,
         instanceKeeper: InstanceKeeper,
-        backHandler: BackHandler,
+        navigationEventDispatcher: NavigationEventDispatcher,
     ): T
 }

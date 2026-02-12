@@ -39,7 +39,7 @@ kotlin {
                         export(deps.essenty.lifecycle)
 
                         // Optional, only if you need Predictive Back Gesture on Darwin (Apple) targets
-                        export(deps.essenty.backHandler)
+                        export(deps.androidx.navigationEvent.navigationEvent)
 
                         // Optional, only if you need state preservation on Darwin (Apple) targets
                         export(deps.essenty.stateKeeper)
