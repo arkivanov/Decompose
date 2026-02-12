@@ -42,6 +42,7 @@ class DefaultRootComponent(
             source = nav,
             serializer = Config.serializer(),
             initialStack = { getInitialStack(deepLinkUrl) },
+            handleBackButton = true,
             childFactory = ::child,
         )
 

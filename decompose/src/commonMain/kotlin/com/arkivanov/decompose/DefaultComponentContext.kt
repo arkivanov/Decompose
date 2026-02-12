@@ -1,8 +1,7 @@
 package com.arkivanov.decompose
 
+import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.instancekeeper.attachTo
-import com.arkivanov.essenty.backhandler.BackDispatcher
-import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -17,18 +16,18 @@ class DefaultComponentContext(
     override val lifecycle: Lifecycle,
     stateKeeper: StateKeeper? = null,
     instanceKeeper: InstanceKeeper? = null,
-    backHandler: BackHandler? = null,
+    navigationEventDispatcher: NavigationEventDispatcher? = null,
 ) : ComponentContext {
 
     override val stateKeeper: StateKeeper = stateKeeper ?: StateKeeperDispatcher()
     override val instanceKeeper: InstanceKeeper = instanceKeeper ?: InstanceKeeperDispatcher().attachTo(lifecycle)
-    override val backHandler: BackHandler = backHandler ?: BackDispatcher()
+    override val navigationEventDispatcher: NavigationEventDispatcher = navigationEventDispatcher ?: NavigationEventDispatcher()
     override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
 
     constructor(lifecycle: Lifecycle) : this(
         lifecycle = lifecycle,
         stateKeeper = null,
         instanceKeeper = null,
-        backHandler = null,
+        navigationEventDispatcher = null,
     )
 }

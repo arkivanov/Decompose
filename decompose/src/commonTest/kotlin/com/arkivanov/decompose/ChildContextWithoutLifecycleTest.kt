@@ -1,9 +1,9 @@
 package com.arkivanov.decompose
 
+import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.recreate
-import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
@@ -111,34 +111,30 @@ class ChildContextWithoutLifecycleTest {
     }
 
     @Test
-    fun GIVEN_enabled_child_BackHandler_registered_WHEN_backHandler_back_THEN_returns_true() {
+    fun WHEN_enabled_child_BackHandler_registered_THEN_dispatcher_enabled() {
         val context = TestComponentContext()
         val childContext = context.childContext(key = "key")
-        childContext.backHandler.register(BackCallback(isEnabled = true, onBack = {}))
 
-        val result = context.backHandler.back()
+        childContext.navigationEventDispatcher.addHandler(isBackEnabled = true)
 
-        assertTrue(result)
+        assertTrue(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_disabled_child_BackHandler_registered_WHEN_backHandler_back_THEN_returns_false() {
+    fun WHEN_disabled_child_BackHandler_registered_THEN_dispatcher_disabled() {
         val context = TestComponentContext()
         val childContext = context.childContext(key = "key")
-        childContext.backHandler.register(BackCallback(isEnabled = false, onBack = {}))
 
-        val result = context.backHandler.back()
+        childContext.navigationEventDispatcher.addHandler(isBackEnabled = false)
 
-        assertFalse(result)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_child_BackHandler_not_registered_WHEN_backHandler_back_THEN_returns_false() {
+    fun WHEN_child_BackHandler_not_registered_THEN_dispatcher_disabled() {
         val context = TestComponentContext()
         context.childContext(key = "key")
 
-        val result = context.backHandler.back()
-
-        assertFalse(result)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 }

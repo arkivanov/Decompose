@@ -4,6 +4,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -17,16 +18,18 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.util.lerp
-import com.arkivanov.essenty.backhandler.BackEvent
+import androidx.navigationevent.NavigationEvent
+import com.arkivanov.decompose.navigationevent.SwipeEdge
+import com.arkivanov.decompose.extensions.compose.fromJetpack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 internal class AndroidPredictiveBackAnimatableV1(
-    initialEvent: BackEvent,
-    private val exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
-    private val enterShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
+    initialEvent: NavigationEvent,
+    private val exitShape: ((progress: Float, edge: SwipeEdge) -> Shape)? = null,
+    private val enterShape: ((progress: Float, edge: SwipeEdge) -> Shape)? = null,
 ) : PredictiveBackAnimatable {
 
     private val exitProgressAnimatable = Animatable(initialValue = initialEvent.progress.exitProgress())
@@ -35,7 +38,7 @@ internal class AndroidPredictiveBackAnimatableV1(
     private val enterProgress: Float by derivedStateOf { enterProgressAnimatable.value }
     private val finishProgressAnimatable = Animatable(initialValue = 0F)
     private val finishProgress: Float by derivedStateOf { finishProgressAnimatable.value }
-    private var edge by mutableStateOf(initialEvent.swipeEdge)
+    private var edge by mutableIntStateOf(initialEvent.swipeEdge)
 
     override val exitModifier: Modifier
         get() =
@@ -62,7 +65,7 @@ internal class AndroidPredictiveBackAnimatableV1(
             }
 
     @Composable
-    private fun Modifier.exitModifier(layoutShape: (progress: Float, edge: BackEvent.SwipeEdge) -> Shape): Modifier {
+    private fun Modifier.exitModifier(layoutShape: (progress: Float, edge: SwipeEdge) -> Shape): Modifier {
         var size by remember { mutableStateOf(IntSize.Zero) }
         val scaleFactor = 1F - exitProgress * 0.1F
         val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
@@ -74,14 +77,14 @@ internal class AndroidPredictiveBackAnimatableV1(
                 scaleY = scaleFactor,
                 alpha = 1F - exitProgress,
                 translationX = (if (isLtr) size.width else -size.width) * 0.5F * exitProgress,
-                shape = layoutShape(exitProgress, edge),
+                shape = layoutShape(exitProgress, SwipeEdge.fromJetpack(edge)),
                 clip = true,
                 compositingStrategy = CompositingStrategy.Offscreen,
             )
     }
 
     @Composable
-    private fun Modifier.enterModifier(layoutShape: (progress: Float, edge: BackEvent.SwipeEdge) -> Shape): Modifier {
+    private fun Modifier.enterModifier(layoutShape: (progress: Float, edge: SwipeEdge) -> Shape): Modifier {
         val totalProgress = lerp(start = enterProgress, stop = 1F, fraction = finishProgress)
         var size by remember { mutableStateOf(IntSize.Zero) }
         val scaleFactor = lerp(start = lerp(start = 0.95F, stop = 0.90F, fraction = enterProgress), stop = 1F, fraction = finishProgress)
@@ -94,13 +97,13 @@ internal class AndroidPredictiveBackAnimatableV1(
                 scaleY = scaleFactor,
                 alpha = totalProgress,
                 translationX = lerp(start = (if (isLtr) -size.width else size.width) * 0.15F, stop = 0F, fraction = totalProgress),
-                shape = layoutShape(lerp(start = enterProgress, stop = 0F, fraction = finishProgress), edge),
+                shape = layoutShape(lerp(start = enterProgress, stop = 0F, fraction = finishProgress), SwipeEdge.fromJetpack(edge)),
                 clip = true,
                 compositingStrategy = CompositingStrategy.Offscreen,
             ) // Not using `graphicsLayer {}` with lambda due to https://github.com/arkivanov/Decompose/issues/877
     }
 
-    override suspend fun animate(event: BackEvent) {
+    override suspend fun animate(event: NavigationEvent) {
         edge = event.swipeEdge
 
         awaitAll(

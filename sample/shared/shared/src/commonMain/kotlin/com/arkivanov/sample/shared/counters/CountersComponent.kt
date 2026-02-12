@@ -1,11 +1,11 @@
 package com.arkivanov.sample.shared.counters
 
+import androidx.navigationevent.NavigationEventDispatcherOwner
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.backhandler.BackHandlerOwner
 import com.arkivanov.sample.shared.counters.counter.CounterComponent
 
-interface CountersComponent : BackHandlerOwner {
+interface CountersComponent : NavigationEventDispatcherOwner {
 
     val stack: Value<ChildStack<*, CounterComponent>>
 

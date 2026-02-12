@@ -1,11 +1,11 @@
 package com.arkivanov.decompose
 
+import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.register
-import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.Lifecycle.State.CREATED
@@ -153,82 +153,75 @@ class ChildContextWithLifecycleTest {
     }
 
     @Test
-    fun GIVEN_child_lifecycle_stopped_and_enabled_child_BackHandler_registered_WHEN_backHandler_back_THEN_returns_false() {
+    fun GIVEN_child_lifecycle_stopped_WHEN_enabled_child_BackHandler_registered_THEN_dispatcher_disabled() {
         val context = TestComponentContext()
         val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry(initialState = CREATED))
-        childContext.backHandler.register(BackCallback(isEnabled = true, onBack = {}))
 
-        val result = context.backHandler.back()
+        childContext.navigationEventDispatcher.addHandler(isBackEnabled = true)
 
-        assertFalse(result)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_child_lifecycle_stopped_and_disabled_child_BackHandler_registered_WHEN_child_lifecycle_started_and_backHandler_back_THEN_returns_false() {
+    fun GIVEN_child_lifecycle_stopped_and_disabled_child_BackHandler_registered_WHEN_child_lifecycle_started_THEN_dispatcher_disabled() {
         val context = TestComponentContext()
         val childLifecycle = LifecycleRegistry(initialState = CREATED)
         val childContext = context.childContext(key = "key", lifecycle = childLifecycle)
-        childContext.backHandler.register(BackCallback(isEnabled = false, onBack = {}))
+        childContext.navigationEventDispatcher.addHandler(isBackEnabled = false)
 
         childLifecycle.start()
-        val result = context.backHandler.back()
 
-        assertFalse(result)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_child_lifecycle_started_and_enabled_child_BackHandler_registered_WHEN_backHandler_back_THEN_returns_true() {
+    fun GIVEN_child_lifecycle_started_WHEN_enabled_child_BackHandler_registered_THEN_dispatcher_enabled() {
         val context = TestComponentContext()
         val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry(initialState = STARTED))
-        childContext.backHandler.register(BackCallback(isEnabled = true, onBack = {}))
 
-        val result = context.backHandler.back()
+        childContext.navigationEventDispatcher.addHandler(isBackEnabled = true)
 
-        assertTrue(result)
+        assertTrue(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_child_lifecycle_started_and_disabled_child_BackHandler_registered_WHEN_backHandler_back_THEN_returns_false() {
+    fun GIVEN_child_lifecycle_started_WHEN_disabled_child_BackHandler_registered_THEN_dispatcher_disabled() {
         val context = TestComponentContext()
         val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry(initialState = STARTED))
-        childContext.backHandler.register(BackCallback(isEnabled = false, onBack = {}))
 
-        val result = context.backHandler.back()
+        childContext.navigationEventDispatcher.addHandler(isBackEnabled = false)
 
-        assertFalse(result)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_child_lifecycle_started_and_enabled_child_BackHandler_registered_WHEN_child_lifecycle_stopped_and_backHandler_back_THEN_returns_false() {
+    fun GIVEN_child_lifecycle_started_and_enabled_child_BackHandler_registered_WHEN_child_lifecycle_stopped_THEN_dispatcher_disabled() {
         val context = TestComponentContext()
         val childLifecycle = LifecycleRegistry(initialState = STARTED)
         val childContext = context.childContext(key = "key", lifecycle = childLifecycle)
-        childContext.backHandler.register(BackCallback(isEnabled = true, onBack = {}))
+        childContext.navigationEventDispatcher.addHandler(isBackEnabled = true)
 
         childLifecycle.stop()
-        val result = context.backHandler.back()
 
-        assertFalse(result)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_disabled_child_BackHandler_registered_WHEN_backHandler_back_THEN_returns_false() {
+    fun WHEN_disabled_child_BackHandler_registered_THEN_dispatcher_disabled() {
         val context = TestComponentContext()
         val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry())
-        childContext.backHandler.register(BackCallback(isEnabled = false, onBack = {}))
 
-        val result = context.backHandler.back()
+        childContext.navigationEventDispatcher.addHandler(isBackEnabled = false)
 
-        assertFalse(result)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_child_BackHandler_not_registered_WHEN_backHandler_back_THEN_returns_false() {
+    fun WHEN_child_BackHandler_not_registered_THEN_dispatcher_disabled() {
         val context = TestComponentContext()
+
         context.childContext(key = "key", lifecycle = LifecycleRegistry())
 
-        val result = context.backHandler.back()
-
-        assertFalse(result)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 }

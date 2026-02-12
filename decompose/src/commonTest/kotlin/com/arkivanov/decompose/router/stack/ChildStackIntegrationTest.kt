@@ -10,6 +10,7 @@ import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_PAUSE
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_RESUME
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_START
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_STOP
+import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.children.NavStateSaver
 import com.arkivanov.decompose.testutils.TestComponentContext
@@ -18,7 +19,6 @@ import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.register
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.statekeeper.SerializableContainer
@@ -81,7 +81,7 @@ class ChildStackIntegrationTest {
 
         navigation.push(Config(2))
         navigation.push(Config(3))
-        context.backHandler.back()
+        context.navigationEventInput.backCompleted()
 
         stack.assertStack(1, 2)
     }
@@ -90,7 +90,7 @@ class ChildStackIntegrationTest {
     fun GIVEN_three_children_in_stack_WHEN_back_pressed_THEN_two_children_in_stack() {
         val stack by context.childStack(initialStack = listOf(Config(1), Config(2), Config(3)))
 
-        context.backHandler.back()
+        context.navigationEventInput.backCompleted()
 
         stack.assertStack(1, 2)
     }
@@ -140,7 +140,7 @@ class ChildStackIntegrationTest {
 
         stack.active.instance.navigation.push(Config(id = 2))
 
-        context.backHandler.back()
+        context.navigationEventInput.backCompleted()
 
         stack.assertStack(1, 2)
         stack.active.instance.stack.assertStack(1)
@@ -161,9 +161,9 @@ class ChildStackIntegrationTest {
         )
 
         stack.active.instance.navigation.push(Config(id = 2))
-        context.backHandler.back()
+        context.navigationEventInput.backCompleted()
 
-        context.backHandler.back()
+        context.navigationEventInput.backCompleted()
 
         stack.assertStack(1)
     }
@@ -172,9 +172,9 @@ class ChildStackIntegrationTest {
     fun GIVEN_two_children_in_stack_and_last_child_has_enabled_back_callback_WHEN_back_pressed_THEN_back_callback_called() {
         val stack by context.childStack(initialStack = listOf(Config(1), Config(2)))
         var isCalled = false
-        stack.active.instance.backHandler.register(BackCallback { isCalled = true })
+        stack.active.instance.navigationEventDispatcher.addHandler { isCalled = true }
 
-        context.backHandler.back()
+        context.navigationEventInput.backCompleted()
 
         assertTrue(isCalled)
     }
@@ -182,9 +182,9 @@ class ChildStackIntegrationTest {
     @Test
     fun GIVEN_two_children_in_stack_and_last_child_has_enabled_back_callback_WHEN_back_pressed_THEN_stack_not_popped() {
         val stack by context.childStack(initialStack = listOf(Config(1), Config(2)))
-        stack.active.instance.backHandler.register(BackCallback {})
+        stack.active.instance.navigationEventDispatcher.addHandler()
 
-        context.backHandler.back()
+        context.navigationEventInput.backCompleted()
 
         stack.assertStack(1, 2)
     }
@@ -193,9 +193,9 @@ class ChildStackIntegrationTest {
     fun GIVEN_two_children_in_stack_and_last_child_has_disabled_back_callback_WHEN_back_pressed_THEN_back_callback_not_called() {
         val stack by context.childStack(initialStack = listOf(Config(1), Config(2)))
         var isCalled = false
-        stack.active.instance.backHandler.register(BackCallback(isEnabled = false) { isCalled = true })
+        stack.active.instance.navigationEventDispatcher.addHandler(isBackEnabled = false) { isCalled = true }
 
-        context.backHandler.back()
+        context.navigationEventInput.backCompleted()
 
         assertFalse(isCalled)
     }
@@ -203,9 +203,9 @@ class ChildStackIntegrationTest {
     @Test
     fun GIVEN_two_children_in_stack_and_last_child_has_disabled_back_callback_WHEN_back_pressed_THEN_stack_popped() {
         val stack by context.childStack(initialStack = listOf(Config(1), Config(2)))
-        stack.active.instance.backHandler.register(BackCallback(isEnabled = false) {})
+        stack.active.instance.navigationEventDispatcher.addHandler(isBackEnabled = false)
 
-        context.backHandler.back()
+        context.navigationEventInput.backCompleted()
 
         stack.assertStack(1)
     }

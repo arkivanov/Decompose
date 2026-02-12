@@ -13,26 +13,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.animation.PredictiveBackParams
 import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimationScope
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
 import com.arkivanov.decompose.extensions.compose.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
 import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.essenty.backhandler.BackDispatcher
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import kotlin.test.assertSame
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Suppress("TestFunctionName")
 @RunWith(Parameterized::class)
 class ChildStackTest(
@@ -252,13 +250,13 @@ class ChildStackTest(
         private fun getParameters(): List<StackAnimation<String, Any>?> {
             val predictiveBackParams1 =
                 PredictiveBackParams(
-                    backHandler = BackDispatcher(),
+                    navigationEventDispatcher = NavigationEventDispatcher(),
                     onBack = {},
                 )
 
             val predictiveBackParams2 =
                 PredictiveBackParams(
-                    backHandler = BackDispatcher(),
+                    navigationEventDispatcher = NavigationEventDispatcher(),
                     onBack = {},
                     animatable = ::materialPredictiveBackAnimatable,
                 )

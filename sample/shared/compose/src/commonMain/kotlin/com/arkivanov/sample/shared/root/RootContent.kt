@@ -10,6 +10,8 @@ import com.arkivanov.decompose.extensions.compose.stack.ChildStack
 import com.arkivanov.decompose.extensions.compose.stack.animation.PredictiveBackParams
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.androidPredictiveBackAnimatableV1
+import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.androidPredictiveBackAnimatableV2
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
 import com.arkivanov.decompose.extensions.compose.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
@@ -43,12 +45,12 @@ private fun Children(component: RootComponent, modifier: Modifier = Modifier) {
             animator = fade() + scale(),
             predictiveBackParams = {
                 PredictiveBackParams(
-                    backHandler = component.backHandler,
+                    navigationEventDispatcher = component.navigationEventDispatcher,
                     onBack = component::onBackClicked,
                     animatable = ::materialPredictiveBackAnimatable,
                 )
-            },
-        ),
+            }
+        )
     ) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             when (val child = it.instance) {

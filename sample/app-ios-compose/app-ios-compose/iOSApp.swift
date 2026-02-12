@@ -8,7 +8,7 @@ struct iOSApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView(root: appDelegate.root, backDispatcher: appDelegate.backDispatcher)
+            RootView(root: appDelegate.root, navEventDispatcher: appDelegate.navEventDispatcher)
                 .ignoresSafeArea(.all)
         }
     }
@@ -16,14 +16,14 @@ struct iOSApp: App {
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     private var stateKeeper = StateKeeperDispatcherKt.StateKeeperDispatcher(savedState: nil)
-    var backDispatcher: BackDispatcher = BackDispatcherKt.BackDispatcher()
+    var navEventDispatcher: NavigationEventDispatcher = NavigationEventDispatcher()
 
     lazy var root: RootComponent = DefaultRootComponent(
         componentContext: DefaultComponentContext(
             lifecycle: ApplicationLifecycle(),
             stateKeeper: stateKeeper,
             instanceKeeper: nil,
-            backHandler: backDispatcher
+            navigationEventDispatcher: navEventDispatcher
         ),
         featureInstaller: DefaultFeatureInstaller.shared,
         deepLinkUrl: nil
