@@ -59,6 +59,7 @@ class RouterPushToFrontTest {
 
         assertEquals(listOf(1, 2, 1), navigator.configurations)
     }
+
     @Test
     fun WHEN_exists_duplicated_in_the_middle_and_end_THEN_not_changed() {
         val navigator = TestStackNavigator(listOf(1, 2, 2))

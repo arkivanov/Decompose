@@ -2,13 +2,13 @@ package com.arkivanov.decompose
 
 import android.os.Bundle
 import android.os.Parcel
-import androidx.activity.OnBackPressedDispatcher
-import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.navigationevent.NavigationEventDispatcher
+import androidx.navigationevent.NavigationEventDispatcherOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
@@ -16,11 +16,11 @@ import androidx.savedstate.SavedStateRegistryOwner
 class TestOwner(
     savedState: Bundle = Bundle(),
     override val viewModelStore: ViewModelStore = ViewModelStore(),
-) : LifecycleOwner, SavedStateRegistryOwner, ViewModelStoreOwner, OnBackPressedDispatcherOwner {
+) : LifecycleOwner, SavedStateRegistryOwner, ViewModelStoreOwner, NavigationEventDispatcherOwner {
     private val savedStateRegistryController: SavedStateRegistryController = SavedStateRegistryController.create(this)
     override val lifecycle: LifecycleRegistry = LifecycleRegistry(this)
     override val savedStateRegistry: SavedStateRegistry get() = savedStateRegistryController.savedStateRegistry
-    override val onBackPressedDispatcher: OnBackPressedDispatcher = OnBackPressedDispatcher()
+    override val navigationEventDispatcher: NavigationEventDispatcher = NavigationEventDispatcher()
 
     var isChangingConfigurations: Boolean = true
 

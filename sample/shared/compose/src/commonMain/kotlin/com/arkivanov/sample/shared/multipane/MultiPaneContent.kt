@@ -84,7 +84,7 @@ internal fun MultiPaneContent(component: MultiPaneComponent, modifier: Modifier 
                 animators = ChildPanelsAnimators(single = fade() + scale(), dual = fade() to fade()),
                 predictiveBackParams = {
                     PredictiveBackParams(
-                        backHandler = component.backHandler,
+                        navigationEventDispatcher = component.navigationEventDispatcher,
                         onBack = component::onBack,
                         animatable = ::materialPredictiveBackAnimatable,
                     )

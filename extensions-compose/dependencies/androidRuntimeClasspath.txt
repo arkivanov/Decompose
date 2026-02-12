@@ -1,5 +1,5 @@
-androidx.activity:activity-ktx:1.8.1
-androidx.activity:activity:1.8.1
+androidx.activity:activity-ktx:1.13.0
+androidx.activity:activity:1.13.0
 androidx.annotation:annotation-experimental:1.4.1
 androidx.annotation:annotation-jvm:1.10.0
 androidx.annotation:annotation:1.10.0
@@ -38,9 +38,9 @@ androidx.compose.ui:ui-util-android:1.12.1
 androidx.compose.ui:ui-util:1.12.1
 androidx.compose.ui:ui:1.12.1
 androidx.concurrent:concurrent-futures:1.1.0
-androidx.core:core-ktx:1.16.0
+androidx.core:core-ktx:1.18.0
 androidx.core:core-viewtree:1.0.0
-androidx.core:core:1.16.0
+androidx.core:core:1.18.0
 androidx.customview:customview-poolingcontainer:1.0.0
 androidx.customview:customview:1.0.0
 androidx.emoji2:emoji2:1.4.0
@@ -67,6 +67,8 @@ androidx.lifecycle:lifecycle-viewmodel-savedstate-android:2.10.0
 androidx.lifecycle:lifecycle-viewmodel-savedstate:2.10.0
 androidx.lifecycle:lifecycle-viewmodel:2.10.0
 androidx.loader:loader:1.0.0
+androidx.navigationevent:navigationevent-android:1.2.0-alpha04
+androidx.navigationevent:navigationevent:1.2.0-alpha04
 androidx.profileinstaller:profileinstaller:1.4.0
 androidx.savedstate:savedstate-android:1.4.0
 androidx.savedstate:savedstate-compose-android:1.4.0
@@ -81,8 +83,6 @@ androidx.viewpager:viewpager:1.0.0
 androidx.window:window-core-android:1.5.0
 androidx.window:window-core:1.5.0
 androidx.window:window:1.5.0
-com.arkivanov.essenty:back-handler-android:2.7.0-alpha01
-com.arkivanov.essenty:back-handler:2.7.0-alpha01
 com.arkivanov.essenty:instance-keeper-android:2.7.0-alpha01
 com.arkivanov.essenty:instance-keeper:2.7.0-alpha01
 com.arkivanov.essenty:lifecycle-android:2.7.0-alpha01

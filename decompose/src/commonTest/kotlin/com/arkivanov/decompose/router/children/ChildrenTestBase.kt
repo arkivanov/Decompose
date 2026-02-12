@@ -1,8 +1,10 @@
 package com.arkivanov.decompose.router.children
 
+import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeSettings
+import com.arkivanov.decompose.navigationevent.addDirectInput
 import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.keys
 import com.arkivanov.decompose.value.Value
@@ -16,9 +18,20 @@ import kotlin.test.assertEquals
 open class ChildrenTestBase {
 
     private val navigation = SimpleNavigation<(TestNavState) -> TestNavState>()
-    protected val context = TestComponentContext()
+
+    protected var onBackCompletedFallback: (() -> Unit)? = null
+    protected var onForwardCompletedFallback: (() -> Unit)? = null
+
+    protected val navigationEventDispatcher =
+        NavigationEventDispatcher(
+            onBackCompletedFallback = { onBackCompletedFallback?.invoke() },
+            onForwardCompletedFallback = { onForwardCompletedFallback?.invoke() }
+        )
+
+    protected val navigationEventInput = navigationEventDispatcher.addDirectInput()
+
+    protected val context = TestComponentContext(navigationEventDispatcher = navigationEventDispatcher)
     protected val lifecycle by context::lifecycle
-    protected val backDispatcher by context::backHandler
 
     @AfterTest
     fun after() {
