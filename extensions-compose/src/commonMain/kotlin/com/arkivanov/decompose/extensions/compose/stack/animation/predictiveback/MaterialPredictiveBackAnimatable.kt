@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import androidx.navigationevent.NavigationEvent
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
 import kotlinx.coroutines.coroutineScope
@@ -31,24 +32,24 @@ import kotlinx.coroutines.launch
  * Creates an implementation of [PredictiveBackAnimatable] that resembles the
  * [predictive back design for Android](https://developer.android.com/design/ui/mobile/guides/patterns/predictive-back).
  *
- * @param initialBackEvent an initial [BackEvent] of the predictive back gesture.
+ * @param initialNavigationEvent an initial [BackEvent] of the predictive back gesture.
  * @param shape an optional clipping shape of the child being removed (the currently active child).
  * If not supplied then a [RoundedCornerShape][androidx.compose.foundation.shape.RoundedCornerShape] will be applied.
  */
 @ExperimentalDecomposeApi
 fun materialPredictiveBackAnimatable(
-    initialBackEvent: BackEvent,
-    shape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
+    initialNavigationEvent: NavigationEvent,
+    shape: ((progress: Float, edge: Int) -> Shape)? = null,
 ): PredictiveBackAnimatable =
     MaterialPredictiveBackAnimatable(
-        initialEvent = initialBackEvent,
+        initialEvent = initialNavigationEvent,
         exitShape = shape,
     )
 
 @ExperimentalDecomposeApi
 private class MaterialPredictiveBackAnimatable(
-    private val initialEvent: BackEvent,
-    private val exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
+    private val initialEvent: NavigationEvent,
+    private val exitShape: ((progress: Float, edge: Int) -> Shape)? = null,
 ) : PredictiveBackAnimatable {
 
     private val finishProgressAnimatable = Animatable(initialValue = 1F)
@@ -105,9 +106,9 @@ private class MaterialPredictiveBackAnimatable(
         val scaledWidth = width * scaleFactor
 
         return when (edge) {
-            BackEvent.SwipeEdge.LEFT -> (width - scaledWidth) / 2F - 8.dp.toPx() * progress
-            BackEvent.SwipeEdge.RIGHT -> (scaledWidth - width) / 2F + 8.dp.toPx() * progress
-            BackEvent.SwipeEdge.UNKNOWN -> 0F
+            NavigationEvent.EDGE_LEFT -> (width - scaledWidth) / 2F - 8.dp.toPx() * progress
+            NavigationEvent.EDGE_RIGHT -> (scaledWidth - width) / 2F + 8.dp.toPx() * progress
+            else -> 0F
         }
     }
 
@@ -122,7 +123,7 @@ private class MaterialPredictiveBackAnimatable(
         return translationYLimit * translationYFactor
     }
 
-    override suspend fun animate(event: BackEvent) {
+    override suspend fun animate(event: NavigationEvent) {
         edge = event.swipeEdge
         touchY = event.touchY
         progressAnimatable.animateTo(event.progress)

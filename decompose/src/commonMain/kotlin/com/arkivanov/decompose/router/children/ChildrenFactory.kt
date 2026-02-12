@@ -1,13 +1,14 @@
 package com.arkivanov.decompose.router.children
 
+import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.Relay
+import com.arkivanov.decompose.backhandler.addBackHandler
 import com.arkivanov.decompose.backhandler.child
 import com.arkivanov.decompose.mainthread.checkMainThread
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.statekeeper.SerializableContainer
@@ -124,11 +125,11 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState
     backTransformer: (state: N) -> (() -> N)? = { null },
     childFactory: (configuration: C, componentContext: Ctx) -> T,
 ): Value<S> {
-    val mainBackHandler = backHandler.child()
     val relay = Relay<NavEvent<E>>()
     val cancellation = source.subscribe { relay.accept(NavEvent.Event(it)) }
-    val backCallback = BackCallback { relay.accept(NavEvent.Back) }
-
+    val backHandler = navigationEventDispatcher.addBackHandler {
+        relay.accept(NavEvent.Back)
+    }
     val eventProcessor = EventProcessor<E>()
     relay.subscribe(eventProcessor::process)
 
@@ -144,7 +145,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState
             stateMapper = stateMapper,
             navTransformer = navTransformer,
             onStateChanged = { newState, oldState, isBackEnabled ->
-                backCallback.isEnabled = isBackEnabled
+                backHandler.isBackEnabled = isBackEnabled
                 onStateChanged(newState, oldState)
             },
             onEventComplete = onEventComplete,
@@ -152,7 +153,6 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState
         )
 
     relay.accept(NavEvent.Init(holder))
-    mainBackHandler.register(backCallback)
     lifecycle.doOnDestroy(cancellation::cancel)
 
     return holder.state
@@ -246,7 +246,7 @@ private fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, N : NavState<
                 childItemFactory = DefaultChildItemFactory(
                     contextFactory = componentContextFactory,
                     lifecycle = lifecycle,
-                    backHandler = backHandler.child(priority = BackCallback.PRIORITY_DEFAULT + 1),
+                    navigationEventDispatcher = navigationEventDispatcher.child(priority = NavigationEventDispatcher.PRIORITY_OVERLAY),
                     childFactory = childFactory,
                 ),
                 navState = restoredNavState ?: initialState(),

@@ -17,6 +17,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.navigationevent.DirectNavigationEventInput
+import androidx.navigationevent.NavigationEvent
+import androidx.navigationevent.NavigationEventHandler
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.NavigationEventInput
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.experimental.stack.WithStackAnimationScope
@@ -27,8 +32,6 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.Direction
 import com.arkivanov.decompose.extensions.compose.stack.animation.isExit
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.PredictiveBackAnimatable
 import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.essenty.backhandler.BackCallback
-import com.arkivanov.essenty.backhandler.BackEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -203,7 +206,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     ) {
         val scope = rememberCoroutineScope()
 
-        val callback =
+        val handler =
             remember {
                 PredictiveBackCallback(
                     stack = stack,
@@ -213,12 +216,14 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                 )
             }
 
-        DisposableEffect(predictiveBackParams.backHandler, callback) {
-            predictiveBackParams.backHandler.register(callback)
+        DisposableEffect(predictiveBackParams.navigationEventDispatcher, handler) {
+            predictiveBackParams.navigationEventDispatcher.addHandler(handler)
+            predictiveBackParams.navigationEventDispatcher.addInput(handler.input)
 
             onDispose {
                 scope.cancel() // Ensure the scope is cancelled before unregistering the callback
-                predictiveBackParams.backHandler.unregister(callback)
+                handler.remove()
+                predictiveBackParams.navigationEventDispatcher.removeInput(handler.input)
             }
         }
     }
@@ -243,21 +248,23 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         private val scope: CoroutineScope,
         private val predictiveBackParams: PredictiveBackParams,
         private val setItems: (Map<String, AnimationItem<C, T>>) -> Unit,
-    ) : BackCallback() {
-        private var state: State = State.Idle
+    ) : NavigationEventHandler<NavigationEventInfo>(initialInfo = NavigationEventInfo.None, isBackEnabled = true) {
+        val input: DirectNavigationEventInput = DirectNavigationEventInput()
 
-        override fun onBackStarted(backEvent: BackEvent) {
+        private var state: DefaultStackAnimation.State = DefaultStackAnimation.State.Idle
+
+        override fun onBackStarted(event: NavigationEvent) {
             if (state is State.Idle) {
-                state = State.Started(backEvent)
+                state = State.Started(event)
             }
         }
 
-        override fun onBackProgressed(backEvent: BackEvent) {
+        override fun onBackProgressed(event: NavigationEvent) {
             startIfNeeded()
             val currentState = state as? State.Progress ?: return
 
             scope.launch {
-                currentState.animationHandler.progress(backEvent)
+                currentState.animationHandler.progress(event)
             }
         }
 
@@ -310,7 +317,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             }
         }
 
-        override fun onBack() {
+        override fun onBackCompleted() {
             val currentState = state
             if (currentState is State.Progress) {
                 state = State.Finishing
@@ -319,11 +326,18 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                     currentState.animationHandler.finish()
                     state = State.Idle
                     setItems(getAnimationItems(newStack = stack.dropLast()))
-                    predictiveBackParams.onBack()
+
+                    // FIXME: fix
+                    isBackEnabled = false
+                    input.backCompleted()
+                    isBackEnabled = true
                 }
             } else if (currentState !is State.Finishing) {
                 state = State.Idle
-                predictiveBackParams.onBack()
+                // FIXME: fix
+                isBackEnabled = false
+                input.backCompleted()
+                isBackEnabled = true
             }
         }
     }
@@ -341,7 +355,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         val exitTransitionState: SeekableTransitionState<EnterExitState> = SeekableTransitionState(EnterExitState.Visible)
         val enterTransitionState: SeekableTransitionState<EnterExitState> = SeekableTransitionState(EnterExitState.PreEnter)
 
-        suspend fun progress(backEvent: BackEvent) {
+        suspend fun progress(backEvent: NavigationEvent) {
             animatable?.run {
                 animate(backEvent)
                 return@progress // Don't animate transition states on back progress if there is PredictiveBackAnimatable

@@ -2,7 +2,7 @@ package com.arkivanov.decompose.router.pages
 
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.TestInstance
-import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.decompose.testutils.TestStateKeeperDispatcher
 import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.getValue

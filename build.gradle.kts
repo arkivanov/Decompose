@@ -41,9 +41,9 @@ setupDefaults(
         macosCompat(x64 = null)
     },
     androidConfig = AndroidConfig(
-        minSdkVersion = 21,
-        compileSdkVersion = 35,
-        targetSdkVersion = 35,
+        minSdkVersion = 23,
+        compileSdkVersion = 36,
+        targetSdkVersion = 36,
     ),
     binaryCompatibilityValidatorConfig = BinaryCompatibilityValidatorConfig(
         nonPublicMarkers = listOf("com.arkivanov.decompose.InternalDecomposeApi"),

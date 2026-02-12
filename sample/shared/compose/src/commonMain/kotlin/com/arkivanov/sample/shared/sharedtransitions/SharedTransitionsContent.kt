@@ -34,8 +34,7 @@ internal fun SharedTransitionsContent(
                 animator = fade() + scale(),
                 predictiveBackParams = {
                     PredictiveBackParams(
-                        backHandler = component.backHandler,
-                        onBack = component::onBack,
+                        navigationEventDispatcher = component.navigationEventDispatcher,
                         animatable = ::materialPredictiveBackAnimatable,
                     )
                 },

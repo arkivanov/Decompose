@@ -7,12 +7,13 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.stack.Children
-import com.arkivanov.decompose.extensions.compose.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.stack.animation.plus
-import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.predictiveBackAnimation
-import com.arkivanov.decompose.extensions.compose.stack.animation.scale
-import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.PredictiveBackParams
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.plus
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.scale
+import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.materialPredictiveBackAnimatable
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationContent
 import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesContent
 import com.arkivanov.sample.shared.pages.PagesContent
@@ -37,14 +38,18 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
 private fun Children(component: RootComponent, modifier: Modifier = Modifier) {
-    Children(
+    ChildStack(
         stack = component.stack,
         modifier = modifier,
-        animation = predictiveBackAnimation(
-            backHandler = component.backHandler,
-            fallbackAnimation = stackAnimation(fade() + scale()),
-            onBack = component::onBackClicked,
-        ),
+        animation = stackAnimation(
+            animator = fade() + scale(),
+            predictiveBackParams = {
+                PredictiveBackParams(
+                    navigationEventDispatcher = component.navigationEventDispatcher,
+                    animatable = ::materialPredictiveBackAnimatable,
+                )
+            }
+        )
     ) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             when (val child = it.instance) {

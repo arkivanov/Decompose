@@ -57,7 +57,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             items.asReversed().forEach { item ->
                 when (item) {
                     is Created -> {
-                        item.backHandler.stop()
+                        item.navigationEventDispatcher.isEnabled = false
                         item.lifecycleRegistry.destroy()
                     }
 
@@ -111,13 +111,13 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
             Status.STARTED ->
                 getCreatedItem().apply {
-                    backHandler.start()
+                    navigationEventDispatcher.isEnabled = true
                     lifecycleRegistry.start()
                 }
 
             Status.RESUMED ->
                 getCreatedItem().apply {
-                    backHandler.start()
+                    navigationEventDispatcher.isEnabled = true
                     lifecycleRegistry.resume()
                 }
         }
@@ -238,7 +238,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
             Status.CREATED -> {
                 if (item.lifecycleRegistry.state != Lifecycle.State.CREATED) {
-                    item.backHandler.stop()
+                    item.navigationEventDispatcher.isEnabled = false
                     item.lifecycleRegistry.stop()
                 }
 
@@ -248,7 +248,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             Status.STARTED -> {
                 when {
                     item.lifecycleRegistry.state < Lifecycle.State.STARTED -> {
-                        item.backHandler.start()
+                        item.navigationEventDispatcher.isEnabled = true
                         item.lifecycleRegistry.start()
                     }
 
@@ -262,7 +262,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
             Status.RESUMED -> {
                 if (item.lifecycleRegistry.state != Lifecycle.State.RESUMED) {
-                    item.backHandler.start()
+                    item.navigationEventDispatcher.isEnabled = true
                     item.lifecycleRegistry.resume()
                 }
 
@@ -271,7 +271,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         }
 
     private fun Created<*, *>.destroy() {
-        backHandler.stop()
+        navigationEventDispatcher.isEnabled = false
         lifecycleRegistry.destroy()
         instanceKeeperDispatcher.destroy()
     }

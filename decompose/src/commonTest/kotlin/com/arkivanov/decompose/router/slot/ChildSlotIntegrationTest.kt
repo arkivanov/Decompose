@@ -2,22 +2,16 @@ package com.arkivanov.decompose.router.slot
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.TestInstance
-import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.getValue
+import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.register
-import com.arkivanov.decompose.testutils.serializeAndDeserialize
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.backhandler.BackDispatcher
-import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.essenty.lifecycle.resume
 import kotlinx.serialization.builtins.serializer
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -30,23 +24,7 @@ import kotlin.test.assertTrue
 class ChildSlotIntegrationTest {
 
     private val navigation = SlotNavigation<Int>()
-    private val lifecycle = LifecycleRegistry()
-    private val stateKeeperDispatcher = TestStateKeeperDispatcher()
-    private val instanceKeeperDispatcher = InstanceKeeperDispatcher()
-    private val backDispatcher = BackDispatcher()
-
-    private val context =
-        DefaultComponentContext(
-            lifecycle = lifecycle,
-            stateKeeper = stateKeeperDispatcher,
-            instanceKeeper = instanceKeeperDispatcher,
-            backHandler = backDispatcher,
-        )
-
-    @BeforeTest
-    fun before() {
-        lifecycle.resume()
-    }
+    private val context = TestComponentContext()
 
     @Test
     fun WHEN_created_without_configuration_THEN_child_not_active() {
@@ -131,21 +109,21 @@ class ChildSlotIntegrationTest {
     fun GIVEN_not_active_WHEN_parent_backDispatcher_isEnabled_THEN_false() {
         context.childSlot(initialConfiguration = null)
 
-        assertFalse(backDispatcher.isEnabled)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
     fun GIVEN_active_WHEN_parent_backDispatcher_isEnabled_THEN_true() {
         context.childSlot(initialConfiguration = 1)
 
-        assertTrue(backDispatcher.isEnabled)
+        assertTrue(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
     fun GIVEN_active_WHEN_back_pressed_THEN_slot_not_active() {
         val slot by context.childSlot(initialConfiguration = 1)
 
-        backDispatcher.back()
+        context.navigationEventInput.backCompleted()
 
         slot.assertChild(null)
     }
@@ -153,20 +131,17 @@ class ChildSlotIntegrationTest {
     @Test
     fun GIVEN_dismissed_via_back_pressed_WHEN_parent_backDispatcher_isEnabled_THEN_false() {
         context.childSlot(initialConfiguration = 1)
-        backDispatcher.back()
+        context.navigationEventInput.backCompleted()
 
-        assertFalse(backDispatcher.isEnabled)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
     fun GIVEN_persistent_and_slot_active_WHEN_recreated_THEN_slot_active() {
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
+        val oldContext = TestComponentContext()
         oldContext.childSlot(initialConfiguration = 1, persistent = true)
 
-        val savedState = oldStateKeeper.save().serializeAndDeserialize()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
+        val newContext = oldContext.recreate()
         val newSlot by newContext.childSlot(initialConfiguration = null, persistent = true)
 
         newSlot.assertChild(1)
@@ -174,13 +149,10 @@ class ChildSlotIntegrationTest {
 
     @Test
     fun GIVEN_persistent_and_slot_not_active_WHEN_recreated_THEN_slot_not_active() {
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
+        val oldContext = TestComponentContext()
         oldContext.childSlot(initialConfiguration = null, persistent = true)
 
-        val savedState = oldStateKeeper.save().serializeAndDeserialize()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
+        val newContext = oldContext.recreate()
         val newSlot by newContext.childSlot(initialConfiguration = 1, persistent = true)
 
         newSlot.assertChild(null)
@@ -188,14 +160,11 @@ class ChildSlotIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_THEN_slot_state_restored() {
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
+        val oldContext = TestComponentContext()
         val slot by oldContext.childSlot(initialConfiguration = 1, persistent = true)
         slot.requireChild().instance.stateKeeper.register("key") { 10 }
 
-        val savedState = oldStateKeeper.save().serializeAndDeserialize()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
+        val newContext = oldContext.recreate()
         val newSlot by newContext.childSlot(initialConfiguration = null, persistent = true)
         val restoredState = newSlot.requireChild().instance.stateKeeper.consume<Int>("key")
 
@@ -204,13 +173,10 @@ class ChildSlotIntegrationTest {
 
     @Test
     fun GIVEN_not_persistent_WHEN_recreated_THEN_slot_not_active() {
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper)
+        val oldContext = TestComponentContext()
         oldContext.childSlot(initialConfiguration = 1, persistent = false)
 
-        val savedState = oldStateKeeper.save().serializeAndDeserialize()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper)
+        val newContext = oldContext.recreate()
         val newSlot by newContext.childSlot(initialConfiguration = null, persistent = false)
 
         newSlot.assertChild(null)
@@ -220,20 +186,16 @@ class ChildSlotIntegrationTest {
     fun WHEN_created_persistent_THEN_registered_in_parent_StateKeeper() {
         context.childSlot(initialConfiguration = 1, persistent = true)
 
-        stateKeeperDispatcher.assertSupplierRegistered(key = "key")
+        context.stateKeeper.assertSupplierRegistered(key = "key")
     }
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_THEN_slot_instance_retained() {
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val instanceKeeper = InstanceKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
+        val oldContext = TestComponentContext()
         val oldSlot by oldContext.childSlot(initialConfiguration = 1, persistent = true)
         val oldInstance = oldSlot.requireChild().instance.instanceKeeper.getOrCreate(::TestInstance)
 
-        val savedState = oldStateKeeper.save().serializeAndDeserialize()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
+        val newContext = oldContext.recreate(isConfigurationChange = true)
         val newSlot by newContext.childSlot(initialConfiguration = null, persistent = true)
         val retainedInstance = newSlot.requireChild().instance.instanceKeeper.getOrCreate(::TestInstance)
 
@@ -242,15 +204,11 @@ class ChildSlotIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_THEN_slot_instance_not_destroyed() {
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val instanceKeeper = InstanceKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
+        val oldContext = TestComponentContext()
         val oldSlot by oldContext.childSlot(initialConfiguration = 1, persistent = true)
         val instance = oldSlot.requireChild().instance.instanceKeeper.getOrCreate(::TestInstance)
 
-        val savedState = oldStateKeeper.save().serializeAndDeserialize()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
+        val newContext = oldContext.recreate(isConfigurationChange = true)
         newContext.childSlot(initialConfiguration = null, persistent = true)
 
         assertFalse(instance.isDestroyed)
@@ -260,20 +218,16 @@ class ChildSlotIntegrationTest {
     fun WHEN_created_persistent_THEN_registered_in_parent_InstanceKeeper() {
         context.childSlot(initialConfiguration = 1, persistent = true)
 
-        assertNotNull(instanceKeeperDispatcher.get(key = "key"))
+        assertNotNull(context.instanceKeeper.get(key = "key"))
     }
 
     @Test
     fun GIVEN_not_persistent_WHEN_recreated_THEN_slot_instance_not_retained() {
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val instanceKeeper = InstanceKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
+        val oldContext = TestComponentContext()
         val oldSlot by oldContext.childSlot(initialConfiguration = 1, persistent = false)
         val oldInstance = oldSlot.requireChild().instance.instanceKeeper.getOrCreate(::TestInstance)
 
-        val savedState = oldStateKeeper.save().serializeAndDeserialize()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
+        val newContext = oldContext.recreate(isConfigurationChange = true)
         val newSlot by newContext.childSlot(initialConfiguration = 1, persistent = false)
         val newInstance = newSlot.requireChild().instance.instanceKeeper.getOrCreate(::TestInstance)
 
@@ -282,15 +236,11 @@ class ChildSlotIntegrationTest {
 
     @Test
     fun GIVEN_not_persistent_WHEN_recreated_THEN_slot_instance_destroyed() {
-        val oldStateKeeper = TestStateKeeperDispatcher()
-        val instanceKeeper = InstanceKeeperDispatcher()
-        val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
+        val oldContext = TestComponentContext()
         val oldSlot by oldContext.childSlot(initialConfiguration = 1, persistent = false)
         val instance = oldSlot.requireChild().instance.instanceKeeper.getOrCreate(::TestInstance)
 
-        val savedState = oldStateKeeper.save().serializeAndDeserialize()
-        val newStateKeeper = TestStateKeeperDispatcher(savedState)
-        val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
+        val newContext = oldContext.recreate(isConfigurationChange = true)
         newContext.childSlot(initialConfiguration = null, persistent = false)
 
         assertTrue(instance.isDestroyed)

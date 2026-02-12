@@ -1,5 +1,7 @@
 package com.arkivanov.decompose.extensions.compose.experimental.stack.animation
 
+import androidx.navigationevent.NavigationEvent
+import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.PredictiveBackAnimatable
 import com.arkivanov.essenty.backhandler.BackEvent
@@ -22,19 +24,16 @@ import com.arkivanov.essenty.backhandler.BackHandler
  */
 @ExperimentalDecomposeApi
 class PredictiveBackParams(
-    val backHandler: BackHandler,
-    val onBack: () -> Unit,
-    val animatable: (initialBackEvent: BackEvent) -> PredictiveBackAnimatable? = { null },
+    val navigationEventDispatcher: NavigationEventDispatcher,
+    val animatable: (initialNavigationEvent: NavigationEvent) -> PredictiveBackAnimatable? = { null },
 ) {
 
     internal fun copy(
-        backHandler: BackHandler = this.backHandler,
-        onBack: () -> Unit = this.onBack,
-        animatable: (initialBackEvent: BackEvent) -> PredictiveBackAnimatable? = this.animatable,
+        navigationEventDispatcher: NavigationEventDispatcher = this.navigationEventDispatcher,
+        animatable: (initialNavigationEvent: NavigationEvent) -> PredictiveBackAnimatable? = this.animatable,
     ): PredictiveBackParams =
         PredictiveBackParams(
-            backHandler = backHandler,
-            onBack = onBack,
+            navigationEventDispatcher = navigationEventDispatcher,
             animatable = animatable,
         )
 }

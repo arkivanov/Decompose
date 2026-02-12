@@ -1,11 +1,9 @@
 package com.arkivanov.decompose.router.children
 
+import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.GenericComponentContext
-import com.arkivanov.decompose.backhandler.ChildBackHandler
 import com.arkivanov.decompose.backhandler.child
-import com.arkivanov.decompose.backhandler.childBackHandler
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
-import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.instancekeeper.retainedInstance
@@ -29,7 +27,8 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
     private val retainedInstance =
         componentContext.retainedInstance<RetainedInstance<C>>(key = key, factory = ::RetainedInstance)
 
-    private val childBackHandler = componentContext.backHandler.child(priority = BackCallback.PRIORITY_DEFAULT + 1)
+    private val childNavigationEventDispatcher =
+        componentContext.navigationEventDispatcher.child(priority = NavigationEventDispatcher.PRIORITY_OVERLAY)
 
     private val items = HashMap<C, Item<T>>()
 
@@ -101,65 +100,58 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
 
     fun start(
         configuration: C,
-        backHandlerPriority: Int = BackCallback.PRIORITY_DEFAULT,
         savedState: SerializableContainer? = null
     ): T =
         activate(
             configuration = configuration,
             lifecycleState = ActiveLifecycleState.STARTED,
-            backHandlerPriority = backHandlerPriority,
             savedState = savedState,
         )
 
     fun resume(
         configuration: C,
-        backHandlerPriority: Int = BackCallback.PRIORITY_DEFAULT,
         savedState: SerializableContainer? = null
     ): T =
         activate(
             configuration = configuration,
             lifecycleState = ActiveLifecycleState.RESUMED,
-            backHandlerPriority = backHandlerPriority,
             savedState = savedState,
         )
 
     private fun activate(
         configuration: C,
         lifecycleState: ActiveLifecycleState,
-        backHandlerPriority: Int = BackCallback.PRIORITY_DEFAULT,
         savedState: SerializableContainer? = null
     ): T =
         when (val oldItem = items[configuration]) {
-            is Item.Created -> oldItem.apply { setState(lifecycleState, backHandlerPriority) }.instance
+            is Item.Created -> oldItem.apply { setState(lifecycleState) }.instance
 
             is Item.Destroyed ->
                 activateNew(
                     configuration,
                     lifecycleState,
-                    backHandlerPriority,
                     savedState ?: oldItem.savedState,
                 )
 
-            null -> activateNew(configuration, lifecycleState, backHandlerPriority, savedState)
+            null -> activateNew(configuration, lifecycleState, savedState)
         }
 
     private fun activateNew(
         configuration: C,
         lifecycleState: ActiveLifecycleState,
-        backHandlerPriority: Int = BackCallback.PRIORITY_DEFAULT,
         savedState: SerializableContainer? = null,
     ): T {
         val item = item(configuration = configuration, savedState = savedState)
-        item.setState(lifecycleState = lifecycleState, backHandlerPriority = backHandlerPriority)
+        item.setState(lifecycleState = lifecycleState)
         retainedInstance.map[configuration] = item.instanceKeeperDispatcher
         items[configuration] = item
 
         return item.instance
     }
 
-    private fun Item.Created<*>.setState(lifecycleState: ActiveLifecycleState, backHandlerPriority: Int) {
+    private fun Item.Created<*>.setState(lifecycleState: ActiveLifecycleState) {
         lifecycleRegistry.setState(lifecycleState)
-        backHandler.setState(lifecycleState = lifecycleState, priority = backHandlerPriority)
+        navigationEventDispatcher.setState(lifecycleState = lifecycleState)
     }
 
     private fun LifecycleRegistry.setState(lifecycleState: ActiveLifecycleState) {
@@ -182,17 +174,15 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         }
     }
 
-    private fun ChildBackHandler.setState(
+    private fun NavigationEventDispatcher.setState(
         lifecycleState: ActiveLifecycleState,
-        priority: Int,
     ) {
-        when (lifecycleState) {
-            ActiveLifecycleState.CREATED -> stop()
-            ActiveLifecycleState.STARTED,
-            ActiveLifecycleState.RESUMED -> start()
-        }
-
-        this@setState.priority = priority
+        isEnabled =
+            when (lifecycleState) {
+                ActiveLifecycleState.CREATED -> false
+                ActiveLifecycleState.STARTED -> true
+                ActiveLifecycleState.RESUMED -> true
+            }
     }
 
     private fun item(
@@ -203,7 +193,8 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         val mergedLifecycle = MergedLifecycle(componentContext.lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
         val instanceKeeperDispatcher = retainedInstance.map[configuration] ?: InstanceKeeperDispatcher()
-        val backHandler = childBackHandler.childBackHandler()
+        val navigationEventDispatcher = childNavigationEventDispatcher.child()
+        navigationEventDispatcher.isEnabled = false
 
         val component =
             childFactory(
@@ -212,7 +203,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
                     lifecycle = mergedLifecycle,
                     stateKeeper = stateKeeperDispatcher,
                     instanceKeeper = instanceKeeperDispatcher,
-                    backHandler = backHandler,
+                    navigationEventDispatcher = navigationEventDispatcher,
                 )
             )
 
@@ -221,12 +212,12 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
             lifecycleRegistry = componentLifecycleRegistry,
             stateKeeperDispatcher = stateKeeperDispatcher,
             instanceKeeperDispatcher = instanceKeeperDispatcher,
-            backHandler = backHandler,
+            navigationEventDispatcher = navigationEventDispatcher,
         )
     }
 
     private fun Item.Created<*>.destroy() {
-        backHandler.stop()
+        navigationEventDispatcher.isEnabled = false
         lifecycleRegistry.destroy()
         instanceKeeperDispatcher.destroy()
     }
@@ -251,7 +242,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
             val lifecycleRegistry: LifecycleRegistry,
             val stateKeeperDispatcher: StateKeeperDispatcher,
             val instanceKeeperDispatcher: InstanceKeeperDispatcher,
-            val backHandler: ChildBackHandler,
+            val navigationEventDispatcher: NavigationEventDispatcher,
         ) : Item<T>
     }
 

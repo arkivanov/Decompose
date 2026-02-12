@@ -1,9 +1,8 @@
 package com.arkivanov.decompose.router.children
 
+import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.ComponentContextFactory
-import com.arkivanov.decompose.backhandler.childBackHandler
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
-import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
@@ -13,7 +12,7 @@ import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
     private val contextFactory: ComponentContextFactory<Ctx>,
     private val lifecycle: Lifecycle,
-    private val backHandler: BackHandler,
+    private val navigationEventDispatcher: NavigationEventDispatcher,
     private val childFactory: (configuration: C, Ctx) -> T,
 ) : ChildItemFactory<C, T> {
 
@@ -27,7 +26,8 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
         val mergedLifecycle = MergedLifecycle(lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
         val instanceKeeperRegistry = instanceKeeperDispatcher ?: InstanceKeeperDispatcher()
-        val backHandler = backHandler.childBackHandler()
+        val navigationEventDispatcher = NavigationEventDispatcher(navigationEventDispatcher)
+        navigationEventDispatcher.isEnabled = false
 
         val component =
             childFactory(
@@ -36,7 +36,7 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
                     lifecycle = mergedLifecycle,
                     stateKeeper = stateKeeperDispatcher,
                     instanceKeeper = instanceKeeperRegistry,
-                    backHandler = backHandler,
+                    navigationEventDispatcher = navigationEventDispatcher,
                 )
             )
 
@@ -47,7 +47,7 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
             lifecycleRegistry = componentLifecycleRegistry,
             stateKeeperDispatcher = stateKeeperDispatcher,
             instanceKeeperDispatcher = instanceKeeperRegistry,
-            backHandler = backHandler,
+            navigationEventDispatcher = navigationEventDispatcher,
         )
     }
 }

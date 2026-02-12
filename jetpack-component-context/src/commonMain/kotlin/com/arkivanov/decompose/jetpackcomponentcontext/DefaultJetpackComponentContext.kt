@@ -8,12 +8,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.enableSavedStateHandles
 import androidx.lifecycle.viewmodel.MutableCreationExtras
+import androidx.navigationevent.NavigationEventDispatcherOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.savedState
 import com.arkivanov.decompose.ComponentContextFactory
 import com.arkivanov.decompose.GenericComponentContext
-import com.arkivanov.essenty.backhandler.BackHandlerOwner
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperOwner
 import com.arkivanov.essenty.instancekeeper.retainedInstance
@@ -27,7 +27,7 @@ internal class DefaultJetpackComponentContext<T : GenericComponentContext<T>>(
 ) : JetpackComponentContext,
     StateKeeperOwner by delegate,
     InstanceKeeperOwner by delegate,
-    BackHandlerOwner by delegate {
+    NavigationEventDispatcherOwner by delegate {
 
     private val jetpackLifecycleRegistry = JetpackLifecycleRegistry(this)
 

@@ -1,6 +1,7 @@
 package com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 
 import androidx.compose.ui.graphics.Shape
+import androidx.navigationevent.NavigationEvent
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
 
@@ -10,7 +11,7 @@ import com.arkivanov.essenty.backhandler.BackEvent
  *
  * Deprecated: please use [androidPredictiveBackAnimatableV1] or [androidPredictiveBackAnimatableV2].
  *
- * @param initialBackEvent an initial [BackEvent] of the predictive back gesture.
+ * @param initialNavigationEvent an initial [BackEvent] of the predictive back gesture.
  * @param exitShape an optional clipping shape of the child being removed (the currently active child).
  * If not supplied then a [RoundedCornerShape][androidx.compose.foundation.shape.RoundedCornerShape] will be applied.
  * The `progress` argument is animating from 0 to 1 when the gesture is confirmed.
@@ -27,12 +28,12 @@ import com.arkivanov.essenty.backhandler.BackEvent
 )
 @ExperimentalDecomposeApi
 fun androidPredictiveBackAnimatable(
-    initialBackEvent: BackEvent,
-    exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
-    enterShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
+    initialNavigationEvent: NavigationEvent,
+    exitShape: ((progress: Float, edge: Int) -> Shape)? = null,
+    enterShape: ((progress: Float, edge: Int) -> Shape)? = null,
 ): PredictiveBackAnimatable =
     androidPredictiveBackAnimatableV1(
-        initialBackEvent = initialBackEvent,
+        initialNavigationEvent = initialNavigationEvent,
         exitShape = exitShape,
         enterShape = enterShape,
     )
@@ -41,7 +42,7 @@ fun androidPredictiveBackAnimatable(
  * Creates an implementation of [PredictiveBackAnimatable] that resembles the first version of the
  * standard animation on some Android Upside Down Cake (API 34) devices (e.g. in system settings on Pixel phones).
  *
- * @param initialBackEvent an initial [BackEvent] of the predictive back gesture.
+ * @param initialNavigationEvent an initial [BackEvent] of the predictive back gesture.
  * @param exitShape an optional clipping shape of the child being removed (the currently active child).
  * If not supplied then a [RoundedCornerShape][androidx.compose.foundation.shape.RoundedCornerShape] will be applied.
  * The `progress` argument is animating from 0 to 1 when the gesture is confirmed.
@@ -51,12 +52,12 @@ fun androidPredictiveBackAnimatable(
  */
 @ExperimentalDecomposeApi
 fun androidPredictiveBackAnimatableV1(
-    initialBackEvent: BackEvent,
-    exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
-    enterShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
+    initialNavigationEvent: NavigationEvent,
+    exitShape: ((progress: Float, edge: Int) -> Shape)? = null,
+    enterShape: ((progress: Float, edge: Int) -> Shape)? = null,
 ): PredictiveBackAnimatable =
     AndroidPredictiveBackAnimatableV1(
-        initialEvent = initialBackEvent,
+        initialEvent = initialNavigationEvent,
         exitShape = exitShape,
         enterShape = enterShape
     )
@@ -66,7 +67,7 @@ fun androidPredictiveBackAnimatableV1(
  * standard animation on some Android Vanilla Ice Cream and Baklava (API 35 and 36) devices
  * (e.g. in system settings on Pixel phones).
  *
- * @param initialBackEvent an initial [BackEvent] of the predictive back gesture.
+ * @param initialNavigationEvent an initial [BackEvent] of the predictive back gesture.
  * @param exitShape an optional clipping shape of the child being removed (the currently active child).
  * If not supplied then a [RoundedCornerShape][androidx.compose.foundation.shape.RoundedCornerShape] will be applied.
  * The `progress` argument is animating from 0 to 1 when the gesture is confirmed.
@@ -76,12 +77,12 @@ fun androidPredictiveBackAnimatableV1(
  */
 @ExperimentalDecomposeApi
 fun androidPredictiveBackAnimatableV2(
-    initialBackEvent: BackEvent,
-    exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
-    enterShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
+    initialNavigationEvent: NavigationEvent,
+    exitShape: ((progress: Float, edge: Int) -> Shape)? = null,
+    enterShape: ((progress: Float, edge: Int) -> Shape)? = null,
 ): PredictiveBackAnimatable =
     AndroidPredictiveBackAnimatableV2(
-        initialEvent = initialBackEvent,
+        initialEvent = initialNavigationEvent,
         exitShape = exitShape,
         enterShape = enterShape,
     )

@@ -1,15 +1,12 @@
 package com.arkivanov.decompose
 
-import android.annotation.SuppressLint
-import androidx.activity.BackEventCompat
 import androidx.activity.ComponentActivity
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.navigationevent.DirectNavigationEventInput
+import androidx.navigationevent.NavigationEventDispatcher
 import androidx.savedstate.SavedStateRegistryOwner
-import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.instancekeeper.getOrCreate
@@ -17,6 +14,7 @@ import com.arkivanov.essenty.instancekeeper.instanceKeeper
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.create
 import com.arkivanov.essenty.lifecycle.destroy
+import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.arkivanov.essenty.lifecycle.pause
 import com.arkivanov.essenty.lifecycle.resume
@@ -52,7 +50,7 @@ fun <T> ComponentActivity.retainedComponent(
 ): T =
     retainedComponent(
         key = key,
-        onBackPressedDispatcher = if (handleBackButton) onBackPressedDispatcher else null,
+        navigationEventDispatcher = if (handleBackButton) navigationEventDispatcher else null,
         discardSavedState = discardSavedState,
         isStateSavingAllowed = isStateSavingAllowed,
         isChangingConfigurations = ::isChangingConfigurations,
@@ -83,7 +81,7 @@ fun <T> Fragment.retainedComponent(
 ): T =
     retainedComponent(
         key = key,
-        onBackPressedDispatcher = if (handleBackButton) requireActivity().onBackPressedDispatcher else null,
+        navigationEventDispatcher = if (handleBackButton) requireActivity().navigationEventDispatcher else null,
         discardSavedState = discardSavedState,
         isStateSavingAllowed = isStateSavingAllowed,
         isChangingConfigurations = { activity?.isChangingConfigurations ?: false },
@@ -92,7 +90,7 @@ fun <T> Fragment.retainedComponent(
 
 internal fun <T, O> O.retainedComponent(
     key: String,
-    onBackPressedDispatcher: OnBackPressedDispatcher?,
+    navigationEventDispatcher: NavigationEventDispatcher?,
     discardSavedState: Boolean,
     isStateSavingAllowed: () -> Boolean,
     isChangingConfigurations: () -> Boolean,
@@ -147,39 +145,27 @@ internal fun <T, O> O.retainedComponent(
 
     stateKeeper.register(key = key, strategy = SerializableContainer.serializer()) { holder.stateKeeper.save() }
 
-    if (onBackPressedDispatcher != null) {
-        val onBackPressedCallback = DelegateOnBackPressedCallback(holder.onBackPressedDispatcher)
-        holder.onBackEnabledChangedListener = { onBackPressedCallback.isEnabled = it }
-        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+    if (navigationEventDispatcher != null) {
+        val delegateNavigationEventInput = DelegateNavigationEventInput()
+        holder.navigationEventDispatcher.addInput(delegateNavigationEventInput)
+        navigationEventDispatcher.addHandler(delegateNavigationEventInput.handler)
+
+        val directNavigationEventInput = DirectNavigationEventInput()
+        navigationEventDispatcher.addInput(directNavigationEventInput)
+        holder.onBackCompletedFallback = directNavigationEventInput::backCompleted
+        holder.onForwardCompletedFallback = directNavigationEventInput::forwardCompleted
+
+        lifecycle.doOnDestroy {
+            holder.navigationEventDispatcher.removeInput(delegateNavigationEventInput)
+            delegateNavigationEventInput.handler.remove()
+            navigationEventDispatcher.removeInput(directNavigationEventInput)
+        }
     }
 
     return holder.component
 }
 
 private const val KEY_STATE_MARKER = "RetainedComponent_state_marker"
-
-private class DelegateOnBackPressedCallback(
-    private val dispatcher: OnBackPressedDispatcher,
-) : OnBackPressedCallback(enabled = dispatcher.hasEnabledCallbacks()) {
-    override fun handleOnBackPressed() {
-        dispatcher.onBackPressed()
-    }
-
-    @SuppressLint("VisibleForTests")
-    override fun handleOnBackStarted(backEvent: BackEventCompat) {
-        dispatcher.dispatchOnBackStarted(backEvent)
-    }
-
-    @SuppressLint("VisibleForTests")
-    override fun handleOnBackProgressed(backEvent: BackEventCompat) {
-        dispatcher.dispatchOnBackProgressed(backEvent)
-    }
-
-    @SuppressLint("VisibleForTests")
-    override fun handleOnBackCancelled() {
-        dispatcher.dispatchOnBackCancelled()
-    }
-}
 
 private class RetainedComponentHolder<out T>(
     savedState: SerializableContainer?,
@@ -189,12 +175,13 @@ private class RetainedComponentHolder<out T>(
     val stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(savedState = savedState)
     private val instanceKeeper: InstanceKeeperDispatcher = InstanceKeeperDispatcher()
 
-    var onBackEnabledChangedListener: ((Boolean) -> Unit)? = null
+    var onBackCompletedFallback: (() -> Unit)? = null
+    var onForwardCompletedFallback: (() -> Unit)? = null
 
-    val onBackPressedDispatcher: OnBackPressedDispatcher =
-        OnBackPressedDispatcher(
-            fallbackOnBackPressed = null,
-            onHasEnabledCallbacksChanged = { onBackEnabledChangedListener?.invoke(it) },
+    val navigationEventDispatcher: NavigationEventDispatcher =
+        NavigationEventDispatcher(
+            onBackCompletedFallback = { onBackCompletedFallback?.invoke() },
+            onForwardCompletedFallback = { onForwardCompletedFallback?.invoke() },
         )
 
     val component: T =
@@ -203,7 +190,7 @@ private class RetainedComponentHolder<out T>(
                 lifecycle = lifecycle,
                 stateKeeper = stateKeeper,
                 instanceKeeper = instanceKeeper,
-                backHandler = BackHandler(onBackPressedDispatcher),
+                navigationEventDispatcher = navigationEventDispatcher,
             )
         )
 

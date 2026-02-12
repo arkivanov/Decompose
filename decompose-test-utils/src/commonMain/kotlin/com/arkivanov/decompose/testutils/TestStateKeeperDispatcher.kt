@@ -1,6 +1,5 @@
-package com.arkivanov.decompose.statekeeper
+package com.arkivanov.decompose.testutils
 
-import com.arkivanov.decompose.testutils.serializeAndDeserialize
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import kotlinx.serialization.SerializationStrategy
@@ -15,7 +14,7 @@ class TestStateKeeperDispatcher(
     private val registeredKeys = HashSet<String>()
 
     override fun save(): SerializableContainer =
-        delegate.save().serializeAndDeserialize().also {
+        delegate.save().also {
             lastSavedState = it
         }
 

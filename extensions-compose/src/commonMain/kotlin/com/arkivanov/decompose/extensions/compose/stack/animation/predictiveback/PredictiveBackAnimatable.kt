@@ -1,6 +1,7 @@
 package com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 
 import androidx.compose.ui.Modifier
+import androidx.navigationevent.NavigationEvent
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
 
@@ -30,7 +31,7 @@ interface PredictiveBackAnimatable {
      *
      * @see androidx.compose.animation.core.Animatable
      */
-    suspend fun animate(event: BackEvent)
+    suspend fun animate(event: NavigationEvent)
 
     /**
      * Animates both [exitModifier] and [enterModifier] towards the final state.
@@ -57,7 +58,7 @@ interface PredictiveBackAnimatable {
  * If the behaviour of the returned default [PredictiveBackAnimatable] is undesired or the API is not suitable for
  * your use case, then consider implementing [PredictiveBackAnimatable] manually.
  *
- * @param initialBackEvent an initial [BackEvent] of the predictive back gesture.
+ * @param initialNavigationEvent an initial [BackEvent] of the predictive back gesture.
  * @param exitModifier a function that returns a [Modifier] for every gesture event, for
  * the child being removed (the currently active child).
  * @param enterModifier a function that returns a [Modifier] for every gesture event, for
@@ -65,12 +66,12 @@ interface PredictiveBackAnimatable {
  */
 @ExperimentalDecomposeApi
 fun predictiveBackAnimatable(
-    initialBackEvent: BackEvent,
-    exitModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier,
-    enterModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier,
+    initialNavigationEvent: NavigationEvent,
+    exitModifier: (progress: Float, edge: Int) -> Modifier,
+    enterModifier: (progress: Float, edge: Int) -> Modifier,
 ): PredictiveBackAnimatable =
     DefaultPredictiveBackAnimatable(
-        initialBackEvent = initialBackEvent,
+        initialNavigationEvent = initialNavigationEvent,
         getExitModifier = exitModifier,
         getEnterModifier = enterModifier,
     )

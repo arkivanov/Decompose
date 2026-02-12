@@ -13,14 +13,15 @@ jetbrainsKotlinxSerialization = "1.6.3"
 jetbrainsKotlinxBrowser = "0.3"
 jetbrainsBinaryCompatibilityValidator = "0.16.3"
 robolectric = "4.9.1"
-androidGradle = "8.8.2"
+androidGradle = "8.9.1"
 androidMaterial = "1.6.1"
 androidPlay = "1.10.3"
-androidxCore = "1.9.0"
-androidxAppcompat = "1.6.0"
-androidxActivity = "1.8.2"
-androidxFragment = "1.6.2"
-androidxLifecycle = "2.9.1"
+androidxCore = "1.17.0"
+androidxAppcompat = "1.7.1"
+androidxActivity = "1.12.4"
+androidxFragment = "1.8.9"
+androidxLifecycle = "2.9.6"
+androidxNavigationEvent = "1.1.0"
 dependencyGuard = "0.5.0"
 
 [libraries]
@@ -61,8 +62,10 @@ android-play-core = { group = "com.google.android.play", name = "core", version.
 
 androidx-core-coreKtx  = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 androidx-appcompat-appcompat  = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppcompat" }
+androidx-activity-activityKtx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivity" }
 androidx-activity-activityCompose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-fragment-fragmentKtx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragment" }
+androidx-navigationEvent-navigationEvent = { group = "androidx.navigationevent", name = "navigationevent", version.ref = "androidxNavigationEvent" }
 androidx-lifecycle-lifecycleRuntime = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime", version.ref = "androidxLifecycle" }
 androidx-lifecycle-lifecycleViewModelSavedState = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "androidxLifecycle" }
 

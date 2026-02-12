@@ -5,22 +5,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigationevent.NavigationEvent
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.essenty.backhandler.BackEvent
 
 @ExperimentalDecomposeApi
 internal class DefaultPredictiveBackAnimatable(
-    initialBackEvent: BackEvent,
-    private val getExitModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier,
-    private val getEnterModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier,
+    initialNavigationEvent: NavigationEvent,
+    private val getExitModifier: (progress: Float, edge: Int) -> Modifier,
+    private val getEnterModifier: (progress: Float, edge: Int) -> Modifier,
 ) : PredictiveBackAnimatable {
 
-    private val progressAnimatable = Animatable(initialValue = initialBackEvent.progress)
-    private var swipeEdge by mutableStateOf(initialBackEvent.swipeEdge)
+    private val progressAnimatable = Animatable(initialValue = initialNavigationEvent.progress)
+    private var swipeEdge by mutableStateOf(initialNavigationEvent.swipeEdge)
     override val exitModifier: Modifier get() = getExitModifier(progressAnimatable.value, swipeEdge)
     override val enterModifier: Modifier get() = getEnterModifier(progressAnimatable.value, swipeEdge)
 
-    override suspend fun animate(event: BackEvent) {
+    override suspend fun animate(event: NavigationEvent) {
         swipeEdge = event.swipeEdge
         progressAnimatable.snapTo(targetValue = event.progress)
     }

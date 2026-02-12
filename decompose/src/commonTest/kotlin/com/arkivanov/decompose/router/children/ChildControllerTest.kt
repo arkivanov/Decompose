@@ -1,10 +1,12 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.TestBackCallback
-import com.arkivanov.decompose.TestBackCallback.Event
+import com.arkivanov.decompose.TestBackHandler
+import com.arkivanov.decompose.TestBackHandler.Event
 import com.arkivanov.decompose.assertEvents
 import com.arkivanov.decompose.assertNoEvents
+import com.arkivanov.decompose.backhandler.addBackHandler
+import com.arkivanov.decompose.backhandler.addDirectInput
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks
 import com.arkivanov.decompose.router.Component
 import com.arkivanov.decompose.router.TestInstance
@@ -282,9 +284,9 @@ class ChildControllerTest {
         val controller = controller(ctx = ctx).apply { init() }
         controller.create(configuration = 1)
 
-        controller.requireChild(1).backHandler.register(TestBackCallback())
+        controller.requireChild(1).navigationEventDispatcher.addBackHandler()
 
-        assertFalse(ctx.backHandler.isEnabled)
+        assertFalse(ctx.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
@@ -292,10 +294,10 @@ class ChildControllerTest {
         val ctx = TestComponentContext()
         val controller = controller(ctx = ctx).apply { init() }
         controller.create(configuration = 1)
-        val callback = TestBackCallback()
-        controller.requireChild(1).backHandler.register(callback)
+        val callback = TestBackHandler()
+        controller.requireChild(1).navigationEventDispatcher.addHandler(callback)
 
-        ctx.backHandler.back()
+        ctx.navigationEventDispatcher.addDirectInput().backCompleted()
 
         callback.assertNoEvents()
     }
@@ -305,10 +307,10 @@ class ChildControllerTest {
         val ctx = TestComponentContext()
         val controller = controller(ctx = ctx).apply { init() }
         controller.start(configuration = 1)
-        val callback = TestBackCallback()
-        controller.requireChild(1).backHandler.register(callback)
+        val callback = TestBackHandler()
+        controller.requireChild(1).navigationEventDispatcher.addHandler(callback)
 
-        ctx.backHandler.back()
+        ctx.navigationEventDispatcher.addDirectInput().backCompleted()
 
         callback.assertEvents(Event.OnBack)
     }
@@ -318,12 +320,12 @@ class ChildControllerTest {
         val ctx = TestComponentContext()
         val controller = controller(ctx = ctx).apply { init() }
         controller.start(configuration = 1)
-        val callback = TestBackCallback()
-        controller.requireChild(1).backHandler.register(callback)
+        val callback = TestBackHandler()
+        controller.requireChild(1).navigationEventDispatcher.addHandler(callback)
 
         controller.create(configuration = 1)
 
-        assertFalse(ctx.backHandler.isEnabled)
+        assertFalse(ctx.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
@@ -331,11 +333,11 @@ class ChildControllerTest {
         val ctx = TestComponentContext()
         val controller = controller(ctx = ctx).apply { init() }
         controller.start(configuration = 1)
-        val callback = TestBackCallback()
-        controller.requireChild(1).backHandler.register(callback)
+        val callback = TestBackHandler()
+        controller.requireChild(1).navigationEventDispatcher.addHandler(callback)
         controller.create(configuration = 1)
 
-        ctx.backHandler.back()
+        ctx.navigationEventDispatcher.addDirectInput().backCompleted()
 
         callback.assertNoEvents()
     }

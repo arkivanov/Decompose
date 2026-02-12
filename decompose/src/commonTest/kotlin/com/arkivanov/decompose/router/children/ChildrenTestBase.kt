@@ -1,13 +1,15 @@
 package com.arkivanov.decompose.router.children
 
+import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeSettings
-import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.decompose.backhandler.addDirectInput
+import com.arkivanov.decompose.testutils.TestComponentContext
+import com.arkivanov.decompose.testutils.TestStateKeeperDispatcher
+import com.arkivanov.decompose.testutils.addTestInput
 import com.arkivanov.decompose.testutils.keys
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
@@ -23,14 +25,15 @@ open class ChildrenTestBase {
 
     private val navigation = SimpleNavigation<(TestNavState) -> TestNavState>()
     protected val lifecycle = LifecycleRegistry()
-    protected val backDispatcher = BackDispatcher()
+    protected val navigationEventDispatcher = NavigationEventDispatcher()
+    protected val navigationEventInput = navigationEventDispatcher.addTestInput()
 
     protected val context =
-        DefaultComponentContext(
+        TestComponentContext(
             lifecycle = lifecycle,
             stateKeeper = TestStateKeeperDispatcher(),
             instanceKeeper = InstanceKeeperDispatcher(),
-            backHandler = backDispatcher,
+            navigationEventDispatcher = navigationEventDispatcher,
         )
 
     @BeforeTest
