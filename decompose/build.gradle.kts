@@ -56,7 +56,7 @@ kotlin {
             api(deps.essenty.lifecycle)
             api(deps.essenty.stateKeeper)
             api(deps.essenty.instanceKeeper)
-            api(deps.essenty.backHandler)
+            api(deps.androidx.navigationEvent.navigationEvent)
             api(deps.jetbrains.kotlinx.kotlinxSerializationCore)
         }
 
@@ -66,6 +66,7 @@ kotlin {
         }
 
         android.main.dependencies {
+            implementation(deps.androidx.activity.activityKtx)
             implementation(deps.androidx.fragment.fragmentKtx)
         }
 

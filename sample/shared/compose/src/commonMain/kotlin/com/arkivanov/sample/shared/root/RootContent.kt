@@ -43,12 +43,12 @@ private fun Children(component: RootComponent, modifier: Modifier = Modifier) {
             animator = fade() + scale(),
             predictiveBackParams = {
                 PredictiveBackParams(
-                    backHandler = component.backHandler,
+                    navigationEventDispatcher = component.navigationEventDispatcher,
                     onBack = component::onBackClicked,
                     animatable = ::materialPredictiveBackAnimatable,
                 )
-            },
-        ),
+            }
+        )
     ) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             when (val child = it.instance) {

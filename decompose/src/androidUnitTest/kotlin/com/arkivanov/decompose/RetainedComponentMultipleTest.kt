@@ -1,9 +1,10 @@
 package com.arkivanov.decompose
 
+import com.arkivanov.decompose.backhandler.addBackHandler
+import com.arkivanov.decompose.backhandler.addDirectInput
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.register
-import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -263,10 +264,10 @@ class RetainedComponentMultipleTest {
         val ctx2 = owner.retainedComponent(key = "key2")
         var isCalled1 = false
         var isCalled2 = false
-        ctx1.backHandler.register(BackCallback { isCalled1 = true })
-        ctx2.backHandler.register(BackCallback { isCalled2 = true })
+        ctx1.navigationEventDispatcher.addBackHandler { isCalled1 = true }
+        ctx2.navigationEventDispatcher.addBackHandler { isCalled2 = true }
 
-        owner.onBackPressedDispatcher.onBackPressed()
+        owner.navigationEventDispatcher.addDirectInput().backCompleted()
 
         assertFalse(isCalled1)
         assertTrue(isCalled2)
@@ -279,10 +280,10 @@ class RetainedComponentMultipleTest {
         val ctx2 = owner.retainedComponent(key = "key2")
         var isCalled1 = false
         var isCalled2 = false
-        ctx1.backHandler.register(BackCallback { isCalled1 = true })
-        ctx2.backHandler.register(BackCallback(isEnabled = false) { isCalled2 = true })
+        ctx1.navigationEventDispatcher.addBackHandler { isCalled1 = true }
+        ctx2.navigationEventDispatcher.addBackHandler(isEnabled = false) { isCalled2 = true }
 
-        owner.onBackPressedDispatcher.onBackPressed()
+        owner.navigationEventDispatcher.addDirectInput().backCompleted()
 
         assertTrue(isCalled1)
         assertFalse(isCalled2)
@@ -295,10 +296,10 @@ class RetainedComponentMultipleTest {
         val ctx2 = owner.retainedComponent(key = "key2")
         var isCalled1 = false
         var isCalled2 = false
-        ctx1.backHandler.register(BackCallback(isEnabled = false) { isCalled1 = true })
-        ctx2.backHandler.register(BackCallback(isEnabled = true) { isCalled2 = true })
+        ctx1.navigationEventDispatcher.addBackHandler(isEnabled = false) { isCalled1 = true }
+        ctx2.navigationEventDispatcher.addBackHandler(isEnabled = true) { isCalled2 = true }
 
-        owner.onBackPressedDispatcher.onBackPressed()
+        owner.navigationEventDispatcher.addDirectInput().backCompleted()
 
         assertFalse(isCalled1)
         assertTrue(isCalled2)
@@ -311,10 +312,10 @@ class RetainedComponentMultipleTest {
         val ctx2 = owner.retainedComponent(key = "key2")
         var isCalled1 = false
         var isCalled2 = false
-        ctx1.backHandler.register(BackCallback(isEnabled = false) { isCalled1 = true })
-        ctx2.backHandler.register(BackCallback(isEnabled = false) { isCalled2 = true })
+        ctx1.navigationEventDispatcher.addBackHandler(isEnabled = false) { isCalled1 = true }
+        ctx2.navigationEventDispatcher.addBackHandler(isEnabled = false) { isCalled2 = true }
 
-        owner.onBackPressedDispatcher.onBackPressed()
+        owner.navigationEventDispatcher.addDirectInput().backCompleted()
 
         assertFalse(isCalled1)
         assertFalse(isCalled2)
@@ -327,7 +328,7 @@ class RetainedComponentMultipleTest {
     ): ComponentContext =
         retainedComponent(
             key = key,
-            onBackPressedDispatcher = onBackPressedDispatcher,
+            navigationEventDispatcher = navigationEventDispatcher,
             discardSavedState = discardSavedState,
             isStateSavingAllowed = isStateSavingAllowed,
             isChangingConfigurations = { isChangingConfigurations },

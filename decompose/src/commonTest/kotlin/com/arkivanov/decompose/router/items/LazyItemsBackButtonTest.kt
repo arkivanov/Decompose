@@ -1,9 +1,10 @@
 package com.arkivanov.decompose.router.items
 
-import com.arkivanov.decompose.TestBackCallback
-import com.arkivanov.decompose.TestBackCallback.Event.OnBack
+import com.arkivanov.decompose.TestBackHandler
+import com.arkivanov.decompose.TestBackHandler.Event.OnBack
 import com.arkivanov.decompose.assertEvents
 import com.arkivanov.decompose.assertNoEvents
+import com.arkivanov.decompose.backhandler.addBackHandler
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
 import com.arkivanov.decompose.testutils.TestComponentContext
 import kotlin.test.Test
@@ -26,7 +27,7 @@ class LazyItemsBackButtonTest {
             ),
         )
 
-        assertFalse(ctx.backHandler.isEnabled)
+        assertFalse(ctx.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
@@ -43,9 +44,9 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        items.require(2).backHandler.register(TestBackCallback())
+        items.require(2).navigationEventDispatcher.addBackHandler()
 
-        assertFalse(ctx.backHandler.isEnabled)
+        assertFalse(ctx.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
@@ -62,10 +63,10 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        val backCallback = TestBackCallback()
-        items.require(2).backHandler.register(backCallback)
+        val backCallback = TestBackHandler()
+        items.require(2).navigationEventDispatcher.addHandler(backCallback)
 
-        ctx.backHandler.back()
+        ctx.navigationEventInput.backCompleted()
 
         backCallback.assertNoEvents()
     }
@@ -84,9 +85,9 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        items.require(3).backHandler.register(TestBackCallback())
+        items.require(3).navigationEventDispatcher.addBackHandler()
 
-        assertTrue(ctx.backHandler.isEnabled)
+        assertTrue(ctx.hasEnabledHandlers)
     }
 
     @Test
@@ -103,12 +104,12 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        val callback = TestBackCallback()
-        items.require(3).backHandler.register(callback)
+        val callback = TestBackHandler()
+        items.require(3).navigationEventDispatcher.addHandler(callback)
 
-        callback.isEnabled = false
+        callback.isBackEnabled = false
 
-        assertFalse(ctx.backHandler.isEnabled)
+        assertFalse(ctx.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
@@ -125,10 +126,10 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        val backCallback = TestBackCallback()
-        items.require(3).backHandler.register(backCallback)
+        val backCallback = TestBackHandler()
+        items.require(3).navigationEventDispatcher.addHandler(backCallback)
 
-        ctx.backHandler.back()
+        ctx.navigationEventInput.backCompleted()
 
         backCallback.assertEvents(OnBack)
     }
@@ -139,7 +140,7 @@ class LazyItemsBackButtonTest {
 
         val items =
             ctx.childLazyItems(
-                initialItems = listOf(1, 2, 3, 4, 5),
+                initialItems = listOf(4),
                 activeItems = mapOf(
                     2 to ActiveLifecycleState.CREATED,
                     3 to ActiveLifecycleState.STARTED,
@@ -147,9 +148,9 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        items.require(4).backHandler.register(TestBackCallback())
+        items.require(4).navigationEventDispatcher.addBackHandler()
 
-        assertTrue(ctx.backHandler.isEnabled)
+        assertTrue(ctx.hasEnabledHandlers)
     }
 
     @Test
@@ -166,12 +167,12 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        val callback = TestBackCallback()
-        items.require(4).backHandler.register(callback)
+        val callback = TestBackHandler()
+        items.require(4).navigationEventDispatcher.addHandler(callback)
 
-        callback.isEnabled = false
+        callback.isBackEnabled = false
 
-        assertFalse(ctx.backHandler.isEnabled)
+        assertFalse(ctx.hasEnabledHandlers)
     }
 
     @Test
@@ -188,10 +189,10 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        val backCallback = TestBackCallback()
-        items.require(4).backHandler.register(backCallback)
+        val backCallback = TestBackHandler()
+        items.require(4).navigationEventDispatcher.addHandler(backCallback)
 
-        ctx.backHandler.back()
+        ctx.navigationEventInput.backCompleted()
 
         backCallback.assertEvents(OnBack)
     }
@@ -212,8 +213,8 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        val backCallback = TestBackCallback()
-        items.require(3).backHandler.register(backCallback)
+        val backCallback = TestBackHandler()
+        items.require(3).navigationEventDispatcher.addHandler(backCallback)
 
         nav.navigate {
             it.copy(
@@ -224,7 +225,7 @@ class LazyItemsBackButtonTest {
             )
         }
 
-        assertFalse(ctx.backHandler.isEnabled)
+        assertFalse(ctx.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
@@ -243,8 +244,8 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        val backCallback = TestBackCallback()
-        items.require(3).backHandler.register(backCallback)
+        val backCallback = TestBackHandler()
+        items.require(3).navigationEventDispatcher.addHandler(backCallback)
 
         nav.navigate {
             it.copy(
@@ -255,7 +256,7 @@ class LazyItemsBackButtonTest {
             )
         }
 
-        ctx.backHandler.back()
+        ctx.navigationEventInput.backCompleted()
 
         backCallback.assertNoEvents()
     }
@@ -276,8 +277,8 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        val backCallback = TestBackCallback()
-        items.require(4).backHandler.register(backCallback)
+        val backCallback = TestBackHandler()
+        items.require(4).navigationEventDispatcher.addHandler(backCallback)
 
         nav.navigate {
             it.copy(
@@ -288,7 +289,7 @@ class LazyItemsBackButtonTest {
             )
         }
 
-        assertFalse(ctx.backHandler.isEnabled)
+        assertFalse(ctx.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
@@ -307,8 +308,8 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        val backCallback = TestBackCallback()
-        items.require(4).backHandler.register(backCallback)
+        val backCallback = TestBackHandler()
+        items.require(4).navigationEventDispatcher.addHandler(backCallback)
 
         nav.navigate {
             it.copy(
@@ -319,7 +320,7 @@ class LazyItemsBackButtonTest {
             )
         }
 
-        ctx.backHandler.back()
+        ctx.navigationEventInput.backCompleted()
 
         backCallback.assertNoEvents()
     }
@@ -340,12 +341,12 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        val backCallback = TestBackCallback()
-        items.require(3).backHandler.register(backCallback)
+        val backCallback = TestBackHandler()
+        items.require(3).navigationEventDispatcher.addHandler(backCallback)
 
         nav.navigate { it.copy(items = listOf(1, 2, 4, 5)) }
 
-        assertFalse(ctx.backHandler.isEnabled)
+        assertFalse(ctx.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
@@ -364,12 +365,12 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        val backCallback = TestBackCallback()
-        items.require(3).backHandler.register(backCallback)
+        val backCallback = TestBackHandler()
+        items.require(3).navigationEventDispatcher.addHandler(backCallback)
 
         nav.navigate { it.copy(items = listOf(1, 2, 4, 5)) }
 
-        ctx.backHandler.back()
+        ctx.navigationEventInput.backCompleted()
 
         backCallback.assertNoEvents()
     }
@@ -390,12 +391,12 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        val backCallback = TestBackCallback()
-        items.require(4).backHandler.register(backCallback)
+        val backCallback = TestBackHandler()
+        items.require(4).navigationEventDispatcher.addHandler(backCallback)
 
         nav.navigate { it.copy(items = listOf(1, 2, 3, 5)) }
 
-        assertFalse(ctx.backHandler.isEnabled)
+        assertFalse(ctx.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
@@ -414,12 +415,12 @@ class LazyItemsBackButtonTest {
                 ),
             )
 
-        val backCallback = TestBackCallback()
-        items.require(4).backHandler.register(backCallback)
+        val backCallback = TestBackHandler()
+        items.require(4).navigationEventDispatcher.addHandler(backCallback)
 
         nav.navigate { it.copy(items = listOf(1, 2, 3, 5)) }
 
-        ctx.backHandler.back()
+        ctx.navigationEventInput.backCompleted()
 
         backCallback.assertNoEvents()
     }

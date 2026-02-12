@@ -1,11 +1,11 @@
 package com.arkivanov.decompose
 
-import com.arkivanov.decompose.backhandler.TestBackDispatcher
+import com.arkivanov.decompose.backhandler.addBackHandler
 import com.arkivanov.decompose.router.TestInstance
-import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.decompose.testutils.TestComponentContext
+import com.arkivanov.decompose.testutils.TestStateKeeperDispatcher
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.register
-import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -16,7 +16,6 @@ import com.arkivanov.essenty.lifecycle.destroy
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.start
 import com.arkivanov.essenty.lifecycle.stop
-import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -28,9 +27,11 @@ import kotlin.test.assertTrue
 @Suppress("TestFunctionName")
 class ChildContextWithLifecycleTest {
 
+    private val lifecycle = LifecycleRegistry()
+    
     @Test
     fun GIVEN_created_WHEN_parent_lifecycle_resumed_and_child_lifecycle_initialized_THEN_child_lifecycle_initialized() {
-        val context = TestContext()
+        val context = TestComponentContext(lifecycle = lifecycle)
         val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry())
 
         context.lifecycle.resume()
@@ -40,7 +41,7 @@ class ChildContextWithLifecycleTest {
 
     @Test
     fun GIVEN_created_WHEN_parent_lifecycle_initialized_and_child_lifecycle_resumed_THEN_child_lifecycle_initialized() {
-        val context = TestContext()
+        val context = TestComponentContext(lifecycle = lifecycle)
         val childLifecycle = LifecycleRegistry()
         val childContext = context.childContext(key = "key", lifecycle = childLifecycle)
 
@@ -51,7 +52,7 @@ class ChildContextWithLifecycleTest {
 
     @Test
     fun GIVEN_created_WHEN_parent_lifecycle_resumed_and_child_lifecycle_resumed_THEN_child_lifecycle_resumed() {
-        val context = TestContext()
+        val context = TestComponentContext(lifecycle = lifecycle)
         val childLifecycle = LifecycleRegistry()
         val childContext = context.childContext(key = "key", lifecycle = childLifecycle)
 
@@ -63,7 +64,7 @@ class ChildContextWithLifecycleTest {
 
     @Test
     fun GIVEN_created_WHEN_parent_lifecycle_destroyed_and_child_lifecycle_resumed_THEN_child_lifecycle_destroyed() {
-        val context = TestContext()
+        val context = TestComponentContext(lifecycle = lifecycle)
         val childLifecycle = LifecycleRegistry()
         val childContext = context.childContext(key = "key", lifecycle = childLifecycle)
 
@@ -76,7 +77,7 @@ class ChildContextWithLifecycleTest {
 
     @Test
     fun GIVEN_parent_and_child_lifecycles_resumed_WHEN_child_lifecycle_destroyed_THEN_error_thrown() {
-        val context = TestContext()
+        val context = TestComponentContext(lifecycle = lifecycle)
         val childLifecycle = LifecycleRegistry()
         context.childContext(key = "key", lifecycle = childLifecycle)
         context.lifecycle.resume()
@@ -89,14 +90,14 @@ class ChildContextWithLifecycleTest {
 
     @Test
     fun WHEN_recreated_THEN_child_state_restored() {
-        val context = TestContext()
+        val context = TestComponentContext(lifecycle = lifecycle)
         val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry())
         childContext.stateKeeper.register("child_key") { "savedChildState" }
         context.lifecycle.resume()
 
         val savedParentState = context.stateKeeper.save()
         context.lifecycle.destroy()
-        val newContext = TestContext(savedParentState)
+        val newContext = TestComponentContext(stateKeeper = TestStateKeeperDispatcher(savedParentState))
         val newChild = newContext.childContext(key = "key", lifecycle = LifecycleRegistry())
         val restoredChildState = newChild.stateKeeper.consume<String>("child_key")
 
@@ -105,7 +106,7 @@ class ChildContextWithLifecycleTest {
 
     @Test
     fun WHEN_created_THEN_child_registered_in_StateKeeper() {
-        val context = TestContext()
+        val context = TestComponentContext(lifecycle = lifecycle)
 
         context.childContext(key = "key", lifecycle = LifecycleRegistry())
 
@@ -115,11 +116,11 @@ class ChildContextWithLifecycleTest {
     @Test
     fun WHEN_recreated_THEN_child_instance_retained() {
         val instanceKeeperDispatcher = InstanceKeeperDispatcher()
-        val context = TestContext(instanceKeeper = instanceKeeperDispatcher)
+        val context = TestComponentContext(instanceKeeper = instanceKeeperDispatcher)
         val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry())
         val instance = childContext.instanceKeeper.getOrCreate(key = "child", factory = ::TestInstance)
 
-        val newContext = TestContext(instanceKeeper = instanceKeeperDispatcher)
+        val newContext = TestComponentContext(instanceKeeper = instanceKeeperDispatcher)
         val newChildContext = newContext.childContext(key = "key", lifecycle = LifecycleRegistry())
         val newInstance = newChildContext.instanceKeeper.getOrCreate(key = "child", factory = ::TestInstance)
 
@@ -129,7 +130,7 @@ class ChildContextWithLifecycleTest {
     @Test
     fun WHEN_destroyed_THEN_child_instance_not_destroyed() {
         val instanceKeeperDispatcher = InstanceKeeperDispatcher()
-        val context = TestContext(instanceKeeper = instanceKeeperDispatcher)
+        val context = TestComponentContext(instanceKeeper = instanceKeeperDispatcher)
         val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry())
         val instance = childContext.instanceKeeper.getOrCreate(key = "child", factory = ::TestInstance)
         context.lifecycle.resume()
@@ -141,7 +142,7 @@ class ChildContextWithLifecycleTest {
     @Test
     fun WHEN_parent_InstanceKeeper_destroyed_THEN_child_instance_destroyed() {
         val instanceKeeperDispatcher = InstanceKeeperDispatcher()
-        val context = TestContext(instanceKeeper = instanceKeeperDispatcher)
+        val context = TestComponentContext(instanceKeeper = instanceKeeperDispatcher)
         val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry())
         val instance = childContext.instanceKeeper.getOrCreate(key = "child", factory = ::TestInstance)
 
@@ -152,7 +153,7 @@ class ChildContextWithLifecycleTest {
 
     @Test
     fun WHEN_created_THEN_child_registered_in_InstanceKeeper() {
-        val context = TestContext()
+        val context = TestComponentContext(lifecycle = lifecycle)
 
         context.childContext(key = "key", lifecycle = LifecycleRegistry())
 
@@ -160,93 +161,75 @@ class ChildContextWithLifecycleTest {
     }
 
     @Test
-    fun GIVEN_child_lifecycle_stopped_and_enabled_child_BackHandler_registered_WHEN_backHandler_back_THEN_returns_false() {
-        val context = TestContext()
-        val childContext =
-            context.childContext(key = "key", lifecycle = LifecycleRegistry(initialState = CREATED))
-        childContext.backHandler.register(BackCallback(isEnabled = true, onBack = {}))
+    fun GIVEN_child_lifecycle_stopped_WHEN_enabled_child_BackHandler_registered_THEN_dispatcher_disabled() {
+        val context = TestComponentContext(lifecycle = lifecycle)
+        val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry(initialState = CREATED))
 
-        val result = context.backHandler.back()
+        childContext.navigationEventDispatcher.addBackHandler(isEnabled = true)
 
-        assertFalse(result)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_child_lifecycle_stopped_and_disabled_child_BackHandler_registered_WHEN_child_lifecycle_started_and_backHandler_back_THEN_returns_false() {
-        val context = TestContext()
+    fun GIVEN_child_lifecycle_stopped_and_disabled_child_BackHandler_registered_WHEN_child_lifecycle_started_THEN_dispatcher_disabled() {
+        val context = TestComponentContext(lifecycle = lifecycle)
         val childLifecycle = LifecycleRegistry(initialState = CREATED)
         val childContext = context.childContext(key = "key", lifecycle = childLifecycle)
-        childContext.backHandler.register(BackCallback(isEnabled = false, onBack = {}))
+        childContext.navigationEventDispatcher.addBackHandler(isEnabled = false)
 
         childLifecycle.start()
-        val result = context.backHandler.back()
 
-        assertFalse(result)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_child_lifecycle_started_and_enabled_child_BackHandler_registered_WHEN_backHandler_back_THEN_returns_true() {
-        val context = TestContext()
+    fun GIVEN_child_lifecycle_started_WHEN_enabled_child_BackHandler_registered_THEN_dispatcher_enabled() {
+        val context = TestComponentContext(lifecycle = lifecycle)
         val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry(initialState = STARTED))
-        childContext.backHandler.register(BackCallback(isEnabled = true, onBack = {}))
 
-        val result = context.backHandler.back()
+        childContext.navigationEventDispatcher.addBackHandler(isEnabled = true)
 
-        assertTrue(result)
+        assertTrue(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_child_lifecycle_started_and_disabled_child_BackHandler_registered_WHEN_backHandler_back_THEN_returns_false() {
-        val context = TestContext()
+    fun GIVEN_child_lifecycle_started_WHEN_disabled_child_BackHandler_registered_THEN_dispatcher_disabled() {
+        val context = TestComponentContext(lifecycle = lifecycle)
         val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry(initialState = STARTED))
-        childContext.backHandler.register(BackCallback(isEnabled = false, onBack = {}))
 
-        val result = context.backHandler.back()
+        childContext.navigationEventDispatcher.addBackHandler(isEnabled = false)
 
-        assertFalse(result)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_child_lifecycle_started_and_enabled_child_BackHandler_registered_WHEN_child_lifecycle_stopped_and_backHandler_back_THEN_returns_false() {
-        val context = TestContext()
+    fun GIVEN_child_lifecycle_started_and_enabled_child_BackHandler_registered_WHEN_child_lifecycle_stopped_THEN_dispatcher_disabled() {
+        val context = TestComponentContext(lifecycle = lifecycle)
         val childLifecycle = LifecycleRegistry(initialState = STARTED)
         val childContext = context.childContext(key = "key", lifecycle = childLifecycle)
-        childContext.backHandler.register(BackCallback(isEnabled = true, onBack = {}))
+        childContext.navigationEventDispatcher.addBackHandler(isEnabled = true)
 
         childLifecycle.stop()
-        val result = context.backHandler.back()
 
-        assertFalse(result)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_disabled_child_BackHandler_registered_WHEN_backHandler_back_THEN_returns_false() {
-        val context = TestContext()
+    fun WHEN_disabled_child_BackHandler_registered_THEN_dispatcher_disabled() {
+        val context = TestComponentContext(lifecycle = lifecycle)
         val childContext = context.childContext(key = "key", lifecycle = LifecycleRegistry())
-        childContext.backHandler.register(BackCallback(isEnabled = false, onBack = {}))
 
-        val result = context.backHandler.back()
+        childContext.navigationEventDispatcher.addBackHandler(isEnabled = false)
 
-        assertFalse(result)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
-    fun GIVEN_child_BackHandler_not_registered_WHEN_backHandler_back_THEN_returns_false() {
-        val context = TestContext()
+    fun WHEN_child_BackHandler_not_registered_THEN_dispatcher_disabled() {
+        val context = TestComponentContext(lifecycle = lifecycle)
+
         context.childContext(key = "key", lifecycle = LifecycleRegistry())
 
-        val result = context.backHandler.back()
-
-        assertFalse(result)
-    }
-
-    private class TestContext(
-        savedState: SerializableContainer? = null,
-        override val instanceKeeper: InstanceKeeperDispatcher = InstanceKeeperDispatcher(),
-    ) : ComponentContext {
-        override val lifecycle: LifecycleRegistry = LifecycleRegistry()
-        override val stateKeeper: TestStateKeeperDispatcher = TestStateKeeperDispatcher(savedState)
-        override val backHandler: TestBackDispatcher = TestBackDispatcher()
-        override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 }

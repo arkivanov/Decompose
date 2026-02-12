@@ -27,8 +27,8 @@ inline fun <reified T> T.serializeAndDeserialize(): T {
     return json.decodeFromString(serializer, json.encodeToString(serializer, this))
 }
 
-fun StateKeeperDispatcher.recreate(isConfigurationChange: Boolean = false): StateKeeperDispatcher =
-    StateKeeperDispatcher(
+fun StateKeeperDispatcher.recreate(isConfigurationChange: Boolean = false): TestStateKeeperDispatcher =
+    TestStateKeeperDispatcher(
         savedState = save().let { if (isConfigurationChange) it else it.serializeAndDeserialize() },
     )
 

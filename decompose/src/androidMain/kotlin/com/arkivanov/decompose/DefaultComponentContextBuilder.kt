@@ -1,14 +1,14 @@
 package com.arkivanov.decompose
 
 import androidx.activity.OnBackPressedDispatcher
-import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.navigationevent.NavigationEventDispatcher
+import androidx.navigationevent.NavigationEventDispatcherOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
-import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.instanceKeeper
 import com.arkivanov.essenty.lifecycle.asEssentyLifecycle
@@ -21,13 +21,13 @@ fun DefaultComponentContext(
     lifecycle: AndroidLifecycle,
     savedStateRegistry: SavedStateRegistry? = null,
     viewModelStore: ViewModelStore? = null,
-    onBackPressedDispatcher: OnBackPressedDispatcher? = null
+    navigationEventDispatcher: NavigationEventDispatcher? = null
 ): DefaultComponentContext =
     DefaultComponentContext(
         lifecycle = lifecycle.asEssentyLifecycle(),
         stateKeeper = savedStateRegistry?.let(::StateKeeper),
         instanceKeeper = viewModelStore?.let(::InstanceKeeper),
-        backHandler = onBackPressedDispatcher?.let(::BackHandler),
+        navigationEventDispatcher = navigationEventDispatcher,
     )
 
 /**
@@ -43,10 +43,13 @@ fun DefaultComponentContext(
 fun <T> T.defaultComponentContext(
     discardSavedState: Boolean = false,
     isStateSavingAllowed: () -> Boolean = { true },
-): DefaultComponentContext where
-    T : SavedStateRegistryOwner, T : OnBackPressedDispatcherOwner, T : ViewModelStoreOwner, T : LifecycleOwner =
+): DefaultComponentContext
+    where T : SavedStateRegistryOwner,
+          T : NavigationEventDispatcherOwner,
+          T : ViewModelStoreOwner,
+          T : LifecycleOwner =
     defaultComponentContext(
-        backHandler = BackHandler(onBackPressedDispatcher),
+        navigationEventDispatcher = navigationEventDispatcher,
         discardSavedState = discardSavedState,
         isStateSavingAllowed = isStateSavingAllowed,
     )
@@ -62,28 +65,11 @@ fun <T> T.defaultComponentContext(
  * @param isStateSavingAllowed called before saving the state. When `true` then the state will be saved,
  * otherwise it won't. Default value is `true`.
  */
-fun Fragment.defaultComponentContext(
-    onBackPressedDispatcher: OnBackPressedDispatcher?,
-    discardSavedState: Boolean = false,
-    isStateSavingAllowed: () -> Boolean = { true },
-): DefaultComponentContext =
-    defaultComponentContext(
-        backHandler = onBackPressedDispatcher?.let {
-            BackHandler(
-                onBackPressedDispatcher = it,
-                lifecycleOwner = this,
-            )
-        },
-        discardSavedState = discardSavedState,
-        isStateSavingAllowed = isStateSavingAllowed,
-    )
-
-private fun <T> T.defaultComponentContext(
-    backHandler: BackHandler?,
+fun <T> T.defaultComponentContext(
+    navigationEventDispatcher: NavigationEventDispatcher?,
     discardSavedState: Boolean,
     isStateSavingAllowed: () -> Boolean,
-): DefaultComponentContext where
-    T : SavedStateRegistryOwner, T : ViewModelStoreOwner, T : LifecycleOwner {
+): DefaultComponentContext where T : SavedStateRegistryOwner, T : ViewModelStoreOwner, T : LifecycleOwner {
     val stateKeeper = stateKeeper(discardSavedState = discardSavedState, isSavingAllowed = isStateSavingAllowed)
     val marker = stateKeeper.consume(key = KEY_STATE_MARKER, strategy = String.serializer())
     stateKeeper.register(key = KEY_STATE_MARKER, strategy = String.serializer()) { "marker" }
@@ -92,7 +78,7 @@ private fun <T> T.defaultComponentContext(
         lifecycle = lifecycle.asEssentyLifecycle(),
         stateKeeper = stateKeeper,
         instanceKeeper = instanceKeeper(discardRetainedInstances = marker == null),
-        backHandler = backHandler,
+        navigationEventDispatcher = navigationEventDispatcher,
     )
 }
 

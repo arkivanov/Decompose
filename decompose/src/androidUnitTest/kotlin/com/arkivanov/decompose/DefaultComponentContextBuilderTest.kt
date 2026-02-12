@@ -1,9 +1,10 @@
 package com.arkivanov.decompose
 
+import com.arkivanov.decompose.backhandler.addBackHandler
+import com.arkivanov.decompose.backhandler.addDirectInput
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.register
-import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -174,9 +175,9 @@ class DefaultComponentContextBuilderTest {
         val owner = TestOwner()
         val ctx = owner.defaultComponentContext()
         var isCalled = false
-        ctx.backHandler.register(BackCallback { isCalled = true })
+        ctx.navigationEventDispatcher.addBackHandler { isCalled = true }
 
-        owner.onBackPressedDispatcher.onBackPressed()
+        owner.navigationEventDispatcher.addDirectInput().backCompleted()
 
         assertTrue(isCalled)
     }
@@ -186,9 +187,9 @@ class DefaultComponentContextBuilderTest {
         val owner = TestOwner()
         val ctx = owner.defaultComponentContext()
         var isCalled = false
-        ctx.backHandler.register(BackCallback(isEnabled = false) { isCalled = true })
+        ctx.navigationEventDispatcher.addBackHandler(isEnabled = false) { isCalled = true }
 
-        owner.onBackPressedDispatcher.onBackPressed()
+        owner.navigationEventDispatcher.addDirectInput().backCompleted()
 
         assertFalse(isCalled)
     }
