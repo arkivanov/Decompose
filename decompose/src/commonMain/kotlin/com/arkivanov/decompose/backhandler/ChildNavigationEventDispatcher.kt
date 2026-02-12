@@ -1,26 +1,26 @@
 package com.arkivanov.decompose.backhandler
 
+import androidx.navigationevent.NavigationEventDispatcher
+import androidx.navigationevent.NavigationEventDispatcher.Companion.PRIORITY_DEFAULT
 import com.arkivanov.decompose.isDestroyed
-import com.arkivanov.essenty.backhandler.BackCallback
-import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.subscribe
 
-internal interface ChildBackHandler : BackHandler {
+internal interface ChildNavigationEventDispatcher {
 
+    val dispatcher: NavigationEventDispatcher
     var isEnabled: Boolean
-    var priority: Int
 
     fun start()
-
     fun stop()
+    fun destroy()
 }
 
-internal fun BackHandler.child(
+internal fun NavigationEventDispatcher.child(
     lifecycle: Lifecycle? = null,
-    priority: Int = BackCallback.PRIORITY_DEFAULT,
-): BackHandler {
-    val handler = childBackHandler(priority = priority, isEnabled = false)
+    priority: Int = PRIORITY_DEFAULT,
+): ChildNavigationEventDispatcher {
+    val handler = childNavigationEventDispatcher(isEnabled = false, priority = priority)
 
     if (lifecycle == null) {
         handler.isEnabled = true
@@ -39,11 +39,11 @@ internal fun BackHandler.child(
     return handler
 }
 
-internal fun BackHandler.childBackHandler(
+internal fun NavigationEventDispatcher.childNavigationEventDispatcher(
     isEnabled: Boolean = true,
-    priority: Int = BackCallback.PRIORITY_DEFAULT,
-): ChildBackHandler =
-    DefaultChildBackHandler(
+    priority: Int = PRIORITY_DEFAULT,
+): ChildNavigationEventDispatcher =
+    DefaultChildNavigationEventDispatcher(
         parent = this,
         isEnabled = isEnabled,
         priority = priority,

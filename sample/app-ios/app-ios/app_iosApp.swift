@@ -28,7 +28,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             lifecycle: ApplicationLifecycle(),
             stateKeeper: stateKeeper,
             instanceKeeper: nil,
-            backHandler: nil
+            navigationEventDispatcher: nil
         ),
         featureInstaller: DefaultFeatureInstaller.shared,
         deepLinkUrl: nil

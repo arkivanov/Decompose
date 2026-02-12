@@ -57,9 +57,9 @@ kotlin {
         common.main.dependencies {
             api(project(":decompose"))
             implementation(project(":sample:shared:dynamic-features:api"))
+            api(deps.androidx.navigationEvent.navigationEvent)
             api(deps.essenty.lifecycle)
             api(deps.essenty.stateKeeper)
-            api(deps.essenty.backHandler)
             implementation(deps.essenty.lifecycleReaktive)
             implementation(deps.reaktive.reaktive)
             implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)

@@ -1,9 +1,10 @@
 package com.arkivanov.decompose
 
+import com.arkivanov.decompose.backhandler.addHandler
+import com.arkivanov.decompose.backhandler.addDirectInput
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.register
-import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -199,9 +200,9 @@ class RetainedComponentSingleTest {
         val owner = TestOwner()
         val ctx = owner.retainedComponent()
         var isCalled = false
-        ctx.backHandler.register(BackCallback { isCalled = true })
+        ctx.navigationEventDispatcher.addHandler { isCalled = true }
 
-        owner.onBackPressedDispatcher.onBackPressed()
+        owner.navigationEventDispatcher.addDirectInput().backCompleted()
 
         assertTrue(isCalled)
     }
@@ -211,9 +212,9 @@ class RetainedComponentSingleTest {
         val owner = TestOwner()
         val ctx = owner.retainedComponent()
         var isCalled = false
-        ctx.backHandler.register(BackCallback(isEnabled = false) { isCalled = true })
+        ctx.navigationEventDispatcher.addHandler(isBackEnabled = false) { isCalled = true }
 
-        owner.onBackPressedDispatcher.onBackPressed()
+        owner.navigationEventDispatcher.addDirectInput().backCompleted()
 
         assertFalse(isCalled)
     }
@@ -224,7 +225,7 @@ class RetainedComponentSingleTest {
     ): ComponentContext =
         retainedComponent(
             key = "key",
-            onBackPressedDispatcher = onBackPressedDispatcher,
+            navigationEventDispatcher = navigationEventDispatcher,
             discardSavedState = discardSavedState,
             isStateSavingAllowed = isStateSavingAllowed,
             isChangingConfigurations = { isChangingConfigurations },
