@@ -20,6 +20,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.essenty.backhandler.BackDispatcher
 import com.arkivanov.essenty.backhandler.BackEvent
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -216,7 +217,7 @@ class PredictiveBackGestureTest {
     @Test
     fun GIVEN_gesture_started_WHEN_stack_popped_THEN_gesture_cancelled() {
         var stack by mutableStateOf(stack("1", "2"))
-        val animation = DefaultStackAnimation(animator = fade(), onBack = { stack = stack.dropLast() },)
+        val animation = DefaultStackAnimation(animator = fade(), onBack = { stack = stack.dropLast() })
 
         composeRule.setContent {
             animation(stack, Modifier) {
@@ -492,6 +493,88 @@ class PredictiveBackGestureTest {
         assertEquals(0.7F, values["2"])
     }
 
+    @Test
+    fun GIVEN_gesture_finishing_WHEN_new_gesture_started_THEN_new_animation_not_started() {
+        var stack by mutableStateOf(stack("1", "2"))
+        var animationCount = 0
+
+        val animation =
+            DefaultStackAnimation(
+                predictiveBackAnimatable = {
+                    animationCount++
+
+                    TestAnimatable(
+                        initialBackEvent = it,
+                        finish = {
+                            suspendCancellableCoroutine {
+                                // Simulate a long-running animation
+                            }
+                        },
+                    )
+                },
+                onBack = { stack = stack.dropLast() },
+            )
+
+        composeRule.setContent {
+            animation(stack, Modifier) {
+                Text(text = it.configuration)
+            }
+        }
+
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        composeRule.waitForIdle()
+        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        composeRule.waitForIdle()
+        backDispatcher.back()
+        composeRule.waitForIdle()
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        composeRule.waitForIdle()
+        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        composeRule.waitForIdle()
+
+        assertEquals(1, animationCount)
+    }
+
+    @Test
+    fun GIVEN_gesture_finishing_WHEN_back_THEN_stack_not_popped() {
+        var stack by mutableStateOf(stack("1", "2"))
+        var animationCount = 0
+
+        val animation =
+            DefaultStackAnimation(
+                predictiveBackAnimatable = {
+                    animationCount++
+
+                    TestAnimatable(
+                        initialBackEvent = it,
+                        finish = {
+                            suspendCancellableCoroutine {
+                                // Simulate a long-running animation
+                            }
+                        },
+                    )
+                },
+                onBack = { stack = stack.dropLast() },
+            )
+
+        composeRule.setContent {
+            animation(stack, Modifier) {
+                Text(text = it.configuration)
+            }
+        }
+
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        composeRule.waitForIdle()
+        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        composeRule.waitForIdle()
+        backDispatcher.back()
+        composeRule.waitForIdle()
+        backDispatcher.back()
+        composeRule.waitForIdle()
+
+        assertEquals(stack("1", "2"), stack)
+    }
+
     private fun DefaultStackAnimation(
         predictiveBackAnimatable: (initialBackEvent: BackEvent) -> PredictiveBackAnimatable? = ::TestAnimatable,
         animator: StackAnimator? = null,
@@ -538,6 +621,7 @@ class PredictiveBackGestureTest {
 
     private class TestAnimatable(
         initialBackEvent: BackEvent,
+        private val finish: suspend () -> Unit = {},
     ) : PredictiveBackAnimatable {
         private var progress by mutableStateOf(initialBackEvent.progress)
 
@@ -550,6 +634,7 @@ class PredictiveBackGestureTest {
 
         override suspend fun finish() {
             progress = 1F
+            finish.invoke()
         }
 
         override suspend fun cancel() {
