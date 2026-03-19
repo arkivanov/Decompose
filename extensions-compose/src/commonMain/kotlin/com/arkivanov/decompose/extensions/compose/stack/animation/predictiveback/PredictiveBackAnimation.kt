@@ -120,7 +120,7 @@ private class PredictiveBackAnimation<C : Any, T : Any>(
                 stack = stack,
                 scope = scope,
                 isGestureEnabled = isGestureEnabled,
-                key = previousHandler?.items?.maxOf { it.key } ?: 0,
+                key = previousHandler?.let { it.items.maxOf(Item<*, *>::key) + if (it.items.size > 1) 1 else 0 } ?: 0,
                 selector = selector,
                 onBack = onBack,
             )
