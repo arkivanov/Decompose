@@ -9,7 +9,8 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
 import com.arkivanov.essenty.backhandler.BackHandler
-import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
+import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.instancekeeper.instanceKeeper
 import com.arkivanov.essenty.lifecycle.asEssentyLifecycle
 import com.arkivanov.essenty.statekeeper.StateKeeper
@@ -37,15 +38,19 @@ fun DefaultComponentContext(
  * @param discardSavedState a flag indicating whether any previously saved state should be discarded or not,
  * default value is `false`. Can be useful for handling deep links in `onCreate`, so that the navigation state
  * is not restored and initial state from the deep link is applied instead.
+ * @param key a key used to store state and retained instances. Provide a unique value when creating
+ * multiple contexts for the same host.
  * @param isStateSavingAllowed called before saving the state. When `true` then the state will be saved,
  * otherwise it won't. Default value is `true`.
  */
 fun <T> T.defaultComponentContext(
     discardSavedState: Boolean = false,
+    key: String? = null,
     isStateSavingAllowed: () -> Boolean = { true },
 ): DefaultComponentContext where
     T : SavedStateRegistryOwner, T : OnBackPressedDispatcherOwner, T : ViewModelStoreOwner, T : LifecycleOwner =
     defaultComponentContext(
+        key = key,
         backHandler = BackHandler(onBackPressedDispatcher),
         discardSavedState = discardSavedState,
         isStateSavingAllowed = isStateSavingAllowed,
@@ -59,15 +64,19 @@ fun <T> T.defaultComponentContext(
  * @param discardSavedState a flag indicating whether any previously saved state should be discarded or not,
  * default value is `false`. Can be useful for handling deep links in `onCreate`, so that the navigation state
  * is not restored and initial state from the deep link is applied instead.
+ * @param key a key used to store state and retained instances. Provide a unique value when creating
+ * multiple contexts for the same host.
  * @param isStateSavingAllowed called before saving the state. When `true` then the state will be saved,
  * otherwise it won't. Default value is `true`.
  */
 fun Fragment.defaultComponentContext(
     onBackPressedDispatcher: OnBackPressedDispatcher?,
     discardSavedState: Boolean = false,
+    key: String? = null,
     isStateSavingAllowed: () -> Boolean = { true },
 ): DefaultComponentContext =
     defaultComponentContext(
+        key = key,
         backHandler = onBackPressedDispatcher?.let {
             BackHandler(
                 onBackPressedDispatcher = it,
@@ -79,19 +88,38 @@ fun Fragment.defaultComponentContext(
     )
 
 private fun <T> T.defaultComponentContext(
+    key: String?,
     backHandler: BackHandler?,
     discardSavedState: Boolean,
     isStateSavingAllowed: () -> Boolean,
 ): DefaultComponentContext where
     T : SavedStateRegistryOwner, T : ViewModelStoreOwner, T : LifecycleOwner {
-    val stateKeeper = stateKeeper(discardSavedState = discardSavedState, isSavingAllowed = isStateSavingAllowed)
+    val stateKeeper =
+        if (key == null) {
+            stateKeeper(discardSavedState = discardSavedState, isSavingAllowed = isStateSavingAllowed)
+        } else {
+            stateKeeper(key = key, discardSavedState = discardSavedState, isSavingAllowed = isStateSavingAllowed)
+        }
     val marker = stateKeeper.consume(key = KEY_STATE_MARKER, strategy = String.serializer())
     stateKeeper.register(key = KEY_STATE_MARKER, strategy = String.serializer()) { "marker" }
+
+    val instanceKeeper =
+        if (key == null) {
+            instanceKeeper(discardRetainedInstances = marker == null)
+        } else {
+            val rootInstanceKeeper = instanceKeeper(discardRetainedInstances = false)
+
+            if (marker == null) {
+                (rootInstanceKeeper.remove(key = key) as? InstanceKeeperDispatcher)?.destroy()
+            }
+
+            rootInstanceKeeper.getOrCreate(key = key, factory = ::InstanceKeeperDispatcher)
+        }
 
     return DefaultComponentContext(
         lifecycle = lifecycle.asEssentyLifecycle(),
         stateKeeper = stateKeeper,
-        instanceKeeper = instanceKeeper(discardRetainedInstances = marker == null),
+        instanceKeeper = instanceKeeper,
         backHandler = backHandler,
     )
 }

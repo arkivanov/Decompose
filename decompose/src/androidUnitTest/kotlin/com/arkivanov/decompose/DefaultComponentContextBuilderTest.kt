@@ -170,6 +170,39 @@ class DefaultComponentContextBuilderTest {
     }
 
     @Test
+    fun WHEN_created_with_different_keys_THEN_state_restored_per_key() {
+        var owner = TestOwner()
+        var ctx1 = owner.defaultComponentContext(key = "key1")
+        var ctx2 = owner.defaultComponentContext(key = "key2")
+        ctx1.stateKeeper.register(key = "key") { "saved_state_1" }
+        ctx2.stateKeeper.register(key = "key") { "saved_state_2" }
+
+        owner = owner.recreate(isChangingConfigurations = true)
+        ctx1 = owner.defaultComponentContext(key = "key1")
+        ctx2 = owner.defaultComponentContext(key = "key2")
+
+        assertEquals("saved_state_1", ctx1.stateKeeper.consume<String>(key = "key"))
+        assertEquals("saved_state_2", ctx2.stateKeeper.consume<String>(key = "key"))
+    }
+
+    @Test
+    fun GIVEN_multiple_keys_WHEN_discardSavedState_is_true_for_one_THEN_other_instances_retained() {
+        var owner = TestOwner()
+        var ctx1 = owner.defaultComponentContext(key = "key1")
+        var ctx2 = owner.defaultComponentContext(key = "key2")
+        val instance1 = ctx1.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance2 = ctx2.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+
+        owner = owner.recreate()
+        ctx1 = owner.defaultComponentContext(key = "key1", discardSavedState = true)
+        ctx2 = owner.defaultComponentContext(key = "key2")
+
+        assertTrue(instance1.isDestroyed)
+        assertNotSame(instance1, ctx1.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance))
+        assertSame(instance2, ctx2.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance))
+    }
+
+    @Test
     fun GIVEN_enabled_BackCallback_registered_WHEN_onBackPressed_THEN_callback_called() {
         val owner = TestOwner()
         val ctx = owner.defaultComponentContext()

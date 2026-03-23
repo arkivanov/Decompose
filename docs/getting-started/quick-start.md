@@ -307,7 +307,7 @@ Use `defaultComponentContext` extension function to create the root `ComponentCo
 
 !!! warning
 
-    The `defaultComponentContext` function must only be called once during the lifetime of the host Activity or Fragment, typically in `onCreate`. Calling it a second time will result in a crash.
+    The `defaultComponentContext` function must only be called once during the lifetime of the host Activity or Fragment, typically in `onCreate`, unless you pass a unique `key` value. Calling it multiple times with the same key will result in a crash.
 
 ```kotlin
 import android.os.Bundle
