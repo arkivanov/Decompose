@@ -13,7 +13,7 @@ plugins {
 setupMultiplatform {
     androidTarget()
     jvm()
-    iosCompat()
+    iosCompat(x64 = null)
     js { browser() }
 }
 
