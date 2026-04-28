@@ -18,8 +18,8 @@ plugins {
 setupMultiplatform {
     androidTarget()
     jvm()
-    macosCompat()
-    iosCompat()
+    macosCompat(x64 = null)
+    iosCompat(x64 = null)
     js { browser() }
     wasmJs { browser() }
 }

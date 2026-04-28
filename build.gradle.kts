@@ -35,10 +35,10 @@ setupDefaults(
         jvm()
         js { browser() }
         wasmJs { browser() }
-        iosCompat()
-        watchosCompat()
-        tvosCompat()
-        macosCompat()
+        iosCompat(x64 = null)
+        watchosCompat(x64 = null)
+        tvosCompat(x64 = null)
+        macosCompat(x64 = null)
     },
     androidConfig = AndroidConfig(
         minSdkVersion = 21,
