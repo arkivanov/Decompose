@@ -37,6 +37,7 @@ internal fun CountersContent(component: CountersComponent, modifier: Modifier = 
                 predictiveBackParams = {
                     PredictiveBackParams(
                         navigationEventDispatcher = component.navigationEventDispatcher,
+                        onBack = component::onBackClicked,
                         animatable = ::materialPredictiveBackAnimatable,
                     )
                 }

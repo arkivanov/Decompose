@@ -7,7 +7,6 @@ import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.backhandler.addDirectInput
 import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.TestStateKeeperDispatcher
-import com.arkivanov.decompose.testutils.addTestInput
 import com.arkivanov.decompose.testutils.keys
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
@@ -25,8 +24,16 @@ open class ChildrenTestBase {
 
     private val navigation = SimpleNavigation<(TestNavState) -> TestNavState>()
     protected val lifecycle = LifecycleRegistry()
-    protected val navigationEventDispatcher = NavigationEventDispatcher()
-    protected val navigationEventInput = navigationEventDispatcher.addTestInput()
+    protected var onBackCompletedFallback: (() -> Unit)? = null
+    protected var onForwardCompletedFallback: (() -> Unit)? = null
+
+    protected val navigationEventDispatcher =
+        NavigationEventDispatcher(
+            onBackCompletedFallback = { onBackCompletedFallback?.invoke() },
+            onForwardCompletedFallback = { onForwardCompletedFallback?.invoke() }
+        )
+
+    protected val navigationEventInput = navigationEventDispatcher.addDirectInput()
 
     protected val context =
         TestComponentContext(

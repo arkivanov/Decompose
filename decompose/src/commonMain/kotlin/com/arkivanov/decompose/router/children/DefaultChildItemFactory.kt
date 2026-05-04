@@ -2,6 +2,8 @@ package com.arkivanov.decompose.router.children
 
 import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.ComponentContextFactory
+import com.arkivanov.decompose.backhandler.child
+import com.arkivanov.decompose.backhandler.childNavigationEventDispatcher
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.Lifecycle
@@ -26,8 +28,7 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
         val mergedLifecycle = MergedLifecycle(lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
         val instanceKeeperRegistry = instanceKeeperDispatcher ?: InstanceKeeperDispatcher()
-        val navigationEventDispatcher = NavigationEventDispatcher(navigationEventDispatcher)
-        navigationEventDispatcher.isEnabled = false
+        val navigationEventDispatcher = navigationEventDispatcher.childNavigationEventDispatcher()
 
         val component =
             childFactory(
@@ -36,7 +37,7 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
                     lifecycle = mergedLifecycle,
                     stateKeeper = stateKeeperDispatcher,
                     instanceKeeper = instanceKeeperRegistry,
-                    navigationEventDispatcher = navigationEventDispatcher,
+                    navigationEventDispatcher = navigationEventDispatcher.dispatcher,
                 )
             )
 

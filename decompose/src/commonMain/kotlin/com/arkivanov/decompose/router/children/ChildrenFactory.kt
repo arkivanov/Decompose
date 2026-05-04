@@ -246,7 +246,9 @@ private fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, N : NavState<
                 childItemFactory = DefaultChildItemFactory(
                     contextFactory = componentContextFactory,
                     lifecycle = lifecycle,
-                    navigationEventDispatcher = navigationEventDispatcher.child(priority = NavigationEventDispatcher.PRIORITY_OVERLAY),
+                    navigationEventDispatcher = navigationEventDispatcher
+                        .child(priority = NavigationEventDispatcher.PRIORITY_OVERLAY)
+                        .dispatcher,
                     childFactory = childFactory,
                 ),
                 navState = restoredNavState ?: initialState(),

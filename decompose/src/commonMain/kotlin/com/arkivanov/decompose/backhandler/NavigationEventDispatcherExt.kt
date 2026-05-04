@@ -73,9 +73,7 @@ inline fun NavigationEventHandler(
         }
     }
 
-fun NavigationEventDispatcher.addDirectInput(
-    priority: Int = NavigationEventDispatcher.PRIORITY_DEFAULT,
-): DirectNavigationEventInput =
+fun NavigationEventDispatcher.addDirectInput(): DirectNavigationEventInput =
     DirectNavigationEventInput().also {
-        addInput(input = it, priority = priority)
+        addInput(input = it)
     }

@@ -21,7 +21,6 @@ import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEvent
 import androidx.navigationevent.NavigationEventHandler
 import androidx.navigationevent.NavigationEventInfo
-import androidx.navigationevent.NavigationEventInput
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.experimental.stack.WithStackAnimationScope
@@ -326,25 +325,18 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                     currentState.animationHandler.finish()
                     state = State.Idle
                     setItems(getAnimationItems(newStack = stack.dropLast()))
-
-                    // FIXME: fix
-                    isBackEnabled = false
-                    input.backCompleted()
-                    isBackEnabled = true
+                    predictiveBackParams.onBack()
                 }
             } else if (currentState !is State.Finishing) {
                 state = State.Idle
-                // FIXME: fix
-                isBackEnabled = false
-                input.backCompleted()
-                isBackEnabled = true
+                predictiveBackParams.onBack()
             }
         }
     }
 
     private sealed interface State {
         data object Idle : State
-        data class Started(val initialBackEvent: BackEvent) : State
+        data class Started(val initialBackEvent: NavigationEvent) : State
         data class Progress(val animationHandler: AnimationHandler) : State
         data object Finishing : State
     }

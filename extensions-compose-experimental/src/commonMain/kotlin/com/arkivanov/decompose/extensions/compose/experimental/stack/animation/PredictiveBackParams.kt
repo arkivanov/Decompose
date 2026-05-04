@@ -4,8 +4,6 @@ import androidx.navigationevent.NavigationEvent
 import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.PredictiveBackAnimatable
-import com.arkivanov.essenty.backhandler.BackEvent
-import com.arkivanov.essenty.backhandler.BackHandler
 
 /**
  * Contains configuration parameters for the predictive back gesture.
@@ -25,15 +23,18 @@ import com.arkivanov.essenty.backhandler.BackHandler
 @ExperimentalDecomposeApi
 class PredictiveBackParams(
     val navigationEventDispatcher: NavigationEventDispatcher,
+    val onBack: () -> Unit,
     val animatable: (initialNavigationEvent: NavigationEvent) -> PredictiveBackAnimatable? = { null },
 ) {
 
     internal fun copy(
         navigationEventDispatcher: NavigationEventDispatcher = this.navigationEventDispatcher,
+        onBack: () -> Unit = this.onBack,
         animatable: (initialNavigationEvent: NavigationEvent) -> PredictiveBackAnimatable? = this.animatable,
     ): PredictiveBackParams =
         PredictiveBackParams(
             navigationEventDispatcher = navigationEventDispatcher,
+            onBack = onBack,
             animatable = animatable,
         )
 }

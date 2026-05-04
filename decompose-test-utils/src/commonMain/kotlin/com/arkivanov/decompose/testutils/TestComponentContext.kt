@@ -1,9 +1,11 @@
 package com.arkivanov.decompose.testutils
 
+import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ComponentContextFactory
 import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.backhandler.addDirectInput
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
@@ -20,11 +22,8 @@ class TestComponentContext(
     override val componentContextFactory: ComponentContextFactory<ComponentContext> =
         ComponentContextFactory(::DefaultComponentContext)
 
-    val navigationEventInput: TestNavigationEventInput = navigationEventDispatcher.addTestInput()
-    private val overlayNavigationEventInput = navigationEventDispatcher.addTestInput(priority = NavigationEventDispatcher.PRIORITY_OVERLAY)
-
-    val hasEnabledHandlers: Boolean
-        get() = navigationEventInput.hasEnabledHandlers || overlayNavigationEventInput.hasEnabledHandlers
+    val navigationEventInput: DirectNavigationEventInput = navigationEventDispatcher.addDirectInput()
+    val hasEnabledHandlers: Boolean get() = navigationEventInput.hasEnabledHandlers // STOPSHIP: remove
 }
 
 fun TestComponentContext.recreate(isConfigurationChange: Boolean = false): TestComponentContext {

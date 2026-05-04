@@ -3,7 +3,6 @@ package com.arkivanov.decompose.extensions.compose.stack.animation.predictivebac
 import androidx.compose.ui.Modifier
 import androidx.navigationevent.NavigationEvent
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.essenty.backhandler.BackEvent
 
 /**
  * Animates [exitModifier] and [enterModifier] according to incoming [BackEvent] events.

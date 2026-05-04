@@ -3,7 +3,6 @@ package com.arkivanov.decompose.extensions.compose.stack.animation.predictivebac
 import androidx.compose.ui.graphics.Shape
 import androidx.navigationevent.NavigationEvent
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.essenty.backhandler.BackEvent
 
 /**
  * Creates an implementation of [PredictiveBackAnimatable] that resembles the first version of the
