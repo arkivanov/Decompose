@@ -4,7 +4,6 @@ import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeSettings
-import com.arkivanov.decompose.backhandler.addDirectInput
 import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.TestStateKeeperDispatcher
 import com.arkivanov.decompose.testutils.addTestInput
@@ -25,7 +24,15 @@ open class ChildrenTestBase {
 
     private val navigation = SimpleNavigation<(TestNavState) -> TestNavState>()
     protected val lifecycle = LifecycleRegistry()
-    protected val navigationEventDispatcher = NavigationEventDispatcher()
+    protected var onBackCompletedFallback: (() -> Unit)? = null
+    protected var onForwardCompletedFallback: (() -> Unit)? = null
+
+    protected val navigationEventDispatcher =
+        NavigationEventDispatcher(
+            onBackCompletedFallback = { onBackCompletedFallback?.invoke() },
+            onForwardCompletedFallback = { onForwardCompletedFallback?.invoke() }
+        )
+
     protected val navigationEventInput = navigationEventDispatcher.addTestInput()
 
     protected val context =

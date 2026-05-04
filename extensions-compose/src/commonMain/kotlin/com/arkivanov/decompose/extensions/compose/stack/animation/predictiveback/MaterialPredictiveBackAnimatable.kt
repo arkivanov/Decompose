@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.navigationevent.NavigationEvent
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.essenty.backhandler.BackEvent
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch

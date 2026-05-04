@@ -21,7 +21,7 @@ androidxAppcompat = "1.7.1"
 androidxActivity = "1.12.4"
 androidxFragment = "1.8.9"
 androidxLifecycle = "2.9.6"
-androidxNavigationEvent = "1.1.0"
+androidxNavigationEvent = "1.1.2"
 dependencyGuard = "0.5.0"
 
 [libraries]

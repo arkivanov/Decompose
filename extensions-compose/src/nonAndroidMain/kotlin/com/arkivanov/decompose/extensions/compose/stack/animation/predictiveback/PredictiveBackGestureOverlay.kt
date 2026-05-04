@@ -24,12 +24,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.navigationevent.DirectNavigationEventInput
+import androidx.navigationevent.NavigationEvent
+import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.backhandler.addBackHandler
+import com.arkivanov.decompose.backhandler.addDirectInput
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.BackGestureHandler.Edge
-import com.arkivanov.essenty.backhandler.BackCallback
-import com.arkivanov.essenty.backhandler.BackDispatcher
-import com.arkivanov.essenty.backhandler.BackEvent
-import com.arkivanov.essenty.backhandler.BackEvent.SwipeEdge
 
 /**
  * Handles back gestures on both edges of the screen and drives the provided [backDispatcher] accordingly,
@@ -56,8 +57,8 @@ import com.arkivanov.essenty.backhandler.BackEvent.SwipeEdge
 @ExperimentalDecomposeApi
 @Composable
 fun PredictiveBackGestureOverlay(
-    backDispatcher: BackDispatcher,
-    backIcon: (@Composable (progress: Float, edge: SwipeEdge) -> Unit)?,
+    navigationEventDispatcher: NavigationEventDispatcher,
+    backIcon: (@Composable (progress: Float, edge: Int) -> Unit)?,
     modifier: Modifier = Modifier,
     startEdgeEnabled: Boolean = true,
     endEdgeEnabled: Boolean = true,
@@ -72,7 +73,7 @@ fun PredictiveBackGestureOverlay(
 
     Box(
         modifier = modifier.handleBackGestures(
-            backDispatcher = backDispatcher,
+            navigationEventDispatcher = navigationEventDispatcher,
             leftEdgeEnabled = when (layoutDirection) {
                 LayoutDirection.Ltr -> startEdgeEnabled
                 LayoutDirection.Rtl -> endEdgeEnabled
@@ -106,22 +107,21 @@ fun PredictiveBackGestureOverlay(
                 modifier = Modifier.backIconOffset(position = position),
                 enter = fadeIn(),
                 exit = fadeOut(),
-                content = { backIcon(progress, edge.toSwipeEdge()) },
+                content = { backIcon(progress, edge.value) },
             )
         }
     }
 
     if (onClose != null) {
-        DisposableEffect(backDispatcher, onClose) {
-            val callback = BackCallback(priority = BackCallback.PRIORITY_MIN, onBack = onClose)
-            backDispatcher.register(callback)
-            onDispose { backDispatcher.unregister(callback) }
+        DisposableEffect(navigationEventDispatcher, onClose) {
+            val backHandler = navigationEventDispatcher.addBackHandler(onBackCompleted = onClose) // FIXME: check priority
+            onDispose(backHandler::remove)
         }
     }
 }
 
 private fun Modifier.handleBackGestures(
-    backDispatcher: BackDispatcher,
+    navigationEventDispatcher: NavigationEventDispatcher,
     leftEdgeEnabled: Boolean,
     rightEdgeEnabled: Boolean,
     edgeWidth: Dp,
@@ -130,7 +130,7 @@ private fun Modifier.handleBackGestures(
     onIconMoved: (position: Offset, progress: Float, Edge) -> Unit,
     onIconHidden: () -> Unit,
 ): Modifier =
-    pointerInput(backDispatcher, leftEdgeEnabled, rightEdgeEnabled) {
+    pointerInput(navigationEventDispatcher, leftEdgeEnabled, rightEdgeEnabled) {
         awaitEachGesture {
             onIconHidden()
 
@@ -148,20 +148,25 @@ private fun Modifier.handleBackGestures(
                     else -> return@awaitEachGesture
                 }
 
-            val handler =
-                BackGestureHandler(
-                    pointerId = down.id,
-                    startPosition = startPosition,
-                    size = size,
-                    edge = edge,
-                    ignoreOffsetThreshold = 16.dp.toPx(),
-                    activationOffsetThreshold = activationOffsetThreshold.toPx(),
-                    progressConfirmationThreshold = confirmationProgressThreshold,
-                    backDispatcher = backDispatcher,
-                    onIconMoved = onIconMoved,
-                )
+            val navigationEventInput = navigationEventDispatcher.addDirectInput()
+            try {
+                val handler =
+                    BackGestureHandler(
+                        pointerId = down.id,
+                        startPosition = startPosition,
+                        size = size,
+                        edge = edge,
+                        ignoreOffsetThreshold = 16.dp.toPx(),
+                        activationOffsetThreshold = activationOffsetThreshold.toPx(),
+                        progressConfirmationThreshold = confirmationProgressThreshold,
+                        navigationEventInput = navigationEventInput,
+                        onIconMoved = onIconMoved,
+                    )
 
-            with(handler) { handleGesture() }
+                with(handler) { handleGesture() }
+            } finally {
+                navigationEventDispatcher.removeInput(navigationEventInput)
+            }
         }
     }
 
@@ -174,12 +179,6 @@ private fun Modifier.backIconOffset(position: Offset): Modifier =
                 y = (position.y.toInt() - 48.dp.roundToPx()).coerceAtLeast(64.dp.roundToPx()),
             )
         }
-    }
-
-private fun Edge.toSwipeEdge(): SwipeEdge =
-    when (this) {
-        Edge.LEFT -> SwipeEdge.LEFT
-        Edge.RIGHT -> SwipeEdge.RIGHT
     }
 
 private data class IconState(
@@ -197,7 +196,7 @@ private class BackGestureHandler(
     private val ignoreOffsetThreshold: Float,
     private val activationOffsetThreshold: Float,
     private val progressConfirmationThreshold: Float,
-    private val backDispatcher: BackDispatcher,
+    private val navigationEventInput: DirectNavigationEventInput,
     private val onIconMoved: (position: Offset, progress: Float, Edge) -> Unit,
 ) {
 
@@ -257,14 +256,20 @@ private class BackGestureHandler(
         change.consume()
         val position = change.position
 
-        return backDispatcher.startPredictiveBack(
-            BackEvent(
+        navigationEventInput.backStarted(
+            event = NavigationEvent(
+                swipeEdge = when (edge) {
+                    Edge.LEFT -> NavigationEvent.EDGE_LEFT
+                    Edge.RIGHT -> NavigationEvent.EDGE_RIGHT
+                },
                 progress = getProgress(position = position),
-                swipeEdge = edge.toSwipeEdge(),
                 touchX = position.x,
                 touchY = position.y,
-            )
+                frameTimeMillis = 0L, // FIXME: pass
+            ),
         )
+
+        return true
     }
 
     private suspend fun AwaitPointerEventScope.processGesture() {
@@ -275,20 +280,24 @@ private class BackGestureHandler(
 
             val progress = getProgress(position = position)
 
-            backDispatcher.progressPredictiveBack(
-                BackEvent(
+            navigationEventInput.backProgressed(
+                NavigationEvent(
+                    swipeEdge = when (edge) {
+                        Edge.LEFT -> NavigationEvent.EDGE_LEFT
+                        Edge.RIGHT -> NavigationEvent.EDGE_RIGHT
+                    },
                     progress = progress,
-                    swipeEdge = edge.toSwipeEdge(),
                     touchX = position.x,
                     touchY = position.y,
-                )
+                    frameTimeMillis = 0L, // FIXME: pass
+                ),
             )
 
             if (!change.pressed) {
                 if (progress > progressConfirmationThreshold) {
-                    backDispatcher.back()
+                    navigationEventInput.backCompleted()
                 } else {
-                    backDispatcher.cancelPredictiveBack()
+                    navigationEventInput.backCancelled()
                 }
 
                 return
@@ -329,14 +338,8 @@ private class BackGestureHandler(
     private fun getChevronPositionY(position: Offset): Float =
         startPosition.y + (position.y - startPosition.y) / 4F
 
-    private fun Edge.toSwipeEdge(): SwipeEdge =
-        when (this) {
-            Edge.LEFT -> SwipeEdge.LEFT
-            Edge.RIGHT -> SwipeEdge.RIGHT
-        }
-
-    enum class Edge {
-        LEFT,
-        RIGHT,
+    enum class Edge(val value: Int) {
+        LEFT(NavigationEvent.EDGE_LEFT),
+        RIGHT(NavigationEvent.EDGE_RIGHT),
     }
 }

@@ -3,70 +3,47 @@ package com.arkivanov.decompose.backhandler
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEvent
 import androidx.navigationevent.NavigationEventDispatcher
+import androidx.navigationevent.NavigationEventDispatcher.Companion.PRIORITY_DEFAULT
 import androidx.navigationevent.NavigationEventHandler
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.NavigationEventInput
+import com.arkivanov.decompose.isDestroyed
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.subscribe
+import kotlin.properties.Delegates.observable
 
-internal fun NavigationEventDispatcher.child(
-    lifecycle: Lifecycle? = null,
-    priority: Int = NavigationEventDispatcher.PRIORITY_DEFAULT,
-): NavigationEventDispatcher {
-    val dispatcher = childNavigationEventDispatcher(priority = priority)
+internal interface ChildNavigationEventDispatcher {
 
-    if (lifecycle != null) {
-        dispatcher.isEnabled = false
+    val dispatcher: NavigationEventDispatcher
+    var isEnabled: Boolean
 
-        lifecycle.subscribe(
-            onStart = { dispatcher.isEnabled = true },
-            onStop = { dispatcher.isEnabled = false },
-            onDestroy = { dispatcher.dispose() },
-        )
-    }
-
-    return dispatcher
+    fun start()
+    fun stop()
 }
 
-private fun NavigationEventDispatcher.childNavigationEventDispatcher(
-    priority: Int,
-): NavigationEventDispatcher {
-    val parentInput = DirectNavigationEventInput()
-    addInput(parentInput)
+internal class DefaultChildNavigationEventDispatcher(
+    private val parent: NavigationEventDispatcher,
+    isEnabled: Boolean,
+    private val priority: Int,
+) : ChildNavigationEventDispatcher {
 
-    val dispatcher =
+    private var isStarted = false
+
+    private val parentInput = DirectNavigationEventInput()
+
+    override val dispatcher: NavigationEventDispatcher =
         NavigationEventDispatcher(
-            onBackCompletedFallback = parentInput::backCompleted,
-            onForwardCompletedFallback = parentInput::forwardCompleted,
+            onBackCompletedFallback = { parentInput.takeIf { isStarted }?.backCompleted() },
+            onForwardCompletedFallback = { parentInput.takeIf { isStarted }?.forwardCompleted() },
         )
 
-    val handler = ChildHandler()
-    dispatcher.addInput(input = handler.defaultInput, priority = NavigationEventDispatcher.PRIORITY_DEFAULT)
-    dispatcher.addInput(input = handler.overlayInput, priority = NavigationEventDispatcher.PRIORITY_DEFAULT)
-    addHandler(handler = handler, priority = priority)
-
-//    val navigationEventInput = DelegateNavigationEventInput(onRemoved = { removeInput(parentInput) })
-//    dispatcher.addInput(input = navigationEventInput, priority = priority)
-//    addHandler(handler = navigationEventInput.handler, priority = priority)
-
-    return dispatcher
-}
-
-private class ChildHandler : NavigationEventHandler<NavigationEventInfo>(
-    initialInfo = NavigationEventInfo.None,
-    isBackEnabled = true
-) {
-    var hasDefaultEnabledHandlers = false
-    var hasOverlayEnabledHandlers = false
-
-    private val _defaultInput =
+    private val input =
         object : NavigationEventInput() {
-            override fun onHasEnabledHandlersChanged(hasEnabledHandlers: Boolean) {
-                hasDefaultEnabledHandlers = hasEnabledHandlers
-                isBackEnabled = hasDefaultEnabledHandlers || hasOverlayEnabledHandlers
-            }
+            var hasEnabledHandlers = false
 
-            override fun onRemoved() {
+            override fun onHasEnabledHandlersChanged(hasEnabledHandlers: Boolean) {
+                this.hasEnabledHandlers = hasEnabledHandlers
+                updateParentCallbackEnabledState()
             }
 
             fun onBackStarted(event: NavigationEvent) {
@@ -77,41 +54,88 @@ private class ChildHandler : NavigationEventHandler<NavigationEventInfo>(
                 dispatchOnBackProgressed(event)
             }
 
-            fun onBackCompleted() {
-                dispatchOnBackCompleted()
-            }
-
             fun onBackCancelled() {
                 dispatchOnBackCancelled()
             }
-        }
 
-    val defaultInput: NavigationEventInput by ::_defaultInput
-
-    val overlayInput: NavigationEventInput =
-        object : NavigationEventInput() {
-            override fun onHasEnabledHandlersChanged(hasEnabledHandlers: Boolean) {
-                hasDefaultEnabledHandlers = hasEnabledHandlers
-                isBackEnabled = hasDefaultEnabledHandlers || hasOverlayEnabledHandlers
-            }
-
-            override fun onRemoved() {
+            fun onBackCompleted() {
+                dispatchOnBackCompleted()
             }
         }
 
-    override fun onBackStarted(event: NavigationEvent) {
-        _defaultInput.onBackStarted(event)
+    private val parentHandler =
+        object : NavigationEventHandler<NavigationEventInfo>(initialInfo = NavigationEventInfo.None, isBackEnabled = false) {
+            override fun onBackStarted(event: NavigationEvent) {
+                input.onBackStarted(event)
+            }
+
+            override fun onBackProgressed(event: NavigationEvent) {
+                input.onBackProgressed(event)
+            }
+
+            override fun onBackCancelled() {
+                input.onBackCancelled()
+            }
+
+            override fun onBackCompleted() {
+                input.onBackCompleted()
+            }
+        }
+
+    override var isEnabled: Boolean by observable(isEnabled) { _, _, _ -> updateParentCallbackEnabledState() }
+
+    init {
+        dispatcher.addInput(input = input)
     }
 
-    override fun onBackProgressed(event: NavigationEvent) {
-        _defaultInput.onBackProgressed(event)
+    override fun start() {
+        isStarted = true
+        parent.addHandler(handler = parentHandler, priority = priority)
+        parent.addInput(input = parentInput)
     }
 
-    override fun onBackCompleted() {
-        _defaultInput.onBackCompleted()
+    override fun stop() {
+        parent.removeInput(input = parentInput)
+        parentHandler.remove()
+        isStarted = false
     }
 
-    override fun onBackCancelled() {
-        _defaultInput.onBackCancelled()
+    private fun updateParentCallbackEnabledState() {
+        val enabled = isEnabled && input.hasEnabledHandlers
+        parentHandler.isBackEnabled = enabled
+        parentHandler.isForwardEnabled = enabled
     }
 }
+
+internal fun NavigationEventDispatcher.child(
+    lifecycle: Lifecycle? = null,
+    priority: Int = PRIORITY_DEFAULT,
+): ChildNavigationEventDispatcher {
+    val handler = childNavigationEventDispatcher(priority = priority, isEnabled = false)
+
+    if (lifecycle == null) {
+        handler.isEnabled = true
+        handler.start()
+    } else if (!lifecycle.isDestroyed) {
+        handler.isEnabled = lifecycle.state >= Lifecycle.State.STARTED
+        handler.start()
+
+        lifecycle.subscribe(
+            onStart = { handler.isEnabled = true },
+            onStop = { handler.isEnabled = false },
+            onDestroy = handler::stop,
+        )
+    }
+
+    return handler
+}
+
+internal fun NavigationEventDispatcher.childNavigationEventDispatcher(
+    isEnabled: Boolean = true,
+    priority: Int = PRIORITY_DEFAULT,
+): ChildNavigationEventDispatcher =
+    DefaultChildNavigationEventDispatcher(
+        parent = this,
+        isEnabled = isEnabled,
+        priority = priority,
+    )

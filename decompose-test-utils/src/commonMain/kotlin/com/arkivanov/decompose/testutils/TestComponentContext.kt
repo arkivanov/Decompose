@@ -21,10 +21,7 @@ class TestComponentContext(
         ComponentContextFactory(::DefaultComponentContext)
 
     val navigationEventInput: TestNavigationEventInput = navigationEventDispatcher.addTestInput()
-    private val overlayNavigationEventInput = navigationEventDispatcher.addTestInput(priority = NavigationEventDispatcher.PRIORITY_OVERLAY)
-
-    val hasEnabledHandlers: Boolean
-        get() = navigationEventInput.hasEnabledHandlers || overlayNavigationEventInput.hasEnabledHandlers
+    val hasEnabledHandlers: Boolean get() = navigationEventInput.hasEnabledHandlers // STOPSHIP: remove
 }
 
 fun TestComponentContext.recreate(isConfigurationChange: Boolean = false): TestComponentContext {

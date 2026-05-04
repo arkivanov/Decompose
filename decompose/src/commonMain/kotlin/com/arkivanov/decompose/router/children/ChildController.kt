@@ -2,7 +2,9 @@ package com.arkivanov.decompose.router.children
 
 import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.GenericComponentContext
+import com.arkivanov.decompose.backhandler.ChildNavigationEventDispatcher
 import com.arkivanov.decompose.backhandler.child
+import com.arkivanov.decompose.backhandler.childNavigationEventDispatcher
 import com.arkivanov.decompose.lifecycle.MergedLifecycle
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
@@ -174,15 +176,14 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         }
     }
 
-    private fun NavigationEventDispatcher.setState(
+    private fun ChildNavigationEventDispatcher.setState(
         lifecycleState: ActiveLifecycleState,
     ) {
-        isEnabled =
-            when (lifecycleState) {
-                ActiveLifecycleState.CREATED -> false
-                ActiveLifecycleState.STARTED -> true
-                ActiveLifecycleState.RESUMED -> true
-            }
+        when (lifecycleState) {
+            ActiveLifecycleState.CREATED -> stop()
+            ActiveLifecycleState.STARTED,
+            ActiveLifecycleState.RESUMED -> start()
+        }
     }
 
     private fun item(
@@ -193,8 +194,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         val mergedLifecycle = MergedLifecycle(componentContext.lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
         val instanceKeeperDispatcher = retainedInstance.map[configuration] ?: InstanceKeeperDispatcher()
-        val navigationEventDispatcher = childNavigationEventDispatcher.child()
-        navigationEventDispatcher.isEnabled = false
+        val navigationEventDispatcher = childNavigationEventDispatcher.dispatcher.childNavigationEventDispatcher()
 
         val component =
             childFactory(
@@ -203,7 +203,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
                     lifecycle = mergedLifecycle,
                     stateKeeper = stateKeeperDispatcher,
                     instanceKeeper = instanceKeeperDispatcher,
-                    navigationEventDispatcher = navigationEventDispatcher,
+                    navigationEventDispatcher = navigationEventDispatcher.dispatcher,
                 )
             )
 
@@ -217,7 +217,8 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
     }
 
     private fun Item.Created<*>.destroy() {
-        navigationEventDispatcher.isEnabled = false
+        navigationEventDispatcher.stop()
+        navigationEventDispatcher.dispatcher.dispose()
         lifecycleRegistry.destroy()
         instanceKeeperDispatcher.destroy()
     }
@@ -242,7 +243,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
             val lifecycleRegistry: LifecycleRegistry,
             val stateKeeperDispatcher: StateKeeperDispatcher,
             val instanceKeeperDispatcher: InstanceKeeperDispatcher,
-            val navigationEventDispatcher: NavigationEventDispatcher,
+            val navigationEventDispatcher: ChildNavigationEventDispatcher,
         ) : Item<T>
     }
 

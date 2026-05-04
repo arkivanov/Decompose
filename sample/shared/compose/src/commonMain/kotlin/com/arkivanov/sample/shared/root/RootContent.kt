@@ -46,6 +46,7 @@ private fun Children(component: RootComponent, modifier: Modifier = Modifier) {
             predictiveBackParams = {
                 PredictiveBackParams(
                     navigationEventDispatcher = component.navigationEventDispatcher,
+                    onBack = component::onBackClicked,
                     animatable = ::materialPredictiveBackAnimatable,
                 )
             }

@@ -6,13 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEvent
 import androidx.navigationevent.NavigationEventDispatcher
 import androidx.navigationevent.NavigationEventHandler
 import androidx.navigationevent.NavigationEventInfo
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.backhandler.addDirectInput
 import com.arkivanov.decompose.extensions.compose.experimental.rememberLazy
 import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.PredictiveBackParams
@@ -380,19 +380,26 @@ private fun <EC : Any, ET : Any> ExtraPanel(
 
 // FIXME: Dispose
 private fun MulticastPredictiveBackParams(params: PredictiveBackParams): MulticastPredictiveBackParams {
-    val dispatcher = params.navigationEventDispatcher
-    val input = DirectNavigationEventInput().also(dispatcher::addInput)
-    val handler = MulticastNavigationEventHandler(onBack = input::backCompleted)
-    dispatcher.addHandler(handler)
+    var onBackCallCount = 0
+
+    val newParams =
+        params.copy(
+            onBack = {
+                if (++onBackCallCount == 2) {
+                    onBackCallCount = 0
+                    params.onBack()
+                }
+            },
+        )
+
+    val handler = MulticastNavigationEventHandler()
+    params.navigationEventDispatcher.addHandler(handler)
 
     return MulticastPredictiveBackParams(
-        main = params.copy(navigationEventDispatcher = handler.dispatcher1),
-        details = params.copy(navigationEventDispatcher = handler.dispatcher2),
-        extra = params.copy(navigationEventDispatcher = handler.dispatcher3),
-        onDispose = {
-            dispatcher.removeInput(input)
-            handler.remove()
-        },
+        main = newParams.copy(navigationEventDispatcher = handler.dispatcher1),
+        details = newParams.copy(navigationEventDispatcher = handler.dispatcher2),
+        extra = newParams.copy(navigationEventDispatcher = handler.dispatcher3),
+        onDispose = handler::remove,
     )
 }
 
@@ -403,18 +410,17 @@ private class MulticastPredictiveBackParams(
     val onDispose: () -> Unit,
 )
 
-private class MulticastNavigationEventHandler(
-    private val onBack: () -> Unit,
-) : NavigationEventHandler<NavigationEventInfo>(
+private class MulticastNavigationEventHandler : NavigationEventHandler<NavigationEventInfo>(
     initialInfo = NavigationEventInfo.None,
     isBackEnabled = true,
 ) {
-    val dispatcher1: NavigationEventDispatcher = NavigationEventDispatcher(onBackCompletedFallback = ::onBack)
-    private val input1 = DirectNavigationEventInput().also(dispatcher1::addInput)
-    val dispatcher2: NavigationEventDispatcher = NavigationEventDispatcher(onBackCompletedFallback = ::onBack)
-    private val input2 = DirectNavigationEventInput().also(dispatcher2::addInput)
-    val dispatcher3: NavigationEventDispatcher = NavigationEventDispatcher(onBackCompletedFallback = ::onBack)
-    private val input3 = DirectNavigationEventInput().also(dispatcher3::addInput)
+    val dispatcher1: NavigationEventDispatcher = NavigationEventDispatcher()
+    private val input1 = dispatcher1.addDirectInput()
+    val dispatcher2: NavigationEventDispatcher = NavigationEventDispatcher()
+    private val input2 = dispatcher2.addDirectInput()
+    val dispatcher3: NavigationEventDispatcher = NavigationEventDispatcher()
+    private val input3 = dispatcher3.addDirectInput()
+
     private var backCallCount = 0
 
     override fun onBackStarted(event: NavigationEvent) {
@@ -439,15 +445,6 @@ private class MulticastNavigationEventHandler(
         input1.backCompleted()
         input2.backCompleted()
         input3.backCompleted()
-    }
-
-    private fun onBack() {
-        if (++backCallCount == 2) {
-            backCallCount = 0
-            isBackEnabled = false
-            onBack.invoke()
-            isBackEnabled = true
-        }
     }
 }
 

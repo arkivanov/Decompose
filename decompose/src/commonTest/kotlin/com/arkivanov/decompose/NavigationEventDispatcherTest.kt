@@ -14,19 +14,19 @@ import kotlin.test.assertTrue
 
 class NavigationEventDispatcherTest {
 
-//    @Test
-//    fun `test NavigationEventDispatcher`() {
-//        val dispatcher = NavigationEventDispatcher()
-//        val handler = FakeNavigationEventHandler()
-//        val input = FakeNavigationEventInput()
-//        dispatcher.addHandler(handler = handler, priority = PRIORITY_OVERLAY)
-//        dispatcher.addInput(input = input, priority = PRIORITY_DEFAULT)
-//
-//        input.backCompleted()
-//
-//        assertTrue(handler.isBackCompleted)
-//        assertTrue(input.hasEnabledHandlers) // This line fails
-//    }
+    @Test
+    fun `test NavigationEventDispatcher`() {
+        val dispatcher = NavigationEventDispatcher()
+        val handler = FakeNavigationEventHandler()
+        val input = FakeNavigationEventInput()
+        dispatcher.addHandler(handler = handler, priority = PRIORITY_OVERLAY)
+        dispatcher.addInput(input = input)
+
+        input.backCompleted()
+
+        assertTrue(handler.isBackCompleted)
+        assertTrue(input.hasEnabledHandlers) // This line fails
+    }
 //
 //    @Test
 //    fun foo() {

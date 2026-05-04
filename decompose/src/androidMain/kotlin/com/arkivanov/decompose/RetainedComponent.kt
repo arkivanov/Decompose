@@ -196,5 +196,6 @@ private class RetainedComponentHolder<out T>(
 
     override fun onDestroy() {
         instanceKeeper.destroy()
+        navigationEventDispatcher.dispose()
     }
 }

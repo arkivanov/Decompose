@@ -40,21 +40,15 @@ fun <Ctx : GenericComponentContext<Ctx>> Ctx.childContext(
         lifecycle = if (lifecycle == null) this.lifecycle else MergedLifecycle(this.lifecycle, lifecycle),
         stateKeeper = stateKeeper.child(key, lifecycle),
         instanceKeeper = instanceKeeper.child(key, lifecycle),
-        navigationEventDispatcher = navigationEventDispatcher.child(lifecycle = lifecycle, priority = navigationEventPriority),
+        navigationEventDispatcher = navigationEventDispatcher.child(lifecycle = lifecycle, priority = navigationEventPriority).dispatcher,
     )
 }
 
-internal class DelegateNavigationEventInput(
-    private val onRemoved: () -> Unit = {},
-) : NavigationEventInput() {
+internal class DelegateNavigationEventInput : NavigationEventInput() {
     val handler: NavigationEventHandler<*> = Handler()
 
     override fun onHasEnabledHandlersChanged(hasEnabledHandlers: Boolean) {
         handler.isBackEnabled = hasEnabledHandlers
-    }
-
-    override fun onRemoved() {
-        onRemoved.invoke()
     }
 
     private inner class Handler : NavigationEventHandler<NavigationEventInfo>(

@@ -11,7 +11,6 @@ import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.create
 import com.arkivanov.essenty.lifecycle.destroy
-import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.lifecycle.pause
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.start
@@ -51,19 +50,6 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             switch(newStates = navState.children)
         } else {
             restore(navState = navState, savedStates = savedChildState)
-        }
-
-        lifecycle.doOnDestroy {
-            items.asReversed().forEach { item ->
-                when (item) {
-                    is Created -> {
-                        item.navigationEventDispatcher.isEnabled = false
-                        item.lifecycleRegistry.destroy()
-                    }
-
-                    is Destroyed -> Unit
-                }
-            }
         }
     }
 
@@ -111,13 +97,13 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
             Status.STARTED ->
                 getCreatedItem().apply {
-                    navigationEventDispatcher.isEnabled = true
+                    navigationEventDispatcher.start()
                     lifecycleRegistry.start()
                 }
 
             Status.RESUMED ->
                 getCreatedItem().apply {
-                    navigationEventDispatcher.isEnabled = true
+                    navigationEventDispatcher.start()
                     lifecycleRegistry.resume()
                 }
         }
@@ -238,7 +224,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
             Status.CREATED -> {
                 if (item.lifecycleRegistry.state != Lifecycle.State.CREATED) {
-                    item.navigationEventDispatcher.isEnabled = false
+                    item.navigationEventDispatcher.stop()
                     item.lifecycleRegistry.stop()
                 }
 
@@ -248,7 +234,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             Status.STARTED -> {
                 when {
                     item.lifecycleRegistry.state < Lifecycle.State.STARTED -> {
-                        item.navigationEventDispatcher.isEnabled = true
+                        item.navigationEventDispatcher.start()
                         item.lifecycleRegistry.start()
                     }
 
@@ -262,7 +248,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
             Status.RESUMED -> {
                 if (item.lifecycleRegistry.state != Lifecycle.State.RESUMED) {
-                    item.navigationEventDispatcher.isEnabled = true
+                    item.navigationEventDispatcher.start()
                     item.lifecycleRegistry.resume()
                 }
 
@@ -271,7 +257,8 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         }
 
     private fun Created<*, *>.destroy() {
-        navigationEventDispatcher.isEnabled = false
+        navigationEventDispatcher.stop()
+        navigationEventDispatcher.dispatcher.dispose()
         lifecycleRegistry.destroy()
         instanceKeeperDispatcher.destroy()
     }
