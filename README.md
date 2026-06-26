@@ -111,3 +111,7 @@ Checkout a voluntary list of projects/companies using Decompose: https://github.
 Twitter: [@arkann1985](https://twitter.com/arkann1985)
 
 If you like this project you can always <a href="https://www.buymeacoffee.com/arkivanov" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" height=32></a> ;-)
+
+## Powered by
+
+[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSource)
