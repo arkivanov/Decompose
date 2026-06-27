@@ -2,7 +2,6 @@ package com.arkivanov.decompose.mainthread
 
 import android.os.Looper
 import com.arkivanov.decompose.DecomposeSettings
-import com.arkivanov.decompose.errorhandler.onDecomposeError
 
 private val mainThreadId: Long? by lazy {
     try {
@@ -13,7 +12,8 @@ private val mainThreadId: Long? by lazy {
 }
 
 internal actual fun checkMainThread() {
-    if (DecomposeSettings.settings.mainThreadCheckEnabled && (mainThreadId != null) && (Thread.currentThread().id != mainThreadId)) {
-        onDecomposeError(NotOnMainThreadException(currentThreadName = Thread.currentThread().name))
+    val settings = DecomposeSettings.settings
+    if (settings.mainThreadCheckEnabled && (mainThreadId != null) && (Thread.currentThread().id != mainThreadId)) {
+        settings.onDecomposeError(NotOnMainThreadException(currentThreadName = Thread.currentThread().name))
     }
 }
