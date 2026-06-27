@@ -14,8 +14,6 @@ public final class com/arkivanov/decompose/Child$Created : com/arkivanov/decompo
 	public final fun component1 ()Ljava/lang/Object;
 	public final fun component2 ()Ljava/lang/Object;
 	public final fun component3 ()Ljava/lang/String;
-	public final synthetic fun copy (Ljava/lang/Object;Ljava/lang/Object;)Lcom/arkivanov/decompose/Child;
-	public final synthetic fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/arkivanov/decompose/Child$Created;
 	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;)Lcom/arkivanov/decompose/Child$Created;
 	public static synthetic fun copy$default (Lcom/arkivanov/decompose/Child$Created;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;ILjava/lang/Object;)Lcom/arkivanov/decompose/Child$Created;
 	public fun equals (Ljava/lang/Object;)Z
@@ -31,8 +29,6 @@ public final class com/arkivanov/decompose/Child$Destroyed : com/arkivanov/decom
 	public fun <init> (Ljava/lang/Object;Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/Object;
 	public final fun component2 ()Ljava/lang/String;
-	public final synthetic fun copy (Ljava/lang/Object;)Lcom/arkivanov/decompose/Child;
-	public final synthetic fun copy (Ljava/lang/Object;Ljava/lang/Object;)Lcom/arkivanov/decompose/Child$Destroyed;
 	public final fun copy (Ljava/lang/Object;Ljava/lang/String;)Lcom/arkivanov/decompose/Child$Destroyed;
 	public static synthetic fun copy$default (Lcom/arkivanov/decompose/Child$Destroyed;Ljava/lang/Object;Ljava/lang/String;ILjava/lang/Object;)Lcom/arkivanov/decompose/Child$Destroyed;
 	public fun equals (Ljava/lang/Object;)Z
@@ -60,12 +56,6 @@ public abstract interface class com/arkivanov/decompose/ComponentContextFactory 
 
 public abstract interface class com/arkivanov/decompose/ComponentContextFactoryOwner {
 	public abstract fun getComponentContextFactory ()Lcom/arkivanov/decompose/ComponentContextFactory;
-}
-
-public final class com/arkivanov/decompose/DecomposeExperimentFlags {
-	public static final field INSTANCE Lcom/arkivanov/decompose/DecomposeExperimentFlags;
-	public final fun getDuplicateConfigurationsEnabled ()Z
-	public final fun setDuplicateConfigurationsEnabled (Z)V
 }
 
 public final class com/arkivanov/decompose/DecomposeSettings {
@@ -143,11 +133,6 @@ public final class com/arkivanov/decompose/RetainedComponentKt {
 	public static final fun retainedComponent (Landroidx/fragment/app/Fragment;Ljava/lang/String;ZZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static synthetic fun retainedComponent$default (Landroidx/activity/ComponentActivity;Ljava/lang/String;ZZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun retainedComponent$default (Landroidx/fragment/app/Fragment;Ljava/lang/String;ZZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
-}
-
-public final class com/arkivanov/decompose/errorhandler/ErrorHandlersKt {
-	public static final fun getOnDecomposeError ()Lkotlin/jvm/functions/Function1;
-	public static final fun setOnDecomposeError (Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface class com/arkivanov/decompose/router/children/ChildNavState {
@@ -725,7 +710,6 @@ public abstract class com/arkivanov/decompose/value/Value {
 }
 
 public final class com/arkivanov/decompose/value/ValueExtKt {
-	public static final fun getValue (Lcom/arkivanov/decompose/value/Value;Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
 	public static final fun subscribe (Lcom/arkivanov/decompose/value/Value;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/decompose/value/ObserveLifecycleMode;Lkotlin/jvm/functions/Function1;)V
 	public static synthetic fun subscribe$default (Lcom/arkivanov/decompose/value/Value;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/decompose/value/ObserveLifecycleMode;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 }
