@@ -30,8 +30,10 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.backhandler.BackEvent
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 
 @ExperimentalDecomposeApi
 internal class DefaultStackAnimation<C : Any, T : Any>(
@@ -207,7 +209,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             remember {
                 PredictiveBackCallback(
                     stack = stack,
-                    scope = scope,
+                    parentScope = scope,
                     predictiveBackParams = predictiveBackParams,
                     setItems = setItems,
                 )
@@ -240,23 +242,31 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
     private inner class PredictiveBackCallback(
         private val stack: ChildStack<C, T>,
-        private val scope: CoroutineScope,
+        private val parentScope: CoroutineScope,
         private val predictiveBackParams: PredictiveBackParams,
         private val setItems: (Map<String, AnimationItem<C, T>>) -> Unit,
     ) : BackCallback() {
         private var state: State = State.Idle
 
         override fun onBackStarted(backEvent: BackEvent) {
-            if (state is State.Idle) {
-                state = State.Started(backEvent)
+            val currentState = state
+            if (currentState is State.Idle) {
+                val childScope = parentScope + Job(parentScope.coroutineContext[Job])
+                state = State.Started(backEvent, childScope)
+            } else if (currentState is State.Cancelling) {
+                currentState.scope.cancel()
+                val newScope = parentScope + Job(parentScope.coroutineContext[Job])
+                state = State.Started(currentState.lastBackEvent, newScope)
+                onBackProgressed(currentState.lastBackEvent)
             }
         }
 
         override fun onBackProgressed(backEvent: BackEvent) {
             startIfNeeded()
             val currentState = state as? State.Progress ?: return
+            currentState.backEvent = backEvent
 
-            scope.launch {
+            currentState.scope.launch {
                 currentState.animationHandler.progress(backEvent)
             }
         }
@@ -265,7 +275,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             val currentState = state as? State.Started ?: return
             val backEvent = currentState.initialBackEvent
             val animationHandler = AnimationHandler(animatable = predictiveBackParams.animatable(backEvent))
-            state = State.Progress(animationHandler)
+            state = State.Progress(animationHandler, currentState.initialBackEvent, currentState.scope)
             val exitChild = stack.active
             val enterChild = stack.backStack.last()
 
@@ -290,49 +300,78 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                 )
             )
 
-            scope.launch {
+            currentState.scope.launch {
                 animationHandler.progress(backEvent)
             }
         }
 
         override fun onBackCancelled() {
-            val currentState = state
-            if (currentState is State.Progress) {
-                state = State.Finishing
+            when (val currentState = state) {
+                is State.Idle -> Unit // no-op
 
-                scope.launch {
-                    currentState.animationHandler.cancel()
+                is State.Started -> {
+                    currentState.scope.cancel()
                     state = State.Idle
-                    setItems(getAnimationItems(newStack = stack))
                 }
-            } else if (currentState !is State.Finishing) {
-                state = State.Idle
+
+                is State.Progress -> {
+                    state = State.Cancelling(currentState.backEvent, currentState.scope)
+
+                    currentState.scope.launch {
+                        currentState.animationHandler.cancel()
+                        state = State.Idle
+                        setItems(getAnimationItems(newStack = stack))
+                        currentState.scope.cancel()
+                    }
+                }
+
+                is State.Finishing -> Unit // no-op
+                is State.Cancelling -> Unit // no-op
             }
         }
 
         override fun onBack() {
-            val currentState = state
-            if (currentState is State.Progress) {
-                state = State.Finishing
+            when (val currentState = state) {
+                is State.Idle -> {
+                    predictiveBackParams.onBack()
+                }
 
-                scope.launch {
-                    currentState.animationHandler.finish()
+                is State.Started -> {
+                    currentState.scope.cancel()
+                    state = State.Idle
+                    predictiveBackParams.onBack()
+                }
+
+                is State.Progress -> {
+                    state = State.Finishing(currentState.backEvent, currentState.scope)
+
+                    currentState.scope.launch {
+                        currentState.animationHandler.finish()
+                        state = State.Idle
+                        setItems(getAnimationItems(newStack = stack.dropLast()))
+                        predictiveBackParams.onBack()
+                        currentState.scope.cancel()
+                    }
+                }
+
+                is State.Finishing -> Unit // no-op
+
+                is State.Cancelling -> {
+                    currentState.scope.cancel()
                     state = State.Idle
                     setItems(getAnimationItems(newStack = stack.dropLast()))
                     predictiveBackParams.onBack()
                 }
-            } else if (currentState !is State.Finishing) {
-                state = State.Idle
-                predictiveBackParams.onBack()
             }
         }
     }
 
     private sealed interface State {
         data object Idle : State
-        data class Started(val initialBackEvent: BackEvent) : State
-        data class Progress(val animationHandler: AnimationHandler) : State
-        data object Finishing : State
+        class Started(val initialBackEvent: BackEvent, val scope: CoroutineScope) : State
+        class Progress(val animationHandler: AnimationHandler, var backEvent: BackEvent, val scope: CoroutineScope) : State
+        class Finishing(val lastBackEvent: BackEvent, val scope: CoroutineScope) : State
+        class Cancelling(val lastBackEvent: BackEvent, val scope: CoroutineScope) : State
     }
 
     private class AnimationHandler(

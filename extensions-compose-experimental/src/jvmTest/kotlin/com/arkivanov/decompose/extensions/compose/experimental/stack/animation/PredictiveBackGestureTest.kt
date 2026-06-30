@@ -502,15 +502,7 @@ class PredictiveBackGestureTest {
             DefaultStackAnimation(
                 predictiveBackAnimatable = {
                     animationCount++
-
-                    TestAnimatable(
-                        initialBackEvent = it,
-                        finish = {
-                            suspendCancellableCoroutine {
-                                // Simulate a long-running animation
-                            }
-                        },
-                    )
+                    TestAnimatable(initialBackEvent = it, finish = suspendForever())
                 },
                 onBack = { stack = stack.dropLast() },
             )
@@ -544,15 +536,7 @@ class PredictiveBackGestureTest {
             DefaultStackAnimation(
                 predictiveBackAnimatable = {
                     animationCount++
-
-                    TestAnimatable(
-                        initialBackEvent = it,
-                        finish = {
-                            suspendCancellableCoroutine {
-                                // Simulate a long-running animation
-                            }
-                        },
-                    )
+                    TestAnimatable(initialBackEvent = it, finish = suspendForever())
                 },
                 onBack = { stack = stack.dropLast() },
             )
@@ -573,6 +557,69 @@ class PredictiveBackGestureTest {
         composeRule.waitForIdle()
 
         assertEquals(stack("1", "2"), stack)
+    }
+
+    @Test
+    fun GIVEN_gesture_progressed_WHEN_cancelled_and_back_THEN_gesture_finished_and_stack_popped() {
+        var stack by mutableStateOf(stack("1", "2"))
+
+        val animation =
+            DefaultStackAnimation(
+                predictiveBackAnimatable = { TestAnimatable(initialBackEvent = it, cancel = suspendForever()) },
+                onBack = { stack = stack.dropLast() },
+            )
+
+        composeRule.setContent {
+            animation(stack, Modifier) {
+                Text(text = it.configuration)
+            }
+        }
+
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        composeRule.waitForIdle()
+        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        composeRule.waitForIdle()
+
+        backDispatcher.cancelPredictiveBack()
+        backDispatcher.back()
+        composeRule.waitForIdle()
+
+        assertEquals(stack("1"), stack)
+        composeRule.onNodeWithText("1").assertExists()
+        composeRule.onNodeWithText("1").assertTestTagToRootDoesNotExist { it.startsWith(TEST_TAG_PREFIX) }
+        composeRule.onNodeWithText("2").assertDoesNotExist()
+    }
+
+    @Test
+    fun GIVEN_gesture_progressed_WHEN_cancelled_and_restarted_and_back_THEN_gesture_finished_and_stack_popped() {
+        var stack by mutableStateOf(stack("1", "2"))
+
+        val animation =
+            DefaultStackAnimation(
+                predictiveBackAnimatable = { TestAnimatable(initialBackEvent = it, cancel = suspendForever()) },
+                onBack = { stack = stack.dropLast() },
+            )
+
+        composeRule.setContent {
+            animation(stack, Modifier) {
+                Text(text = it.configuration)
+            }
+        }
+
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        composeRule.waitForIdle()
+        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        composeRule.waitForIdle()
+
+        backDispatcher.cancelPredictiveBack()
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        backDispatcher.back()
+        composeRule.waitForIdle()
+
+        assertEquals(stack("1"), stack)
+        composeRule.onNodeWithText("1").assertExists()
+        composeRule.onNodeWithText("1").assertTestTagToRootDoesNotExist { it.startsWith(TEST_TAG_PREFIX) }
+        composeRule.onNodeWithText("2").assertDoesNotExist()
     }
 
     private fun DefaultStackAnimation(
@@ -622,6 +669,7 @@ class PredictiveBackGestureTest {
     private class TestAnimatable(
         initialBackEvent: BackEvent,
         private val finish: suspend () -> Unit = {},
+        private val cancel: suspend () -> Unit = {},
     ) : PredictiveBackAnimatable {
         private var progress by mutableStateOf(initialBackEvent.progress)
 
@@ -639,6 +687,14 @@ class PredictiveBackGestureTest {
 
         override suspend fun cancel() {
             progress = 0F
+            cancel.invoke()
         }
     }
 }
+
+private fun suspendForever(): suspend () -> Unit =
+    {
+        suspendCancellableCoroutine {
+            // no-op
+        }
+    }
