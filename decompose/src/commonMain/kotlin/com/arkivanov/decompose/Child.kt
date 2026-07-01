@@ -31,14 +31,6 @@ sealed class Child<out C : Any, out T : Any> {
             instance = instance,
             key = configuration.hashString(),
         )
-
-        @Deprecated(message = "For binary compatibility", level = DeprecationLevel.HIDDEN)
-        fun copy(configuration: @UnsafeVariance C, instance: @UnsafeVariance T): Child<C, T> =
-            copy(configuration = configuration, instance = instance)
-
-        @Deprecated(message = "For binary compatibility", level = DeprecationLevel.HIDDEN)
-        fun copy(configuration: @UnsafeVariance C, instance: @UnsafeVariance T, key: Any): Created<C, T> =
-            copy(configuration = configuration, instance = instance, key = key.toString())
     }
 
     data class Destroyed<out C : Any> @ExperimentalDecomposeApi constructor(
@@ -52,13 +44,5 @@ sealed class Child<out C : Any, out T : Any> {
         )
 
         override val instance: Nothing? = null
-
-        @Deprecated(message = "For binary compatibility", level = DeprecationLevel.HIDDEN)
-        fun copy(configuration: @UnsafeVariance C): Child<C, Nothing> =
-            copy(configuration = configuration)
-
-        @Deprecated(message = "For binary compatibility", level = DeprecationLevel.HIDDEN)
-        fun copy(configuration: @UnsafeVariance C, key: Any): Destroyed<C> =
-            copy(configuration = configuration, key = key.toString())
     }
 }
