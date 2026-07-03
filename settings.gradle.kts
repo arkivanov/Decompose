@@ -30,7 +30,6 @@ if (!startParameter.projectProperties.containsKey("check_publication")) {
     include(":decompose-test-utils")
     include(":jetpack-component-context")
     include(":extensions-compose")
-    include(":extensions-compose-experimental")
     include(":extensions-android")
     include(":sample:shared:shared")
     include(":sample:shared:compose")

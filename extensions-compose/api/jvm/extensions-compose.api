@@ -52,6 +52,55 @@ public final class com/arkivanov/decompose/extensions/compose/pages/PagesScrollA
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/arkivanov/decompose/extensions/compose/panels/ChildPanelsAnimators {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;Lkotlin/Pair;Lkotlin/Triple;)V
+	public synthetic fun <init> (Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;Lkotlin/Pair;Lkotlin/Triple;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getDetails ()Lkotlin/jvm/functions/Function4;
+	public final fun getExtra ()Lkotlin/jvm/functions/Function4;
+	public final fun getMain ()Lkotlin/jvm/functions/Function4;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/panels/ChildPanelsKt {
+	public static final fun ChildPanels (Lcom/arkivanov/decompose/router/panels/ChildPanels;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function3;Lcom/arkivanov/decompose/extensions/compose/panels/ChildPanelsLayout;Lcom/arkivanov/decompose/extensions/compose/panels/ChildPanelsAnimators;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ChildPanels (Lcom/arkivanov/decompose/router/panels/ChildPanels;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Lcom/arkivanov/decompose/extensions/compose/panels/ChildPanelsLayout;Lcom/arkivanov/decompose/extensions/compose/panels/ChildPanelsAnimators;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ChildPanels (Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function3;Lcom/arkivanov/decompose/extensions/compose/panels/ChildPanelsLayout;Lcom/arkivanov/decompose/extensions/compose/panels/ChildPanelsAnimators;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ChildPanels (Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Lcom/arkivanov/decompose/extensions/compose/panels/ChildPanelsLayout;Lcom/arkivanov/decompose/extensions/compose/panels/ChildPanelsAnimators;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+}
+
+public abstract interface class com/arkivanov/decompose/extensions/compose/panels/ChildPanelsLayout {
+	public abstract fun Layout (Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/arkivanov/decompose/extensions/compose/panels/ComposableSingletons$ChildPanelsKt {
+	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/panels/ComposableSingletons$ChildPanelsKt;
+	public fun <init> ()V
+	public final fun getLambda-1$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-2$extensions_compose ()Lkotlin/jvm/functions/Function4;
+	public final fun getLambda-3$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-4$extensions_compose ()Lkotlin/jvm/functions/Function4;
+	public final fun getLambda-5$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-6$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-7$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-8$extensions_compose ()Lkotlin/jvm/functions/Function3;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/panels/HorizontalChildPanelsLayout : com/arkivanov/decompose/extensions/compose/panels/ChildPanelsLayout {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (Lkotlin/Pair;Lkotlin/Triple;)V
+	public synthetic fun <init> (Lkotlin/Pair;Lkotlin/Triple;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun Layout (Lcom/arkivanov/decompose/router/panels/ChildPanelsMode;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/arkivanov/decompose/extensions/compose/stack/ChildStackKt {
+	public static final fun ChildStack (Lcom/arkivanov/decompose/router/stack/ChildStack;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function4;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ChildStack (Lcom/arkivanov/decompose/value/Value;Landroidx/compose/ui/Modifier;Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimation;Lkotlin/jvm/functions/Function4;Landroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/arkivanov/decompose/extensions/compose/stack/animation/Direction : java/lang/Enum {
 	public static final field ENTER_BACK Lcom/arkivanov/decompose/extensions/compose/stack/animation/Direction;
 	public static final field ENTER_FRONT Lcom/arkivanov/decompose/extensions/compose/stack/animation/Direction;
@@ -67,6 +116,64 @@ public final class com/arkivanov/decompose/extensions/compose/stack/animation/Di
 	public static final fun isEnter (Lcom/arkivanov/decompose/extensions/compose/stack/animation/Direction;)Z
 	public static final fun isExit (Lcom/arkivanov/decompose/extensions/compose/stack/animation/Direction;)Z
 	public static final fun isFront (Lcom/arkivanov/decompose/extensions/compose/stack/animation/Direction;)Z
+}
+
+public final class com/arkivanov/decompose/extensions/compose/stack/animation/FadeKt {
+	public static final fun fade (Landroidx/compose/animation/core/FiniteAnimationSpec;F)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;
+	public static synthetic fun fade$default (Landroidx/compose/animation/core/FiniteAnimationSpec;FILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/stack/animation/PredictiveBackParams {
+	public static final field $stable I
+	public fun <init> (Lcom/arkivanov/essenty/backhandler/BackHandler;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lcom/arkivanov/essenty/backhandler/BackHandler;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAnimatable ()Lkotlin/jvm/functions/Function1;
+	public final fun getBackHandler ()Lcom/arkivanov/essenty/backhandler/BackHandler;
+	public final fun getOnBack ()Lkotlin/jvm/functions/Function0;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/stack/animation/ScaleKt {
+	public static final fun scale (Landroidx/compose/animation/core/FiniteAnimationSpec;FF)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;
+	public static synthetic fun scale$default (Landroidx/compose/animation/core/FiniteAnimationSpec;FFILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/stack/animation/SlideKt {
+	public static final fun slide (Landroidx/compose/animation/core/FiniteAnimationSpec;Landroidx/compose/foundation/gestures/Orientation;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;
+	public static synthetic fun slide$default (Landroidx/compose/animation/core/FiniteAnimationSpec;Landroidx/compose/foundation/gestures/Orientation;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;
+}
+
+public abstract interface class com/arkivanov/decompose/extensions/compose/stack/animation/StackAnimation {
+	public abstract fun invoke (Lcom/arkivanov/decompose/router/stack/ChildStack;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function4;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/arkivanov/decompose/extensions/compose/stack/animation/StackAnimationKt {
+	public static final fun stackAnimation (Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;ZLkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimation;
+	public static final fun stackAnimation (ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function4;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimation;
+	public static synthetic fun stackAnimation$default (Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimation;
+	public static synthetic fun stackAnimation$default (ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimation;
+}
+
+public abstract interface class com/arkivanov/decompose/extensions/compose/stack/animation/StackAnimationProvider {
+	public abstract fun provide ()Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimation;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/stack/animation/StackAnimationProviderKt {
+	public static final fun getLocalStackAnimationProvider ()Landroidx/compose/runtime/ProvidableCompositionLocal;
+}
+
+public abstract interface class com/arkivanov/decompose/extensions/compose/stack/animation/StackAnimationScope : androidx/compose/animation/AnimatedVisibilityScope {
+	public abstract fun getStackAnimationDirection ()Lcom/arkivanov/decompose/extensions/compose/stack/animation/Direction;
+}
+
+public abstract interface class com/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator {
+	public abstract fun animate (Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimationScope;Lcom/arkivanov/decompose/extensions/compose/stack/animation/Direction;Landroidx/compose/runtime/Composer;I)Landroidx/compose/ui/Modifier;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/stack/animation/StackAnimatorKt {
+	public static final fun inverted (Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;
+	public static final fun plus (Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;
+	public static final fun stackAnimator (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function4;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;
+	public static synthetic fun stackAnimator$default (Landroidx/compose/animation/core/FiniteAnimationSpec;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/stack/animation/predictiveback/AndroidPredictiveBackAnimatableKt {

@@ -62,7 +62,6 @@ kotlin {
         common.main.dependencies {
             api(project(":decompose"))
             implementation(project(":extensions-compose"))
-            implementation(project(":extensions-compose-experimental")) // Only for the experimental shared transitions
             api(project(":sample:shared:shared"))
             implementation(project(":sample:shared:dynamic-features:api"))
             implementation(project(":sample:shared:dynamic-features:compose-api"))
