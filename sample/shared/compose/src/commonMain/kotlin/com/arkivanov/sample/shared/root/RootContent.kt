@@ -6,7 +6,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.plus
@@ -34,7 +33,6 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
     }
 }
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 private fun Children(component: RootComponent, modifier: Modifier = Modifier) {
     Children(
