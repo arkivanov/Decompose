@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.PredictiveBackParams
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.fade
@@ -20,7 +19,7 @@ import com.arkivanov.sample.shared.sharedtransitions.SharedTransitionsComponent.
 import com.arkivanov.sample.shared.sharedtransitions.gallery.GalleryContent
 import com.arkivanov.sample.shared.sharedtransitions.photo.PhotoContent
 
-@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalDecomposeApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun SharedTransitionsContent(
     component: SharedTransitionsComponent,
