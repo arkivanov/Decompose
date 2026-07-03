@@ -15,14 +15,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.util.lerp
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
-@ExperimentalDecomposeApi
 internal class AndroidPredictiveBackAnimatableV1(
     initialEvent: BackEvent,
     private val exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,

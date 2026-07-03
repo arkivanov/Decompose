@@ -5,10 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
 
-@ExperimentalDecomposeApi
 internal class DefaultPredictiveBackAnimatable(
     initialBackEvent: BackEvent,
     private val getExitModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier,

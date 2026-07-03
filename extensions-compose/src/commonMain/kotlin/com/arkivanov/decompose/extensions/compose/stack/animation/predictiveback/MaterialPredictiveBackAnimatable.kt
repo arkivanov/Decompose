@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
@@ -35,7 +34,6 @@ import kotlinx.coroutines.launch
  * @param shape an optional clipping shape of the child being removed (the currently active child).
  * If not supplied then a [RoundedCornerShape][androidx.compose.foundation.shape.RoundedCornerShape] will be applied.
  */
-@ExperimentalDecomposeApi
 fun materialPredictiveBackAnimatable(
     initialBackEvent: BackEvent,
     shape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
@@ -45,7 +43,6 @@ fun materialPredictiveBackAnimatable(
         exitShape = shape,
     )
 
-@ExperimentalDecomposeApi
 private class MaterialPredictiveBackAnimatable(
     private val initialEvent: BackEvent,
     private val exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
