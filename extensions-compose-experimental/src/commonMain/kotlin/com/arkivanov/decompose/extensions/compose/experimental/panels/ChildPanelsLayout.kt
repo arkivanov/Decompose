@@ -1,13 +1,11 @@
 package com.arkivanov.decompose.extensions.compose.experimental.panels
 
 import androidx.compose.runtime.Composable
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
 
 /**
  * A Child Panels layout used for laying out panels in single, dual and triple modes.
  */
-@ExperimentalDecomposeApi
 interface ChildPanelsLayout {
 
     /**

@@ -7,7 +7,6 @@ import androidx.compose.runtime.saveable.SaveableStateHolder
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.LocalStackAnimationProvider
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimation
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationScope
@@ -28,7 +27,6 @@ import com.arkivanov.decompose.value.Value
  * The receiver [StackAnimationScope] can be used for additional animations, such as
  * [Shared Element Transitions](https://developer.android.com/develop/ui/compose/animation/shared-elements).
  */
-@ExperimentalDecomposeApi
 @Composable
 fun <C : Any, T : Any> ChildStack(
     stack: ChildStack<C, T>,
@@ -62,7 +60,6 @@ fun <C : Any, T : Any> ChildStack(
  * The receiver [StackAnimationScope] can be used for additional animations, such as
  * [Shared Element Transitions](https://developer.android.com/develop/ui/compose/animation/shared-elements).
  */
-@ExperimentalDecomposeApi
 @Composable
 fun <C : Any, T : Any> ChildStack(
     stack: Value<ChildStack<C, T>>,

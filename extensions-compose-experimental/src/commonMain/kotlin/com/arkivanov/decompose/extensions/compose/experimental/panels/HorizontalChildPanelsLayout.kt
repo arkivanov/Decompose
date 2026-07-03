@@ -9,7 +9,6 @@ import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.unit.Constraints
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
 
 /**
@@ -51,7 +50,6 @@ import com.arkivanov.decompose.router.panels.ChildPanelsMode
  * [TRIPLE][com.arkivanov.decompose.router.panels.ChildPanelsMode.TRIPLE] mode.
  * Default values are `1F`, meaning that all panel slots have equal width.
  */
-@ExperimentalDecomposeApi
 class HorizontalChildPanelsLayout(
     private val dualWeights: Pair<Float, Float> = Pair(1F, 1F),
     private val tripleWeights: Triple<Float, Float, Float> = Triple(1F, 1F, 1F),

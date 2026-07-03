@@ -1,6 +1,5 @@
 package com.arkivanov.decompose.extensions.compose.experimental.stack.animation
 
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.PredictiveBackAnimatable
 import com.arkivanov.essenty.backhandler.BackEvent
 import com.arkivanov.essenty.backhandler.BackHandler
@@ -20,7 +19,6 @@ import com.arkivanov.essenty.backhandler.BackHandler
  * @see com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.androidPredictiveBackAnimatableV1
  * @see com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.androidPredictiveBackAnimatableV2
  */
-@ExperimentalDecomposeApi
 class PredictiveBackParams(
     val backHandler: BackHandler,
     val onBack: () -> Unit,

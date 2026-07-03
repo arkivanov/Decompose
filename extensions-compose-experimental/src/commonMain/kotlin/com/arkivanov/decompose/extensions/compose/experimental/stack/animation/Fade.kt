@@ -3,16 +3,13 @@ package com.arkivanov.decompose.extensions.compose.experimental.stack.animation
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import kotlin.math.abs
 
 /**
  * A simple fading animation. Appearing children's `alpha` is animated from [minAlpha] to 1.0.
  * Disappearing children's `alpha` is animated from 1.0 to [minAlpha].
  */
-@ExperimentalDecomposeApi
 fun fade(
     animationSpec: FiniteAnimationSpec<Float> = tween(),
     minAlpha: Float = 0F,
