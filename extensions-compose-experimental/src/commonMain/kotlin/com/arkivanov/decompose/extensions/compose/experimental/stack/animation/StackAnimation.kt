@@ -3,14 +3,12 @@ package com.arkivanov.decompose.extensions.compose.experimental.stack.animation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.animation.Direction
 import com.arkivanov.decompose.router.stack.ChildStack
 
 /**
  * Tracks the [ChildStack] changes and animates between child widget.
  */
-@ExperimentalDecomposeApi
 fun interface StackAnimation<C : Any, T : Any> {
 
     @Composable
@@ -31,7 +29,6 @@ fun interface StackAnimation<C : Any, T : Any> {
  * @param selector provides an optional [StackAnimator] for the current [Child], other [Child], [Direction] and
  * `isPredictiveBack` flag.
  */
-@ExperimentalDecomposeApi
 fun <C : Any, T : Any> stackAnimation(
     disableInputDuringAnimation: Boolean = true,
     predictiveBackParams: (ChildStack<C, T>) -> PredictiveBackParams? = { null },
@@ -57,7 +54,6 @@ fun <C : Any, T : Any> stackAnimation(
  * or `null`. The predictive back gesture is enabled if the value returned for the specified [ChildStack]
  * is not `null`, and disabled if the returned value is `null`.
  */
-@ExperimentalDecomposeApi
 fun <C : Any, T : Any> stackAnimation(
     animator: StackAnimator? = fade(),
     disableInputDuringAnimation: Boolean = true,

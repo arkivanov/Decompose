@@ -4,13 +4,11 @@ import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.animation.Direction
 
 /**
  * Animates a child widget in the given [Direction].
  */
-@ExperimentalDecomposeApi
 fun interface StackAnimator {
 
     /**
@@ -33,7 +31,6 @@ fun interface StackAnimator {
  * - From -1F to 0F for [Direction.ENTER_BACK]
  * - From 0F to -1F for [Direction.EXIT_BACK]
  */
-@ExperimentalDecomposeApi
 fun stackAnimator(
     animationSpec: FiniteAnimationSpec<Float> = tween(),
     frame: @Composable (factor: Float, direction: Direction) -> Modifier,
@@ -51,7 +48,6 @@ fun stackAnimator(
  * - [Direction.EXIT_BACK] -> [Direction.EXIT_FRONT]
  * @return the inverted [StackAnimator]
  */
-@ExperimentalDecomposeApi
 fun StackAnimator.inverted(): StackAnimator =
     StackAnimator { direction ->
         animate(
@@ -67,7 +63,6 @@ fun StackAnimator.inverted(): StackAnimator =
 /**
  * Combines (merges) the receiver [StackAnimator] with the [other] [StackAnimator].
  */
-@ExperimentalDecomposeApi
 operator fun StackAnimator.plus(other: StackAnimator): StackAnimator =
     PlusStackAnimator(first = this, second = other)
 
@@ -76,7 +71,6 @@ operator fun StackAnimator.plus(other: StackAnimator): StackAnimator =
  * https://github.com/JetBrains/compose-jb/issues/2688
  * https://github.com/JetBrains/compose-jb/issues/2612
  */
-@ExperimentalDecomposeApi
 private class PlusStackAnimator(
     private val first: StackAnimator,
     private val second: StackAnimator,

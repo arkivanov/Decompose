@@ -7,11 +7,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.animation.Direction
 import com.arkivanov.decompose.extensions.compose.stack.animation.isFront
 
-@ExperimentalDecomposeApi
 internal class DefaultStackAnimator(
     private val animationSpec: FiniteAnimationSpec<Float> = tween(),
     private val frame: @Composable (factor: Float, direction: Direction) -> Modifier
