@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.plus
@@ -21,7 +20,6 @@ import com.arkivanov.sample.shared.counters.counter.CounterContent
 import com.arkivanov.sample.shared.utils.TopAppBar
 import com.arkivanov.sample.shared.utils.WebDocumentTitle
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 internal fun CountersContent(component: CountersComponent, modifier: Modifier = Modifier) {
     WebDocumentTitle(title = "Counters")
