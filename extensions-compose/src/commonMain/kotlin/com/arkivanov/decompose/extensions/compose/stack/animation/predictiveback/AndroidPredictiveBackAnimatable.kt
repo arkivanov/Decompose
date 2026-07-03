@@ -1,7 +1,6 @@
 package com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 
 import androidx.compose.ui.graphics.Shape
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
 
 /**
@@ -16,7 +15,6 @@ import com.arkivanov.essenty.backhandler.BackEvent
  * If not supplied then a [RoundedCornerShape][androidx.compose.foundation.shape.RoundedCornerShape] will be applied.
  * The `progress` argument is animating between 0 and 1 while the gesture is being performed.
  */
-@ExperimentalDecomposeApi
 fun androidPredictiveBackAnimatableV1(
     initialBackEvent: BackEvent,
     exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
@@ -41,7 +39,6 @@ fun androidPredictiveBackAnimatableV1(
  * If not supplied then a [RoundedCornerShape][androidx.compose.foundation.shape.RoundedCornerShape] will be applied.
  * The `progress` argument is animating between 0 and 1 while the gesture is being performed.
  */
-@ExperimentalDecomposeApi
 fun androidPredictiveBackAnimatableV2(
     initialBackEvent: BackEvent,
     exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,

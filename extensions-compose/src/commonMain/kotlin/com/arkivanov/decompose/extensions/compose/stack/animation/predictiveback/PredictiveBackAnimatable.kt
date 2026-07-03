@@ -1,7 +1,6 @@
 package com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 
 import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
 
 /**
@@ -9,7 +8,6 @@ import com.arkivanov.essenty.backhandler.BackEvent
  *
  * [Animatable][androidx.compose.animation.core.Animatable] can be used for animations.
  */
-@ExperimentalDecomposeApi
 interface PredictiveBackAnimatable {
 
     /**
@@ -63,7 +61,6 @@ interface PredictiveBackAnimatable {
  * @param enterModifier a function that returns a [Modifier] for every gesture event, for
  * the previous child (behind the currently active child).
  */
-@ExperimentalDecomposeApi
 fun predictiveBackAnimatable(
     initialBackEvent: BackEvent,
     exitModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier,

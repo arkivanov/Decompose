@@ -13,7 +13,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.Ref
 import com.arkivanov.decompose.extensions.compose.stack.animation.LocalStackAnimationProvider
 import com.arkivanov.decompose.extensions.compose.stack.animation.StackAnimation
@@ -37,7 +36,6 @@ import kotlinx.coroutines.launch
  * returns [PredictiveBackAnimatable] responsible for animations.
  * @param onBack a callback that is called when the gesture is finished.
  */
-@ExperimentalDecomposeApi
 fun <C : Any, T : Any> predictiveBackAnimation(
     backHandler: BackHandler,
     fallbackAnimation: StackAnimation<C, T>? = null,
@@ -57,7 +55,6 @@ fun <C : Any, T : Any> predictiveBackAnimation(
         onBack = onBack,
     )
 
-@OptIn(ExperimentalDecomposeApi::class)
 private class PredictiveBackAnimation<C : Any, T : Any>(
     private val backHandler: BackHandler,
     private val animation: StackAnimation<C, T>?,

@@ -10,11 +10,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.utils.InputConsumingOverlay
 import com.arkivanov.decompose.router.stack.ChildStack
 
-@OptIn(ExperimentalDecomposeApi::class)
 internal abstract class AbstractStackAnimation<C : Any, T : Any>(
     private val disableInputDuringAnimation: Boolean,
 ) : StackAnimation<C, T> {
