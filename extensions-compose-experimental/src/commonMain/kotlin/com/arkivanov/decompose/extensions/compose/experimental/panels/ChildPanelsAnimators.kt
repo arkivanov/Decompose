@@ -1,7 +1,6 @@
 package com.arkivanov.decompose.extensions.compose.experimental.panels
 
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimator
 import com.arkivanov.decompose.extensions.compose.stack.animation.Direction
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
@@ -15,7 +14,6 @@ import com.arkivanov.decompose.router.panels.ChildPanelsMode
  * @param details provides an optional [StackAnimator] for the Details [Child].
  * @param extra provides an optional [StackAnimator] for the Extra [Child].
  */
-@ExperimentalDecomposeApi
 class ChildPanelsAnimators<in MC : Any, in MT : Any, in DC : Any, in DT : Any, in EC : Any, in ET : Any>(
     val main: (Child.Created<MC, MT>, ChildPanelsMode, Direction, isPredictiveBack: Boolean) -> StackAnimator? = { _, _, _, _ -> null },
     val details: (Child.Created<DC, DT>, ChildPanelsMode, Direction, isPredictiveBack: Boolean) -> StackAnimator? = { _, _, _, _ -> null },

@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.experimental.stack.WithStackAnimationScope
 import com.arkivanov.decompose.extensions.compose.experimental.stack.awaitAll
 import com.arkivanov.decompose.extensions.compose.experimental.stack.dropLast
@@ -35,7 +34,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
-@ExperimentalDecomposeApi
 internal class DefaultStackAnimation<C : Any, T : Any>(
     private val disableInputDuringAnimation: Boolean,
     private val predictiveBackParams: (ChildStack<C, T>) -> PredictiveBackParams?,
@@ -196,7 +194,6 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                 )
         }
 
-    @ExperimentalDecomposeApi
     @Composable
     private fun PredictiveBackController(
         stack: ChildStack<C, T>,
@@ -424,7 +421,6 @@ private fun Overlay(modifier: Modifier) {
     )
 }
 
-@ExperimentalDecomposeApi
 private data class AnimationItem<out C : Any, out T : Any>(
     val child: Child.Created<C, T>,
     val direction: Direction,
@@ -432,7 +428,6 @@ private data class AnimationItem<out C : Any, out T : Any>(
     val animator: StackAnimator? = null,
 )
 
-@ExperimentalDecomposeApi
 private fun <C : Any, T : Any> keyedItemsOf(vararg items: AnimationItem<C, T>): Map<String, AnimationItem<C, T>> =
     items.associateBy { it.child.key }
 
@@ -441,7 +436,6 @@ private fun <C : Any, T : Any> keyedItemsOf(vararg items: AnimationItem<C, T>): 
  * https://github.com/JetBrains/compose-jb/issues/2688
  * https://github.com/JetBrains/compose-jb/issues/2612
  */
-@ExperimentalDecomposeApi
 private class SimpleStackAnimator(
     private val modifier: () -> Modifier,
 ) : StackAnimator {

@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.experimental.BroadcastBackHandler
 import com.arkivanov.decompose.extensions.compose.experimental.rememberLazy
 import com.arkivanov.decompose.extensions.compose.experimental.stack.ChildStack
@@ -45,7 +44,6 @@ import com.arkivanov.decompose.value.Value
  * is not `null`, and disabled if the returned value is `null`.
  * Only works if [ChildPanels.mode] is [ChildPanelsMode.SINGLE].
  */
-@ExperimentalDecomposeApi
 @Composable
 fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
     panels: Value<ChildPanels<MC, MT, DC, DT, Nothing, Nothing>>,
@@ -91,7 +89,6 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
  * is not `null`, and disabled if the returned value is `null`.
  * Only works if [ChildPanels.mode] is [ChildPanelsMode.SINGLE].
  */
-@ExperimentalDecomposeApi
 @Composable
 fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
     panels: ChildPanels<MC, MT, DC, DT, Nothing, Nothing>,
@@ -140,7 +137,6 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any> ChildPanels(
  * is not `null`, and disabled if the returned value is `null`.
  * Only works if [ChildPanels.mode] is [ChildPanelsMode.SINGLE].
  */
-@ExperimentalDecomposeApi
 @Composable
 fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
     panels: Value<ChildPanels<MC, MT, DC, DT, EC, ET>>,
@@ -194,7 +190,6 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
  * is not `null`, and disabled if the returned value is `null`.
  * Only works if [ChildPanels.mode] is [ChildPanelsMode.SINGLE].
  */
-@ExperimentalDecomposeApi
 @Composable
 fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
     panels: ChildPanels<MC, MT, DC, DT, EC, ET>,
@@ -253,7 +248,6 @@ fun <MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> ChildPanels(
     }
 }
 
-@ExperimentalDecomposeApi
 @Composable
 private fun <MC : Any, MT : Any> MainPanel(
     main: Child.Created<MC, PanelChild<MC, MT>>,
@@ -287,7 +281,6 @@ private fun <MC : Any, MT : Any> MainPanel(
     }
 }
 
-@ExperimentalDecomposeApi
 @Composable
 private fun <DC : Any, DT : Any> DetailsPanel(
     details: Child.Created<DC, PanelChild<DC, DT>>?,
@@ -329,7 +322,6 @@ private fun <DC : Any, DT : Any> DetailsPanel(
     }
 }
 
-@ExperimentalDecomposeApi
 @Composable
 private fun <EC : Any, ET : Any> ExtraPanel(
     extra: Child.Created<EC, PanelChild<EC, ET>>?,
