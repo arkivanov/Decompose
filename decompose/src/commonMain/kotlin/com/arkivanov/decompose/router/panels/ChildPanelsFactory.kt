@@ -6,12 +6,13 @@ import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
+import com.arkivanov.decompose.router.children.NavStateSaver
 import com.arkivanov.decompose.router.children.NavigationSource
 import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.children
+import com.arkivanov.decompose.router.children.map
 import com.arkivanov.decompose.router.panels.PanelsNavigation.Event
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.NothingSerializer
@@ -73,11 +74,11 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any>
  * @param source a source of navigation events.
  * @param initialPanels an initial state of Child Panels that should be set if there is no saved state.
  * See [Panels] for more information.
- * @param savePanels a function that saves the provided [Panels] state into [SerializableContainer].
- * The navigation state is not saved if `null` is returned.
- * @param restorePanels a function that restores the [Panels] state from the provided [SerializableContainer].
- * If `null` is returned then [initialPanels] is used instead.
- * The restored [Panels] state must have exactly the same configurations.
+ * @param stateSaver an optional [NavStateSaver] for saving and restoring the navigation state.
+ * If `null` then the navigation state will not be preserved.
+ * Use [transientNavStateSaver][com.arkivanov.decompose.router.children.transientNavStateSaver]
+ * to prevent the navigation state from being saved to disk and only keep it in memory (i.e., saved
+ * only over configuration changes on Android).
  * @param key a key of the navigation, must be unique if there are multiple Child Panels
  * used in the same component.
  * @param onStateChanged called every time the navigation state changes, `oldState` is `null` when
@@ -93,8 +94,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any>
 fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any> Ctx.childPanels(
     source: NavigationSource<Event<MC, DC, Nothing>>,
     initialPanels: () -> Panels<MC, DC, Nothing>,
-    savePanels: (Panels<MC, DC, Nothing>) -> SerializableContainer?,
-    restorePanels: (SerializableContainer) -> Panels<MC, DC, Nothing>?,
+    stateSaver: NavStateSaver<Panels<MC, DC, Nothing>>?,
     key: String = "DefaultChildPanels",
     onStateChanged: (newState: Panels<MC, DC, Nothing>, oldState: Panels<MC, DC, Nothing>?) -> Unit = { _, _ -> },
     handleBackButton: Boolean = false,
@@ -104,8 +104,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any>
     childPanels(
         source = source,
         initialPanels = initialPanels,
-        savePanels = savePanels,
-        restorePanels = restorePanels,
+        stateSaver = stateSaver,
         key = key,
         onStateChanged = onStateChanged,
         handleBackButton = handleBackButton,
@@ -153,16 +152,8 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
     childPanels(
         source = source,
         initialPanels = initialPanels,
-        savePanels = savePanels@{ panels ->
-            val (mainSerializer, detailsSerializer, extraSerializer) = serializers ?: return@savePanels null
-            SerializableContainer(
-                value = panels,
-                strategy = Panels.serializer(mainSerializer, detailsSerializer, extraSerializer),
-            )
-        },
-        restorePanels = restorePanels@{ container ->
-            val (mainSerializer, detailsSerializer, extraSerializer) = serializers ?: return@restorePanels null
-            container.consume(Panels.serializer(mainSerializer, detailsSerializer, extraSerializer))
+        stateSaver = serializers?.let { (mainSerializer, detailsSerializer, extraSerializer) ->
+            NavStateSaver(Panels.serializer(mainSerializer, detailsSerializer, extraSerializer))
         },
         key = key,
         onStateChanged = onStateChanged,
@@ -182,11 +173,11 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
  * @param source a source of navigation events.
  * @param initialPanels an initial state of Child Panels that should be set if there is no saved state.
  * See [Panels] for more information.
- * @param savePanels a function that saves the provided [Panels] state into [SerializableContainer].
- * The navigation state is not saved if `null` is returned.
- * @param restorePanels a function that restores the [Panels] state from the provided [SerializableContainer].
- * If `null` is returned then [initialPanels] is used instead.
- * The restored [Panels] state must have exactly the same configurations.
+ * @param stateSaver an optional [NavStateSaver] for saving and restoring the navigation state.
+ * If `null` then the navigation state will not be preserved.
+ * Use [transientNavStateSaver][com.arkivanov.decompose.router.children.transientNavStateSaver]
+ * to prevent the navigation state from being saved to disk and only keep it in memory (i.e., saved
+ * only over configuration changes on Android).
  * @param key a key of the navigation, must be unique if there are multiple Child Panels
  * used in the same component.
  * @param onStateChanged called every time the navigation state changes, `oldState` is `null` when
@@ -203,8 +194,7 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
 fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any, EC : Any, ET : Any> Ctx.childPanels(
     source: NavigationSource<Event<MC, DC, EC>>,
     initialPanels: () -> Panels<MC, DC, EC>,
-    savePanels: (Panels<MC, DC, EC>) -> SerializableContainer?,
-    restorePanels: (SerializableContainer) -> Panels<MC, DC, EC>?,
+    stateSaver: NavStateSaver<Panels<MC, DC, EC>>?,
     key: String = "DefaultChildPanels",
     onStateChanged: (newState: Panels<MC, DC, EC>, oldState: Panels<MC, DC, EC>?) -> Unit = { _, _ -> },
     handleBackButton: Boolean = false,
@@ -216,8 +206,10 @@ fun <Ctx : GenericComponentContext<Ctx>, MC : Any, MT : Any, DC : Any, DT : Any,
         source = source,
         key = key,
         initialState = { PanelsNavState(initialPanels()) },
-        saveState = { savePanels(it.panels) },
-        restoreState = { restorePanels(it)?.let(::PanelsNavState) },
+        stateSaver = stateSaver?.map(
+            saveMapper = PanelsNavState<MC, DC, EC>::panels,
+            restoreMapper = ::PanelsNavState,
+        ),
         navTransformer = { state, event -> PanelsNavState(event.transformer(state.panels)) },
         stateMapper = { state, children ->
             val createdChildren = children.mapNotNull { it as? Child.Created }

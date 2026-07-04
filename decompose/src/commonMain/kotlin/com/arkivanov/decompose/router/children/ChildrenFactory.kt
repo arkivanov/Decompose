@@ -11,7 +11,6 @@ import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.statekeeper.SerializableContainer
-import com.arkivanov.essenty.statekeeper.consumeRequired
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 
@@ -36,20 +35,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState
 ): Value<S> =
     children(
         source = source,
-        saveState = { state ->
-            if (stateSerializer != null) {
-                SerializableContainer(value = state, strategy = stateSerializer)
-            } else {
-                null
-            }
-        },
-        restoreState = { container ->
-            if (stateSerializer != null) {
-                container.consumeRequired(strategy = stateSerializer)
-            } else {
-                null
-            }
-        },
+        stateSaver = stateSerializer?.let(::NavStateSaver),
         initialState = initialState,
         key = key,
         navTransformer = navTransformer,
@@ -91,14 +77,11 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState
  * @param key a key of this `children` collection, must be unique if there are multiple
  * `children` used in the same component.
  * @param initialState an initial navigation state that should be used if there is no previously saved state.
- * @param saveState a function that saves the provided navigation state into [SerializableContainer].
- * The navigation state is not saved if `null` is returned.
- * @param restoreState a function that restores the navigation state from the provided [SerializableContainer].
- * If `null` is returned then [initialState] is used instead.
- * The restored navigation state must have the same amount of child configurations and in the same order,
- * otherwise the behaviour is undefined.
- * The restored child [Statuses][ChildNavState.Status] can be any, e.g. a previously active child may become
- * destroyed, etc.
+ * @param stateSaver an optional [NavStateSaver] for saving and restoring the navigation state.
+ * If `null` then the navigation state will not be preserved.
+ * Use [transientNavStateSaver][com.arkivanov.decompose.router.children.transientNavStateSaver]
+ * to prevent the navigation state from being saved to disk and only keep it in memory (i.e., saved
+ * only over configuration changes on Android).
  * @param navTransformer a function that transforms the current navigation state to a new one using the provided
  * navigation event.
  * @param stateMapper combines the provided navigation state and list of child components to a resulting state.
@@ -115,8 +98,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState
     source: NavigationSource<E>,
     key: String,
     initialState: () -> N,
-    saveState: (state: N) -> SerializableContainer?,
-    restoreState: (container: SerializableContainer) -> N?,
+    stateSaver: NavStateSaver<N>?,
     navTransformer: (state: N, event: E) -> N,
     stateMapper: (state: N, children: List<Child<C, T>>) -> S,
     onStateChanged: (newState: N, oldState: N?) -> Unit = { _, _ -> },
@@ -137,8 +119,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, E : Any, N : NavState
             navigator = childrenNavigator(
                 key = key,
                 initialState = initialState,
-                saveState = saveState,
-                restoreState = restoreState,
+                stateSaver = stateSaver,
                 childFactory = childFactory,
             ),
             stateMapper = stateMapper,
@@ -191,7 +172,7 @@ private sealed interface NavEvent<out E : Any> {
     data object Back : NavEvent<Nothing>
 }
 
-private class Holder<out C : Any, T : Any, in E : Any, N : NavState<C>, S : Any>(
+private class Holder<out C : Any, in T : Any, in E : Any, in N : NavState<C>, S : Any>(
     private val navigator: ChildrenNavigator<C, T, N>,
     private val stateMapper: (state: N, children: List<Child<C, T>>) -> S,
     private val navTransformer: (state: N, event: E) -> N,
@@ -232,13 +213,12 @@ private class Holder<out C : Any, T : Any, in E : Any, N : NavState<C>, S : Any>
 private fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, N : NavState<C>> Ctx.childrenNavigator(
     key: String,
     initialState: () -> N,
-    saveState: (state: N) -> SerializableContainer?,
-    restoreState: (container: SerializableContainer) -> N?,
+    stateSaver: NavStateSaver<N>?,
     childFactory: (configuration: C, componentContext: Ctx) -> T,
 ): ChildrenNavigator<C, T, N> {
     val navigator =
         stateKeeper.consume(key = key, strategy = SavedState.serializer()).let { savedState ->
-            val restoredNavState: N? = savedState?.navState?.let(restoreState)
+            val restoredNavState: N? = savedState?.navState?.let { stateSaver?.restoreState(it) }
 
             ChildrenNavigator(
                 lifecycle = lifecycle,
@@ -255,7 +235,7 @@ private fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, N : NavState<
         }
 
     stateKeeper.register(key = key, strategy = SavedState.serializer()) {
-        saveState(navigator.navState)?.let { savedState ->
+        stateSaver?.saveState(navigator.navState)?.let { savedState ->
             SavedState(
                 navState = savedState,
                 childState = navigator.saveChildState(),

@@ -56,3 +56,21 @@ fun <T> NavStateSaver(serializer: KSerializer<T & Any>): NavStateSaver<T> =
             it.consume(strategy = serializer)
         },
     )
+
+internal inline fun <T, R> NavStateSaver<T>.mapNullable(
+    crossinline saveMapper: (R) -> T,
+    crossinline restoreMapper: (T?) -> R?,
+): NavStateSaver<R> =
+    NavStateSaver(
+        save = { saveState(saveMapper(it)) },
+        restore = { restoreMapper(restoreState(it)) }
+    )
+
+internal inline fun <T, R> NavStateSaver<T>.map(
+    crossinline saveMapper: (R) -> T,
+    crossinline restoreMapper: (T) -> R,
+): NavStateSaver<R> =
+    NavStateSaver(
+        save = { saveState(saveMapper(it)) },
+        restore = { restoreState(it)?.let(restoreMapper) }
+    )
