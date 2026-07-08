@@ -2,6 +2,7 @@ package com.arkivanov.decompose.router.pages
 
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.TestInstance
+import com.arkivanov.decompose.router.children.NavStateSaver
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.consume
@@ -56,8 +57,10 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
         val newPages by ctx.childPages(
             source = navigation,
             initialPages = { Pages(items = listOf(2, 3), selectedIndex = 1) },
-            savePages = { SerializableContainer(it, Pages.serializer(Int.serializer())) },
-            restorePages = { null },
+            stateSaver = NavStateSaver(
+                save = { SerializableContainer(it, Pages.serializer(Int.serializer())) },
+                restore = { null },
+            ),
             childFactory = ::Component,
         )
 
@@ -74,8 +77,10 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
         val newPages by ctx.childPages(
             source = navigation,
             initialPages = { Pages(items = listOf(1), selectedIndex = 0) },
-            savePages = { SerializableContainer(it, Pages.serializer(Int.serializer())) },
-            restorePages = { null },
+            stateSaver = NavStateSaver(
+                save = { SerializableContainer(it, Pages.serializer(Int.serializer())) },
+                restore = { null },
+            ),
             childFactory = ::Component,
         )
 
@@ -94,8 +99,10 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
         ctx.childPages(
             source = navigation,
             initialPages = { Pages(items = listOf(1), selectedIndex = 0) },
-            savePages = { SerializableContainer(it, Pages.serializer(Int.serializer())) },
-            restorePages = { null },
+            stateSaver = NavStateSaver(
+                save = { SerializableContainer(it, Pages.serializer(Int.serializer())) },
+                restore = { null },
+            ),
             childFactory = ::Component,
         )
 
@@ -112,8 +119,10 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
         val newPages by ctx.childPages(
             source = navigation,
             initialPages = { Pages(items = listOf(1), selectedIndex = 0) },
-            savePages = { SerializableContainer(it, Pages.serializer(Int.serializer())) },
-            restorePages = { null },
+            stateSaver = NavStateSaver(
+                save = { SerializableContainer(it, Pages.serializer(Int.serializer())) },
+                restore = { null },
+            ),
             childFactory = ::Component,
         )
         val newInstance = newPages.requireInstance(0).instanceKeeper.getOrCreate { TestInstance() }

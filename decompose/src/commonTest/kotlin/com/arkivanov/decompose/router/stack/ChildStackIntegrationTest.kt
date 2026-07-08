@@ -12,6 +12,7 @@ import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_RESUME
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_START
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_STOP
 import com.arkivanov.decompose.router.TestInstance
+import com.arkivanov.decompose.router.children.NavStateSaver
 import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
 import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.consume
@@ -255,8 +256,10 @@ class ChildStackIntegrationTest {
         val newStack by ctx.childStack(
             source = navigation,
             initialStack = { listOf(Config(2), Config(3)) },
-            saveStack = { SerializableContainer(it, ListSerializer(Config.serializer())) },
-            restoreStack = { null },
+            stateSaver = NavStateSaver(
+                save = { SerializableContainer(it, ListSerializer(Config.serializer())) },
+                restore = { null },
+            ),
             childFactory = ::Component,
         )
 
@@ -273,8 +276,10 @@ class ChildStackIntegrationTest {
         val newStack by ctx.childStack(
             source = navigation,
             initialStack = { listOf(Config(1)) },
-            saveStack = { SerializableContainer(it, ListSerializer(Config.serializer())) },
-            restoreStack = { null },
+            stateSaver = NavStateSaver(
+                save = { SerializableContainer(it, ListSerializer(Config.serializer())) },
+                restore = { null },
+            ),
             childFactory = ::Component,
         )
 
@@ -293,8 +298,10 @@ class ChildStackIntegrationTest {
         ctx.childStack(
             source = navigation,
             initialStack = { listOf(Config(1)) },
-            saveStack = { SerializableContainer(it, ListSerializer(Config.serializer())) },
-            restoreStack = { null },
+            stateSaver = NavStateSaver(
+                save = { SerializableContainer(it, ListSerializer(Config.serializer())) },
+                restore = { null },
+            ),
             childFactory = ::Component,
         )
 
@@ -311,8 +318,10 @@ class ChildStackIntegrationTest {
         val newStack by ctx.childStack(
             source = navigation,
             initialStack = { listOf(Config(1)) },
-            saveStack = { SerializableContainer(it, ListSerializer(Config.serializer())) },
-            restoreStack = { null },
+            stateSaver = NavStateSaver(
+                save = { SerializableContainer(it, ListSerializer(Config.serializer())) },
+                restore = { null },
+            ),
             childFactory = ::Component,
         )
         val newInstance = newStack.active.instance.instanceKeeper.getOrCreate { TestInstance() }

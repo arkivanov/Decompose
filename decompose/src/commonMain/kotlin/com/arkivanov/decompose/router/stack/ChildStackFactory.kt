@@ -4,12 +4,12 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
+import com.arkivanov.decompose.router.children.NavStateSaver
 import com.arkivanov.decompose.router.children.NavigationSource
 import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.children
+import com.arkivanov.decompose.router.children.map
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.statekeeper.SerializableContainer
-import com.arkivanov.essenty.statekeeper.consumeRequired
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 
@@ -43,21 +43,8 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
 ): Value<ChildStack<C, T>> =
     childStack(
         source = source,
-        saveStack = { stack ->
-            if (serializer != null) {
-                SerializableContainer(value = stack, strategy = ListSerializer(serializer))
-            } else {
-                null
-            }
-        },
-        restoreStack = { container ->
-            if (serializer != null) {
-                container.consumeRequired(strategy = ListSerializer(serializer))
-            } else {
-                null
-            }
-        },
         initialStack = initialStack,
+        stateSaver = serializer?.let { NavStateSaver(ListSerializer(it)) },
         key = key,
         handleBackButton = handleBackButton,
         childFactory = childFactory,
@@ -111,11 +98,11 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
  * @param source a source of navigation events.
  * @param initialStack a stack of component configurations (ordered from tail to head) that should be set
  * if there is no saved state, must be not empty and unique (unless duplicate configurations were enabled).
- * @param saveStack a function that saves the provided stack of configurations into [SerializableContainer].
- * The navigation state is not saved if `null` is returned.
- * @param restoreStack a function that restores the stack of configuration from the provided [SerializableContainer].
- * If `null` is returned then [initialStack] is used instead.
- * The restored stack must have the same amount of configurations and in the same order.
+ * @param stateSaver an optional [NavStateSaver] for saving and restoring the navigation state.
+ * If `null` then the navigation state will not be preserved.
+ * Use [transientNavStateSaver][com.arkivanov.decompose.router.children.transientNavStateSaver]
+ * to prevent the navigation state from being saved to disk and only keep it in memory (i.e., saved
+ * only over configuration changes on Android).
  * @param key a key of the navigation, must be unique if there are multiple stacks in the same component.
  * @param handleBackButton determines whether the stack should be automatically popped on back button press or not,
  * default is `false`.
@@ -125,8 +112,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
 fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
     source: NavigationSource<StackNavigation.Event<C>>,
     initialStack: () -> List<C>,
-    saveStack: (List<C>) -> SerializableContainer?,
-    restoreStack: (SerializableContainer) -> List<C>?,
+    stateSaver: NavStateSaver<List<C>>?,
     key: String = "DefaultChildStack",
     handleBackButton: Boolean = false,
     childFactory: (configuration: C, Ctx) -> T,
@@ -135,8 +121,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childStack(
         source = source,
         key = key,
         initialState = { StackNavState(configurations = initialStack()) },
-        saveState = { saveStack(it.configurations) },
-        restoreState = { container -> restoreStack(container)?.let(::StackNavState) },
+        stateSaver = stateSaver?.map(saveMapper = StackNavState<C>::configurations, restoreMapper = ::StackNavState),
         navTransformer = { state, event -> StackNavState(configurations = event.transformer(state.configurations)) },
         stateMapper = { _, children ->
             @Suppress("UNCHECKED_CAST")

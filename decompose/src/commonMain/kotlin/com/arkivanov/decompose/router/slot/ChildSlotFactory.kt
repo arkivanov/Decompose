@@ -4,11 +4,12 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
+import com.arkivanov.decompose.router.children.NavStateSaver
 import com.arkivanov.decompose.router.children.NavigationSource
 import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.children
+import com.arkivanov.decompose.router.children.mapNullable
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.KSerializer
 
 /**
@@ -38,20 +39,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childSlot(
 ): Value<ChildSlot<C, T>> =
     childSlot(
         source = source,
-        saveConfiguration = { configuration ->
-            if (serializer != null) {
-                SerializableContainer(value = configuration, strategy = serializer)
-            } else {
-                null
-            }
-        },
-        restoreConfiguration = { container ->
-            if (serializer != null) {
-                container.consume(strategy = serializer)
-            } else {
-                null
-            }
-        },
+        stateSaver = serializer?.let(::NavStateSaver),
         key = key,
         initialConfiguration = initialConfiguration,
         handleBackButton = handleBackButton,
@@ -66,8 +54,11 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childSlot(
  *
  * @param source a source of navigation events.
  * @param key a key of the navigation, must be unique within the parent (hosting) component.
- * @param saveConfiguration a function that saves the provided configuration into [SerializableContainer].
- * @param restoreConfiguration a function that restores the configuration from the provided [SerializableContainer].
+ * @param stateSaver an optional [NavStateSaver] for saving and restoring the navigation state.
+ * If `null` then the navigation state will not be preserved.
+ * Use [transientNavStateSaver][com.arkivanov.decompose.router.children.transientNavStateSaver]
+ * to prevent the navigation state from being saved to disk and only keep it in memory (i.e., saved
+ * only over configuration changes on Android).
  * @param initialConfiguration a component configuration that should be shown if there is
  * no saved state, return `null` to show nothing.
  * @param handleBackButton determines whether the child component should be automatically dismissed
@@ -77,8 +68,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childSlot(
  */
 fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childSlot(
     source: NavigationSource<SlotNavigation.Event<C>>,
-    saveConfiguration: (C?) -> SerializableContainer?,
-    restoreConfiguration: (SerializableContainer) -> C?,
+    stateSaver: NavStateSaver<C?>?,
     key: String = "DefaultChildSlot",
     initialConfiguration: () -> C? = { null },
     handleBackButton: Boolean = false,
@@ -88,8 +78,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childSlot(
         source = source,
         key = key,
         initialState = { SlotNavState(configuration = initialConfiguration()) },
-        saveState = { saveConfiguration(it.configuration) },
-        restoreState = { SlotNavState(restoreConfiguration(it)) },
+        stateSaver = stateSaver?.mapNullable(saveMapper = SlotNavState<C>::configuration, restoreMapper = ::SlotNavState),
         navTransformer = { state, event -> SlotNavState(configuration = event.transformer(state.configuration)) },
         stateMapper = { _, children -> ChildSlot(child = children.firstOrNull() as? Child.Created?) },
         onEventComplete = { event, newState, oldState -> event.onComplete(newState.configuration, oldState.configuration) },

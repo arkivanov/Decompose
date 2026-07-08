@@ -4,14 +4,13 @@ import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.router.children.ChildNavState
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.decompose.router.children.NavState
+import com.arkivanov.decompose.router.children.NavStateSaver
 import com.arkivanov.decompose.router.children.NavigationSource
 import com.arkivanov.decompose.router.children.SimpleChildNavState
 import com.arkivanov.decompose.router.children.children
+import com.arkivanov.decompose.router.children.map
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.statekeeper.SerializableContainer
-import com.arkivanov.essenty.statekeeper.consumeRequired
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
 
 /**
  * Initializes and manages a list of components with one selected (active) component.
@@ -50,39 +49,13 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childPages(
 ): Value<ChildPages<C, T>> =
     childPages(
         source = source,
-        savePages = { pages ->
-            if (serializer != null) {
-                SerializableContainer(
-                    value = SerializablePages(items = pages.items, selectedIndex = pages.selectedIndex),
-                    strategy = SerializablePages.serializer(serializer),
-                )
-            } else {
-                null
-            }
-        },
-        restorePages = { container ->
-            if (serializer != null) {
-                val pages = container.consumeRequired(strategy = SerializablePages.serializer(serializer))
-                Pages(
-                    items = pages.items,
-                    selectedIndex = pages.selectedIndex,
-                )
-            } else {
-                null
-            }
-        },
+        stateSaver = serializer?.let { NavStateSaver(Pages.serializer(it)) },
         initialPages = initialPages,
         key = key,
         pageStatus = pageStatus,
         handleBackButton = handleBackButton,
         childFactory = childFactory,
     )
-
-@Serializable
-private class SerializablePages<out C : Any>(
-    val items: List<C>,
-    val selectedIndex: Int,
-)
 
 /**
  * Initializes and manages a list of components with one selected (active) component.
@@ -97,11 +70,11 @@ private class SerializablePages<out C : Any>(
  * @param source a source of navigation events.
  * @param initialPages an initial state of Child Pages that should be set
  * if there is no saved state. See [Pages] for more information.
- * @param savePages a function that saves the provided [Pages] state into [SerializableContainer].
- * The navigation state is not saved if `null` is returned.
- * @param restorePages a function that restores the [Pages] state from the provided [SerializableContainer].
- * If `null` is returned then [initialPages] is used instead.
- * The restored [Pages] state must have the same amount of configurations and in the same order.
+ * @param stateSaver an optional [NavStateSaver] for saving and restoring the navigation state.
+ * If `null` then the navigation state will not be preserved.
+ * Use [transientNavStateSaver][com.arkivanov.decompose.router.children.transientNavStateSaver]
+ * to prevent the navigation state from being saved to disk and only keep it in memory (i.e., saved
+ * only over configuration changes on Android).
  * @param key a key of the navigation, must be unique if there are multiple Child Pages used in
  * the same component.
  * @param pageStatus a function that returns a [Status] of a page at a given index.
@@ -116,8 +89,7 @@ private class SerializablePages<out C : Any>(
 fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childPages(
     source: NavigationSource<PagesNavigation.Event<C>>,
     initialPages: () -> Pages<C>,
-    savePages: (Pages<C>) -> SerializableContainer?,
-    restorePages: (SerializableContainer) -> Pages<C>?,
+    stateSaver: NavStateSaver<Pages<C>>?,
     key: String = "DefaultChildPages",
     pageStatus: (index: Int, Pages<C>) -> Status = ::getDefaultPageStatus,
     handleBackButton: Boolean = false,
@@ -132,15 +104,15 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childPages(
                 pageStatus = pageStatus,
             )
         },
-        saveState = { savePages(it.pages) },
-        restoreState = { container ->
-            restorePages(container)?.let { restoredPages ->
+        stateSaver = stateSaver?.map(
+            saveMapper = PagesNavState<C>::pages,
+            restoreMapper = { restoredPages ->
                 PagesNavState(
                     pages = restoredPages,
                     pageStatus = pageStatus,
                 )
-            }
-        },
+            },
+        ),
         navTransformer = { state, event ->
             PagesNavState(
                 pages = event.transformer(state.pages),
