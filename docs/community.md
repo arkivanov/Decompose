@@ -65,3 +65,12 @@ A Claude Code plugin that provides production best practices for Decompose.
 Link: [github.com/Litun/DecomposeClaudePlugin](https://github.com/Litun/DecomposeClaudePlugin)
 
 Author: [@Litun](https://github.com/Litun)
+
+### CAIF - Compose Animated Interactions Framework
+
+An alternative Compose Multiplatform animation framework, with first-party Decompose integration, enabling smooth navigation transitions and easy, flexible configuration.
+
+Link: [github.com/nxoim/caif](https://github.com/nxoim/caif)
+
+Author: [@nxoim](https://github.com/nxoim)
+
