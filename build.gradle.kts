@@ -47,7 +47,7 @@ setupDefaults(
     ),
     binaryCompatibilityValidatorConfig = BinaryCompatibilityValidatorConfig(
         nonPublicMarkers = listOf("com.arkivanov.decompose.InternalDecomposeApi"),
-        klib = true,
+        klib = false, // Not working correctly on CI because of the task split Linux/macOS
     ),
     publicationConfig = PublicationConfig(
         group = "com.arkivanov.decompose",

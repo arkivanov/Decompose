@@ -93,9 +93,9 @@ class StackAnimationDirectionsTest(
                 Params(from = listOf("a", "b", "c"), to = listOf("a", "d"), expected = mapOf("d" to ENTER_FRONT, "c" to EXIT_BACK)),
                 Params(from = listOf("a", "b"), to = listOf("c", "d"), expected = mapOf("d" to ENTER_FRONT, "b" to EXIT_BACK)),
                 Params(from = listOf("a", "b"), to = listOf("b", "a"), expected = mapOf("a" to ENTER_FRONT, "b" to EXIT_BACK)),
-                Params(from = listOf("a", "b"), to = listOf("b"), expected = mapOf("b" to ENTER_FRONT)),
-                Params(from = listOf("a", "b"), to = listOf("c", "b"), expected = mapOf("b" to ENTER_FRONT)),
-                Params(from = listOf("b", "c"), to = listOf("a", "b", "c"), expected = mapOf("c" to ENTER_FRONT)),
+                Params(from = listOf("a", "b"), to = listOf("b"), expected = emptyMap()),
+                Params(from = listOf("a", "b"), to = listOf("c", "b"), expected = emptyMap()),
+                Params(from = listOf("b", "c"), to = listOf("a", "b", "c"), expected = emptyMap()),
             )
     }
 

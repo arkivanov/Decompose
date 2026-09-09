@@ -23,8 +23,8 @@ public final class com/arkivanov/decompose/extensions/compose/pages/ChildPagesKt
 public final class com/arkivanov/decompose/extensions/compose/pages/ComposableSingletons$ChildPagesKt {
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/pages/ComposableSingletons$ChildPagesKt;
 	public fun <init> ()V
-	public final fun getLambda-1$extensions_compose ()Lkotlin/jvm/functions/Function6;
-	public final fun getLambda-2$extensions_compose ()Lkotlin/jvm/functions/Function6;
+	public final fun getLambda$-896049490$extensions_compose ()Lkotlin/jvm/functions/Function6;
+	public final fun getLambda$1649886492$extensions_compose ()Lkotlin/jvm/functions/Function6;
 }
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/pages/PagesScrollAnimation {
