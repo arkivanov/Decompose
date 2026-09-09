@@ -1,0 +1,22 @@
+<svg id="Merged_Layer" data-name="Merged Layer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #1a237e;
+      }
+
+      .cls-2 {
+        fill: #283593;
+      }
+
+      .cls-3 {
+        fill: #c51162;
+      }
+    </style>
+  </defs>
+  <rect id="BLue_Line_Right" data-name="BLue Line Right" class="cls-1" x="72.87" y="56.84" width="4.24" height="18.79" transform="translate(-23.07 46.37) rotate(-30)"/>
+  <rect id="Blue_Line_Left" data-name="Blue Line Left" class="cls-1" x="22.84" y="22.95" width="4.24" height="18" transform="translate(19.32 -8.2) rotate(30)"/>
+  <path id="Blue_Circle_Bottom" data-name="Blue Circle Bottom" class="cls-2" d="M85.5,70A14.5,14.5,0,1,0,100,84.5,14.5,14.5,0,0,0,85.5,70Zm0,25.62A11.12,11.12,0,1,1,96.62,84.5,11.12,11.12,0,0,1,85.5,95.62Z"/>
+  <path id="Blue_Circle_Left" data-name="Blue Circle Left" class="cls-2" d="M14.5,35.5A14.5,14.5,0,1,0,29,50,14.5,14.5,0,0,0,14.5,35.5Zm0,25.62A11.12,11.12,0,1,1,25.62,50,11.12,11.12,0,0,1,14.5,61.12Z"/>
+  <path class="cls-3" d="M74,42.75a14.49,14.49,0,0,0-17.76-6.27l-6.9-11.95a14.55,14.55,0,1,0-3.41,3.1l6.41,11.1a14.49,14.49,0,0,0-3.45,18.52,14.23,14.23,0,0,0,1.78,2.45L44.16,71a14.49,14.49,0,1,0,3.9,2.25l6.16-10.67A14.49,14.49,0,0,0,74,42.75ZM26.88,15.5A11.12,11.12,0,1,1,38,26.62,11.12,11.12,0,0,1,26.88,15.5ZM48.59,90.06a11.12,11.12,0,1,1-4.07-15.2A11.13,11.13,0,0,1,48.59,90.06ZM67,59.63a11.13,11.13,0,1,1,4.07-15.19A11.13,11.13,0,0,1,67,59.63Z"/>
+</svg>
