@@ -32,7 +32,7 @@ android {
 }
 
 dependencyGuard {
-    configuration("androidReleaseRuntimeClasspath")
+    configuration("releaseRuntimeClasspath")
 }
 
 kotlin {

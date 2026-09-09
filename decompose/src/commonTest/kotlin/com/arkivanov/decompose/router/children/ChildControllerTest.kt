@@ -151,7 +151,7 @@ class ChildControllerTest {
 
         val events = ArrayList<Any>()
         controller.requireChild(1).lifecycle.subscribe(TestLifecycleCallbacks { events += it })
-        controller.requireChild(1).instanceKeeper.getOrCreate { TestInstance { events += "instance_destroyed" } }
+        controller.requireChild(1).instanceKeeper.getOrCreate("key") { TestInstance { events += "instance_destroyed" } }
         events.clear()
 
         controller.destroy(configuration = 1)
