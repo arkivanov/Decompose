@@ -93,7 +93,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
     fun GIVEN_persistent_WHEN_config_changed_with_same_initial_pages_and_state_not_restored_THEN_child_retained_instances_destroyed() {
         var ctx = TestComponentContext()
         val oldPages by ctx.childPages(initialPages = Pages(items = listOf(1), selectedIndex = 0), persistent = true)
-        val oldInstance = oldPages.requireInstance(0).instanceKeeper.getOrCreate { TestInstance() }
+        val oldInstance = oldPages.requireInstance(0).instanceKeeper.getOrCreate("key") { TestInstance() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         ctx.childPages(
@@ -113,7 +113,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
     fun GIVEN_persistent_WHEN_config_changed_with_same_initial_pages_and_state_not_restored_THEN_retained_instances_are_not_same() {
         var ctx = TestComponentContext()
         val oldPages by ctx.childPages(initialPages = Pages(items = listOf(1), selectedIndex = 0), persistent = true)
-        val oldInstance = oldPages.requireInstance(0).instanceKeeper.getOrCreate { TestInstance() }
+        val oldInstance = oldPages.requireInstance(0).instanceKeeper.getOrCreate("key") { TestInstance() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         val newPages by ctx.childPages(
@@ -125,7 +125,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
             ),
             childFactory = ::Component,
         )
-        val newInstance = newPages.requireInstance(0).instanceKeeper.getOrCreate { TestInstance() }
+        val newInstance = newPages.requireInstance(0).instanceKeeper.getOrCreate("key") { TestInstance() }
 
         assertNotSame(newInstance, oldInstance)
     }
