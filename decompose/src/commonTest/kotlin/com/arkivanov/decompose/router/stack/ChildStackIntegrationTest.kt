@@ -292,7 +292,7 @@ class ChildStackIntegrationTest {
     fun GIVEN_persistent_WHEN_config_changed_with_same_initial_stack_and_state_not_restored_THEN_child_retained_instances_destroyed() {
         var ctx = TestComponentContext()
         val oldStack by ctx.childStack(initialStack = listOf(Config(1)), persistent = true)
-        val oldInstance = oldStack.active.instance.instanceKeeper.getOrCreate { TestInstance() }
+        val oldInstance = oldStack.active.instance.instanceKeeper.getOrCreate("key") { TestInstance() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         ctx.childStack(
@@ -312,7 +312,7 @@ class ChildStackIntegrationTest {
     fun GIVEN_persistent_WHEN_config_changed_with_same_initial_stack_and_state_not_restored_THEN_retained_instances_are_not_same() {
         var ctx = TestComponentContext()
         val oldStack by ctx.childStack(initialStack = listOf(Config(1)), persistent = true)
-        val oldInstance = oldStack.active.instance.instanceKeeper.getOrCreate { TestInstance() }
+        val oldInstance = oldStack.active.instance.instanceKeeper.getOrCreate("key") { TestInstance() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         val newStack by ctx.childStack(
@@ -324,7 +324,7 @@ class ChildStackIntegrationTest {
             ),
             childFactory = ::Component,
         )
-        val newInstance = newStack.active.instance.instanceKeeper.getOrCreate { TestInstance() }
+        val newInstance = newStack.active.instance.instanceKeeper.getOrCreate("key") { TestInstance() }
 
         assertNotSame(newInstance, oldInstance)
     }
@@ -423,13 +423,13 @@ class ChildStackIntegrationTest {
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = true)
-        val oldInstances = oldStack.items.map { it.instance.instanceKeeper.getOrCreate(::TestInstance) }
+        val oldInstances = oldStack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
 
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
         val newStack by newContext.childStack()
-        val retainedInstances = newStack.items.map { it.instance.instanceKeeper.getOrCreate(::TestInstance) }
+        val retainedInstances = newStack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
 
         assertContentEquals(oldInstances, retainedInstances)
     }
@@ -440,13 +440,13 @@ class ChildStackIntegrationTest {
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = false)
-        val oldInstances = oldStack.items.map { it.instance.instanceKeeper.getOrCreate(::TestInstance) }
+        val oldInstances = oldStack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
 
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
         val newContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = newStateKeeper, instanceKeeper = instanceKeeper)
         val newStack by newContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)))
-        val retainedInstances = newStack.items.map { it.instance.instanceKeeper.getOrCreate(::TestInstance) }
+        val retainedInstances = newStack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
 
         oldInstances.forEachIndexed { index, instance ->
             assertNotEquals(instance, retainedInstances[index])
@@ -459,7 +459,7 @@ class ChildStackIntegrationTest {
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
         val stack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = true)
-        val instances = stack.items.map { it.instance.instanceKeeper.getOrCreate(::TestInstance) }
+        val instances = stack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
 
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
@@ -477,7 +477,7 @@ class ChildStackIntegrationTest {
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
         val stack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = false)
-        val instances = stack.items.map { it.instance.instanceKeeper.getOrCreate(::TestInstance) }
+        val instances = stack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
 
         val savedState = oldStateKeeper.save()
         val newStateKeeper = TestStateKeeperDispatcher(savedState)
@@ -492,7 +492,7 @@ class ChildStackIntegrationTest {
     @Test
     fun WHEN_another_child_pushed_THEN_instance_not_destroyed_for_previous_child() {
         val stack by context.childStack(initialStack = listOf(Config(1)))
-        val instance = stack.active.instance.instanceKeeper.getOrCreate(::TestInstance)
+        val instance = stack.active.instance.instanceKeeper.getOrCreate("key", ::TestInstance)
 
         navigation.push(Config(2))
 
@@ -505,7 +505,7 @@ class ChildStackIntegrationTest {
         val instanceKeeper = InstanceKeeperDispatcher()
         val oldContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = oldStateKeeper, instanceKeeper = instanceKeeper)
         val stack by oldContext.childStack(initialStack = listOf(Config(1)))
-        val instance = stack.active.instance.instanceKeeper.getOrCreate(::TestInstance)
+        val instance = stack.active.instance.instanceKeeper.getOrCreate("key", ::TestInstance)
         navigation.push(Config(2))
 
         val savedState = oldStateKeeper.save()

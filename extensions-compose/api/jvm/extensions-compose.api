@@ -23,8 +23,8 @@ public final class com/arkivanov/decompose/extensions/compose/pages/ChildPagesKt
 public final class com/arkivanov/decompose/extensions/compose/pages/ComposableSingletons$ChildPagesKt {
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/pages/ComposableSingletons$ChildPagesKt;
 	public fun <init> ()V
-	public final fun getLambda-1$extensions_compose ()Lkotlin/jvm/functions/Function6;
-	public final fun getLambda-2$extensions_compose ()Lkotlin/jvm/functions/Function6;
+	public final fun getLambda$-896049490$extensions_compose ()Lkotlin/jvm/functions/Function6;
+	public final fun getLambda$1649886492$extensions_compose ()Lkotlin/jvm/functions/Function6;
 }
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/pages/PagesScrollAnimation {
@@ -78,14 +78,14 @@ public abstract interface class com/arkivanov/decompose/extensions/compose/panel
 public final class com/arkivanov/decompose/extensions/compose/panels/ComposableSingletons$ChildPanelsKt {
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/panels/ComposableSingletons$ChildPanelsKt;
 	public fun <init> ()V
-	public final fun getLambda-1$extensions_compose ()Lkotlin/jvm/functions/Function3;
-	public final fun getLambda-2$extensions_compose ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda-3$extensions_compose ()Lkotlin/jvm/functions/Function3;
-	public final fun getLambda-4$extensions_compose ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda-5$extensions_compose ()Lkotlin/jvm/functions/Function3;
-	public final fun getLambda-6$extensions_compose ()Lkotlin/jvm/functions/Function3;
-	public final fun getLambda-7$extensions_compose ()Lkotlin/jvm/functions/Function3;
-	public final fun getLambda-8$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$-1451017226$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$-1505121468$extensions_compose ()Lkotlin/jvm/functions/Function4;
+	public final fun getLambda$-38467832$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$1233011580$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$1447542165$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$194740298$extensions_compose ()Lkotlin/jvm/functions/Function4;
+	public final fun getLambda$474367771$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$675638862$extensions_compose ()Lkotlin/jvm/functions/Function3;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/panels/HorizontalChildPanelsLayout : com/arkivanov/decompose/extensions/compose/panels/ChildPanelsLayout {
@@ -163,6 +163,10 @@ public final class com/arkivanov/decompose/extensions/compose/stack/animation/St
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/stack/animation/StackAnimationScope : androidx/compose/animation/AnimatedVisibilityScope {
 	public abstract fun getStackAnimationDirection ()Lcom/arkivanov/decompose/extensions/compose/stack/animation/Direction;
+}
+
+public final class com/arkivanov/decompose/extensions/compose/stack/animation/StackAnimationScope$DefaultImpls {
+	public static fun animateEnterExit (Lcom/arkivanov/decompose/extensions/compose/stack/animation/StackAnimationScope;Landroidx/compose/ui/Modifier;Landroidx/compose/animation/EnterTransition;Landroidx/compose/animation/ExitTransition;Ljava/lang/String;)Landroidx/compose/ui/Modifier;
 }
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/stack/animation/StackAnimator {
