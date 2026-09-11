@@ -45,7 +45,6 @@ kotlin {
 
         common.main.dependencies {
             implementation("com.arkivanov.decompose:decompose:$version")
-            implementation("com.arkivanov.decompose:jetpack-component-context:$version")
         }
 
         android.main.dependencies {
