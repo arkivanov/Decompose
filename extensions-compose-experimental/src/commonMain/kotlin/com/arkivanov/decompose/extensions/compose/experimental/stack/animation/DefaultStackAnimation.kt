@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -32,8 +33,11 @@ import com.arkivanov.essenty.backhandler.BackEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.withContext
 
 @ExperimentalDecomposeApi
 internal class DefaultStackAnimation<C : Any, T : Any>(
@@ -402,8 +406,8 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
         suspend fun finish() {
             awaitAll(
-                { exitTransitionState.animateTo(EnterExitState.PostExit) },
-                { enterTransitionState.animateTo(EnterExitState.Visible) },
+                { withNonDecreasingFrameTime { exitTransitionState.animateTo(EnterExitState.PostExit) } },
+                { withNonDecreasingFrameTime { enterTransitionState.animateTo(EnterExitState.Visible) } },
                 { animatable?.finish() },
             )
         }
@@ -455,6 +459,38 @@ private infix fun <S> S.transitionTo(targetState: S): MutableTransitionState<S> 
         this.targetState = targetState
     }
 
+
+/**
+ * Runs the [block] with a [MonotonicFrameClock] that never goes back in time.
+ *
+ * [SeekableTransitionState.animateTo] crashes with "Cannot round NaN value" if the frame time
+ * goes backwards while animating a transition with zero total duration (e.g. when a custom
+ * [PredictiveBackAnimatable] is used and the content doesn't have transition animations).
+ * This was observed on some Huawei and Honor devices.
+ *
+ * See https://github.com/arkivanov/Decompose/issues/1012 and https://issuetracker.google.com/issues/540477169.
+ */
+private suspend fun withNonDecreasingFrameTime(block: suspend CoroutineScope.() -> Unit) {
+    val clock = currentCoroutineContext()[MonotonicFrameClock]
+    if (clock == null) {
+        coroutineScope(block)
+    } else {
+        withContext(NonDecreasingFrameClock(clock), block)
+    }
+}
+
+private class NonDecreasingFrameClock(
+    private val delegate: MonotonicFrameClock,
+) : MonotonicFrameClock {
+    private var lastFrameTimeNanos = Long.MIN_VALUE
+
+    override suspend fun <R> withFrameNanos(onFrame: (frameTimeNanos: Long) -> R): R =
+        delegate.withFrameNanos { frameTimeNanos ->
+            val time = maxOf(frameTimeNanos, lastFrameTimeNanos)
+            lastFrameTimeNanos = time
+            onFrame(time)
+        }
+}
 
 private fun TransitionState<*>.isIdle(): Boolean =
     when (this) {
