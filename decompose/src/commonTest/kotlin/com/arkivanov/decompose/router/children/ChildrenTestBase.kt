@@ -3,40 +3,22 @@ package com.arkivanov.decompose.router.children
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeSettings
-import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.statekeeper.TestStateKeeperDispatcher
+import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.keys
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.backhandler.BackDispatcher
-import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.consumeRequired
 import kotlinx.serialization.Serializable
 import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 open class ChildrenTestBase {
 
     private val navigation = SimpleNavigation<(TestNavState) -> TestNavState>()
-    protected val lifecycle = LifecycleRegistry()
-    protected val backDispatcher = BackDispatcher()
-
-    protected val context =
-        DefaultComponentContext(
-            lifecycle = lifecycle,
-            stateKeeper = TestStateKeeperDispatcher(),
-            instanceKeeper = InstanceKeeperDispatcher(),
-            backHandler = backDispatcher,
-        )
-
-    @BeforeTest
-    open fun before() {
-        lifecycle.resume()
-    }
+    protected val context = TestComponentContext()
+    protected val lifecycle by context::lifecycle
+    protected val backDispatcher by context::backHandler
 
     @AfterTest
     fun after() {
