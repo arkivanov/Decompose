@@ -74,3 +74,11 @@ Link: [github.com/nxoim/caif](https://github.com/nxoim/caif)
 
 Author: [@nxoim](https://github.com/nxoim)
 
+### DecomposeNavigator
+
+A declarative, serializable navigation layer on top of Decompose's `ChildStack`. A DSL screen registry pairs each screen's factory with its `KSerializer` in one call, a navigator tree is reachable through Composition Locals (`LocalNavigator`, `LocalLineNavigator`, `LocalSwitchNavigator`), and dedicated controllers cover both classic back-stack and tab/switch navigation with process-death-safe state persistence. `LiveNavigator` lets a retained component navigate safely from a coroutine after Activity recreation, and a deep-link bus/router/handler pipeline never drops a link tapped before the app is ready to act on it. A companion testing artifact ships real, in-memory navigator fakes rather than call recorders. Targets Android, iOS, and JVM (Desktop).
+
+Link: [github.com/jamal-wia/DecomposeNavigator](https://github.com/jamal-wia/DecomposeNavigator)
+
+Author: [@jamal-wia](https://github.com/jamal-wia)
+
