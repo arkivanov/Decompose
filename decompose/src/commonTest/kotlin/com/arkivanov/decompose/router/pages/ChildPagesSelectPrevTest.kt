@@ -1,22 +1,13 @@
 package com.arkivanov.decompose.router.pages
 
-import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.getValue
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.essenty.lifecycle.resume
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 @Suppress("TestFunctionName")
 class ChildPagesSelectPrevTest : BaseChildPagesTest() {
 
-    private val lifecycle = LifecycleRegistry()
-    private val context = DefaultComponentContext(lifecycle = lifecycle)
-
-    @BeforeTest
-    fun before() {
-        lifecycle.resume()
-    }
+    private val context = TestComponentContext()
 
     @Test
     fun GIVEN_pages_empty_WHEN_selectPrev_THEN_pages_empty() {
