@@ -18,9 +18,7 @@ import kotlin.test.assertNotEquals
 class ChildrenKeysTest : ChildrenTestBase() {
 
     @BeforeTest
-    override fun before() {
-        super.before()
-
+    fun before() {
         DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
     }
 
