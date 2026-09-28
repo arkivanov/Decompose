@@ -35,6 +35,8 @@ setupDefaults(
         jvm()
         js { browser() }
         wasmJs { browser() }
+        linuxX64()
+        linuxArm64()
         iosCompat()
         watchosCompat()
         tvosCompat()

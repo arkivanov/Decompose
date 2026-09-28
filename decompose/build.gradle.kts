@@ -36,6 +36,7 @@ kotlin {
         val wasmJs by bundle()
         val nonWeb by bundle()
         val web by bundle()
+        val linux by bundle()
 
         (darwin) dependsOn common
         nonWeb dependsOn common
@@ -44,6 +45,8 @@ kotlin {
         (js + wasmJs) dependsOn web
         (iosSet + tvosSet) dependsOn itvos
         (darwinSet - iosSet - tvosSet + itvos) dependsOn darwin
+        linux dependsOn common
+        linuxSet dependsOn linux
 
         all {
             languageSettings {
