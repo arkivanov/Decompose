@@ -44,7 +44,7 @@ Please check the [Installation](https://arkivanov.github.io/Decompose/getting-st
 
 ### Supported platforms
 
-In general, Decompose supports the following targets: `android`, `jvm`, `ios`, `watchos`, `tvos`, `macos`, `wasmJs`, `js`. However, some modules do not support all targets or the support depends on the Decompose version. Please see the installation docs for details.
+In general, Decompose supports the following targets: `android`, `jvm`, `ios`, `watchos`, `tvos`, `macos`, `linuxX64`, `linuxArm64`, `wasmJs`, `js`. However, some modules do not support all targets or the support depends on the Decompose version. Please see the installation docs for details.
 
 ## Overview
 
