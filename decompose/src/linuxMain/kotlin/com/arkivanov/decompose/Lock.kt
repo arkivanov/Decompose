@@ -35,22 +35,12 @@ internal actual class Lock actual constructor() {
     }
 
     actual inline fun <T> synchronizedImpl(block: () -> T): T {
-        lock()
+        pthread_mutex_lock(mutex.ptr)
         try {
             return block()
         } finally {
-            unlock()
+            pthread_mutex_unlock(mutex.ptr)
         }
-    }
-
-    @PublishedApi
-    internal fun lock() {
-        pthread_mutex_lock(mutex.ptr)
-    }
-
-    @PublishedApi
-    internal fun unlock() {
-        pthread_mutex_unlock(mutex.ptr)
     }
 
     private class Resources(
