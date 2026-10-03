@@ -2,7 +2,9 @@ package com.arkivanov.decompose.router.webhistory
 
 import kotlinx.browser.window
 
-internal actual object DefaultBrowserHistory : BrowserHistory {
+internal actual class DefaultBrowserHistory actual constructor(
+    actual override val version: String?
+) : BrowserHistory {
 
     actual override val state: String? get() = window.history.state?.toString()
 

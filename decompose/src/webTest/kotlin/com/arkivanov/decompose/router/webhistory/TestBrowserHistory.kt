@@ -3,7 +3,9 @@ package com.arkivanov.decompose.router.webhistory
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class TestBrowserHistory : BrowserHistory {
+class TestBrowserHistory(
+    override var version: String? = null
+) : BrowserHistory {
 
     private val pendingOperations = ArrayList<() -> Unit>()
     private var onPopStateListener: ((state: String?) -> Unit)? = null
@@ -36,6 +38,10 @@ class TestBrowserHistory : BrowserHistory {
     }
 
     override fun replaceState(data: String?, url: String?) {
+        replaceStateAt(index = index, data = data, url = url)
+    }
+
+    fun replaceStateAt(index: Int, data: String?, url: String?) {
         stack[index] = Entry(data = data, url = url)
     }
 

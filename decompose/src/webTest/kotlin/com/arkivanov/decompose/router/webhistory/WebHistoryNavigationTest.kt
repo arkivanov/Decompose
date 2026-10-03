@@ -784,8 +784,8 @@ class WebHistoryNavigationTest {
         val nav =
             TestWebNavigation(initialHistory = listOf(1)) { cfg ->
                 when (cfg) {
-                    1 ->  TestWebNavigation(initialHistory = listOf(12, 13))
-                    2 ->  TestWebNavigation(initialHistory = listOf(22))
+                    1 -> TestWebNavigation(initialHistory = listOf(12, 13))
+                    2 -> TestWebNavigation(initialHistory = listOf(22))
                     else -> null
                 }
             }
@@ -796,6 +796,35 @@ class WebHistoryNavigationTest {
         history.runPendingOperations()
 
         assertHistory(nav = nav, urls = listOf("/2/22"))
+    }
+
+    @Test
+    fun GIVEN_previous_browser_history_WHEN_created_with_new_version_THEN_current_history_item_replaced() {
+        history.version = "1"
+        var nav = TestWebNavigation(initialHistory = listOf(1))
+        enableWebHistory(nav, history)
+        nav.navigate(listOf(1, 2))
+
+        history.version = "2"
+        nav = TestWebNavigation(initialHistory = listOf(3))
+        enableWebHistory(nav, history)
+
+        history.assertStack(urls = listOf("/1", "/3"))
+        nav.assertHistory(urls = listOf("/3"))
+    }
+
+    @Test
+    fun GIVEN_previous_browser_history_and_created_with_new_version_WHEN_go_back_THEN_previous_history_item_replaced() {
+        history.version = "1"
+        var nav = TestWebNavigation(initialHistory = listOf(1))
+        enableWebHistory(nav, history)
+        nav.navigate(listOf(1, 2))
+
+        history.version = "2"
+        nav = TestWebNavigation(initialHistory = listOf(2))
+        history.navigate(delta = -1)
+
+        assertHistory(nav = nav, urls = listOf("/2", "/2"), index = 0)
     }
 
     private fun assertHistory(nav: TestWebNavigation, urls: List<String>, index: Int = urls.lastIndex) {

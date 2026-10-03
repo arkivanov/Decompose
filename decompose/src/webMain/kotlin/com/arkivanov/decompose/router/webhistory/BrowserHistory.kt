@@ -2,6 +2,7 @@ package com.arkivanov.decompose.router.webhistory
 
 internal interface BrowserHistory {
 
+    val version: String?
     val state: String?
 
     fun go(delta: Int)
