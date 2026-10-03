@@ -25,8 +25,11 @@ internal fun <T : Any> enableWebHistory(navigation: WebNavigation<T>, browserHis
 
         if (navigation.onBeforeNavigateRecursive()) {
             isEnabled = false
-            navigation.navigate(deserializedState.nodesContainer.consumeNodes())
-            isEnabled = true
+            try {
+                navigation.navigate(deserializedState.nodesContainer.consumeNodes())
+            } finally {
+                isEnabled = true
+            }
         } else {
             val delta = navigation.history().lastIndex - deserializedState.index
             if (delta != 0) {
