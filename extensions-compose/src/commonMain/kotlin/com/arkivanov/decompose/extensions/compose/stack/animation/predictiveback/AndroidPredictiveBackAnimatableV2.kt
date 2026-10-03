@@ -18,7 +18,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.util.lerp
@@ -75,13 +77,14 @@ internal class AndroidPredictiveBackAnimatableV2(
         var size by remember { mutableStateOf(Size.Zero) }
         val scaleFactor = scaleFactor()
         val density = LocalDensity.current
+        val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
 
         return this
             .onPlaced { size = it.size.toSize() }
             .graphicsLayer(
                 scaleX = scaleFactor,
                 scaleY = scaleFactor,
-                translationX = lerp(start = -size.width * 0.2F, stop = 0F, fraction = finishProgress),
+                translationX = lerp(start = (if (isLtr) -size.width else size.width) * 0.2F, stop = 0F, fraction = finishProgress),
                 translationY = density.exitOffsetY(height = size.height),
                 shape = shape,
                 clip = true,
@@ -94,6 +97,7 @@ internal class AndroidPredictiveBackAnimatableV2(
         var size by remember { mutableStateOf(Size.Zero) }
         val scaleFactor = scaleFactor()
         val density = LocalDensity.current
+        val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
 
         return this
             .onPlaced { size = it.size.toSize() }
@@ -101,7 +105,11 @@ internal class AndroidPredictiveBackAnimatableV2(
                 scaleX = scaleFactor,
                 scaleY = scaleFactor,
                 alpha = 1F - finishProgress,
-                translationX = density.exitOffsetX(width = size.width),
+                translationX = when {
+                    size.width == 0F -> 0F
+                    isLtr -> density.exitOffsetXLtr(width = size.width)
+                    else -> density.exitOffsetXRtl(width = size.width)
+                },
                 translationY = density.exitOffsetY(height = size.height),
                 shape = shape,
                 clip = true,
@@ -109,19 +117,26 @@ internal class AndroidPredictiveBackAnimatableV2(
             ) // Not using `graphicsLayer {}` with lambda due to https://github.com/arkivanov/Decompose/issues/877
     }
 
-    private fun Density.exitOffsetX(width: Float): Float {
-        if (width == 0F) {
-            return 0F
-        }
-
+    private fun Density.exitOffsetXLtr(width: Float): Float {
         val initialOffsetX =
             when (edge) {
                 BackEvent.SwipeEdge.LEFT -> (width - width * initialScaleFactor()) / 2F - 8.dp.toPx() * progress
                 BackEvent.SwipeEdge.RIGHT -> 0F
-                BackEvent.SwipeEdge.UNKNOWN -> 0F
+                else -> 0F
             }
 
         return lerp(start = initialOffsetX, stop = width * 0.2F, fraction = finishProgress)
+    }
+
+    private fun Density.exitOffsetXRtl(width: Float): Float {
+        val initialOffsetX =
+            when (edge) {
+                BackEvent.SwipeEdge.RIGHT -> 8.dp.toPx() * progress - (width - width * initialScaleFactor()) / 2F
+                BackEvent.SwipeEdge.LEFT -> 0F
+                else -> 0F
+            }
+
+        return lerp(start = initialOffsetX, stop = -width * 0.2F, fraction = finishProgress)
     }
 
     private fun initialScaleFactor(): Float =
