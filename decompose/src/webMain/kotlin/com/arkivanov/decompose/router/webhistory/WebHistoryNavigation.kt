@@ -1,9 +1,13 @@
 package com.arkivanov.decompose.router.webhistory
 
 import com.arkivanov.decompose.Cancellation
-import com.arkivanov.decompose.Json
+import com.arkivanov.decompose.JsonString
+import com.arkivanov.decompose.asJsonString
+import com.arkivanov.decompose.decodeSerializable
 import com.arkivanov.decompose.doOnCancel
+import com.arkivanov.decompose.encodeToJson
 import com.arkivanov.decompose.encodeURIComponent
+import com.arkivanov.decompose.errorhandler.printError
 import com.arkivanov.decompose.router.stack.startsWith
 import com.arkivanov.decompose.router.stack.subscribe
 import com.arkivanov.decompose.router.webhistory.WebNavigation.HistoryItem
@@ -13,22 +17,33 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 
-internal fun <T : Any> enableWebHistory(navigation: WebNavigation<T>, browserHistory: BrowserHistory) {
-    if (browserHistory.state == null) {
-        browserHistory.replaceState(navigation.nodeHistory())
-    }
+internal fun <T : Any> enableWebHistory(
+    navigation: WebNavigation<T>,
+    browserHistory: BrowserHistory,
+    onRecreate: () -> Unit = {},
+): Cancellation {
+    val baseIndexOffset = browserHistory.currentIndex() - navigation.history().lastIndex
+    browserHistory.replaceState(navigation.nodeHistory())
 
     var isEnabled = true
 
     fun onPopState(state: String?) {
-        val deserializedState = state?.deserializeState() ?: return
+        val deserializedState = state?.asJsonString()?.deserializeState() ?: return
 
         if (navigation.onBeforeNavigateRecursive()) {
-            isEnabled = false
-            navigation.navigate(deserializedState.nodesContainer.consumeNodes())
-            isEnabled = true
+            if (deserializedState.schemaVersion == browserHistory.schemaVersion) {
+                isEnabled = false
+                try {
+                    navigation.navigate(deserializedState.nodesContainer.consumeNodes())
+                } finally {
+                    isEnabled = true
+                }
+            } else {
+                printError(message = "Can't navigate due to a version mismatch, recreating the root component")
+                onRecreate()
+            }
         } else {
-            val delta = navigation.history().lastIndex - deserializedState.index
+            val delta = navigation.history().lastIndex + baseIndexOffset - deserializedState.index
             if (delta != 0) {
                 browserHistory.setOnPopStateListener { browserHistory.setOnPopStateListener(::onPopState) }
                 browserHistory.go(delta)
@@ -38,7 +53,7 @@ internal fun <T : Any> enableWebHistory(navigation: WebNavigation<T>, browserHis
 
     browserHistory.setOnPopStateListener(::onPopState)
 
-    navigation.subscribe(
+    return navigation.subscribe(
         isEnabled = { isEnabled },
         onPush = { history ->
             history.forEach(browserHistory::pushState)
@@ -95,20 +110,20 @@ private fun <T : Any> WebNavigation<T>.navigate(nodes: List<SerializableNode>) {
 
 private fun BrowserHistory.replaceState(nodes: NodeHistory<*>) {
     replaceState(
-        data = serializeState(index = currentIndex(), nodes = nodes),
+        data = serializeState(index = currentIndex(), version = schemaVersion, nodes = nodes).value,
         url = nodes.last().url(),
     )
 }
 
 private fun BrowserHistory.pushState(nodes: NodeHistory<*>) {
     pushState(
-        data = serializeState(index = currentIndex() + 1, nodes = nodes),
+        data = serializeState(index = currentIndex() + 1, version = schemaVersion, nodes = nodes).value,
         url = nodes.last().url()
     )
 }
 
 private fun BrowserHistory.currentIndex(): Int =
-    state?.deserializeState()?.index ?: 0
+    state?.asJsonString()?.deserializeState()?.index ?: 0
 
 private fun <T> Node<T>.toSerializableNode(): SerializableNode =
     SerializableNode(
@@ -116,20 +131,25 @@ private fun <T> Node<T>.toSerializableNode(): SerializableNode =
         children = children.map { it.toSerializableNode() },
     )
 
-private fun HistoryState.serialize(): String =
-    Json.encodeToString(serializer = HistoryState.serializer(), value = this)
+private fun HistoryState.serialize(): JsonString =
+    encodeToJson(HistoryState.serializer())
 
-private fun String.deserializeState(): HistoryState =
-    Json.decodeFromString(deserializer = HistoryState.serializer(), string = this)
+private fun JsonString.deserializeState(): HistoryState? =
+    decodeSerializable(HistoryState.serializer())
 
 private fun SerializableContainer.consumeNodes(): List<SerializableNode> =
     consumeRequired(SerializableNode.listSerializer)
 
 private fun serializeState(
     index: Int,
+    version: String?,
     nodes: NodeHistory<*>,
-): String =
-    HistoryState(index = index, nodes = nodes.map { it.toSerializableNode() }).serialize()
+): JsonString =
+    HistoryState(
+        index = index,
+        nodes = nodes.map { it.toSerializableNode() },
+        version = version,
+    ).serialize()
 
 private fun <T : Any> WebNavigation<T>.subscribe(
     isEnabled: () -> Boolean,
@@ -350,10 +370,16 @@ private typealias NodeHistory<T> = List<Node<T>>
 private class HistoryState(
     val index: Int,
     val nodesContainer: SerializableContainer,
+    val schemaVersion: String? = null,
 )
 
-private fun HistoryState(index: Int, nodes: List<SerializableNode>): HistoryState =
+private fun HistoryState(
+    index: Int,
+    nodes: List<SerializableNode>,
+    version: String?,
+): HistoryState =
     HistoryState(
         index = index,
+        schemaVersion = version,
         nodesContainer = SerializableContainer(value = nodes, strategy = SerializableNode.listSerializer),
     )
