@@ -13,7 +13,9 @@ import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.util.lerp
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.backhandler.BackEvent
@@ -28,7 +30,6 @@ internal class AndroidPredictiveBackAnimatableV1(
     private val exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
     private val enterShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)? = null,
 ) : PredictiveBackAnimatable {
-
 
     private val exitProgressAnimatable = Animatable(initialValue = initialEvent.progress.exitProgress())
     private val exitProgress: Float by derivedStateOf { exitProgressAnimatable.value }
@@ -66,6 +67,7 @@ internal class AndroidPredictiveBackAnimatableV1(
     private fun Modifier.exitModifier(layoutShape: (progress: Float, edge: BackEvent.SwipeEdge) -> Shape): Modifier {
         var size by remember { mutableStateOf(IntSize.Zero) }
         val scaleFactor = 1F - exitProgress * 0.1F
+        val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
 
         return this
             .onPlaced { size = it.size }
@@ -73,7 +75,7 @@ internal class AndroidPredictiveBackAnimatableV1(
                 scaleX = scaleFactor,
                 scaleY = scaleFactor,
                 alpha = 1F - exitProgress,
-                translationX = size.width * 0.5F * exitProgress,
+                translationX = (if (isLtr) size.width else -size.width) * 0.5F * exitProgress,
                 shape = layoutShape(exitProgress, edge),
                 clip = true,
                 compositingStrategy = CompositingStrategy.Offscreen,
@@ -85,6 +87,7 @@ internal class AndroidPredictiveBackAnimatableV1(
         val totalProgress = lerp(start = enterProgress, stop = 1F, fraction = finishProgress)
         var size by remember { mutableStateOf(IntSize.Zero) }
         val scaleFactor = lerp(start = lerp(start = 0.95F, stop = 0.90F, fraction = enterProgress), stop = 1F, fraction = finishProgress)
+        val isLtr = LocalLayoutDirection.current == LayoutDirection.Ltr
 
         return this
             .onPlaced { size = it.size }
@@ -92,7 +95,7 @@ internal class AndroidPredictiveBackAnimatableV1(
                 scaleX = scaleFactor,
                 scaleY = scaleFactor,
                 alpha = totalProgress,
-                translationX = lerp(start = -size.width * 0.15F, stop = 0F, fraction = totalProgress),
+                translationX = lerp(start = (if (isLtr) -size.width else size.width) * 0.15F, stop = 0F, fraction = totalProgress),
                 shape = layoutShape(lerp(start = enterProgress, stop = 0F, fraction = finishProgress), edge),
                 clip = true,
                 compositingStrategy = CompositingStrategy.Offscreen,
