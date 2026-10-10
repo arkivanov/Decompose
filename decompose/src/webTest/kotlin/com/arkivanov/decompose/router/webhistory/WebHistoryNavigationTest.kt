@@ -2,6 +2,7 @@ package com.arkivanov.decompose.router.webhistory
 
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 @Suppress("TestFunctionName")
 class WebHistoryNavigationTest {
@@ -784,8 +785,8 @@ class WebHistoryNavigationTest {
         val nav =
             TestWebNavigation(initialHistory = listOf(1)) { cfg ->
                 when (cfg) {
-                    1 ->  TestWebNavigation(initialHistory = listOf(12, 13))
-                    2 ->  TestWebNavigation(initialHistory = listOf(22))
+                    1 -> TestWebNavigation(initialHistory = listOf(12, 13))
+                    2 -> TestWebNavigation(initialHistory = listOf(22))
                     else -> null
                 }
             }
@@ -796,6 +797,183 @@ class WebHistoryNavigationTest {
         history.runPendingOperations()
 
         assertHistory(nav = nav, urls = listOf("/2/22"))
+    }
+
+    @Test
+    fun GIVEN_previous_history_WHEN_created_with_new_version_and_same_stack_size_THEN_current_history_item_replaced() {
+        history.schemaVersion = "1"
+        var nav = TestWebNavigation(initialHistory = listOf(1))
+        enableWebHistory(nav, history)
+        nav.navigate(listOf(1, 2))
+        history.runPendingOperations()
+
+        history.schemaVersion = "2"
+        nav = TestWebNavigation(initialHistory = listOf(1, 3))
+        enableWebHistory(nav, history)
+
+        assertHistory(nav = nav, urls = listOf("/1", "/3"))
+    }
+
+    @Test
+    fun GIVEN_previous_history_WHEN_created_with_new_version_and_longer_stack_THEN_current_history_item_replaced() {
+        history.schemaVersion = "1"
+        var nav = TestWebNavigation(initialHistory = listOf(1))
+        enableWebHistory(nav, history)
+        nav.navigate(listOf(1, 2))
+        history.runPendingOperations()
+
+        history.schemaVersion = "2"
+        nav = TestWebNavigation(initialHistory = listOf(1, 2, 3))
+        enableWebHistory(nav, history)
+
+        history.assertStack(urls = listOf("/1", "/3"))
+        nav.assertHistory(urls = listOf("/1", "/2", "/3"))
+    }
+
+    @Test
+    fun GIVEN_previous_history_WHEN_created_with_new_version_and_shorter_stack_THEN_current_history_item_replaced() {
+        history.schemaVersion = "1"
+        var nav = TestWebNavigation(initialHistory = listOf(1))
+        enableWebHistory(nav, history)
+        nav.navigate(listOf(1, 2))
+        history.runPendingOperations()
+
+        history.schemaVersion = "2"
+        nav = TestWebNavigation(initialHistory = listOf(3))
+        enableWebHistory(nav, history)
+
+        history.assertStack(urls = listOf("/1", "/3"))
+        nav.assertHistory(urls = listOf("/3"))
+    }
+
+    @Test
+    fun GIVEN_previous_history_and_created_with_new_version_WHEN_go_back_THEN_recreated() {
+        history.schemaVersion = "1"
+        var nav = TestWebNavigation(initialHistory = listOf(1))
+        enableWebHistory(nav, history)
+        nav.navigate(listOf(1, 2))
+        history.runPendingOperations()
+        history.schemaVersion = "2"
+        nav = TestWebNavigation(initialHistory = listOf(1, 2))
+        var isRecreated = false
+        enableWebHistory(navigation = nav, browserHistory = history, onRecreate = { isRecreated = true })
+
+        history.navigate(delta = -1)
+
+        assertTrue(isRecreated)
+    }
+
+    @Test
+    fun GIVEN_previous_history_and_created_with_new_version_WHEN_go_back_THEN_browser_history_popped_and_nav_history_remains() {
+        history.schemaVersion = "1"
+        var nav = TestWebNavigation(initialHistory = listOf(1))
+        enableWebHistory(nav, history)
+        nav.navigate(listOf(1, 2))
+        history.runPendingOperations()
+        history.schemaVersion = "2"
+        nav = TestWebNavigation(initialHistory = listOf(1, 2))
+        enableWebHistory(navigation = nav, browserHistory = history)
+
+        history.navigate(delta = -1)
+
+        history.assertStack(urls = listOf("/1", "/2"), index = 0)
+        nav.assertHistory(urls = listOf("/1", "/2"))
+    }
+
+    @Test
+    fun GIVEN_previous_history_and_created_with_new_version_and_same_stack_size_WHEN_go_back_and_onBeforeNavigate_false_THEN_history_remains() {
+        history.schemaVersion = "1"
+        var nav = TestWebNavigation(initialHistory = listOf(1))
+        enableWebHistory(nav, history)
+        nav.navigate(listOf(1, 2))
+        history.schemaVersion = "2"
+        nav = TestWebNavigation(initialHistory = listOf(1, 3), onBeforeNavigate = { false })
+        enableWebHistory(navigation = nav, browserHistory = history)
+
+        history.navigate(delta = -1)
+
+        assertHistory(nav = nav, urls = listOf("/1", "/3"))
+    }
+
+    @Test
+    fun GIVEN_previous_history_and_created_with_new_version_and_longer_stack_WHEN_go_back_and_onBeforeNavigate_false_THEN_history_remains() {
+        history.schemaVersion = "1"
+        var nav = TestWebNavigation(initialHistory = listOf(1))
+        enableWebHistory(nav, history)
+        nav.navigate(listOf(1, 2))
+        history.runPendingOperations()
+        history.schemaVersion = "2"
+        nav = TestWebNavigation(initialHistory = listOf(1, 2, 3), onBeforeNavigate = { false })
+        enableWebHistory(navigation = nav, browserHistory = history)
+
+        history.navigate(delta = -1)
+
+        history.assertStack(urls = listOf("/1", "/3"))
+        nav.assertHistory(urls = listOf("/1", "/2", "/3"))
+    }
+
+    @Test
+    fun GIVEN_previous_history_and_created_with_new_version_and_shorter_stack_WHEN_go_back_and_onBeforeNavigate_false_THEN_history_remains() {
+        history.schemaVersion = "1"
+        var nav = TestWebNavigation(initialHistory = listOf(1))
+        enableWebHistory(nav, history)
+        nav.navigate(listOf(1, 2, 3))
+        history.runPendingOperations()
+        history.schemaVersion = "2"
+        nav = TestWebNavigation(initialHistory = listOf(1, 4), onBeforeNavigate = { false })
+        enableWebHistory(navigation = nav, browserHistory = history)
+
+        history.navigate(delta = -1)
+
+        history.assertStack(urls = listOf("/1", "/2", "/4"))
+        nav.assertHistory(urls = listOf("/1", "/4"))
+    }
+
+    @Test
+    fun GIVEN_previous_history_and_created_with_new_version_and_same_stack_size_WHEN_navigate_replace_children_THEN_history_updated() {
+        history.schemaVersion = "1"
+        var nav = TestWebNavigation(initialHistory = listOf(1))
+        enableWebHistory(nav, history)
+        nav.navigate(listOf(1, 2))
+        history.runPendingOperations()
+        history.schemaVersion = "2"
+        nav = TestWebNavigation(initialHistory = listOf(1, 3))
+        enableWebHistory(navigation = nav, browserHistory = history)
+
+        nav.navigate(listOf(4, 5))
+        history.runPendingOperations()
+
+        assertHistory(nav = nav, urls = listOf("/4", "/5"))
+    }
+
+    @Test
+    fun GIVEN_previous_history_and_created_with_new_version_and_longer_stack_WHEN_navigate_replace_children_THEN_history_updated() {
+        history.schemaVersion = "1"
+        var nav = TestWebNavigation(initialHistory = listOf(1))
+        enableWebHistory(nav, history)
+        history.schemaVersion = "2"
+        nav = TestWebNavigation(initialHistory = listOf(1, 2))
+        enableWebHistory(navigation = nav, browserHistory = history)
+
+        nav.navigate(listOf(3, 4))
+        history.runPendingOperations()
+
+        assertHistory(nav = nav, urls = listOf("/3", "/4"))
+    }
+
+    @Test
+    fun GIVEN_previous_history_and_created_with_new_version_and_shorter_stack_WHEN_navigate_replace_children_THEN_history_updated() {
+        history.schemaVersion = "1"
+        var nav = TestWebNavigation(initialHistory = listOf(1, 2))
+        enableWebHistory(nav, history)
+        history.schemaVersion = "2"
+        nav = TestWebNavigation(initialHistory = listOf(1))
+        enableWebHistory(navigation = nav, browserHistory = history)
+
+        nav.navigate(listOf(3))
+        history.runPendingOperations()
+
+        assertHistory(nav = nav, urls = listOf("/3"))
     }
 
     private fun assertHistory(nav: TestWebNavigation, urls: List<String>, index: Int = urls.lastIndex) {

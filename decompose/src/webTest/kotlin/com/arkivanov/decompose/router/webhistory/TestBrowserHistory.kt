@@ -3,7 +3,9 @@ package com.arkivanov.decompose.router.webhistory
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class TestBrowserHistory : BrowserHistory {
+class TestBrowserHistory(
+    override var schemaVersion: String? = null
+) : BrowserHistory {
 
     private val pendingOperations = ArrayList<() -> Unit>()
     private var onPopStateListener: ((state: String?) -> Unit)? = null
