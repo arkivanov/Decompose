@@ -241,7 +241,6 @@ private fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, N : NavState<
             val restoredNavState: N? = savedState?.navState?.let(restoreState)
 
             ChildrenNavigator(
-                lifecycle = lifecycle,
                 retainedInstanceSupplier = { factory -> instanceKeeper.getOrCreate(key = key, factory = factory) },
                 childItemFactory = DefaultChildItemFactory(
                     contextFactory = componentContextFactory,
