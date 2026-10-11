@@ -21,7 +21,7 @@ class DefaultWebHistoryController internal constructor(
 ) : WebHistoryController {
 
     @Suppress("unused") // Public API
-    constructor() : this(DefaultBrowserHistory)
+    constructor() : this(DefaultBrowserHistory(schemaVersion = null))
 
     override val historyPaths: List<String>
         get() = browserHistory.getItems().map(PageItem::path)
