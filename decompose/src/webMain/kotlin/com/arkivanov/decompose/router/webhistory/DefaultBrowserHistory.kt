@@ -1,7 +1,8 @@
 package com.arkivanov.decompose.router.webhistory
 
-internal expect object DefaultBrowserHistory : BrowserHistory {
+internal expect class DefaultBrowserHistory(schemaVersion: String?): BrowserHistory {
 
+    override val schemaVersion: String?
     override val state: String?
 
     override fun go(delta: Int)

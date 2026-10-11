@@ -57,7 +57,7 @@ class TestWebNavigation(
     }
 
     fun assertHistory(configs: Iterable<Int>) {
-        assertContentEquals(configs, _history.value.map { it.key })
+        assertEquals(configs.toList(), _history.value.map { it.key })
     }
 
     fun assertHistory(urls: List<String>) {
