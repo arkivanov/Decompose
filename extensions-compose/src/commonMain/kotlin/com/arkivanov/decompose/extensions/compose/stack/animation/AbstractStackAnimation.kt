@@ -53,10 +53,13 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
                     Child(
                         item = item,
                         onFinished = {
-                            if (item.direction.isExit) {
-                                items -= key
-                            } else {
-                                items += (key to item.copy(otherChild = null))
+                            // The callback may be stale, e.g. when called by EmptyStackAnimator after nextItems are applied
+                            if (items[key] == item) {
+                                if (item.direction.isExit) {
+                                    items -= key
+                                } else {
+                                    items += (key to item.copy(otherChild = null))
+                                }
                             }
                         },
                         content = content,
