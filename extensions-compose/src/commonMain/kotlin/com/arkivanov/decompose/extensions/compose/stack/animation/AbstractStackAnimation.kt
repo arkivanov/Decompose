@@ -53,7 +53,9 @@ internal abstract class AbstractStackAnimation<C : Any, T : Any>(
                     Child(
                         item = item,
                         onFinished = {
-                            // The callback may be stale, e.g. when called by EmptyStackAnimator after nextItems are applied
+                            // A queued transition (nextItems) may have replaced this item since the completion was issued:
+                            // EmptyStackAnimator reports from a DisposableEffect, which runs after the exiting child's
+                            // onDispose has already applied nextItems. Ignore such stale completions.
                             if (items[key] == item) {
                                 if (item.direction.isExit) {
                                     items -= key
