@@ -1,6 +1,6 @@
 [versions]
 
-decompose = "3.6.0-beta01"
+decompose = "3.6.0-beta02"
 kotlin = "2.3.21"
 essenty = "2.7.0-alpha01"
 reaktive = "2.2.0"

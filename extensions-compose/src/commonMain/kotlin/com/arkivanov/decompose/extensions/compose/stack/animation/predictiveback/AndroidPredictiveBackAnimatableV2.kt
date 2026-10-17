@@ -36,9 +36,9 @@ internal class AndroidPredictiveBackAnimatableV2(
 ) : PredictiveBackAnimatable {
 
     private val finishProgressAnimatable = Animatable(initialValue = 0F)
-    private val finishProgress by derivedStateOf { finishProgressAnimatable.value }
+    private val finishProgress by derivedStateOf { finishProgressAnimatable.value.coerceIn(0F, 1F) }
     private val progressAnimatable = Animatable(initialValue = initialEvent.progress)
-    private val progress by derivedStateOf { progressAnimatable.value }
+    private val progress by derivedStateOf { progressAnimatable.value.coerceIn(0F, 1F) }
     private var edge by mutableStateOf(initialEvent.swipeEdge)
     private var touchY by mutableFloatStateOf(initialEvent.touchY)
 
@@ -163,11 +163,13 @@ internal class AndroidPredictiveBackAnimatableV2(
     }
 
     override suspend fun finish() {
-        val velocityFactor = progressAnimatable.velocity.coerceAtMost(1F) / 1F
+        val velocityFactor = (progressAnimatable.velocity / MAX_PROGRESS_ANIMATABLE_VELOCITY).coerceIn(0F, 1F)
         val progress = progressAnimatable.value
+        val targetProgress = (progress + (1F - progress) * velocityFactor).coerceIn(0F, 1F)
+
         coroutineScope {
             joinAll(
-                launch { progressAnimatable.animateTo(progress + (1F - progress) * velocityFactor) },
+                launch { progressAnimatable.animateTo(targetValue = targetProgress) },
                 launch { finishProgressAnimatable.animateTo(targetValue = 1F) },
             )
         }
