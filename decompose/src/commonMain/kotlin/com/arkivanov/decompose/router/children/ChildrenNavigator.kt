@@ -11,7 +11,6 @@ import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.create
 import com.arkivanov.essenty.lifecycle.destroy
-import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.lifecycle.pause
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.start
@@ -20,7 +19,6 @@ import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.Serializable
 
 internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
-    lifecycle: Lifecycle,
     retainedInstanceSupplier: (factory: () -> InstanceKeeper.Instance) -> InstanceKeeper.Instance,
     private val childItemFactory: ChildItemFactory<C, T>,
     navState: N,
@@ -51,19 +49,6 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             switch(newStates = navState.children)
         } else {
             restore(navState = navState, savedStates = savedChildState)
-        }
-
-        lifecycle.doOnDestroy {
-            items.asReversed().forEach { item ->
-                when (item) {
-                    is Created -> {
-                        item.backHandler.stop()
-                        item.lifecycleRegistry.destroy()
-                    }
-
-                    is Destroyed -> Unit
-                }
-            }
         }
     }
 
