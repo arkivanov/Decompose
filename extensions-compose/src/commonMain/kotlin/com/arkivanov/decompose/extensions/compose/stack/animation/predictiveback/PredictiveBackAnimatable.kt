@@ -71,3 +71,5 @@ fun predictiveBackAnimatable(
         getExitModifier = exitModifier,
         getEnterModifier = enterModifier,
     )
+
+internal const val MAX_PROGRESS_ANIMATABLE_VELOCITY: Float = 5F
