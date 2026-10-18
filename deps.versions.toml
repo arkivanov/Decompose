@@ -3,30 +3,29 @@
 decompose = "3.6.0-beta02"
 kotlin = "2.3.21"
 essenty = "2.7.0-alpha01"
-reaktive = "2.2.0"
+reaktive = "2.4.0"
 junit = "4.13.2"
-jetbrainsCompose = "1.9.3"
+jetbrainsCompose = "1.12.2"
 jetbrainsComposeMaterialIcons = "1.7.3"
 jetbrainsKotlinWrappers = "1.0.0-pre.608"
-jetbrainsKotlinxCoroutines = "1.9.0"
-jetbrainsKotlinxSerialization = "1.6.3"
+jetbrainsKotlinxCoroutines = "1.11.0"
+jetbrainsKotlinxSerialization = "1.11.0"
 jetbrainsKotlinxBrowser = "0.3"
 jetbrainsBinaryCompatibilityValidator = "0.18.2"
 robolectric = "4.16.1"
 androidGradle = "8.13.2"
-androidMaterial = "1.6.1"
+androidMaterial = "1.14.0"
 androidPlay = "1.10.3"
-androidxCore = "1.9.0"
-androidxAppcompat = "1.6.0"
-androidxActivity = "1.8.2"
-androidxFragment = "1.6.2"
-androidxLifecycle = "2.9.1"
+androidxCore = "1.19.1"
+androidxAppcompat = "1.8.0"
+androidxActivity = "1.13.0"
+androidxFragment = "1.9.1"
+androidxLifecycle = "2.11.0"
 dependencyGuard = "0.5.0"
 
 [libraries]
 
 kotlin-kotlinGradlePlug = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 
 essenty-lifecycle = { group = "com.arkivanov.essenty", name = "lifecycle", version.ref = "essenty" }
 essenty-lifecycleReaktive = { group = "com.arkivanov.essenty", name = "lifecycle-reaktive", version.ref = "essenty" }
