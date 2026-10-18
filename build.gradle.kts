@@ -31,21 +31,20 @@ plugins {
 
 setupDefaults(
     multiplatformConfigurator = {
-        androidTarget()
         jvm()
         js { browser() }
         wasmJs { browser() }
         linuxX64()
         linuxArm64()
         iosCompat(x64 = null)
-        watchosCompat(x64 = null)
-        tvosCompat(x64 = null)
-        macosCompat(x64 = null)
+        watchosCompat()
+        tvosCompat()
+        macosCompat()
     },
     androidConfig = AndroidConfig(
         minSdkVersion = 24,
-        compileSdkVersion = 36,
-        targetSdkVersion = 36,
+        compileSdkVersion = 37,
+        targetSdkVersion = 37,
     ),
     binaryCompatibilityValidatorConfig = BinaryCompatibilityValidatorConfig(
         nonPublicMarkers = listOf("com.arkivanov.decompose.InternalDecomposeApi"),

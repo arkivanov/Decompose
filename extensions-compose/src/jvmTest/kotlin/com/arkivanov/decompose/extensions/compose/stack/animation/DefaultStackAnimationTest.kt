@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.MainTestClock
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.extensions.compose.animateFloat
 import com.arkivanov.decompose.extensions.compose.takeSorted

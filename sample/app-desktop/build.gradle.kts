@@ -11,9 +11,7 @@ plugins {
 }
 
 setupMultiplatform {
-    jvm {
-        withJava()
-    }
+    jvm()
 }
 
 kotlin {

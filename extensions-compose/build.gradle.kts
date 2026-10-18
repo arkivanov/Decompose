@@ -9,7 +9,7 @@ import com.arkivanov.gradle.setupSourceSets
 
 plugins {
     id("kotlin-multiplatform")
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.arkivanov.gradle.setup")
@@ -17,9 +17,8 @@ plugins {
 }
 
 setupMultiplatform {
-    androidTarget()
     jvm()
-    macosCompat(x64 = null)
+    macosCompat()
     iosCompat(x64 = null)
     js { browser() }
     wasmJs { browser() }
@@ -28,15 +27,15 @@ setupMultiplatform {
 setupPublication()
 setupBinaryCompatibilityValidator()
 
-android {
-    namespace = "com.arkivanov.decompose.extensions.compose"
-}
-
 dependencyGuard {
-    configuration("releaseRuntimeClasspath")
+    configuration("androidRuntimeClasspath")
 }
 
 kotlin {
+    android {
+        namespace = "com.arkivanov.decompose.extensions.compose"
+    }
+
     setupSourceSets {
         val android by bundle()
         val jvm by bundle()
@@ -54,7 +53,8 @@ kotlin {
 
         common.main.dependencies {
             implementation(project(":decompose"))
-            implementation(compose.foundation)
+            implementation(deps.jetbrains.compose.runtime)
+            implementation(deps.jetbrains.compose.foundation)
         }
 
         jvm.test.dependencies {
@@ -64,4 +64,10 @@ kotlin {
             implementation(compose.desktop.currentOs)
         }
     }
+}
+
+// Compose UI tests are jvmMain-only for now, so this check is not needed.
+// Otherwise, remove it and add js.binaries.executable().
+tasks.matching { it.name.startsWith("checkComposeUiTestConfiguration") }.configureEach {
+    enabled = false
 }

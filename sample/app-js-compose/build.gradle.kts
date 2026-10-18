@@ -25,15 +25,11 @@ kotlin {
             implementation(project(":extensions-compose"))
             implementation(project(":sample:shared:shared"))
             implementation(project(":sample:shared:compose"))
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(deps.jetbrains.compose.runtime)
+            implementation(deps.jetbrains.compose.foundation)
+            implementation(deps.jetbrains.compose.material)
             implementation(project.dependencies.enforcedPlatform(deps.jetbrains.kotlinWrappers.kotlinWrappersBom.get()))
             implementation("org.jetbrains.kotlin-wrappers:kotlin-browser")
         }
     }
-}
-
-compose.experimental {
-    web.application {}
 }

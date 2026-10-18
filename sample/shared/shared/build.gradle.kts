@@ -8,23 +8,26 @@ import org.jetbrains.kotlin.konan.target.Family
 
 plugins {
     id("kotlin-multiplatform")
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("kotlinx-serialization")
     id("com.arkivanov.gradle.setup")
 }
 
 setupMultiplatform {
-    androidTarget()
     jvm()
     js { browser() }
     iosCompat(x64 = null)
 }
 
-android {
-    namespace = "com.arkivanov.sample.shared"
-}
-
 kotlin {
+    android {
+        namespace = "com.arkivanov.sample.shared"
+
+        androidResources {
+            enable = true
+        }
+    }
+
     if ("XCODE_VERSION_MAJOR" in System.getenv().keys) {
         targets
             .filterIsInstance<KotlinNativeTarget>()

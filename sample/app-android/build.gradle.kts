@@ -2,7 +2,6 @@ import com.arkivanov.gradle.setupAndroidApp
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.arkivanov.gradle.setup")
@@ -17,8 +16,10 @@ setupAndroidApp(
 android {
     namespace = "com.arkivanov.sample.app"
 
-    packagingOptions {
-        exclude("META-INF/*")
+    packaging {
+        resources {
+            excludes += "META-INF/*"
+        }
     }
 }
 
@@ -27,9 +28,9 @@ dependencies {
     implementation(project(":extensions-android"))
     implementation(project(":sample:shared:shared"))
     implementation(project(":sample:shared:compose"))
-    implementation(compose.runtime)
-    implementation(compose.foundation)
-    implementation(compose.material)
+    implementation(deps.jetbrains.compose.runtime)
+    implementation(deps.jetbrains.compose.foundation)
+    implementation(deps.jetbrains.compose.material)
     implementation(deps.androidx.core.coreKtx)
     implementation(deps.androidx.appcompat.appcompat)
     implementation(deps.androidx.activity.activityCompose)

@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     id("kotlin-multiplatform")
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("kotlinx-serialization")
     id("com.arkivanov.gradle.setup")
     id("com.dropbox.dependency-guard")
@@ -19,15 +19,15 @@ setupMultiplatform()
 setupPublication()
 setupBinaryCompatibilityValidator()
 
-android {
-    namespace = "com.arkivanov.decompose"
-}
-
 dependencyGuard {
-    configuration("releaseRuntimeClasspath")
+    configuration("androidRuntimeClasspath")
 }
 
 kotlin {
+    android {
+        namespace = "com.arkivanov.decompose"
+    }
+
     setupSourceSets {
         val android by bundle()
         val darwin by bundle()
