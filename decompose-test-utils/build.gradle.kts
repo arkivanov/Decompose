@@ -7,18 +7,18 @@ import com.arkivanov.gradle.setupSourceSets
 
 plugins {
     id("kotlin-multiplatform")
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("kotlinx-serialization")
     id("com.arkivanov.gradle.setup")
 }
 
 setupMultiplatform()
 
-android {
-    namespace = "com.arkivanov.decompose.testutils"
-}
-
 kotlin {
+    android {
+        namespace = "com.arkivanov.decompose.testutils"
+    }
+
     setupSourceSets {
         all {
             languageSettings {

@@ -8,24 +8,23 @@ import org.jetbrains.kotlin.konan.target.Family
 
 plugins {
     id("kotlin-multiplatform")
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.arkivanov.gradle.setup")
 }
 
 setupMultiplatform {
-    androidTarget()
     jvm()
     iosCompat(x64 = null)
     js { browser() }
 }
 
-android {
-    namespace = "com.arkivanov.sample.shared.compose"
-}
-
 kotlin {
+    android {
+        namespace = "com.arkivanov.sample.shared.compose"
+    }
+
     if ("XCODE_VERSION_MAJOR" in System.getenv().keys) {
         targets
             .filterIsInstance<KotlinNativeTarget>()
@@ -63,11 +62,11 @@ kotlin {
             api(project(":decompose"))
             implementation(project(":extensions-compose"))
             api(project(":sample:shared:shared"))
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
+            implementation(deps.jetbrains.compose.runtime)
+            implementation(deps.jetbrains.compose.foundation)
+            implementation(deps.jetbrains.compose.material)
+            implementation(deps.jetbrains.compose.ui)
+            implementation(deps.jetbrains.compose.components.resources)
             implementation(deps.jetbrains.compose.material.materialIconsCore)
         }
 
@@ -78,4 +77,10 @@ kotlin {
             implementation(compose.desktop.currentOs)
         }
     }
+}
+
+// Compose UI tests are jvmMain-only for now, so this check is not needed.
+// Otherwise, remove it and add js.binaries.executable().
+tasks.matching { it.name.startsWith("checkComposeUiTestConfiguration") }.configureEach {
+    enabled = false
 }

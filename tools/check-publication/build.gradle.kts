@@ -6,7 +6,7 @@ import com.arkivanov.gradle.setupSourceSets
 
 plugins {
     id("kotlin-multiplatform")
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("com.arkivanov.gradle.setup")
 }
 
@@ -27,11 +27,11 @@ setupMultiplatform()
 
 val version = deps.versions.decompose.get()
 
-android {
-    namespace = "com.arkivanov.decompose.tools.checkpublication"
-}
-
 kotlin {
+    android {
+        namespace = "com.arkivanov.decompose.tools.checkpublication"
+    }
+
     setupSourceSets {
         val android by bundle()
         val jvm by bundle()
