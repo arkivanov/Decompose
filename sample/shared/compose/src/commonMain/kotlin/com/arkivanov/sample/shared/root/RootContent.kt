@@ -14,10 +14,8 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 import com.arkivanov.decompose.extensions.compose.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.sample.shared.customnavigation.CustomNavigationContent
-import com.arkivanov.sample.shared.dynamicfeatures.DynamicFeaturesContent
 import com.arkivanov.sample.shared.pages.PagesContent
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
-import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.SharedTransitionsChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.TabsChild
@@ -53,7 +51,6 @@ private fun Children(component: RootComponent, modifier: Modifier = Modifier) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             when (val child = it.instance) {
                 is TabsChild -> TabsContent(component = child.component, modifier = Modifier.fillMaxSize())
-                is DynamicFeaturesChild -> DynamicFeaturesContent(component = child.component, modifier = Modifier.fillMaxSize())
                 is CustomNavigationChild -> CustomNavigationContent(component = child.component, modifier = Modifier.fillMaxSize())
                 is PagesChild -> PagesContent(component = child.component, modifier = Modifier.fillMaxSize())
                 is SharedTransitionsChild -> SharedTransitionsContent(component = child.component, modifier = Modifier.fillMaxSize())

@@ -36,7 +36,6 @@ internal fun MenuContent(
                 .consumeWindowInsets(WindowInsets.statusBars),
             verticalArrangement = Arrangement.Center,
         ) {
-            TextButton(text = "Dynamic Features", onClick = component.onDynamicFeaturesItemSelected)
             TextButton(text = "Custom Navigation", onClick = component.onCustomNavigationItemSelected)
             TextButton(text = "Pages", onClick = component.onPagesItemSelected)
             TextButton(text = "Shared Transitions", onClick = component.onSharedTransitionsItemSelected)

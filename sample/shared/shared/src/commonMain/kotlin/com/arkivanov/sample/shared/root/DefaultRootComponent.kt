@@ -14,14 +14,11 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.sample.shared.Url
 import com.arkivanov.sample.shared.consumePathSegment
 import com.arkivanov.sample.shared.customnavigation.DefaultCustomNavigationComponent
-import com.arkivanov.sample.shared.dynamicfeatures.DefaultDynamicFeaturesComponent
-import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.FeatureInstaller
 import com.arkivanov.sample.shared.pages.DefaultPagesComponent
 import com.arkivanov.sample.shared.path
 import com.arkivanov.sample.shared.pathSegmentOf
 import com.arkivanov.sample.shared.root.RootComponent.Child
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
-import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.SharedTransitionsChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.TabsChild
@@ -31,7 +28,6 @@ import kotlinx.serialization.Serializable
 
 class DefaultRootComponent(
     componentContext: ComponentContext,
-    private val featureInstaller: FeatureInstaller,
     deepLinkUrl: Url? = null,
 ) : RootComponent, ComponentContext by componentContext {
 
@@ -58,7 +54,6 @@ class DefaultRootComponent(
                 when (val child = it.instance) {
                     is CustomNavigationChild -> null
                     is TabsChild -> child.component
-                    is DynamicFeaturesChild -> null
                     is PagesChild -> child.component
                     is SharedTransitionsChild -> child.component
                 }
@@ -72,19 +67,9 @@ class DefaultRootComponent(
                     DefaultTabsComponent(
                         componentContext = componentContext,
                         deepLinkUrl = config.deepLinkUrl,
-                        onDynamicFeaturesItemSelected = { nav.pushNew(Config.DynamicFeatures) },
                         onCustomNavigationItemSelected = { nav.pushNew(Config.CustomNavigation) },
                         onPagesItemSelected = { nav.pushNew(Config.Pages()) },
                         onSharedTransitionsItemSelected = { nav.pushNew(Config.SharedTransitions()) },
-                    )
-                )
-
-            is Config.DynamicFeatures ->
-                DynamicFeaturesChild(
-                    DefaultDynamicFeaturesComponent(
-                        componentContext = componentContext,
-                        featureInstaller = featureInstaller,
-                        onFinished = nav::pop,
                     )
                 )
 
@@ -127,7 +112,6 @@ class DefaultRootComponent(
         val (path, childUrl) = deepLinkUrl?.consumePathSegment() ?: return listOf(Config.Tabs())
 
         return when (path) {
-            pathSegmentOf<Config.DynamicFeatures>() -> listOf(Config.Tabs(), Config.DynamicFeatures)
             pathSegmentOf<Config.CustomNavigation>() -> listOf(Config.Tabs(), Config.CustomNavigation)
             pathSegmentOf<Config.Pages>() -> listOf(Config.Tabs(), Config.Pages(deepLinkUrl = childUrl))
             pathSegmentOf<Config.SharedTransitions>() -> listOf(Config.Tabs(), Config.SharedTransitions(deepLinkUrl = childUrl))
@@ -139,9 +123,6 @@ class DefaultRootComponent(
     private sealed interface Config {
         @Serializable
         data class Tabs(val deepLinkUrl: Url? = null) : Config
-
-        @Serializable
-        data object DynamicFeatures : Config
 
         @Serializable
         data object CustomNavigation : Config

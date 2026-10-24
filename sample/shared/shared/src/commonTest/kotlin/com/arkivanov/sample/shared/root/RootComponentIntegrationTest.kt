@@ -3,9 +3,7 @@ package com.arkivanov.sample.shared.root
 import com.arkivanov.sample.shared.Url
 import com.arkivanov.sample.shared.assertActiveInstance
 import com.arkivanov.sample.shared.createComponent
-import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.TestFeatureInstaller
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
-import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.TabsChild
 import kotlin.test.Test
@@ -28,13 +26,6 @@ class RootComponentIntegrationTest {
     }
 
     @Test
-    fun WHEN_created_with_deeplink_DynamicFeatures_THEN_DynamicFeaturesChild_active() {
-        val component = createComponent(deepLink = Url(url = "https://example.com/dynamic_features"))
-
-        component.stack.assertActiveInstance<DynamicFeaturesChild>()
-    }
-
-    @Test
     fun WHEN_created_with_deeplink_CustomNavigationChild_THEN_CustomNavigationChild_active() {
         val component = createComponent(deepLink = Url(url = "https://example.com/custom_navigation"))
 
@@ -54,7 +45,6 @@ class RootComponentIntegrationTest {
         createComponent { componentContext ->
             DefaultRootComponent(
                 componentContext = componentContext,
-                featureInstaller = TestFeatureInstaller(),
                 deepLinkUrl = deepLink,
             )
         }

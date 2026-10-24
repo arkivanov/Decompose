@@ -63,19 +63,12 @@ kotlin {
             api(project(":decompose"))
             implementation(project(":extensions-compose"))
             api(project(":sample:shared:shared"))
-            implementation(project(":sample:shared:dynamic-features:api"))
-            implementation(project(":sample:shared:dynamic-features:compose-api"))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(deps.jetbrains.compose.material.materialIconsCore)
-        }
-
-        jvm.main.dependencies {
-            implementation(project(":sample:shared:dynamic-features:feature1Impl"))
-            implementation(project(":sample:shared:dynamic-features:feature2Impl"))
         }
 
         jvm.test.dependencies {

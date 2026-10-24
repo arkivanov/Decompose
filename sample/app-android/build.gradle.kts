@@ -20,9 +20,6 @@ android {
     packagingOptions {
         exclude("META-INF/*")
     }
-
-    dynamicFeatures.add(":sample:shared:dynamic-features:feature1Impl")
-    dynamicFeatures.add(":sample:shared:dynamic-features:feature2Impl")
 }
 
 dependencies {

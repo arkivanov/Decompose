@@ -7,7 +7,6 @@ import com.arkivanov.decompose.extensions.android.layoutInflater
 import com.arkivanov.decompose.extensions.android.stack.StackRouterView
 import com.arkivanov.sample.shared.R
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
-import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.SharedTransitionsChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.TabsChild
@@ -28,7 +27,6 @@ fun ViewContext.RootView(component: RootComponent): View {
                 is TabsChild -> TabsView(child.component)
 
                 is CustomNavigationChild,
-                is DynamicFeaturesChild,
                 is PagesChild,
                 is SharedTransitionsChild -> error("Unsupported child: $child")
             }
