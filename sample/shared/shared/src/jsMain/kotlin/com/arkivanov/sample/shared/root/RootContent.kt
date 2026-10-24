@@ -3,7 +3,6 @@ package com.arkivanov.sample.shared.root
 import com.arkivanov.sample.shared.RProps
 import com.arkivanov.sample.shared.componentContent
 import com.arkivanov.sample.shared.root.RootComponent.Child.CustomNavigationChild
-import com.arkivanov.sample.shared.root.RootComponent.Child.DynamicFeaturesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.PagesChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.SharedTransitionsChild
 import com.arkivanov.sample.shared.root.RootComponent.Child.TabsChild
@@ -18,7 +17,6 @@ var RootContent: FC<RProps<RootComponent>> = FC { props ->
         is TabsChild -> componentContent(component = child.component, content = TabsContent)
 
         is CustomNavigationChild,
-        is DynamicFeaturesChild,
         is PagesChild,
         is SharedTransitionsChild -> error("Unsupported child: $child")
     }

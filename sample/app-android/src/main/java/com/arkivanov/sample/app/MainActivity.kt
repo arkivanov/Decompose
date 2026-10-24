@@ -12,7 +12,6 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.android.DefaultViewContext
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
-import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DefaultFeatureInstaller
 import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootComponent
 import com.arkivanov.sample.shared.root.RootContent
@@ -31,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         val root =
             DefaultRootComponent(
                 componentContext = defaultComponentContext(),
-                featureInstaller = DefaultFeatureInstaller(context = this),
             )
 
         when (mode) {

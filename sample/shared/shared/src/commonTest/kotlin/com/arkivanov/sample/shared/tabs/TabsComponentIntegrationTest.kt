@@ -23,16 +23,6 @@ class TabsComponentIntegrationTest {
     }
 
     @Test
-    fun WHEN_Dynamic_Features_menu_item_clicked_THEN_onDynamicFeaturesItemSelected_called() {
-        var isCalled = false
-        val component = createComponent(onDynamicFeaturesItemSelected = { isCalled = true })
-
-        component.stack.activeInstance<MenuChild>().component.onDynamicFeaturesItemSelected()
-
-        assertTrue(isCalled)
-    }
-
-    @Test
     fun WHEN_Custom_Navigation_menu_item_clicked_THEN_onCustomNavigationItemSelected_called() {
         var isCalled = false
         val component = createComponent(onCustomNavigationItemSelected = { isCalled = true })
@@ -101,7 +91,6 @@ class TabsComponentIntegrationTest {
     }
 
     private fun createComponent(
-        onDynamicFeaturesItemSelected: () -> Unit = {},
         onCustomNavigationItemSelected: () -> Unit = {},
         onPagesItemSelected: () -> Unit = {},
         onSharedTransitionsItemSelected: () -> Unit = {},
@@ -110,7 +99,6 @@ class TabsComponentIntegrationTest {
             DefaultTabsComponent(
                 componentContext = componentContext,
                 deepLinkUrl = null,
-                onDynamicFeaturesItemSelected = onDynamicFeaturesItemSelected,
                 onCustomNavigationItemSelected = onCustomNavigationItemSelected,
                 onPagesItemSelected = onPagesItemSelected,
                 onSharedTransitionsItemSelected = onSharedTransitionsItemSelected,

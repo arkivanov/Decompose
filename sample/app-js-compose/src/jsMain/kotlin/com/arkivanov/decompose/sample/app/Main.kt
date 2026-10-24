@@ -15,7 +15,6 @@ import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.sample.shared.Url
-import com.arkivanov.sample.shared.dynamicfeatures.dynamicfeature.DefaultFeatureInstaller
 import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootContent
 import org.jetbrains.skiko.wasm.onWasmReady
@@ -35,7 +34,6 @@ fun main() {
 
             DefaultRootComponent(
                 componentContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = stateKeeper),
-                featureInstaller = DefaultFeatureInstaller,
                 deepLinkUrl = deepLink?.let(::Url),
             ).also {
                 lifecycle.attachToDocument()

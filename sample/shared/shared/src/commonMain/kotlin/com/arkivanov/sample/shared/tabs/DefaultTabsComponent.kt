@@ -27,7 +27,6 @@ import kotlinx.serialization.Serializable
 internal class DefaultTabsComponent(
     componentContext: ComponentContext,
     deepLinkUrl: Url?,
-    private val onDynamicFeaturesItemSelected: () -> Unit,
     private val onCustomNavigationItemSelected: () -> Unit,
     private val onPagesItemSelected: () -> Unit,
     private val onSharedTransitionsItemSelected: () -> Unit,
@@ -68,7 +67,6 @@ internal class DefaultTabsComponent(
             is Config.Menu ->
                 MenuChild(
                     DefaultMenuComponent(
-                        onDynamicFeaturesItemSelected = onDynamicFeaturesItemSelected,
                         onCustomNavigationItemSelected = onCustomNavigationItemSelected,
                         onPagesItemSelected = onPagesItemSelected,
                         onSharedTransitionsItemSelected = onSharedTransitionsItemSelected,

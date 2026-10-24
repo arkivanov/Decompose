@@ -47,16 +47,12 @@ kotlin {
         val android by bundle()
         val js by bundle()
         val ios by bundle()
-        val nonAndroid by bundle()
 
-        nonAndroid dependsOn common
-        ios dependsOn nonAndroid
+        ios dependsOn common
         iosSet dependsOn ios
-        (allSet - iosSet - android).dependsOn(nonAndroid)
 
         common.main.dependencies {
             api(project(":decompose"))
-            implementation(project(":sample:shared:dynamic-features:api"))
             api(deps.essenty.lifecycle)
             api(deps.essenty.stateKeeper)
             api(deps.essenty.backHandler)
@@ -73,11 +69,6 @@ kotlin {
             implementation(project(":extensions-android"))
             implementation(deps.android.material.material)
             implementation(deps.android.play.core)
-        }
-
-        nonAndroid.main.dependencies {
-            implementation(project(":sample:shared:dynamic-features:feature1Impl"))
-            implementation(project(":sample:shared:dynamic-features:feature2Impl"))
         }
 
         js.main.dependencies {

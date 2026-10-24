@@ -30,7 +30,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             instanceKeeper: nil,
             backHandler: nil
         ),
-        featureInstaller: DefaultFeatureInstaller.shared,
         deepLinkUrl: nil
     )
     
