@@ -17,29 +17,35 @@ interface ChildNavState<out C : Any> {
 
     /**
      * Enumerates all possible child lifecycle statuses.
+     *
+     * @see androidx.lifecycle.Lifecycle.State
      */
     enum class Status {
         /**
          * The child component is destroyed but still managed, e.g. it's state may be saved and restored later.
-         * The state of the component is saved when it switches from any status to `DESTROYED`.
+         * The state of the component is saved when it switches from any status to [DESTROYED].
+         * Corresponds to [androidx.lifecycle.Lifecycle.State.DESTROYED].
          */
         DESTROYED,
 
         /**
-         * The child component is instantiated and its maximum lifecycle state is `CREATED`,
-         * depending on the parent's lifecycle state. A `CREATED` component cannot handle back button presses.
+         * The child component is instantiated and its maximum lifecycle state is
+         * [androidx.lifecycle.Lifecycle.State.CREATED], depending on the parent's lifecycle state.
+         * A component in this status cannot handle back button presses.
          */
         CREATED,
 
         /**
-         * The child component is instantiated and its maximum lifecycle state is `STARTED`,
-         * depending on the parent's lifecycle state. A `STARTED` component can handle back button presses.
+         * The child component is instantiated and its maximum lifecycle state is
+         * [androidx.lifecycle.Lifecycle.State.STARTED], depending on the parent's lifecycle state.
+         * A component in this status can handle back button presses.
          */
         STARTED,
 
         /**
-         * The child component is instantiated and its maximum lifecycle state is `RESUMED`,
-         * depending on the parent's lifecycle state. A `RESUMED` component can handle back button presses.
+         * The child component is instantiated and its maximum lifecycle state is
+         * [androidx.lifecycle.Lifecycle.State.RESUMED], depending on the parent's lifecycle state.
+         * A component in this status can handle back button presses.
          */
         RESUMED,
     }

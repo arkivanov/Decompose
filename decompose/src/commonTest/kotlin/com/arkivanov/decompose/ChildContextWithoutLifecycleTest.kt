@@ -1,13 +1,13 @@
 package com.arkivanov.decompose
 
+import androidx.lifecycle.Lifecycle
+import com.arkivanov.decompose.lifecycle.moveToDestroyed
+import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.essenty.instancekeeper.getOrCreate
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.destroy
-import com.arkivanov.essenty.lifecycle.resume
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -24,20 +24,20 @@ class ChildContextWithoutLifecycleTest {
         val context = HostComponentContext()
         val childContext = context.childContext(key = "key")
 
-        context.lifecycle.resume()
+        context.lifecycle.moveToResumed()
 
-        assertEquals(Lifecycle.State.RESUMED, childContext.lifecycle.state)
+        assertEquals(Lifecycle.State.RESUMED, childContext.lifecycle.currentState)
     }
 
     @Test
     fun GIVEN_created_WHEN_parent_lifecycle_destroyed_THEN_child_lifecycle_destroyed() {
         val context = HostComponentContext()
         val childContext = context.childContext(key = "key")
-        context.lifecycle.resume()
+        context.lifecycle.moveToResumed()
 
-        context.lifecycle.destroy()
+        context.lifecycle.moveToDestroyed()
 
-        assertEquals(Lifecycle.State.DESTROYED, childContext.lifecycle.state)
+        assertEquals(Lifecycle.State.DESTROYED, childContext.lifecycle.currentState)
     }
 
     @Test
@@ -45,7 +45,7 @@ class ChildContextWithoutLifecycleTest {
         val context = HostComponentContext()
         val childContext = context.childContext(key = "key")
         childContext.stateKeeper.register(key = "child_key", strategy = String.serializer()) { "savedChildState" }
-        context.lifecycle.resume()
+        context.lifecycle.moveToResumed()
 
         val newContext = context.recreate()
         val newChild = newContext.childContext(key = "key")
@@ -68,8 +68,7 @@ class ChildContextWithoutLifecycleTest {
         val context = HostComponentContext()
         val childContext = context.childContext(key = "key")
         val instance = childContext.instanceKeeper.getOrCreate(key = "child", factory = ::TestInstance)
-        context.lifecycle.resume()
-        context.lifecycle.destroy()
+        context.lifecycle.moveToResumed()
 
         val newContext = context.recreate(isConfigurationChange = true)
         val newChildContext = newContext.childContext(key = "key")
@@ -83,8 +82,8 @@ class ChildContextWithoutLifecycleTest {
         val context = HostComponentContext()
         val childContext = context.childContext(key = "key")
         val instance = childContext.instanceKeeper.getOrCreate(key = "child", factory = ::TestInstance)
-        context.lifecycle.resume()
-        context.lifecycle.destroy()
+        context.lifecycle.moveToResumed()
+        context.lifecycle.moveToDestroyed()
 
         assertFalse(instance.isDestroyed)
     }

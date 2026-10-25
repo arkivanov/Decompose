@@ -1,12 +1,13 @@
 package com.arkivanov.decompose.router.children
 
+import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.TestBackHandler
 import com.arkivanov.decompose.TestBackHandler.Event
 import com.arkivanov.decompose.assertEvents
 import com.arkivanov.decompose.assertNoEvents
-import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks
+import com.arkivanov.decompose.lifecycle.TestLifecycleObserver
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.Component
@@ -14,7 +15,6 @@ import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.serializeAndDeserialize
 import com.arkivanov.essenty.instancekeeper.getOrCreate
-import com.arkivanov.essenty.lifecycle.Lifecycle
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,7 +43,7 @@ class ChildControllerTest {
 
         val instance = controller.create(configuration = 1)
 
-        assertEquals(Lifecycle.State.CREATED, instance.lifecycle.state)
+        assertEquals(Lifecycle.State.CREATED, instance.lifecycle.currentState)
     }
 
     @Test
@@ -61,7 +61,7 @@ class ChildControllerTest {
 
         val instance = controller.start(configuration = 1)
 
-        assertEquals(Lifecycle.State.STARTED, instance.lifecycle.state)
+        assertEquals(Lifecycle.State.STARTED, instance.lifecycle.currentState)
     }
 
     @Test
@@ -79,7 +79,7 @@ class ChildControllerTest {
 
         val instance = controller.resume(configuration = 1)
 
-        assertEquals(Lifecycle.State.RESUMED, instance.lifecycle.state)
+        assertEquals(Lifecycle.State.RESUMED, instance.lifecycle.currentState)
     }
 
     @Test
@@ -99,7 +99,7 @@ class ChildControllerTest {
 
         val instance = controller.start(configuration = 1)
 
-        assertEquals(Lifecycle.State.STARTED, instance.lifecycle.state)
+        assertEquals(Lifecycle.State.STARTED, instance.lifecycle.currentState)
     }
 
     @Test
@@ -119,7 +119,7 @@ class ChildControllerTest {
 
         val instance = controller.create(configuration = 1)
 
-        assertEquals(Lifecycle.State.CREATED, instance.lifecycle.state)
+        assertEquals(Lifecycle.State.CREATED, instance.lifecycle.currentState)
     }
 
     @Test
@@ -131,7 +131,7 @@ class ChildControllerTest {
         controller.destroy(configuration = 1)
 
         controller.assertChildDestroyed(config = 1)
-        assertEquals(Lifecycle.State.DESTROYED, map[1]?.lifecycle?.state)
+        assertEquals(Lifecycle.State.DESTROYED, map[1]?.lifecycle?.currentState)
     }
 
     @Test
@@ -143,7 +143,7 @@ class ChildControllerTest {
         controller.destroy(configuration = 1)
 
         controller.assertChildDestroyed(config = 1)
-        assertEquals(Lifecycle.State.DESTROYED, map[1]?.lifecycle?.state)
+        assertEquals(Lifecycle.State.DESTROYED, map[1]?.lifecycle?.currentState)
     }
 
     @Test
@@ -152,7 +152,7 @@ class ChildControllerTest {
         controller.resume(configuration = 1)
 
         val events = ArrayList<Any>()
-        controller.requireChild(1).lifecycle.subscribe(TestLifecycleCallbacks { events += it })
+        controller.requireChild(1).lifecycle.addObserver(TestLifecycleObserver { events += it })
         controller.requireChild(1).instanceKeeper.getOrCreate("key") { TestInstance { events += "instance_destroyed" } }
         events.clear()
 
@@ -160,9 +160,9 @@ class ChildControllerTest {
 
         assertEquals(
             listOf<Any>(
-                TestLifecycleCallbacks.Event.ON_PAUSE,
-                TestLifecycleCallbacks.Event.ON_STOP,
-                TestLifecycleCallbacks.Event.ON_DESTROY,
+                Lifecycle.Event.ON_PAUSE,
+                Lifecycle.Event.ON_STOP,
+                Lifecycle.Event.ON_DESTROY,
                 "instance_destroyed",
             ),
             events,
@@ -375,7 +375,7 @@ class ChildControllerTest {
     ) {
         val component = assertNotNull(get(config))
         assertEquals(config, component.config)
-        assertEquals(lifecycleState, component.lifecycle.state)
+        assertEquals(lifecycleState, component.lifecycle.currentState)
         assertEquals(lifecycleState, getLifecycleState(config))
     }
 

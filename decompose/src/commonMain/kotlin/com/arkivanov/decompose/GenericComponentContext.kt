@@ -1,8 +1,8 @@
 package com.arkivanov.decompose
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigationevent.NavigationEventDispatcherOwner
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperOwner
-import com.arkivanov.essenty.lifecycle.LifecycleOwner
 import com.arkivanov.essenty.statekeeper.StateKeeperOwner
 
 /**

@@ -29,8 +29,6 @@ androidBcvBridge = "0.2.0"
 
 kotlin-kotlinGradlePlug = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 
-essenty-lifecycle = { group = "com.arkivanov.essenty", name = "lifecycle", version.ref = "essenty" }
-essenty-lifecycleReaktive = { group = "com.arkivanov.essenty", name = "lifecycle-reaktive", version.ref = "essenty" }
 essenty-stateKeeper = { group = "com.arkivanov.essenty", name = "state-keeper", version.ref = "essenty" }
 essenty-instanceKeeper = { group = "com.arkivanov.essenty", name = "instance-keeper", version.ref = "essenty" }
 
@@ -46,8 +44,8 @@ jetbrains-compose-foundation = { group = "org.jetbrains.compose.foundation", nam
 jetbrains-compose-material = { group = "org.jetbrains.compose.material", name = "material", version.ref = "jetbrainsCompose" }
 jetbrains-compose-ui = { group = "org.jetbrains.compose.ui", name = "ui", version.ref = "jetbrainsCompose" }
 jetbrains-compose-ui-uiTestJunit4 = { group = "org.jetbrains.compose.ui", name = "ui-test-junit4", version.ref = "jetbrainsCompose" }
-jetbrains-compose-material-materialIconsCore  = { group = "org.jetbrains.compose.material", name = "material-icons-core", version.ref = "jetbrainsComposeMaterialIcons" }
-jetbrains-compose-components-resources  = { group = "org.jetbrains.compose.components", name = "components-resources", version.ref = "jetbrainsCompose" }
+jetbrains-compose-material-materialIconsCore = { group = "org.jetbrains.compose.material", name = "material-icons-core", version.ref = "jetbrainsComposeMaterialIcons" }
+jetbrains-compose-components-resources = { group = "org.jetbrains.compose.components", name = "components-resources", version.ref = "jetbrainsCompose" }
 jetbrains-kotlin-composeCompilerGradlePlug = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 jetbrains-kotlinWrappers-kotlinWrappersBom = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-wrappers-bom", version.ref = "jetbrainsKotlinWrappers" }
 jetbrains-kotlinx-binaryCompatibilityValidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version.ref = "jetbrainsBinaryCompatibilityValidator" }
@@ -64,14 +62,14 @@ android-gradle = { group = "com.android.tools.build", name = "gradle", version.r
 android-material-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
 android-play-core = { group = "com.google.android.play", name = "core", version.ref = "androidPlay" }
 
-androidx-core-coreKtx  = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
-androidx-appcompat-appcompat  = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppcompat" }
+androidx-core-coreKtx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-appcompat-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppcompat" }
 androidx-activity-activityKtx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidxActivity" }
 androidx-activity-activityCompose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-fragment-fragmentKtx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragment" }
 androidx-navigationEvent-navigationEvent = { group = "androidx.navigationevent", name = "navigationevent", version.ref = "androidxNavigationEvent" }
+androidx-lifecycle-lifecycleCommon = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-common", version.ref = "androidxLifecycle" }
 androidx-lifecycle-lifecycleRuntime = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime", version.ref = "androidxLifecycle" }
-androidx-lifecycle-lifecycleViewModelSavedState = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "androidxLifecycle" }
 
 dropbox-dependencyGuard = { group = "com.dropbox.dependency-guard", name = "dependency-guard", version.ref = "dependencyGuard" }
 tjokinen-androidBcvBridge = { group = "io.github.tjokinen", name = "android-bcv-bridge", version.ref = "androidBcvBridge" }

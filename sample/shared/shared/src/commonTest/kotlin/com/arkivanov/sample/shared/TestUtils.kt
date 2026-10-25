@@ -2,16 +2,16 @@ package com.arkivanov.sample.shared
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.active
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.lifecycle.resume
 import kotlin.test.assertIs
 
 internal fun <T : Any> createComponent(factory: (ComponentContext) -> T): T {
     val ctx = HostComponentContext()
     val component = factory(ctx)
-    ctx.lifecycle.resume()
+    ctx.lifecycle.moveToResumed()
 
     return component
 }

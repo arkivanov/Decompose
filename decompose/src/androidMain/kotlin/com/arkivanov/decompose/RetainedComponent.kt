@@ -2,25 +2,23 @@ package com.arkivanov.decompose
 
 import androidx.activity.ComponentActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
 import androidx.savedstate.SavedStateRegistryOwner
+import com.arkivanov.decompose.lifecycle.addObserver
+import com.arkivanov.decompose.lifecycle.moveToCreated
+import com.arkivanov.decompose.lifecycle.moveToDestroyed
+import com.arkivanov.decompose.lifecycle.moveToResumed
+import com.arkivanov.decompose.lifecycle.moveToStarted
 import com.arkivanov.decompose.navigationevent.ForwardingNavigationEventInput
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.instancekeeper.instanceKeeper
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.essenty.lifecycle.create
-import com.arkivanov.essenty.lifecycle.destroy
-import com.arkivanov.essenty.lifecycle.essentyLifecycle
-import com.arkivanov.essenty.lifecycle.pause
-import com.arkivanov.essenty.lifecycle.resume
-import com.arkivanov.essenty.lifecycle.start
-import com.arkivanov.essenty.lifecycle.stop
-import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import com.arkivanov.essenty.statekeeper.stateKeeper
@@ -102,7 +100,6 @@ internal fun <T, O> O.retainedComponent(
         "Another retained component is already registered with the key: $key"
     }
 
-    val lifecycle = essentyLifecycle()
     val stateKeeper = stateKeeper(key = key, discardSavedState = discardSavedState, isSavingAllowed = isStateSavingAllowed)
     val instanceKeeper = instanceKeeper()
 
@@ -111,7 +108,7 @@ internal fun <T, O> O.retainedComponent(
 
     if (discardRetainedInstance) {
         (instanceKeeper.remove(key = key) as RetainedComponentHolder<*>?)?.also { holder ->
-            holder.lifecycle.destroy()
+            holder.lifecycle.moveToDestroyed()
             holder.onDestroy()
         }
     }
@@ -124,23 +121,35 @@ internal fun <T, O> O.retainedComponent(
             )
         }
 
-    lifecycle.subscribe(
-        onCreate = { holder.lifecycle.create() },
-        onStart = { holder.lifecycle.start() },
-        onResume = { holder.lifecycle.resume() },
+    lifecycle.addObserver(
+        onCreate = {
+            if (holder.lifecycle.currentState < Lifecycle.State.CREATED) {
+                holder.lifecycle.moveToCreated()
+            }
+        },
+        onStart = {
+            if (holder.lifecycle.currentState < Lifecycle.State.STARTED) {
+                holder.lifecycle.moveToStarted()
+            }
+        },
+        onResume = {
+            if (holder.lifecycle.currentState < Lifecycle.State.RESUMED) {
+                holder.lifecycle.moveToResumed()
+            }
+        },
         onPause = {
             if (!isChangingConfigurations()) {
-                holder.lifecycle.pause()
+                holder.lifecycle.moveToStarted()
             }
         },
         onStop = {
             if (!isChangingConfigurations()) {
-                holder.lifecycle.stop()
+                holder.lifecycle.moveToCreated()
             }
         },
         onDestroy = {
             if (!isChangingConfigurations()) {
-                holder.lifecycle.destroy()
+                holder.lifecycle.moveToDestroyed()
             }
         },
     )
@@ -151,7 +160,7 @@ internal fun <T, O> O.retainedComponent(
         navigationEventDispatcher.addHandler(holder.navigationEventInput.handler)
         navigationEventDispatcher.addInput(holder.fallbackNavigationEventInput)
 
-        lifecycle.subscribe(
+        lifecycle.addObserver(
             onStart = { holder.isEnabled = true },
             onStop = { holder.isEnabled = false },
             onDestroy = {
@@ -169,8 +178,9 @@ private const val KEY_STATE_MARKER = "RetainedComponent_state_marker"
 private class RetainedComponentHolder<out T>(
     savedState: SerializableContainer?,
     factory: (ComponentContext) -> T,
-) : InstanceKeeper.Instance {
-    val lifecycle: LifecycleRegistry = LifecycleRegistry()
+) : InstanceKeeper.Instance, LifecycleOwner {
+    override val lifecycle: LifecycleRegistry = LifecycleRegistry(this)
+
     val stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(savedState = savedState)
     private val instanceKeeper = InstanceKeeperDispatcher()
 

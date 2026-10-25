@@ -1,16 +1,16 @@
 package com.arkivanov.sample.shared.cards.card
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.lifecycle.addObserver
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.retainedInstance
-import com.arkivanov.essenty.lifecycle.reaktive.disposableScope
-import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.essenty.statekeeper.ExperimentalStateKeeperApi
 import com.arkivanov.essenty.statekeeper.saveable
 import com.arkivanov.sample.shared.cards.card.CardComponent.Model
+import com.arkivanov.sample.shared.disposableScope
 import com.badoo.reaktive.disposable.Disposable
 import com.badoo.reaktive.disposable.scope.DisposableScope
 import com.badoo.reaktive.observable.observableInterval
@@ -44,7 +44,7 @@ class DefaultCardComponent(
             _model.update { it.copy(text = "Count: $count") }
         }
 
-        lifecycle.subscribe(
+        lifecycle.addObserver(
             onStart = handler::start,
             onStop = handler::stop,
         )

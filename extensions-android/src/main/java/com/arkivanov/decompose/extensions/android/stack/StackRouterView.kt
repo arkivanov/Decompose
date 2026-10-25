@@ -9,6 +9,8 @@ import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.InternalDecomposeApi
@@ -16,14 +18,13 @@ import com.arkivanov.decompose.extensions.android.DefaultViewContext
 import com.arkivanov.decompose.extensions.android.R
 import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.forEachChild
-import com.arkivanov.decompose.lifecycle.MergedLifecycle
+import com.arkivanov.decompose.lifecycle.LifecycleRegistry
+import com.arkivanov.decompose.lifecycle.mergedLifecycle
+import com.arkivanov.decompose.lifecycle.moveToDestroyed
+import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.subscribe
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.essenty.lifecycle.destroy
-import com.arkivanov.essenty.lifecycle.resume
 
 @ExperimentalDecomposeApi
 class StackRouterView @JvmOverloads constructor(
@@ -37,6 +38,16 @@ class StackRouterView @JvmOverloads constructor(
     private val inactiveChildren = HashMap<String, InactiveChild>()
     private var savedState: Bundle? = null
 
+    /**
+     * Renders the active child of the provided [stack].
+     * The subscription follows [ObserveLifecycleMode.START_STOP][com.arkivanov.decompose.value.ObserveLifecycleMode.START_STOP].
+     * Each child view gets a [Lifecycle] merged from the provided [lifecycle] and a view lifecycle that is
+     * [Lifecycle.State.RESUMED] while that child is active, and [Lifecycle.State.DESTROYED] when it is replaced.
+     *
+     * @param stack an observable [ChildStack] to be displayed.
+     * @param lifecycle a [Lifecycle] that controls the subscription and is merged into each child view's lifecycle.
+     * @param replaceChildView renders the active child. The receiver [ViewContext] exposes the child view lifecycle.
+     */
     fun <C : Any, T : Any> children(
         stack: Value<ChildStack<C, T>>,
         lifecycle: Lifecycle,
@@ -117,10 +128,10 @@ class StackRouterView @JvmOverloads constructor(
         if ((currentChildView != null) && stack.backStack.any { it.key == currentChild.child.key }) {
             inactiveChildren[currentChild.key] = InactiveChild(currentChild.child.key, currentChildView.saveHierarchyState())
         }
-        currentChild?.lifecycle?.destroy()
+        currentChild?.lifecycle?.moveToDestroyed()
 
         val childViewLifecycle = LifecycleRegistry()
-        val viewContext = DefaultViewContext(this, MergedLifecycle(lifecycle, childViewLifecycle))
+        val viewContext = DefaultViewContext(this, mergedLifecycle(lifecycle, childViewLifecycle))
         viewContext.replaceChildView(this, stack, currentStack)
 
         val newChildView = findNewChildView()
@@ -141,7 +152,7 @@ class StackRouterView @JvmOverloads constructor(
             }
         }
 
-        childViewLifecycle.resume()
+        childViewLifecycle.moveToResumed()
 
         this.currentStack = stack
         this.currentChild = ActiveChild(activeChildKey, activeChild, childViewLifecycle)

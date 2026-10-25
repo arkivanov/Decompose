@@ -4,7 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.arkivanov.essenty.lifecycle.reaktive.disposableScope
+import com.arkivanov.sample.shared.disposableScope
 import com.arkivanov.sample.shared.multipane.author.ArticleAuthorComponent.Author
 import com.arkivanov.sample.shared.multipane.author.ArticleAuthorComponent.Model
 import com.arkivanov.sample.shared.multipane.database.ArticleDatabase

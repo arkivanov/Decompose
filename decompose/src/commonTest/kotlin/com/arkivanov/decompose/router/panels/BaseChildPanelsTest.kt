@@ -1,11 +1,11 @@
 package com.arkivanov.decompose.router.panels
 
+import androidx.lifecycle.Lifecycle.State.CREATED
+import androidx.lifecycle.Lifecycle.State.RESUMED
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.Component
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.lifecycle.Lifecycle.State.CREATED
-import com.arkivanov.essenty.lifecycle.Lifecycle.State.RESUMED
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.assertEquals
 
@@ -30,7 +30,7 @@ abstract class BaseChildPanelsTest {
 
         when (mode) {
             ChildPanelsMode.SINGLE -> {
-                assertEquals(if ((details == null) && (extra == null)) RESUMED else CREATED, mainComponent.lifecycle.state)
+                assertEquals(if ((details == null) && (extra == null)) RESUMED else CREATED, mainComponent.lifecycle.currentState)
 
                 assertEquals(
                     when {
@@ -38,14 +38,14 @@ abstract class BaseChildPanelsTest {
                         extra == null -> RESUMED
                         else -> CREATED
                     },
-                    detailsComponent?.lifecycle?.state,
+                    detailsComponent?.lifecycle?.currentState,
                 )
 
-                assertEquals(if (extra != null) RESUMED else null, extraComponent?.lifecycle?.state)
+                assertEquals(if (extra != null) RESUMED else null, extraComponent?.lifecycle?.currentState)
             }
 
             ChildPanelsMode.DUAL -> {
-                assertEquals(RESUMED, mainComponent.lifecycle.state)
+                assertEquals(RESUMED, mainComponent.lifecycle.currentState)
 
                 assertEquals(
                     when {
@@ -53,16 +53,16 @@ abstract class BaseChildPanelsTest {
                         extra == null -> RESUMED
                         else -> CREATED
                     },
-                    detailsComponent?.lifecycle?.state,
+                    detailsComponent?.lifecycle?.currentState,
                 )
 
-                assertEquals(if (extra != null) RESUMED else null, extraComponent?.lifecycle?.state)
+                assertEquals(if (extra != null) RESUMED else null, extraComponent?.lifecycle?.currentState)
             }
 
             ChildPanelsMode.TRIPLE -> {
-                assertEquals(RESUMED, mainComponent.lifecycle.state)
-                assertEquals(if (details != null) RESUMED else null, detailsComponent?.lifecycle?.state)
-                assertEquals(if (extra != null) RESUMED else null, extraComponent?.lifecycle?.state)
+                assertEquals(RESUMED, mainComponent.lifecycle.currentState)
+                assertEquals(if (details != null) RESUMED else null, detailsComponent?.lifecycle?.currentState)
+                assertEquals(if (extra != null) RESUMED else null, extraComponent?.lifecycle?.currentState)
             }
         }
     }

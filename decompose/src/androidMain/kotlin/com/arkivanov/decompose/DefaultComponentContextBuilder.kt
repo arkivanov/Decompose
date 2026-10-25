@@ -12,7 +12,6 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.arkivanov.decompose.navigationevent.child
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.instanceKeeper
-import com.arkivanov.essenty.lifecycle.asEssentyLifecycle
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.stateKeeper
 import kotlinx.serialization.builtins.serializer
@@ -20,8 +19,7 @@ import kotlinx.serialization.builtins.serializer
 /**
  * Creates a [DefaultComponentContext] from the provided AndroidX dependencies.
  *
- * @param lifecycle an AndroidX [Lifecycle] to be converted to an
- * Essenty [Lifecycle][com.arkivanov.essenty.lifecycle.Lifecycle].
+ * @param lifecycle a [Lifecycle] of the component context.
  * @param savedStateRegistry an optional [SavedStateRegistry] for state preservation,
  * or `null` if state preservation is not required. Default value is `null`.
  * @param viewModelStore an optional [ViewModelStore] for instance retaining,
@@ -36,7 +34,7 @@ fun DefaultComponentContext(
     navigationEventDispatcher: NavigationEventDispatcher? = null
 ): DefaultComponentContext =
     DefaultComponentContext(
-        lifecycle = lifecycle.asEssentyLifecycle(),
+        lifecycle = lifecycle,
         stateKeeper = savedStateRegistry?.let(::StateKeeper),
         instanceKeeper = viewModelStore?.let(::InstanceKeeper),
         navigationEventDispatcher = navigationEventDispatcher,
@@ -85,7 +83,7 @@ fun Fragment.defaultComponentContext(
     isStateSavingAllowed: () -> Boolean = { true },
 ): DefaultComponentContext =
     defaultComponentContextInternal(
-        navigationEventDispatcher = navigationEventDispatcher?.child(lifecycle = lifecycle.asEssentyLifecycle()),
+        navigationEventDispatcher = navigationEventDispatcher?.child(lifecycle = lifecycle),
         discardSavedState = discardSavedState,
         isStateSavingAllowed = isStateSavingAllowed,
     )
@@ -116,7 +114,7 @@ private fun <T> T.defaultComponentContextInternal(
     stateKeeper.register(key = KEY_STATE_MARKER, strategy = String.serializer()) { "marker" }
 
     return DefaultComponentContext(
-        lifecycle = lifecycle.asEssentyLifecycle(),
+        lifecycle = lifecycle,
         stateKeeper = stateKeeper,
         instanceKeeper = instanceKeeper(discardRetainedInstances = marker == null),
         navigationEventDispatcher = navigationEventDispatcher,

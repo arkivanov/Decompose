@@ -2,6 +2,8 @@ package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.doOnDestroy
+import com.arkivanov.decompose.lifecycle.moveToDestroyed
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
@@ -11,8 +13,6 @@ import com.arkivanov.decompose.router.children.ChildNavState.Status.STARTED
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.essenty.instancekeeper.getOrCreate
-import com.arkivanov.essenty.lifecycle.destroy
-import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -84,7 +84,7 @@ class ChildrenBasicTest : ChildrenTestBase() {
             Component(config = config, componentContext = componentContext)
         }
 
-        lifecycle.destroy()
+        lifecycle.moveToDestroyed()
 
         assertContentEquals(listOf(3, 2, 1), destroyEvents)
     }

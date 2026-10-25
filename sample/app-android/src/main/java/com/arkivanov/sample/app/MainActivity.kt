@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.android.DefaultViewContext
-import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootComponent
 import com.arkivanov.sample.shared.root.RootContent
@@ -51,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         val viewContext =
             DefaultViewContext(
                 parent = findViewById(R.id.content),
-                lifecycle = essentyLifecycle(),
+                lifecycle = lifecycle,
             )
 
         viewContext.apply {

@@ -1,8 +1,8 @@
 package com.arkivanov.decompose.instancekeeper
 
+import androidx.lifecycle.Lifecycle
+import com.arkivanov.decompose.lifecycle.doOnDestroy
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.doOnDestroy
 
 internal fun InstanceKeeperDispatcher.attachTo(lifecycle: Lifecycle): InstanceKeeperDispatcher {
     lifecycle.doOnDestroy(::destroy)

@@ -1,141 +1,39 @@
 package com.arkivanov.decompose.lifecycle
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Lifecycle.State
+import androidx.lifecycle.LifecycleEventObserver
 import com.arkivanov.decompose.InternalDecomposeApi
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.Lifecycle.State
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.essenty.lifecycle.create
-import com.arkivanov.essenty.lifecycle.destroy
-import com.arkivanov.essenty.lifecycle.doOnDestroy
-import com.arkivanov.essenty.lifecycle.pause
-import com.arkivanov.essenty.lifecycle.resume
-import com.arkivanov.essenty.lifecycle.start
-import com.arkivanov.essenty.lifecycle.stop
 
 @InternalDecomposeApi
-class MergedLifecycle private constructor(
-    private val registry: LifecycleRegistry,
-    lifecycle1: Lifecycle,
-    lifecycle2: Lifecycle
-) : Lifecycle by registry {
-
-    constructor(lifecycle1: Lifecycle, lifecycle2: Lifecycle) : this(LifecycleRegistry(), lifecycle1, lifecycle2)
-
-    init {
-        var state1 = if (lifecycle1.state == State.DESTROYED) State.DESTROYED else State.INITIALIZED
-        var state2 = if (lifecycle2.state == State.DESTROYED) State.DESTROYED else State.INITIALIZED
-
-        moveTo(minOf(state1, state2))
-
-        if ((state1 != State.DESTROYED) && (state2 != State.DESTROYED)) {
-            val observer1 =
-                CallbacksImpl { state ->
-                    state1 = state
-                    moveTo(minOf(state, state2))
-                }
-
-            val observer2 =
-                CallbacksImpl { state ->
-                    state2 = state
-                    moveTo(minOf(state, state1))
-                }
-
-            lifecycle1.subscribe(observer1)
-            lifecycle2.subscribe(observer2)
-
-            registry.doOnDestroy {
-                lifecycle1.unsubscribe(observer1)
-                lifecycle2.unsubscribe(observer2)
-            }
-        }
+fun mergedLifecycle(lifecycle1: Lifecycle, lifecycle2: Lifecycle): Lifecycle {
+    if (lifecycle1.isDestroyed || lifecycle2.isDestroyed) {
+        return DecomposeLifecycleRegistry(initialState = State.DESTROYED)
     }
 
-    private fun moveTo(state: State) {
-        when (state) {
-            State.DESTROYED -> moveToDestroyed()
-            State.INITIALIZED -> Unit
-            State.CREATED -> moveToCreated()
-            State.STARTED -> moveToStarted()
-            State.RESUMED -> moveToResumed()
+    val registry = DecomposeLifecycleRegistry()
+    var state1 = State.INITIALIZED
+    var state2 = State.INITIALIZED
+
+    val observer1 =
+        LifecycleEventObserver { _, event ->
+            state1 = event.targetState
+            registry.moveTo(minOf(event.targetState, state2))
         }
+
+    val observer2 =
+        LifecycleEventObserver { _, event ->
+            state2 = event.targetState
+            registry.moveTo(minOf(event.targetState, state1))
+        }
+
+    lifecycle1.addObserver(observer1)
+    lifecycle2.addObserver(observer2)
+
+    registry.doOnDestroy {
+        lifecycle1.removeObserver(observer1)
+        lifecycle2.removeObserver(observer2)
     }
 
-    private fun moveToDestroyed() {
-        when (registry.state) {
-            State.DESTROYED -> Unit
-
-            State.INITIALIZED -> {
-                registry.create()
-                registry.destroy()
-            }
-
-            State.CREATED,
-            State.STARTED,
-            State.RESUMED -> registry.destroy()
-        }
-    }
-
-    private fun moveToCreated() {
-        when (registry.state) {
-            State.DESTROYED -> Unit
-            State.INITIALIZED -> registry.create()
-
-            State.CREATED -> Unit
-
-            State.STARTED,
-            State.RESUMED -> registry.stop()
-        }
-    }
-
-    private fun moveToStarted() {
-        when (registry.state) {
-            State.INITIALIZED,
-            State.CREATED -> registry.start()
-
-            State.RESUMED -> registry.pause()
-
-            State.DESTROYED,
-            State.STARTED -> Unit
-        }
-    }
-
-    private fun moveToResumed() {
-        when (registry.state) {
-            State.INITIALIZED,
-            State.CREATED,
-            State.STARTED -> registry.resume()
-
-            State.RESUMED,
-            State.DESTROYED -> Unit
-        }
-    }
-
-    private class CallbacksImpl(
-        private val onStateChanged: (State) -> Unit,
-    ) : Lifecycle.Callbacks {
-        override fun onCreate() {
-            onStateChanged(State.CREATED)
-        }
-
-        override fun onStart() {
-            onStateChanged(State.STARTED)
-        }
-
-        override fun onResume() {
-            onStateChanged(State.RESUMED)
-        }
-
-        override fun onPause() {
-            onStateChanged(State.STARTED)
-        }
-
-        override fun onStop() {
-            onStateChanged(State.CREATED)
-        }
-
-        override fun onDestroy() {
-            onStateChanged(State.DESTROYED)
-        }
-    }
+    return registry
 }
-

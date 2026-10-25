@@ -5,15 +5,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.ComposeViewport
+import androidx.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.arkivanov.decompose.lifecycle.LifecycleRegistry
+import com.arkivanov.decompose.lifecycle.doOnDestroy
+import com.arkivanov.decompose.lifecycle.moveToCreated
+import com.arkivanov.decompose.lifecycle.moveToDestroyed
+import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.router.webhistory.withWebHistory
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.essenty.lifecycle.destroy
-import com.arkivanov.essenty.lifecycle.doOnDestroy
-import com.arkivanov.essenty.lifecycle.resume
-import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.sample.shared.Url
 import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootContent
@@ -29,7 +30,7 @@ fun main() {
 
     val rootValue =
         withWebHistory(schemaVersion = "1") { stateKeeper, deepLink ->
-            lifecycle?.destroy()
+            lifecycle?.moveToDestroyed()
             lifecycle = LifecycleRegistry()
 
             DefaultRootComponent(
@@ -51,9 +52,9 @@ fun main() {
 private fun LifecycleRegistry.attachToDocument() {
     fun onVisibilityChanged() {
         if (document.visibilityState == DocumentVisibilityState.visible) {
-            resume()
+            moveToResumed()
         } else {
-            stop()
+            moveToCreated()
         }
     }
 

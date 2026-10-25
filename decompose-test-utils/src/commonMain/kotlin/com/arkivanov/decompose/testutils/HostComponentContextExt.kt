@@ -1,16 +1,16 @@
 package com.arkivanov.decompose.testutils
 
+import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.moveToCreated
+import com.arkivanov.decompose.lifecycle.moveToDestroyed
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.create
-import com.arkivanov.essenty.lifecycle.destroy
 
 fun HostComponentContext.recreate(isConfigurationChange: Boolean = false): HostComponentContext {
-    val oldLifecycleState = lifecycle.state
+    val oldLifecycleState = lifecycle.currentState
 
     if (oldLifecycleState == Lifecycle.State.INITIALIZED) {
-        lifecycle.create()
+        lifecycle.moveToCreated()
     }
 
     val newStateKeeper = stateKeeper.recreate(isConfigurationChange = isConfigurationChange)
@@ -21,7 +21,7 @@ fun HostComponentContext.recreate(isConfigurationChange: Boolean = false): HostC
 
     val newInstanceKeeper = if (isConfigurationChange) instanceKeeper else InstanceKeeperDispatcher()
 
-    lifecycle.destroy()
+    lifecycle.moveToDestroyed()
 
     return HostComponentContext(
         lifecycleState = oldLifecycleState,
