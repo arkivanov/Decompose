@@ -109,21 +109,21 @@ class ChildSlotIntegrationTest {
     fun GIVEN_not_active_WHEN_parent_backDispatcher_isEnabled_THEN_false() {
         context.childSlot(initialConfiguration = null)
 
-        assertFalse(context.backHandler.isEnabled)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
     fun GIVEN_active_WHEN_parent_backDispatcher_isEnabled_THEN_true() {
         context.childSlot(initialConfiguration = 1)
 
-        assertTrue(context.backHandler.isEnabled)
+        assertTrue(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test
     fun GIVEN_active_WHEN_back_pressed_THEN_slot_not_active() {
         val slot by context.childSlot(initialConfiguration = 1)
 
-        context.backHandler.back()
+        context.navigationEventInput.backCompleted()
 
         slot.assertChild(null)
     }
@@ -131,9 +131,9 @@ class ChildSlotIntegrationTest {
     @Test
     fun GIVEN_dismissed_via_back_pressed_WHEN_parent_backDispatcher_isEnabled_THEN_false() {
         context.childSlot(initialConfiguration = 1)
-        context.backHandler.back()
+        context.navigationEventInput.backCompleted()
 
-        assertFalse(context.backHandler.isEnabled)
+        assertFalse(context.navigationEventInput.hasEnabledHandlers)
     }
 
     @Test

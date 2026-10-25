@@ -1,15 +1,13 @@
 package com.arkivanov.decompose
 
-import android.annotation.SuppressLint
-import androidx.activity.BackEventCompat
 import androidx.activity.ComponentActivity
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.navigationevent.DirectNavigationEventInput
+import androidx.navigationevent.NavigationEventDispatcher
 import androidx.savedstate.SavedStateRegistryOwner
-import com.arkivanov.essenty.backhandler.BackHandler
+import com.arkivanov.decompose.navigationevent.ForwardingNavigationEventInput
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.instancekeeper.getOrCreate
@@ -35,7 +33,8 @@ import kotlinx.serialization.builtins.serializer
  * Please pay attention when supplying dependencies to the component to avoid leaking the `Activity`.
  *
  * @param key a key of the component, must be unique within the `Activity`.
- * @param handleBackButton a flag that determines whether back button handling is enabled or not, default is `true`.
+ * @param handleNavigationEvents a flag that determines whether the component handles navigation events
+ * from the `Activity`'s [NavigationEventDispatcher], default is `true`.
  * @param discardSavedState a flag indicating whether any previously saved state should be discarded or not,
  * default value is `false`. Can be useful for handling deep links in `onCreate`, so that the navigation state
  * is not restored and initial state from the deep link is applied instead.
@@ -45,14 +44,14 @@ import kotlinx.serialization.builtins.serializer
  */
 fun <T> ComponentActivity.retainedComponent(
     key: String = "RootRetainedComponent",
-    handleBackButton: Boolean = true,
+    handleNavigationEvents: Boolean = true,
     discardSavedState: Boolean = false,
     isStateSavingAllowed: () -> Boolean = { true },
     factory: (ComponentContext) -> T,
 ): T =
     retainedComponent(
         key = key,
-        onBackPressedDispatcher = if (handleBackButton) onBackPressedDispatcher else null,
+        navigationEventDispatcher = if (handleNavigationEvents) navigationEventDispatcher else null,
         discardSavedState = discardSavedState,
         isStateSavingAllowed = isStateSavingAllowed,
         isChangingConfigurations = ::isChangingConfigurations,
@@ -66,7 +65,8 @@ fun <T> ComponentActivity.retainedComponent(
  * Please pay attention when supplying dependencies to the component to avoid leaking the `Fragment`.
  *
  * @param key a key of the component, must be unique within the `Fragment`.
- * @param handleBackButton a flag that determines whether back button handling is enabled or not, default is `true`.
+ * @param handleNavigationEvents a flag that determines whether the component handles navigation events
+ * from the host `Activity`'s [NavigationEventDispatcher], default is `true`.
  * @param discardSavedState a flag indicating whether any previously saved state should be discarded or not,
  * default value is `false`. Can be useful for handling deep links in `onCreate`, so that the navigation state
  * is not restored and initial state from the deep link is applied instead.
@@ -76,14 +76,14 @@ fun <T> ComponentActivity.retainedComponent(
  */
 fun <T> Fragment.retainedComponent(
     key: String = "RootRetainedComponent",
-    handleBackButton: Boolean = true,
+    handleNavigationEvents: Boolean = true,
     discardSavedState: Boolean = false,
     isStateSavingAllowed: () -> Boolean = { true },
     factory: (ComponentContext) -> T,
 ): T =
     retainedComponent(
         key = key,
-        onBackPressedDispatcher = if (handleBackButton) requireActivity().onBackPressedDispatcher else null,
+        navigationEventDispatcher = if (handleNavigationEvents) requireActivity().navigationEventDispatcher else null,
         discardSavedState = discardSavedState,
         isStateSavingAllowed = isStateSavingAllowed,
         isChangingConfigurations = { activity?.isChangingConfigurations ?: false },
@@ -92,7 +92,7 @@ fun <T> Fragment.retainedComponent(
 
 internal fun <T, O> O.retainedComponent(
     key: String,
-    onBackPressedDispatcher: OnBackPressedDispatcher?,
+    navigationEventDispatcher: NavigationEventDispatcher?,
     discardSavedState: Boolean,
     isStateSavingAllowed: () -> Boolean,
     isChangingConfigurations: () -> Boolean,
@@ -147,10 +147,18 @@ internal fun <T, O> O.retainedComponent(
 
     stateKeeper.register(key = key, strategy = SerializableContainer.serializer()) { holder.stateKeeper.save() }
 
-    if (onBackPressedDispatcher != null) {
-        val onBackPressedCallback = DelegateOnBackPressedCallback(holder.onBackPressedDispatcher)
-        holder.onBackEnabledChangedListener = { onBackPressedCallback.isEnabled = it }
-        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+    if (navigationEventDispatcher != null) {
+        navigationEventDispatcher.addHandler(holder.navigationEventInput.handler)
+        navigationEventDispatcher.addInput(holder.fallbackNavigationEventInput)
+
+        lifecycle.subscribe(
+            onStart = { holder.isEnabled = true },
+            onStop = { holder.isEnabled = false },
+            onDestroy = {
+                holder.navigationEventInput.handler.remove()
+                navigationEventDispatcher.removeInput(holder.fallbackNavigationEventInput)
+            },
+        )
     }
 
     return holder.component
@@ -158,43 +166,26 @@ internal fun <T, O> O.retainedComponent(
 
 private const val KEY_STATE_MARKER = "RetainedComponent_state_marker"
 
-private class DelegateOnBackPressedCallback(
-    private val dispatcher: OnBackPressedDispatcher,
-) : OnBackPressedCallback(enabled = dispatcher.hasEnabledCallbacks()) {
-    override fun handleOnBackPressed() {
-        dispatcher.onBackPressed()
-    }
-
-    @SuppressLint("VisibleForTests")
-    override fun handleOnBackStarted(backEvent: BackEventCompat) {
-        dispatcher.dispatchOnBackStarted(backEvent)
-    }
-
-    @SuppressLint("VisibleForTests")
-    override fun handleOnBackProgressed(backEvent: BackEventCompat) {
-        dispatcher.dispatchOnBackProgressed(backEvent)
-    }
-
-    @SuppressLint("VisibleForTests")
-    override fun handleOnBackCancelled() {
-        dispatcher.dispatchOnBackCancelled()
-    }
-}
-
 private class RetainedComponentHolder<out T>(
     savedState: SerializableContainer?,
     factory: (ComponentContext) -> T,
 ) : InstanceKeeper.Instance {
     val lifecycle: LifecycleRegistry = LifecycleRegistry()
     val stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(savedState = savedState)
-    private val instanceKeeper: InstanceKeeperDispatcher = InstanceKeeperDispatcher()
+    private val instanceKeeper = InstanceKeeperDispatcher()
 
-    var onBackEnabledChangedListener: ((Boolean) -> Unit)? = null
+    val fallbackNavigationEventInput: DirectNavigationEventInput = DirectNavigationEventInput()
+    val navigationEventInput: ForwardingNavigationEventInput = ForwardingNavigationEventInput(isEnabled = false)
+    var isEnabled: Boolean by navigationEventInput::isEnabled
 
-    val onBackPressedDispatcher: OnBackPressedDispatcher =
-        OnBackPressedDispatcher(
-            fallbackOnBackPressed = null,
-            onHasEnabledCallbacksChanged = { onBackEnabledChangedListener?.invoke(it) },
+    val navigationEventDispatcher: NavigationEventDispatcher =
+        NavigationEventDispatcher(
+            onBackCompletedFallback = {
+                fallbackNavigationEventInput.takeIf { isEnabled }?.backCompleted()
+            },
+            onForwardCompletedFallback = {
+                fallbackNavigationEventInput.takeIf { isEnabled }?.forwardCompleted()
+            },
         )
 
     val component: T =
@@ -203,11 +194,16 @@ private class RetainedComponentHolder<out T>(
                 lifecycle = lifecycle,
                 stateKeeper = stateKeeper,
                 instanceKeeper = instanceKeeper,
-                backHandler = BackHandler(onBackPressedDispatcher),
+                navigationEventDispatcher = navigationEventDispatcher,
             )
         )
 
+    init {
+        navigationEventDispatcher.addInput(navigationEventInput)
+    }
+
     override fun onDestroy() {
         instanceKeeper.destroy()
+        navigationEventDispatcher.dispose()
     }
 }

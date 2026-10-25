@@ -1,6 +1,6 @@
 package com.arkivanov.decompose
 
-import com.arkivanov.essenty.backhandler.BackHandler
+import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.statekeeper.StateKeeper
@@ -14,11 +14,16 @@ fun interface ComponentContextFactory<out T : Any> {
     /**
      * Creates a new instance of component context of type [T], not attached to any
      * parent component context.
+     *
+     * @param lifecycle a [Lifecycle] for the new component context.
+     * @param stateKeeper a [StateKeeper] for the new component context.
+     * @param instanceKeeper an [InstanceKeeper] for the new component context.
+     * @param navigationEventDispatcher a [NavigationEventDispatcher] for the new component context.
      */
     operator fun invoke(
         lifecycle: Lifecycle,
         stateKeeper: StateKeeper,
         instanceKeeper: InstanceKeeper,
-        backHandler: BackHandler,
+        navigationEventDispatcher: NavigationEventDispatcher,
     ): T
 }

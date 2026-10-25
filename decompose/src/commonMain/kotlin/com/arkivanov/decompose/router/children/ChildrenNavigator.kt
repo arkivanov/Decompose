@@ -96,13 +96,13 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
             Status.STARTED ->
                 getCreatedItem().apply {
-                    backHandler.start()
+                    navigationEventDispatcher.start()
                     lifecycleRegistry.start()
                 }
 
             Status.RESUMED ->
                 getCreatedItem().apply {
-                    backHandler.start()
+                    navigationEventDispatcher.start()
                     lifecycleRegistry.resume()
                 }
         }
@@ -223,7 +223,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
             Status.CREATED -> {
                 if (item.lifecycleRegistry.state != Lifecycle.State.CREATED) {
-                    item.backHandler.stop()
+                    item.navigationEventDispatcher.stop()
                     item.lifecycleRegistry.stop()
                 }
 
@@ -233,7 +233,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             Status.STARTED -> {
                 when {
                     item.lifecycleRegistry.state < Lifecycle.State.STARTED -> {
-                        item.backHandler.start()
+                        item.navigationEventDispatcher.start()
                         item.lifecycleRegistry.start()
                     }
 
@@ -247,7 +247,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
             Status.RESUMED -> {
                 if (item.lifecycleRegistry.state != Lifecycle.State.RESUMED) {
-                    item.backHandler.start()
+                    item.navigationEventDispatcher.start()
                     item.lifecycleRegistry.resume()
                 }
 
@@ -256,7 +256,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         }
 
     private fun Created<*, *>.destroy() {
-        backHandler.stop()
+        navigationEventDispatcher.destroy()
         lifecycleRegistry.destroy()
         instanceKeeperDispatcher.destroy()
     }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -24,22 +25,24 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.util.lerp
-import com.arkivanov.essenty.backhandler.BackEvent
+import androidx.navigationevent.NavigationEvent
+import com.arkivanov.decompose.navigationevent.SwipeEdge
+import com.arkivanov.decompose.extensions.compose.fromJetpack
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 internal class AndroidPredictiveBackAnimatableV2(
-    private val initialEvent: BackEvent,
-    private val exitShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)?,
-    private val enterShape: ((progress: Float, edge: BackEvent.SwipeEdge) -> Shape)?,
+    private val initialEvent: NavigationEvent,
+    private val exitShape: ((progress: Float, edge: SwipeEdge) -> Shape)?,
+    private val enterShape: ((progress: Float, edge: SwipeEdge) -> Shape)?,
 ) : PredictiveBackAnimatable {
 
     private val finishProgressAnimatable = Animatable(initialValue = 0F)
     private val finishProgress by derivedStateOf { finishProgressAnimatable.value.coerceIn(0F, 1F) }
     private val progressAnimatable = Animatable(initialValue = initialEvent.progress)
     private val progress by derivedStateOf { progressAnimatable.value.coerceIn(0F, 1F) }
-    private var edge by mutableStateOf(initialEvent.swipeEdge)
+    private var edge by mutableIntStateOf(initialEvent.swipeEdge)
     private var touchY by mutableFloatStateOf(initialEvent.touchY)
 
     override val exitModifier: Modifier
@@ -50,7 +53,7 @@ internal class AndroidPredictiveBackAnimatableV2(
                         exitModifier(corners.toShape(progress))
                     }
                 } else {
-                    exitModifier(exitShape.invoke(progress, edge))
+                    exitModifier(exitShape.invoke(progress, SwipeEdge.fromJetpack(edge)))
                 }
             }
 
@@ -68,7 +71,7 @@ internal class AndroidPredictiveBackAnimatableV2(
                             enterModifier(corners.toShape(shapeProgress))
                         }
                     } else {
-                        enterModifier(enterShape.invoke(shapeProgress, edge))
+                        enterModifier(enterShape.invoke(shapeProgress, SwipeEdge.fromJetpack(edge)))
                     }
                 }
 
@@ -120,8 +123,8 @@ internal class AndroidPredictiveBackAnimatableV2(
     private fun Density.exitOffsetXLtr(width: Float): Float {
         val initialOffsetX =
             when (edge) {
-                BackEvent.SwipeEdge.LEFT -> (width - width * initialScaleFactor()) / 2F - 8.dp.toPx() * progress
-                BackEvent.SwipeEdge.RIGHT -> 0F
+                NavigationEvent.EDGE_LEFT -> (width - width * initialScaleFactor()) / 2F - 8.dp.toPx() * progress
+                NavigationEvent.EDGE_RIGHT -> 0F
                 else -> 0F
             }
 
@@ -131,8 +134,8 @@ internal class AndroidPredictiveBackAnimatableV2(
     private fun Density.exitOffsetXRtl(width: Float): Float {
         val initialOffsetX =
             when (edge) {
-                BackEvent.SwipeEdge.RIGHT -> 8.dp.toPx() * progress - (width - width * initialScaleFactor()) / 2F
-                BackEvent.SwipeEdge.LEFT -> 0F
+                NavigationEvent.EDGE_RIGHT -> 8.dp.toPx() * progress - (width - width * initialScaleFactor()) / 2F
+                NavigationEvent.EDGE_LEFT -> 0F
                 else -> 0F
             }
 
@@ -156,7 +159,7 @@ internal class AndroidPredictiveBackAnimatableV2(
         return lerp(start = translationYLimit * translationYFactor, stop = 0F, fraction = finishProgress)
     }
 
-    override suspend fun animate(event: BackEvent) {
+    override suspend fun animate(event: NavigationEvent) {
         edge = event.swipeEdge
         touchY = event.touchY
         progressAnimatable.animateTo(event.progress)

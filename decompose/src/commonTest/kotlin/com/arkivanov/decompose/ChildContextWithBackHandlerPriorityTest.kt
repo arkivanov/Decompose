@@ -1,7 +1,10 @@
 package com.arkivanov.decompose
 
+import androidx.navigationevent.NavigationEventDispatcher.Companion.PRIORITY_DEFAULT
+import androidx.navigationevent.NavigationEventDispatcher.Companion.PRIORITY_OVERLAY
+import com.arkivanov.decompose.navigationevent.NavigationEventHandler
+import com.arkivanov.decompose.navigationevent.NavigationEventPriority
 import com.arkivanov.decompose.testutils.TestComponentContext
-import com.arkivanov.essenty.backhandler.BackCallback
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -11,32 +14,34 @@ class ChildContextWithBackHandlerPriorityTest {
     @Test
     fun GIVEN_backHandlerPriority_specified_WHEN_back_THEN_order_according_to_priority() {
         val context = TestComponentContext()
-        val childContext1 = context.childContext(key = "context1", backHandlerPriority = 3)
-        val childContext2 = context.childContext(key = "context2", backHandlerPriority = 4)
-        val childContext3 = context.childContext(key = "context3", backHandlerPriority = 2)
+        val childContext1 = context.childContext(key = "context1", navigationEventPriority = NavigationEventPriority.Default)
+        val childContext2 = context.childContext(key = "context2", navigationEventPriority = NavigationEventPriority.Overlay)
+        val childContext3 = context.childContext(key = "context3", navigationEventPriority = NavigationEventPriority.Default)
         val events = ArrayList<String>()
-        val backCallback01 = BackCallback(priority = 1) { events += "01" }
-        val backCallback02 = BackCallback(priority = 5) { events += "02" }
-        val backCallback1 = BackCallback { events += "1" }
-        val backCallback2 = BackCallback { events += "2" }
-        val backCallback3 = BackCallback { events += "3" }
-        context.backHandler.register(backCallback01)
-        context.backHandler.register(backCallback02)
-        childContext1.backHandler.register(backCallback1)
-        childContext2.backHandler.register(backCallback2)
-        childContext3.backHandler.register(backCallback3)
+        val backCallback01 = NavigationEventHandler { events += "01" }
+        val backCallback02 = NavigationEventHandler { events += "02" }
+        val backCallback1 = NavigationEventHandler { events += "1" }
+        val backCallback2 = NavigationEventHandler { events += "2" }
+        val backCallback3 = NavigationEventHandler { events += "3" }
+        context.navigationEventDispatcher.addHandler(backCallback01, PRIORITY_DEFAULT)
+        context.navigationEventDispatcher.addHandler(backCallback02, PRIORITY_OVERLAY)
+        childContext1.navigationEventDispatcher.addHandler(backCallback1)
+        childContext2.navigationEventDispatcher.addHandler(backCallback2)
+        childContext3.navigationEventDispatcher.addHandler(backCallback3)
 
-        context.backHandler.back()
-        backCallback02.isEnabled = false
-        context.backHandler.back()
-        backCallback2.isEnabled = false
-        context.backHandler.back()
-        backCallback1.isEnabled = false
-        context.backHandler.back()
-        backCallback3.isEnabled = false
-        context.backHandler.back()
+        context.navigationEventInput.backCompleted()
+        backCallback02.isBackEnabled = false
+        context.navigationEventInput.backCompleted()
+        backCallback2.isBackEnabled = false
+        context.navigationEventInput.backCompleted()
+        backCallback01.isBackEnabled = false
+        context.navigationEventInput.backCompleted()
+        backCallback3.isBackEnabled = false
+        context.navigationEventInput.backCompleted()
+        backCallback1.isBackEnabled = false
+        context.navigationEventInput.backCompleted()
 
-        assertEquals(listOf("02", "2", "1", "3", "01"), events)
+        assertEquals(listOf("02", "2", "01", "3", "1"), events)
     }
 
     @Test
@@ -46,28 +51,28 @@ class ChildContextWithBackHandlerPriorityTest {
         val childContext2 = context.childContext(key = "context2")
         val childContext3 = context.childContext(key = "context3")
         val events = ArrayList<String>()
-        val backCallback01 = BackCallback { events += "01" }
-        val backCallback02 = BackCallback { events += "02" }
-        val backCallback1 = BackCallback { events += "1" }
-        val backCallback2 = BackCallback { events += "2" }
-        val backCallback3 = BackCallback { events += "3" }
-        context.backHandler.register(backCallback01)
-        context.backHandler.register(backCallback02)
-        childContext1.backHandler.register(backCallback1)
-        childContext2.backHandler.register(backCallback2)
-        childContext3.backHandler.register(backCallback3)
+        val backCallback01 = NavigationEventHandler { events += "01" }
+        val backCallback02 = NavigationEventHandler { events += "02" }
+        val backCallback1 = NavigationEventHandler { events += "1" }
+        val backCallback2 = NavigationEventHandler { events += "2" }
+        val backCallback3 = NavigationEventHandler { events += "3" }
+        context.navigationEventDispatcher.addHandler(backCallback01)
+        context.navigationEventDispatcher.addHandler(backCallback02)
+        childContext1.navigationEventDispatcher.addHandler(backCallback1)
+        childContext2.navigationEventDispatcher.addHandler(backCallback2)
+        childContext3.navigationEventDispatcher.addHandler(backCallback3)
 
-        context.backHandler.back()
-        backCallback02.isEnabled = false
-        context.backHandler.back()
-        backCallback01.isEnabled = false
-        context.backHandler.back()
-        backCallback3.isEnabled = false
-        context.backHandler.back()
-        backCallback2.isEnabled = false
-        context.backHandler.back()
-        backCallback1.isEnabled = false
-        context.backHandler.back()
+        context.navigationEventInput.backCompleted()
+        backCallback02.isBackEnabled = false
+        context.navigationEventInput.backCompleted()
+        backCallback01.isBackEnabled = false
+        context.navigationEventInput.backCompleted()
+        backCallback3.isBackEnabled = false
+        context.navigationEventInput.backCompleted()
+        backCallback2.isBackEnabled = false
+        context.navigationEventInput.backCompleted()
+        backCallback1.isBackEnabled = false
+        context.navigationEventInput.backCompleted()
 
         assertEquals(listOf("02", "01", "3", "2", "1"), events)
     }

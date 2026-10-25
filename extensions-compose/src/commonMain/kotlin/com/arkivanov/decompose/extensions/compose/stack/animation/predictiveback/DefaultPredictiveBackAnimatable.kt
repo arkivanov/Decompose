@@ -2,23 +2,25 @@ package com.arkivanov.decompose.extensions.compose.stack.animation.predictivebac
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.arkivanov.essenty.backhandler.BackEvent
+import androidx.navigationevent.NavigationEvent
+import com.arkivanov.decompose.extensions.compose.fromJetpack
+import com.arkivanov.decompose.navigationevent.SwipeEdge
 
 internal class DefaultPredictiveBackAnimatable(
-    initialBackEvent: BackEvent,
-    private val getExitModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier,
-    private val getEnterModifier: (progress: Float, edge: BackEvent.SwipeEdge) -> Modifier,
+    initialNavigationEvent: NavigationEvent,
+    private val getExitModifier: (progress: Float, edge: SwipeEdge) -> Modifier,
+    private val getEnterModifier: (progress: Float, edge: SwipeEdge) -> Modifier,
 ) : PredictiveBackAnimatable {
 
-    private val progressAnimatable = Animatable(initialValue = initialBackEvent.progress)
-    private var swipeEdge by mutableStateOf(initialBackEvent.swipeEdge)
-    override val exitModifier: Modifier get() = getExitModifier(progressAnimatable.value, swipeEdge)
-    override val enterModifier: Modifier get() = getEnterModifier(progressAnimatable.value, swipeEdge)
+    private val progressAnimatable = Animatable(initialValue = initialNavigationEvent.progress)
+    private var swipeEdge by mutableIntStateOf(initialNavigationEvent.swipeEdge)
+    override val exitModifier: Modifier get() = getExitModifier(progressAnimatable.value, SwipeEdge.fromJetpack(swipeEdge))
+    override val enterModifier: Modifier get() = getEnterModifier(progressAnimatable.value, SwipeEdge.fromJetpack(swipeEdge))
 
-    override suspend fun animate(event: BackEvent) {
+    override suspend fun animate(event: NavigationEvent) {
         swipeEdge = event.swipeEdge
         progressAnimatable.snapTo(targetValue = event.progress)
     }
