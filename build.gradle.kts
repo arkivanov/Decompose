@@ -11,6 +11,7 @@ import com.arkivanov.gradle.watchosCompat
 buildscript {
     repositories {
         mavenCentral()
+        gradlePluginPortal()
         google()
     }
 
@@ -22,6 +23,7 @@ buildscript {
         classpath(deps.jetbrains.kotlinx.binaryCompatibilityValidator)
         classpath(deps.jetbrains.kotlin.serializationGradlePlug)
         classpath(deps.dropbox.dependencyGuard)
+        classpath(deps.tjokinen.androidBcvBridge)
     }
 }
 
