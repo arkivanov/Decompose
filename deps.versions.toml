@@ -23,6 +23,7 @@ androidxFragment = "1.9.1"
 androidxLifecycle = "2.11.0"
 androidxNavigationEvent = "1.2.0-alpha04"
 dependencyGuard = "0.5.0"
+androidBcvBridge = "0.2.0"
 
 [libraries]
 
@@ -73,3 +74,4 @@ androidx-lifecycle-lifecycleRuntime = { group = "org.jetbrains.androidx.lifecycl
 androidx-lifecycle-lifecycleViewModelSavedState = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "androidxLifecycle" }
 
 dropbox-dependencyGuard = { group = "com.dropbox.dependency-guard", name = "dependency-guard", version.ref = "dependencyGuard" }
+tjokinen-androidBcvBridge = { group = "io.github.tjokinen", name = "android-bcv-bridge", version.ref = "androidBcvBridge" }
