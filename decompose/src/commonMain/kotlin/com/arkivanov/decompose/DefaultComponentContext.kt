@@ -5,6 +5,7 @@ import com.arkivanov.decompose.instancekeeper.attachTo
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
@@ -31,6 +32,13 @@ class DefaultComponentContext(
     override val instanceKeeper: InstanceKeeper = instanceKeeper ?: InstanceKeeperDispatcher().attachTo(lifecycle)
     override val navigationEventDispatcher: NavigationEventDispatcher = navigationEventDispatcher ?: NavigationEventDispatcher()
     override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
+
+    constructor() : this(
+        lifecycle = LifecycleRegistry(),
+        stateKeeper = null,
+        instanceKeeper = null,
+        navigationEventDispatcher = null,
+    )
 
     constructor(lifecycle: Lifecycle) : this(
         lifecycle = lifecycle,

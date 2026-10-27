@@ -87,6 +87,7 @@ public final class com/arkivanov/decompose/DeeplinkUtilsKt {
 }
 
 public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivanov/decompose/ComponentContext {
+	public fun <init> ()V
 	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;)V
 	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Landroidx/navigationevent/NavigationEventDispatcher;)V
 	public synthetic fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Landroidx/navigationevent/NavigationEventDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
