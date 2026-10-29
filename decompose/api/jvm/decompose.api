@@ -104,7 +104,32 @@ public abstract interface annotation class com/arkivanov/decompose/FaultyDecompo
 public abstract interface class com/arkivanov/decompose/GenericComponentContext : androidx/navigationevent/NavigationEventDispatcherOwner, com/arkivanov/decompose/ComponentContextFactoryOwner, com/arkivanov/essenty/instancekeeper/InstanceKeeperOwner, com/arkivanov/essenty/lifecycle/LifecycleOwner, com/arkivanov/essenty/statekeeper/StateKeeperOwner {
 }
 
+public final class com/arkivanov/decompose/HostComponentContext : com/arkivanov/decompose/ComponentContext, com/arkivanov/decompose/lifecycle/LifecycleRegistryOwner {
+	public fun <init> ()V
+	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle$State;Lcom/arkivanov/essenty/statekeeper/StateKeeperDispatcher;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeperDispatcher;Landroidx/navigationevent/NavigationEventDispatcher;)V
+	public synthetic fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle$State;Lcom/arkivanov/essenty/statekeeper/StateKeeperDispatcher;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeperDispatcher;Landroidx/navigationevent/NavigationEventDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getComponentContextFactory ()Lcom/arkivanov/decompose/ComponentContextFactory;
+	public synthetic fun getInstanceKeeper ()Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;
+	public fun getInstanceKeeper ()Lcom/arkivanov/essenty/instancekeeper/InstanceKeeperDispatcher;
+	public synthetic fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/Lifecycle;
+	public fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/LifecycleRegistry;
+	public fun getNavigationEventDispatcher ()Landroidx/navigationevent/NavigationEventDispatcher;
+	public final fun getNavigationEventInput ()Landroidx/navigationevent/DirectNavigationEventInput;
+	public synthetic fun getStateKeeper ()Lcom/arkivanov/essenty/statekeeper/StateKeeper;
+	public fun getStateKeeper ()Lcom/arkivanov/essenty/statekeeper/StateKeeperDispatcher;
+}
+
 public abstract interface annotation class com/arkivanov/decompose/InternalDecomposeApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface class com/arkivanov/decompose/lifecycle/LifecycleRegistryOwner : com/arkivanov/essenty/lifecycle/LifecycleOwner {
+	public abstract fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/LifecycleRegistry;
+}
+
+public final class com/arkivanov/decompose/lifecycle/LifecycleRegistryOwnerKt {
+	public static final fun created (Lcom/arkivanov/decompose/lifecycle/LifecycleRegistryOwner;)Lcom/arkivanov/decompose/lifecycle/LifecycleRegistryOwner;
+	public static final fun resumed (Lcom/arkivanov/decompose/lifecycle/LifecycleRegistryOwner;)Lcom/arkivanov/decompose/lifecycle/LifecycleRegistryOwner;
+	public static final fun started (Lcom/arkivanov/decompose/lifecycle/LifecycleRegistryOwner;)Lcom/arkivanov/decompose/lifecycle/LifecycleRegistryOwner;
 }
 
 public final class com/arkivanov/decompose/navigationevent/NavigationEventDispatcherExtKt {

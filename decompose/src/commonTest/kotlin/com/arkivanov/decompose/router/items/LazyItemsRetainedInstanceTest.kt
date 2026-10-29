@@ -1,8 +1,9 @@
 package com.arkivanov.decompose.router.items
 
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.essenty.instancekeeper.getOrCreate
 import kotlin.test.Test
@@ -17,7 +18,7 @@ class LazyItemsRetainedInstanceTest {
     @Test
     fun WHEN_some_items_removed_THEN_remaining_active_instances_not_destroyed() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -47,7 +48,7 @@ class LazyItemsRetainedInstanceTest {
     @Test
     fun WHEN_some_items_removed_THEN_remaining_active_instances_not_recreated() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -81,7 +82,7 @@ class LazyItemsRetainedInstanceTest {
     @Test
     fun WHEN_some_items_removed_THEN_removed_instances_destroyed() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -111,7 +112,7 @@ class LazyItemsRetainedInstanceTest {
     @Test
     fun WHEN_some_items_deactivated_THEN_remaining_active_instances_not_destroyed() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -141,7 +142,7 @@ class LazyItemsRetainedInstanceTest {
     @Test
     fun WHEN_some_items_deactivated_THEN_remaining_active_instances_not_recreated() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -175,7 +176,7 @@ class LazyItemsRetainedInstanceTest {
     @Test
     fun WHEN_some_items_deactivated_THEN_deactivated_instances_destroyed() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -212,7 +213,7 @@ class LazyItemsRetainedInstanceTest {
 
     @Test
     fun WHEN_configuration_change_THEN_active_instances_not_destroyed() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -238,7 +239,7 @@ class LazyItemsRetainedInstanceTest {
 
     @Test
     fun WHEN_configuration_change_THEN_active_instances_not_recreated() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
 
         var items =
             ctx.childLazyItems(
@@ -268,7 +269,7 @@ class LazyItemsRetainedInstanceTest {
 
     @Test
     fun GIVEN_without_state_saver_WHEN_configuration_change_without_initial_state_THEN_active_instances_destroyed() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -295,7 +296,7 @@ class LazyItemsRetainedInstanceTest {
 
     @Test
     fun GIVEN_without_state_saver_WHEN_configuration_change_with_same_initial_state_THEN_active_instances_destroyed() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -330,7 +331,7 @@ class LazyItemsRetainedInstanceTest {
 
     @Test
     fun GIVEN_without_state_saver_WHEN_configuration_change_with_same_initial_state_THEN_active_instances_recreated() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
 
         var items =
             ctx.childLazyItems(

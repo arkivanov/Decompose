@@ -1,8 +1,9 @@
 package com.arkivanov.decompose.router.items
 
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.Component
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -11,7 +12,7 @@ import kotlin.test.assertEquals
 class LazyItemsLazinessTest {
 
     private val nav = ItemsNavigation<Int>()
-    private val ctx = TestComponentContext()
+    private val ctx = HostComponentContext().resumed()
 
     @Test
     fun WHEN_created_with_initial_items_THEN_get_returns_components() {

@@ -4,8 +4,9 @@ import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeSettings
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addDirectInput
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.keys
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.statekeeper.SerializableContainer
@@ -30,7 +31,7 @@ open class ChildrenTestBase {
 
     protected val navigationEventInput = navigationEventDispatcher.addDirectInput()
 
-    protected val context = TestComponentContext(navigationEventDispatcher = navigationEventDispatcher)
+    protected val context = HostComponentContext(navigationEventDispatcher = navigationEventDispatcher).resumed()
     protected val lifecycle by context::lifecycle
 
     @AfterTest

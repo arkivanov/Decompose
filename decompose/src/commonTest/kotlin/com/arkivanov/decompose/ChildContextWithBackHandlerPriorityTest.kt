@@ -2,9 +2,9 @@ package com.arkivanov.decompose
 
 import androidx.navigationevent.NavigationEventDispatcher.Companion.PRIORITY_DEFAULT
 import androidx.navigationevent.NavigationEventDispatcher.Companion.PRIORITY_OVERLAY
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.NavigationEventHandler
 import com.arkivanov.decompose.navigationevent.NavigationEventPriority
-import com.arkivanov.decompose.testutils.TestComponentContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -13,7 +13,7 @@ class ChildContextWithBackHandlerPriorityTest {
 
     @Test
     fun GIVEN_backHandlerPriority_specified_WHEN_back_THEN_order_according_to_priority() {
-        val context = TestComponentContext()
+        val context = HostComponentContext().resumed()
         val childContext1 = context.childContext(key = "context1", navigationEventPriority = NavigationEventPriority.Default)
         val childContext2 = context.childContext(key = "context2", navigationEventPriority = NavigationEventPriority.Overlay)
         val childContext3 = context.childContext(key = "context3", navigationEventPriority = NavigationEventPriority.Default)
@@ -46,7 +46,7 @@ class ChildContextWithBackHandlerPriorityTest {
 
     @Test
     fun GIVEN_backHandlerPriority_not_specified_WHEN_back_THEN_reverse_order() {
-        val context = TestComponentContext()
+        val context = HostComponentContext().resumed()
         val childContext1 = context.childContext(key = "context1")
         val childContext2 = context.childContext(key = "context2")
         val childContext3 = context.childContext(key = "context3")

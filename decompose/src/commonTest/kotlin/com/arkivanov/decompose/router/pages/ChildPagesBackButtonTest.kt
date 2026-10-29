@@ -1,6 +1,7 @@
 package com.arkivanov.decompose.router.pages
 
-import com.arkivanov.decompose.testutils.TestComponentContext
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.testutils.getValue
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -9,7 +10,7 @@ import kotlin.test.assertTrue
 @Suppress("TestFunctionName")
 class ChildPagesBackButtonTest : BaseChildPagesTest() {
 
-    private val context = TestComponentContext()
+    private val context = HostComponentContext().resumed()
 
     @Test
     fun WHEN_5_pages_and_selected_1_THEN_isEnabled_true() {

@@ -1,11 +1,12 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.DecomposeSettings
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.STARTED
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.keys
 import com.arkivanov.decompose.testutils.recreate
@@ -187,7 +188,7 @@ class ChildrenKeysTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_multiple_children_WHEN_configuration_change_THEN_keys_not_changed() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         var children = ctx.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         val keys = children.value.keys
 
@@ -199,7 +200,7 @@ class ChildrenKeysTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_multiple_children_with_same_configurations_WHEN_configuration_change_THEN_keys_not_changed() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         var children = ctx.children(initialState = stateOf(1 by DESTROYED, 1 by CREATED, 1 by STARTED, 1 by RESUMED))
         val keys = children.value.keys
 
@@ -211,7 +212,7 @@ class ChildrenKeysTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_multiple_children_WHEN_recreated_THEN_keys_not_changed() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         var children = ctx.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         val keys = children.value.keys
 
@@ -223,7 +224,7 @@ class ChildrenKeysTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_multiple_children_with_same_configurations_WHEN_recreated_THEN_keys_not_changed() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         var children = ctx.children(initialState = stateOf(1 by DESTROYED, 1 by CREATED, 1 by STARTED, 1 by RESUMED))
         val keys = children.value.keys
 

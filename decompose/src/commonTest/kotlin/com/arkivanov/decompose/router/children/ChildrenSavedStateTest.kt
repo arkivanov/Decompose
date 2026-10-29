@@ -1,11 +1,12 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.DecomposeSettings
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.STARTED
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
@@ -270,7 +271,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_saving_state_WHEN_recreated_THEN_navigation_state_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
 
         val newContext = oldContext.recreate()
@@ -281,7 +282,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_not_saving_state_WHEN_recreated_THEN_navigation_state_not_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED), saveState = { null })
 
         val newContext = oldContext.recreate()
@@ -292,7 +293,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_not_restoring_state_WHEN_recreated_THEN_navigation_state_not_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
 
         val newContext = oldContext.recreate()
@@ -303,7 +304,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_saving_state_WHEN_recreated_THEN_child_states_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
         oldChildren.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
@@ -322,7 +323,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_not_saving_state_WHEN_recreated_THEN_child_states_not_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(
             initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED),
             saveState = { null },
@@ -344,7 +345,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_not_restoring_state_WHEN_recreated_THEN_child_states_not_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
         oldChildren.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
@@ -366,7 +367,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_recreated_and_created_child_restored_as_destroyed_WHEN_child_switched_to_created_THEN_state_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
         val newContext = oldContext.recreate()
@@ -380,7 +381,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_recreated_and_created_child_restored_as_destroyed_WHEN_child_switched_to_started_THEN_state_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
         val newContext = oldContext.recreate()
@@ -394,7 +395,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_recreated_and_created_child_restored_as_destroyed_WHEN_child_switched_to_resumed_THEN_state_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
         val newContext = oldContext.recreate()
@@ -408,7 +409,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_recreated_and_started_child_restored_as_destroyed_WHEN_child_switched_to_created_THEN_state_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         oldChildren.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
         val newContext = oldContext.recreate()
@@ -422,7 +423,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_recreated_and_started_child_restored_as_destroyed_WHEN_child_switched_to_started_THEN_state_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         oldChildren.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
         val newContext = oldContext.recreate()
@@ -436,7 +437,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_recreated_and_started_child_restored_as_destroyed_WHEN_child_switched_to_resumed_THEN_state_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         oldChildren.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
         val newContext = oldContext.recreate()
@@ -450,7 +451,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_recreated_and_resumed_child_restored_as_destroyed_WHEN_child_switched_to_created_THEN_state_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         oldChildren.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") { 40 }
         val newContext = oldContext.recreate()
@@ -464,7 +465,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_recreated_and_resumed_child_restored_as_destroyed_WHEN_child_switched_to_started_THEN_state_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         oldChildren.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") { 40 }
         val newContext = oldContext.recreate()
@@ -478,7 +479,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_recreated_and_resumed_child_restored_as_destroyed_WHEN_child_switched_to_resumed_THEN_state_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         oldChildren.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") { 40 }
         val newContext = oldContext.recreate()
@@ -492,7 +493,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
 
     @Test
     fun GIVEN_child_switched_to_created_and_recreated_twice_WHEN_child_switched_to_resumed_THEN_state_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by RESUMED, 3 by STARTED))
         oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 30 }
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED) }
@@ -512,7 +513,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     @Test
     fun GIVEN_first_and_last_children_duplicated_WHEN_recreated_THEN_states_restored() {
         DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
         oldChildren.first().requireInstance().stateKeeper.register("key") { 10 }
         oldChildren.last().requireInstance().stateKeeper.register("key") { 30 }

@@ -3,6 +3,7 @@ package com.arkivanov.decompose.router.stack
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.DelicateDecomposeApi
+import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_CREATE
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_DESTROY
@@ -10,10 +11,10 @@ import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_PAUSE
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_RESUME
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_START
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_STOP
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.children.NavStateSaver
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
@@ -39,7 +40,7 @@ import kotlin.test.assertTrue
 class ChildStackIntegrationTest {
 
     private val navigation = StackNavigation<Config>()
-    private val context = TestComponentContext()
+    private val context = HostComponentContext().resumed()
 
     @AfterTest
     fun after() {
@@ -212,7 +213,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_THEN_stack_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         oldContext.childStack(initialStack = listOf(Config(1), Config(2)), persistent = true)
 
         val newContext = oldContext.recreate()
@@ -223,7 +224,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_with_new_initial_stack_and_state_not_restored_THEN_new_initial_stack_is_set() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         ctx.childStack(initialStack = listOf(Config(1)), persistent = true)
 
         ctx = ctx.recreate()
@@ -242,7 +243,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_with_same_initial_stack_and_state_not_restored_THEN_child_state_not_restored() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         val oldStack by ctx.childStack(initialStack = listOf(Config(1)), persistent = true)
         oldStack.active.instance.stateKeeper.register("key") { 1 }
 
@@ -264,7 +265,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_config_changed_with_same_initial_stack_and_state_not_restored_THEN_child_retained_instances_destroyed() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         val oldStack by ctx.childStack(initialStack = listOf(Config(1)), persistent = true)
         val oldInstance = oldStack.active.instance.instanceKeeper.getOrCreate("key") { TestInstance() }
 
@@ -284,7 +285,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_config_changed_with_same_initial_stack_and_state_not_restored_THEN_retained_instances_are_not_same() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         val oldStack by ctx.childStack(initialStack = listOf(Config(1)), persistent = true)
         val oldInstance = oldStack.active.instance.instanceKeeper.getOrCreate("key") { TestInstance() }
 
@@ -305,7 +306,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_not_persistent_WHEN_recreated_THEN_stack_not_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         oldContext.childStack(initialStack = listOf(Config(1), Config(2)), persistent = false)
 
         val newContext = oldContext.recreate()
@@ -330,7 +331,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_THEN_state_restored_for_all_components() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = true)
         oldStack.items.forEach { (configuration, instance) ->
             instance.stateKeeper.register(key = "key") { configuration.id }
@@ -345,7 +346,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_twice_THEN_state_restored_for_all_components() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = true)
         oldStack.items.forEach { (configuration, instance) ->
             instance.stateKeeper.register(key = "key") { configuration.id }
@@ -367,7 +368,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_not_persistent_WHEN_recreated_THEN_state_not_restored_for_any_component() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = false)
         oldStack.items.forEach { (configuration, instance) ->
             instance.stateKeeper.register(key = "key") { configuration.id }
@@ -382,7 +383,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_with_configuration_change_THEN_instance_retained_for_all_components() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = true)
         val oldInstances = oldStack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
 
@@ -395,7 +396,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_not_persistent_WHEN_recreated_with_configuration_change_THEN_instance_not_retained_for_any_component() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = false)
         val oldInstances = oldStack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
 
@@ -410,7 +411,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_with_configuration_change_THEN_instance_not_destroyed_for_any_component() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val stack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = true)
         val instances = stack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
 
@@ -424,7 +425,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_not_persistent_WHEN_recreated_with_configuration_change_THEN_instances_destroyed_for_all_component() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val stack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = false)
         val instances = stack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
 
@@ -448,7 +449,7 @@ class ChildStackIntegrationTest {
 
     @Test
     fun GIVEN_another_child_pushed_WHEN_recreated_with_configuration_change_THEN_instance_not_destroyed_for_previous_child() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val stack by oldContext.childStack(initialStack = listOf(Config(1)))
         val instance = stack.active.instance.instanceKeeper.getOrCreate("key", ::TestInstance)
         navigation.push(Config(2))

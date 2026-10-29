@@ -1,8 +1,9 @@
 package com.arkivanov.decompose.router.pages
 
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.children.NavStateSaver
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
@@ -21,7 +22,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_THEN_state_restored() {
-        var context = TestComponentContext()
+        var context = HostComponentContext().resumed()
         context.childPages(
             initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 2),
             persistent = true,
@@ -35,7 +36,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_with_new_initial_pages_and_state_not_restored_THEN_new_initial_pages_set() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         ctx.childPages(initialPages = Pages(items = listOf(1), selectedIndex = 0), persistent = true)
 
         ctx = ctx.recreate()
@@ -54,7 +55,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_with_same_initial_pages_and_state_not_restored_THEN_child_state_not_restored() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         val oldPages by ctx.childPages(initialPages = Pages(items = listOf(1), selectedIndex = 0), persistent = true)
         oldPages.requireInstance(0).stateKeeper.register("key") { 1 }
 
@@ -76,7 +77,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_persistent_WHEN_config_changed_with_same_initial_pages_and_state_not_restored_THEN_child_retained_instances_destroyed() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         val oldPages by ctx.childPages(initialPages = Pages(items = listOf(1), selectedIndex = 0), persistent = true)
         val oldInstance = oldPages.requireInstance(0).instanceKeeper.getOrCreate("key") { TestInstance() }
 
@@ -96,7 +97,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_persistent_WHEN_config_changed_with_same_initial_pages_and_state_not_restored_THEN_retained_instances_are_not_same() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         val oldPages by ctx.childPages(initialPages = Pages(items = listOf(1), selectedIndex = 0), persistent = true)
         val oldInstance = oldPages.requireInstance(0).instanceKeeper.getOrCreate("key") { TestInstance() }
 
@@ -118,7 +119,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
 
     @Test
     fun GIVEN_not_persistent_WHEN_recreated_THEN_initial_state_applied() {
-        var context = TestComponentContext()
+        var context = HostComponentContext().resumed()
         context.childPages(
             initialPages = Pages(items = listOf(0, 1, 2, 3, 4), selectedIndex = 2),
             persistent = false,
