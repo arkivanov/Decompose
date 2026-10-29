@@ -1,7 +1,8 @@
 package com.arkivanov.decompose.router.pages
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.testutils.TestComponentContext
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.builtins.serializer
@@ -12,7 +13,7 @@ import kotlin.test.assertEquals
 class ChildPagesIntegrationTest {
 
     private val navigation = PagesNavigation<Int>()
-    private val context = TestComponentContext()
+    private val context = HostComponentContext().resumed()
 
     @Test
     fun GIVEN_three_pages_and_last_selected_WHEN_selectNext_circular_THEN_first_selected() {

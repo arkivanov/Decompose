@@ -1,15 +1,16 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.TestBackHandler
 import com.arkivanov.decompose.TestBackHandler.Event
 import com.arkivanov.decompose.assertEvents
 import com.arkivanov.decompose.assertNoEvents
 import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.Component
 import com.arkivanov.decompose.router.TestInstance
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.serializeAndDeserialize
 import com.arkivanov.essenty.instancekeeper.getOrCreate
@@ -170,7 +171,7 @@ class ChildControllerTest {
 
     @Test
     fun GIVEN_child_created_WHEN_recreated_THEN_child_state_restored() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         var controller = controller(ctx = ctx).apply { init() }
         controller.create(configuration = 1)
         controller.requireChild(1).stateKeeper.register(key = "key", strategy = Int.serializer()) { 100 }
@@ -191,7 +192,7 @@ class ChildControllerTest {
 
     @Test
     fun GIVEN_child_resumed_WHEN_recreated_THEN_child_state_restored() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         var controller = controller(ctx = ctx).apply { init() }
         controller.resume(configuration = 1)
         controller.requireChild(1).stateKeeper.register(key = "key", strategy = Int.serializer()) { 100 }
@@ -212,7 +213,7 @@ class ChildControllerTest {
 
     @Test
     fun GIVEN_child_resumed_and_retained_instance_created_WHEN_destroy_THEN_instance_destroyed() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
         val controller = controller(ctx = ctx).apply { init() }
         controller.resume(configuration = 1)
         val instance = controller.requireChild(1).instanceKeeper.getOrCreate(key = "key") { TestInstance() }
@@ -224,7 +225,7 @@ class ChildControllerTest {
 
     @Test
     fun GIVEN_child_resumed_and_retained_instance_created_WHEN_configuration_changed_THEN_same_instance() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         var controller = controller(ctx = ctx).apply { init() }
         controller.resume(configuration = 1)
         val instance1 = controller.requireChild(1).instanceKeeper.getOrCreate(key = "key") { TestInstance() }
@@ -243,7 +244,7 @@ class ChildControllerTest {
 
     @Test
     fun GIVEN_child_resumed_and_retained_instance_created_WHEN_configuration_changed_and_drop_state_THEN_instance_destroyed() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         var controller = controller(ctx = ctx).apply { init() }
         controller.resume(configuration = 1)
         val instance = controller.requireChild(1).instanceKeeper.getOrCreate(key = "key") { TestInstance() }
@@ -260,7 +261,7 @@ class ChildControllerTest {
 
     @Test
     fun GIVEN_child_resumed_and_retained_instance_created_WHEN_configuration_changed_and_drop_state_THEN_new_instance() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
         var controller = controller(ctx = ctx).apply { init() }
         controller.resume(configuration = 1)
         val instance1 = controller.requireChild(1).instanceKeeper.getOrCreate(key = "key") { TestInstance() }
@@ -279,7 +280,7 @@ class ChildControllerTest {
 
     @Test
     fun GIVEN_child_created_WHEN_back_callback_registered_THEN_back_handler_disabled() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
         val controller = controller(ctx = ctx).apply { init() }
         controller.create(configuration = 1)
 
@@ -290,7 +291,7 @@ class ChildControllerTest {
 
     @Test
     fun GIVEN_child_created_and_back_callback_registered_WHEN_back_THEN_callback_not_called() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
         val controller = controller(ctx = ctx).apply { init() }
         controller.create(configuration = 1)
         val callback = TestBackHandler()
@@ -303,7 +304,7 @@ class ChildControllerTest {
 
     @Test
     fun GIVEN_child_started_and_back_callback_registered_WHEN_back_THEN_callback_called() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
         val controller = controller(ctx = ctx).apply { init() }
         controller.start(configuration = 1)
         val callback = TestBackHandler()
@@ -316,7 +317,7 @@ class ChildControllerTest {
 
     @Test
     fun GIVEN_child_started_and_back_callback_registered_WHEN_create_THEN_back_handler_disabled() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
         val controller = controller(ctx = ctx).apply { init() }
         controller.start(configuration = 1)
         val callback = TestBackHandler()
@@ -329,7 +330,7 @@ class ChildControllerTest {
 
     @Test
     fun GIVEN_child_started_and_back_callback_registered_and_child_created_WHEN_back_THEN_callback_not_called() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
         val controller = controller(ctx = ctx).apply { init() }
         controller.start(configuration = 1)
         val callback = TestBackHandler()
@@ -342,7 +343,7 @@ class ChildControllerTest {
     }
 
     private fun controller(
-        ctx: ComponentContext = TestComponentContext(),
+        ctx: ComponentContext = HostComponentContext().resumed(),
         map: MutableMap<Int, Component<Int>> = HashMap(),
         childFactory: (Int, ComponentContext) -> Component<Int> = { cfg, ctx ->
             Component(cfg, ctx).also {

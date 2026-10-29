@@ -1,12 +1,13 @@
 package com.arkivanov.decompose.router.items
 
+import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.TestBackHandler
 import com.arkivanov.decompose.TestBackHandler.Event.OnBack
 import com.arkivanov.decompose.assertEvents
 import com.arkivanov.decompose.assertNoEvents
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
-import com.arkivanov.decompose.testutils.TestComponentContext
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -16,7 +17,7 @@ class LazyItemsBackButtonTest {
 
     @Test
     fun WHEN_created_with_active_items_THEN_back_handler_disabled() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         ctx.childLazyItems(
             initialItems = listOf(1, 2, 3, 4, 5),
@@ -32,7 +33,7 @@ class LazyItemsBackButtonTest {
 
     @Test
     fun GIVEN_created_with_active_items_WHEN_created_item_registered_enabled_callback_THEN_back_handler_disabled() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -51,7 +52,7 @@ class LazyItemsBackButtonTest {
 
     @Test
     fun GIVEN_created_with_active_items_and_created_item_registered_enabled_callback_WHEN_back_THEN_callback_not_called() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -73,7 +74,7 @@ class LazyItemsBackButtonTest {
 
     @Test
     fun GIVEN_created_with_active_items_WHEN_started_item_registered_enabled_callback_THEN_back_handler_enabled() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -92,7 +93,7 @@ class LazyItemsBackButtonTest {
 
     @Test
     fun GIVEN_created_with_active_items_and_started_item_registered_enabled_callback_WHEN_callback_disabled_THEN_back_handler_disabled() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -114,7 +115,7 @@ class LazyItemsBackButtonTest {
 
     @Test
     fun GIVEN_created_with_active_items_and_started_item_registered_enabled_callback_WHEN_back_THEN_callback_called() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -136,7 +137,7 @@ class LazyItemsBackButtonTest {
 
     @Test
     fun GIVEN_created_with_active_items_WHEN_resumed_item_registered_enabled_callback_THEN_back_handler_enabled() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -155,7 +156,7 @@ class LazyItemsBackButtonTest {
 
     @Test
     fun GIVEN_created_with_active_items_and_resumed_item_registered_enabled_callback_WHEN_callback_disabled_THEN_back_handler_enabled() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -177,7 +178,7 @@ class LazyItemsBackButtonTest {
 
     @Test
     fun GIVEN_created_with_active_items_and_resumed_item_registered_enabled_callback_WHEN_back_THEN_callback_called() {
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -200,7 +201,7 @@ class LazyItemsBackButtonTest {
     @Test
     fun GIVEN_created_with_active_items_and_started_item_registered_enabled_callback_WHEN_item_deactivated_THEN_back_handler_disabled() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -231,7 +232,7 @@ class LazyItemsBackButtonTest {
     @Test
     fun GIVEN_created_with_active_items_and_started_item_registered_enabled_callback_and_item_deactivated_WHEN_back_THEN_callback_not_called() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -264,7 +265,7 @@ class LazyItemsBackButtonTest {
     @Test
     fun GIVEN_created_with_active_items_and_resumed_item_registered_enabled_callback_WHEN_item_deactivated_THEN_back_handler_disabled() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -295,7 +296,7 @@ class LazyItemsBackButtonTest {
     @Test
     fun GIVEN_created_with_active_items_and_resumed_item_registered_enabled_callback_and_item_deactivated_WHEN_back_THEN_callback_not_called() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -328,7 +329,7 @@ class LazyItemsBackButtonTest {
     @Test
     fun GIVEN_created_with_active_items_and_started_item_registered_enabled_callback_WHEN_item_removed_THEN_back_handler_disabled() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -352,7 +353,7 @@ class LazyItemsBackButtonTest {
     @Test
     fun GIVEN_created_with_active_items_and_started_item_registered_enabled_callback_and_item_removed_WHEN_back_THEN_callback_not_called() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -378,7 +379,7 @@ class LazyItemsBackButtonTest {
     @Test
     fun GIVEN_created_with_active_items_and_resumed_item_registered_enabled_callback_WHEN_item_removed_THEN_back_handler_disabled() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -402,7 +403,7 @@ class LazyItemsBackButtonTest {
     @Test
     fun GIVEN_created_with_active_items_and_resumed_item_registered_enabled_callback_and_item_removed_WHEN_back_THEN_callback_not_called() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(

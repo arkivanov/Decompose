@@ -1,5 +1,7 @@
 package com.arkivanov.decompose.router.items
 
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
 import com.arkivanov.decompose.router.items.LazyComponentState.CREATED
 import com.arkivanov.decompose.router.items.LazyComponentState.DESTROYED
@@ -7,14 +9,13 @@ import com.arkivanov.decompose.router.items.LazyComponentState.PENDING
 import com.arkivanov.decompose.router.items.LazyComponentState.REMOVED
 import com.arkivanov.decompose.router.items.LazyComponentState.RESUMED
 import com.arkivanov.decompose.router.items.LazyComponentState.STARTED
-import com.arkivanov.decompose.testutils.TestComponentContext
 import kotlin.test.Test
 
 @Suppress("TestFunctionName")
 class LazyItemsNavigationTest {
 
     private val navigation = ItemsNavigation<Int>()
-    private val context = TestComponentContext()
+    private val context = HostComponentContext().resumed()
 
     @Test
     fun WHEN_created_with_initial_items_THEN_all_children_pending() {

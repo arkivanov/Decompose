@@ -1,12 +1,13 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.DecomposeSettings
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.STARTED
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.essenty.instancekeeper.getOrCreate
@@ -117,7 +118,7 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_created_child_recreated_with_configuration_change_THEN_instance_retained() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         val oldInstance = oldChildren.getByConfig(2).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
@@ -130,7 +131,7 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_created_child_recreated_with_configuration_change_THEN_instance_not_destroyed() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         val instance = oldChildren.getByConfig(2).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
@@ -144,7 +145,7 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_started_child_recreated_with_configuration_change_THEN_instance_retained() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         val oldInstance = oldChildren.getByConfig(3).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
@@ -157,7 +158,7 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_started_child_recreated_with_configuration_change_THEN_instance_not_destroyed() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         val instance = oldChildren.getByConfig(3).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
@@ -169,7 +170,7 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_resumed_child_recreated_with_configuration_change_THEN_instance_retained() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         val oldInstance = oldChildren.getByConfig(4).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
@@ -182,7 +183,7 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_resumed_child_recreated_with_configuration_change_THEN_instance_not_destroyed() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         val instance = oldChildren.getByConfig(4).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
@@ -194,7 +195,7 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_recreated_with_configuration_change_and_created_child_restored_as_destroyed_THEN_instance_destroyed() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         val instance = oldChildren.getByConfig(2).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
@@ -206,7 +207,7 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_recreated_with_configuration_change_and_started_child_restored_as_destroyed_THEN_instance_destroyed() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         val instance = oldChildren.getByConfig(3).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
@@ -218,7 +219,7 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
 
     @Test
     fun WHEN_recreated_with_configuration_change_and_resumed_child_restored_as_destroyed_THEN_instance_destroyed() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         val instance = oldChildren.getByConfig(4).requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
 
@@ -231,7 +232,7 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
     @Test
     fun WHEN_duplicated_children_recreated_with_configuration_change_THEN_instances_retained() {
         DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
         val oldInstance1 = oldChildren.first().requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
         val oldInstance3 = oldChildren.last().requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
@@ -248,7 +249,7 @@ class ChildrenRetainedInstanceTest : ChildrenTestBase() {
     @Test
     fun WHEN_duplicated_children_recreated_with_configuration_change_THEN_instances_not_destroyed() {
         DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
         val oldInstance1 = oldChildren.first().requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
         val oldInstance3 = oldChildren.last().requireInstance().instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)

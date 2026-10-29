@@ -1,9 +1,10 @@
 package com.arkivanov.decompose.router.panels
 
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.panels.ChildPanelsMode.DUAL
 import com.arkivanov.decompose.router.panels.ChildPanelsMode.SINGLE
 import com.arkivanov.decompose.router.panels.ChildPanelsMode.TRIPLE
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.essenty.lifecycle.Lifecycle.State.DESTROYED
 import kotlin.test.Test
@@ -12,7 +13,7 @@ import kotlin.test.assertEquals
 @Suppress("TestFunctionName")
 class ChildPanelsNavigationTest : BaseChildPanelsTest() {
 
-    private val context = TestComponentContext()
+    private val context = HostComponentContext().resumed()
 
     @Test
     fun GIVEN_single_with_main_WHEN_activate_details_THEN_details_panel_activated() {

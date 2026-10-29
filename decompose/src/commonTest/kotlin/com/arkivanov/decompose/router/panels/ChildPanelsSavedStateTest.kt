@@ -1,8 +1,9 @@
 package com.arkivanov.decompose.router.panels
 
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.panels.ChildPanelsMode.DUAL
 import com.arkivanov.decompose.router.panels.ChildPanelsMode.SINGLE
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
 import kotlin.test.Test
@@ -12,7 +13,7 @@ class ChildPanelsSavedStateTest : BaseChildPanelsTest() {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_THEN_state_restored() {
-        var context = TestComponentContext()
+        var context = HostComponentContext().resumed()
         context.childPanels(
             initialPanels = Panels(main = 1, details = 2, extra = 3, mode = DUAL),
             persistent = true,
@@ -26,7 +27,7 @@ class ChildPanelsSavedStateTest : BaseChildPanelsTest() {
 
     @Test
     fun GIVEN_not_persistent_WHEN_recreated_THEN_initial_state_applied() {
-        var context = TestComponentContext()
+        var context = HostComponentContext().resumed()
         context.childPanels(
             initialPanels = Panels(main = 1, details = 2, extra = 3, mode = DUAL),
             persistent = false,

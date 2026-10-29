@@ -1,13 +1,14 @@
 package com.arkivanov.decompose.router.pages
 
-import com.arkivanov.decompose.testutils.TestComponentContext
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.testutils.getValue
 import kotlin.test.Test
 
 @Suppress("TestFunctionName")
 class ChildPagesSetItemsTest : BaseChildPagesTest() {
 
-    private val ctx = TestComponentContext()
+    private val ctx = HostComponentContext().resumed()
 
     @Test
     fun WHEN_setItems_with_new_items_THEN_items_added() {

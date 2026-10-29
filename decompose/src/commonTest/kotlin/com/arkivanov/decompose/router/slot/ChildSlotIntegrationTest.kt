@@ -2,8 +2,9 @@ package com.arkivanov.decompose.router.slot
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.TestInstance
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
@@ -24,7 +25,7 @@ import kotlin.test.assertTrue
 class ChildSlotIntegrationTest {
 
     private val navigation = SlotNavigation<Int>()
-    private val context = TestComponentContext()
+    private val context = HostComponentContext().resumed()
 
     @Test
     fun WHEN_created_without_configuration_THEN_child_not_active() {
@@ -138,7 +139,7 @@ class ChildSlotIntegrationTest {
 
     @Test
     fun GIVEN_persistent_and_slot_active_WHEN_recreated_THEN_slot_active() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         oldContext.childSlot(initialConfiguration = 1, persistent = true)
 
         val newContext = oldContext.recreate()
@@ -149,7 +150,7 @@ class ChildSlotIntegrationTest {
 
     @Test
     fun GIVEN_persistent_and_slot_not_active_WHEN_recreated_THEN_slot_not_active() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         oldContext.childSlot(initialConfiguration = null, persistent = true)
 
         val newContext = oldContext.recreate()
@@ -160,7 +161,7 @@ class ChildSlotIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_THEN_slot_state_restored() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val slot by oldContext.childSlot(initialConfiguration = 1, persistent = true)
         slot.requireChild().instance.stateKeeper.register("key") { 10 }
 
@@ -173,7 +174,7 @@ class ChildSlotIntegrationTest {
 
     @Test
     fun GIVEN_not_persistent_WHEN_recreated_THEN_slot_not_active() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         oldContext.childSlot(initialConfiguration = 1, persistent = false)
 
         val newContext = oldContext.recreate()
@@ -191,7 +192,7 @@ class ChildSlotIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_with_configuration_change_THEN_slot_instance_retained() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldSlot by oldContext.childSlot(initialConfiguration = 1, persistent = true)
         val oldInstance = oldSlot.requireChild().instance.instanceKeeper.getOrCreate("key", ::TestInstance)
 
@@ -204,7 +205,7 @@ class ChildSlotIntegrationTest {
 
     @Test
     fun GIVEN_persistent_WHEN_recreated_with_configuration_change_THEN_slot_instance_not_destroyed() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldSlot by oldContext.childSlot(initialConfiguration = 1, persistent = true)
         val instance = oldSlot.requireChild().instance.instanceKeeper.getOrCreate("key", ::TestInstance)
 
@@ -223,7 +224,7 @@ class ChildSlotIntegrationTest {
 
     @Test
     fun GIVEN_not_persistent_WHEN_recreated_with_configuration_change_THEN_slot_instance_not_retained() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldSlot by oldContext.childSlot(initialConfiguration = 1, persistent = false)
         val oldInstance = oldSlot.requireChild().instance.instanceKeeper.getOrCreate("key", ::TestInstance)
 
@@ -236,7 +237,7 @@ class ChildSlotIntegrationTest {
 
     @Test
     fun GIVEN_not_persistent_WHEN_recreated_with_configuration_change_THEN_slot_instance_destroyed() {
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         val oldSlot by oldContext.childSlot(initialConfiguration = 1, persistent = false)
         val instance = oldSlot.requireChild().instance.instanceKeeper.getOrCreate("key", ::TestInstance)
 

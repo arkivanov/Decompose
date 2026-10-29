@@ -1,12 +1,9 @@
 package com.arkivanov.sample.shared.counters.counter
 
-import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.router.slot.child
-import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.resume
-import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import com.badoo.reaktive.test.scheduler.TestScheduler
 import kotlin.test.Test
@@ -148,22 +145,18 @@ class CounterComponentTest {
     }
 
     private fun createComponent(
-        stateKeeper: StateKeeper = StateKeeperDispatcher(),
-        instanceKeeper: InstanceKeeper = InstanceKeeperDispatcher(),
+        stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(),
+        instanceKeeper: InstanceKeeperDispatcher = InstanceKeeperDispatcher(),
         title: String = "",
         isBackEnabled: Boolean = false,
         onNext: () -> Unit = {},
         onPrev: () -> Unit = {},
     ) {
-        val lifecycle = LifecycleRegistry()
+        val ctx = HostComponentContext(stateKeeper = stateKeeper, instanceKeeper = instanceKeeper)
 
         component =
             DefaultCounterComponent(
-                componentContext = DefaultComponentContext(
-                    lifecycle = lifecycle,
-                    stateKeeper = stateKeeper,
-                    instanceKeeper = instanceKeeper,
-                ),
+                componentContext = ctx,
                 tickScheduler = tickScheduler,
                 title = title,
                 isBackEnabled = isBackEnabled,
@@ -171,6 +164,6 @@ class CounterComponentTest {
                 onPrev = onPrev,
             )
 
-        lifecycle.resume()
+        ctx.lifecycle.resume()
     }
 }

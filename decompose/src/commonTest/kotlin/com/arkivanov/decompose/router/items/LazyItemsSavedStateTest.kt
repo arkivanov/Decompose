@@ -1,8 +1,9 @@
 package com.arkivanov.decompose.router.items
 
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.children.transientNavStateSaver
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.register
@@ -15,7 +16,7 @@ class LazyItemsSavedStateTest {
 
     @Test
     fun WHEN_recreated_without_initial_state_THEN_active_child_state_restored() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
 
         var items =
             ctx.childLazyItems(
@@ -45,7 +46,7 @@ class LazyItemsSavedStateTest {
 
     @Test
     fun WHEN_recreated_with_same_initial_state_THEN_active_child_state_restored() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
 
         var items =
             ctx.childLazyItems(
@@ -85,7 +86,7 @@ class LazyItemsSavedStateTest {
 
     @Test
     fun WHEN_recreated_without_initial_state_THEN_navigation_state_restored() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
 
         ctx.childLazyItems(
             initialItems = listOf(1, 2, 3, 4),
@@ -109,7 +110,7 @@ class LazyItemsSavedStateTest {
 
     @Test
     fun GIVEN_transientNavStateSaver_WHEN_configuration_change_without_initial_state_THEN_navigation_state_restored() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
 
         ctx.childLazyItems(
             initialItems = listOf(1, 2, 3, 4),
@@ -134,7 +135,7 @@ class LazyItemsSavedStateTest {
 
     @Test
     fun GIVEN_stateSaver_null_WHEN_recreated_with_another_initial_state_THEN_new_navigation_state() {
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
 
         ctx.childLazyItems(
             initialItems = listOf(1, 2, 3),
@@ -168,7 +169,7 @@ class LazyItemsSavedStateTest {
     @Test
     fun WHEN_items_deactivated_and_activated_again_THEN_child_state_restored() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -208,7 +209,7 @@ class LazyItemsSavedStateTest {
     @Test
     fun WHEN_items_removed_and_added_active_again_THEN_child_state_not_restored() {
         val nav = ItemsNavigation<Int>()
-        val ctx = TestComponentContext()
+        val ctx = HostComponentContext().resumed()
 
         val items =
             ctx.childLazyItems(
@@ -249,7 +250,7 @@ class LazyItemsSavedStateTest {
     @Test
     fun WHEN_items_deactivated_and_recreated_and_same_items_activated_THEN_child_state_restored() {
         var nav = ItemsNavigation<Int>()
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
 
         var items =
             ctx.childLazyItems(
@@ -293,7 +294,7 @@ class LazyItemsSavedStateTest {
     @Test
     fun WHEN_items_deactivated_and_recreated_twice_and_same_items_activated_THEN_child_state_restored() {
         var nav = ItemsNavigation<Int>()
-        var ctx = TestComponentContext()
+        var ctx = HostComponentContext().resumed()
 
         var items =
             ctx.childLazyItems(

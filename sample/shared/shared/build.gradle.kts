@@ -54,6 +54,12 @@ kotlin {
         ios dependsOn common
         iosSet dependsOn ios
 
+        all {
+            languageSettings {
+                optIn("com.arkivanov.decompose.ExperimentalDecomposeApi")
+            }
+        }
+
         common.main.dependencies {
             api(project(":decompose"))
             api(deps.androidx.navigationEvent.navigationEvent)

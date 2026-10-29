@@ -1,13 +1,14 @@
 package com.arkivanov.decompose.router.pages
 
-import com.arkivanov.decompose.testutils.TestComponentContext
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.testutils.getValue
 import kotlin.test.Test
 
 @Suppress("TestFunctionName")
 class ChildPagesSelectLastTest : BaseChildPagesTest() {
 
-    private val context = TestComponentContext()
+    private val context = HostComponentContext().resumed()
 
     @Test
     fun GIVEN_pages_empty_WHEN_selectLast_THEN_pages_empty() {

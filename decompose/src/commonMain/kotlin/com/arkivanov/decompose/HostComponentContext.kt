@@ -1,0 +1,41 @@
+package com.arkivanov.decompose
+
+import androidx.navigationevent.DirectNavigationEventInput
+import androidx.navigationevent.NavigationEventDispatcher
+import com.arkivanov.decompose.lifecycle.LifecycleRegistryOwner
+import com.arkivanov.decompose.navigationevent.addDirectInput
+import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
+
+/**
+ * An implementation of [ComponentContext] that (unlike [DefaultComponentContext]) exposes manipulatable
+ * [LifecycleRegistry], [StateKeeperDispatcher], [InstanceKeeperDispatcher], and [NavigationEventDispatcher].
+ *
+ * Primarily designed for using in tests and Compose previews.
+ *
+ * @param lifecycleState initial [Lifecycle.State] of the [lifecycle]. Default value is [Lifecycle.State.INITIALIZED].
+ * You can also use one of the following extension functions to move the [lifecycle] to a required state:
+ * - [LifecycleRegistryOwner.created][com.arkivanov.decompose.lifecycle.created]
+ * - [LifecycleRegistryOwner.started][com.arkivanov.decompose.lifecycle.started]
+ * - [LifecycleRegistryOwner.resumed][com.arkivanov.decompose.lifecycle.resumed]
+ * @param stateKeeper a [StateKeeperDispatcher] to be used by this [HostComponentContext],
+ * creates a new instance if not provided.
+ * @param instanceKeeper a [InstanceKeeperDispatcher] to be used by this [HostComponentContext],
+ * creates a new instance if not provided.
+ * @param navigationEventDispatcher a [NavigationEventDispatcher] to be used by this [HostComponentContext],
+ * creates a new instance if not provided.
+ */
+@ExperimentalDecomposeApi
+class HostComponentContext(
+    lifecycleState: Lifecycle.State = Lifecycle.State.INITIALIZED,
+    override val stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(),
+    override val instanceKeeper: InstanceKeeperDispatcher = InstanceKeeperDispatcher(),
+    override val navigationEventDispatcher: NavigationEventDispatcher = NavigationEventDispatcher(),
+) : ComponentContext, LifecycleRegistryOwner {
+    override val lifecycle: LifecycleRegistry = LifecycleRegistry(lifecycleState)
+    override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
+
+    val navigationEventInput: DirectNavigationEventInput = navigationEventDispatcher.addDirectInput()
+}

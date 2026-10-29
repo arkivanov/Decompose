@@ -1,12 +1,13 @@
 package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.DecomposeSettings
+import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.TestInstance
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.STARTED
-import com.arkivanov.decompose.testutils.TestComponentContext
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.essenty.instancekeeper.getOrCreate
@@ -104,7 +105,7 @@ class ChildrenBasicTest : ChildrenTestBase() {
     fun WHEN_recreated_THEN_components_created_in_original_order() {
         val createEvents = ArrayList<Int>()
 
-        val oldContext = TestComponentContext()
+        val oldContext = HostComponentContext().resumed()
         oldContext.children(initialState = stateOf(1 by CREATED, 2 by CREATED, 3 by RESUMED))
 
         val newContext = oldContext.recreate()
