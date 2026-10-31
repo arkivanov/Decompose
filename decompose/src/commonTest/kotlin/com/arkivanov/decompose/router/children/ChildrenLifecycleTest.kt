@@ -1,14 +1,14 @@
 package com.arkivanov.decompose.router.children
 
+import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.DecomposeSettings
+import com.arkivanov.decompose.lifecycle.moveToCreated
+import com.arkivanov.decompose.lifecycle.moveToDestroyed
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.DESTROYED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.RESUMED
 import com.arkivanov.decompose.router.children.ChildNavState.Status.STARTED
 import com.arkivanov.decompose.testutils.getValue
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.destroy
-import com.arkivanov.essenty.lifecycle.stop
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -26,9 +26,9 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
     fun WHEN_created_THEN_lifecycles_correct() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
 
-        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 2).requireInstance().lifecycle.state)
-        assertEquals(Lifecycle.State.STARTED, children.getByConfig(config = 3).requireInstance().lifecycle.state)
-        assertEquals(Lifecycle.State.RESUMED, children.getByConfig(config = 4).requireInstance().lifecycle.state)
+        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 2).requireInstance().lifecycle.currentState)
+        assertEquals(Lifecycle.State.STARTED, children.getByConfig(config = 3).requireInstance().lifecycle.currentState)
+        assertEquals(Lifecycle.State.RESUMED, children.getByConfig(config = 4).requireInstance().lifecycle.currentState)
     }
 
     @Test
@@ -52,9 +52,9 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
         navigate { it + (3 by STARTED) }
         navigate { it + (4 by RESUMED) }
 
-        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 2).requireInstance().lifecycle.state)
-        assertEquals(Lifecycle.State.STARTED, children.getByConfig(config = 3).requireInstance().lifecycle.state)
-        assertEquals(Lifecycle.State.RESUMED, children.getByConfig(config = 4).requireInstance().lifecycle.state)
+        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 2).requireInstance().lifecycle.currentState)
+        assertEquals(Lifecycle.State.STARTED, children.getByConfig(config = 3).requireInstance().lifecycle.currentState)
+        assertEquals(Lifecycle.State.RESUMED, children.getByConfig(config = 4).requireInstance().lifecycle.currentState)
     }
 
     @Test
@@ -82,7 +82,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { state -> state.filterNot { it.configuration == 2 } }
 
-        assertEquals(Lifecycle.State.DESTROYED, component.lifecycle.state)
+        assertEquals(Lifecycle.State.DESTROYED, component.lifecycle.currentState)
     }
 
     @Test
@@ -101,7 +101,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { state -> state.filterNot { it.configuration == 3 } }
 
-        assertEquals(Lifecycle.State.DESTROYED, component.lifecycle.state)
+        assertEquals(Lifecycle.State.DESTROYED, component.lifecycle.currentState)
     }
 
     @Test
@@ -120,7 +120,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { state -> state.filterNot { it.configuration == 4 } }
 
-        assertEquals(Lifecycle.State.DESTROYED, component.lifecycle.state)
+        assertEquals(Lifecycle.State.DESTROYED, component.lifecycle.currentState)
     }
 
     @Test
@@ -141,9 +141,9 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { emptyList() }
 
-        assertEquals(Lifecycle.State.DESTROYED, component2.lifecycle.state)
-        assertEquals(Lifecycle.State.DESTROYED, component3.lifecycle.state)
-        assertEquals(Lifecycle.State.DESTROYED, component4.lifecycle.state)
+        assertEquals(Lifecycle.State.DESTROYED, component2.lifecycle.currentState)
+        assertEquals(Lifecycle.State.DESTROYED, component3.lifecycle.currentState)
+        assertEquals(Lifecycle.State.DESTROYED, component4.lifecycle.currentState)
     }
 
     @Test
@@ -152,7 +152,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { listOf(1 by CREATED, 2 by CREATED, 3 by STARTED, 4 by RESUMED) }
 
-        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 1).requireInstance().lifecycle.state)
+        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 1).requireInstance().lifecycle.currentState)
     }
 
     @Test
@@ -161,7 +161,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { listOf(1 by STARTED, 2 by CREATED, 3 by STARTED, 4 by RESUMED) }
 
-        assertEquals(Lifecycle.State.STARTED, children.getByConfig(config = 1).requireInstance().lifecycle.state)
+        assertEquals(Lifecycle.State.STARTED, children.getByConfig(config = 1).requireInstance().lifecycle.currentState)
     }
 
     @Test
@@ -170,7 +170,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { listOf(1 by RESUMED, 2 by CREATED, 3 by STARTED, 4 by RESUMED) }
 
-        assertEquals(Lifecycle.State.RESUMED, children.getByConfig(config = 1).requireInstance().lifecycle.state)
+        assertEquals(Lifecycle.State.RESUMED, children.getByConfig(config = 1).requireInstance().lifecycle.currentState)
     }
 
     @Test
@@ -179,7 +179,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { listOf(1 by CREATED, 2 by STARTED, 3 by STARTED, 4 by RESUMED) }
 
-        assertEquals(Lifecycle.State.STARTED, children.getByConfig(config = 2).requireInstance().lifecycle.state)
+        assertEquals(Lifecycle.State.STARTED, children.getByConfig(config = 2).requireInstance().lifecycle.currentState)
     }
 
     @Test
@@ -188,7 +188,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { listOf(1 by CREATED, 2 by RESUMED, 3 by STARTED, 4 by RESUMED) }
 
-        assertEquals(Lifecycle.State.RESUMED, children.getByConfig(config = 2).requireInstance().lifecycle.state)
+        assertEquals(Lifecycle.State.RESUMED, children.getByConfig(config = 2).requireInstance().lifecycle.currentState)
     }
 
     @Test
@@ -197,7 +197,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by RESUMED, 4 by RESUMED) }
 
-        assertEquals(Lifecycle.State.RESUMED, children.getByConfig(config = 3).requireInstance().lifecycle.state)
+        assertEquals(Lifecycle.State.RESUMED, children.getByConfig(config = 3).requireInstance().lifecycle.currentState)
     }
 
     @Test
@@ -207,7 +207,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { listOf(1 by DESTROYED, 2 by DESTROYED, 3 by STARTED, 4 by RESUMED) }
 
-        assertEquals(Lifecycle.State.DESTROYED, component.lifecycle.state)
+        assertEquals(Lifecycle.State.DESTROYED, component.lifecycle.currentState)
     }
 
     @Test
@@ -216,7 +216,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by CREATED, 4 by RESUMED) }
 
-        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 3).requireInstance().lifecycle.state)
+        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 3).requireInstance().lifecycle.currentState)
     }
 
     @Test
@@ -226,7 +226,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by DESTROYED, 4 by RESUMED) }
 
-        assertEquals(Lifecycle.State.DESTROYED, component.lifecycle.state)
+        assertEquals(Lifecycle.State.DESTROYED, component.lifecycle.currentState)
     }
 
     @Test
@@ -235,7 +235,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by STARTED) }
 
-        assertEquals(Lifecycle.State.STARTED, children.getByConfig(config = 4).requireInstance().lifecycle.state)
+        assertEquals(Lifecycle.State.STARTED, children.getByConfig(config = 4).requireInstance().lifecycle.currentState)
     }
 
     @Test
@@ -244,7 +244,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by CREATED) }
 
-        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 4).requireInstance().lifecycle.state)
+        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 4).requireInstance().lifecycle.currentState)
     }
 
     @Test
@@ -254,18 +254,18 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by DESTROYED) }
 
-        assertEquals(Lifecycle.State.DESTROYED, component.lifecycle.state)
+        assertEquals(Lifecycle.State.DESTROYED, component.lifecycle.currentState)
     }
 
     @Test
     fun WHEN_context_lifecycle_stopped_THEN_all_component_lifecycles_stopped() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
 
-        lifecycle.stop()
+        lifecycle.moveToCreated()
 
-        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 2).requireInstance().lifecycle.state)
-        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 3).requireInstance().lifecycle.state)
-        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 4).requireInstance().lifecycle.state)
+        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 2).requireInstance().lifecycle.currentState)
+        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 3).requireInstance().lifecycle.currentState)
+        assertEquals(Lifecycle.State.CREATED, children.getByConfig(config = 4).requireInstance().lifecycle.currentState)
     }
 
     @Test
@@ -275,11 +275,11 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
         val component3 = children.getByConfig(config = 3).requireInstance()
         val component4 = children.getByConfig(config = 4).requireInstance()
 
-        lifecycle.destroy()
+        lifecycle.moveToDestroyed()
 
-        assertEquals(Lifecycle.State.DESTROYED, component2.lifecycle.state)
-        assertEquals(Lifecycle.State.DESTROYED, component3.lifecycle.state)
-        assertEquals(Lifecycle.State.DESTROYED, component4.lifecycle.state)
+        assertEquals(Lifecycle.State.DESTROYED, component2.lifecycle.currentState)
+        assertEquals(Lifecycle.State.DESTROYED, component3.lifecycle.currentState)
+        assertEquals(Lifecycle.State.DESTROYED, component4.lifecycle.currentState)
     }
 
     @Test
@@ -290,7 +290,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { it.dropLast(1) }
 
-        assertEquals(Lifecycle.State.DESTROYED, child.lifecycle.state)
+        assertEquals(Lifecycle.State.DESTROYED, child.lifecycle.currentState)
     }
 
     @Test
@@ -301,7 +301,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { it.dropLast(1) }
 
-        assertEquals(Lifecycle.State.CREATED, child.lifecycle.state)
+        assertEquals(Lifecycle.State.CREATED, child.lifecycle.currentState)
     }
 
     @Test
@@ -312,7 +312,7 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { it.drop(1) }
 
-        assertEquals(Lifecycle.State.DESTROYED, child.lifecycle.state)
+        assertEquals(Lifecycle.State.DESTROYED, child.lifecycle.currentState)
     }
 
     @Test
@@ -323,6 +323,6 @@ class ChildrenLifecycleTest : ChildrenTestBase() {
 
         navigate { it.drop(1) }
 
-        assertEquals(Lifecycle.State.RESUMED, child.lifecycle.state)
+        assertEquals(Lifecycle.State.RESUMED, child.lifecycle.currentState)
     }
 }

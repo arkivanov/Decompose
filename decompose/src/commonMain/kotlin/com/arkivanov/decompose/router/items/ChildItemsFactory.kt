@@ -2,11 +2,11 @@ package com.arkivanov.decompose.router.items
 
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.GenericComponentContext
+import com.arkivanov.decompose.lifecycle.doOnDestroy
 import com.arkivanov.decompose.router.children.ChildController
 import com.arkivanov.decompose.router.children.NavStateSaver
 import com.arkivanov.decompose.router.children.NavigationSource
 import com.arkivanov.decompose.router.items.ItemsNavigation.Event
-import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlinx.serialization.KSerializer
 
 

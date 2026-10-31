@@ -8,13 +8,6 @@ import com.arkivanov.decompose.router.children.ChildItem.Created
 import com.arkivanov.decompose.router.children.ChildItem.Destroyed
 import com.arkivanov.decompose.router.children.ChildNavState.Status
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.create
-import com.arkivanov.essenty.lifecycle.destroy
-import com.arkivanov.essenty.lifecycle.pause
-import com.arkivanov.essenty.lifecycle.resume
-import com.arkivanov.essenty.lifecycle.start
-import com.arkivanov.essenty.lifecycle.stop
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.Serializable
 
@@ -91,19 +84,19 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
             Status.CREATED ->
                 getCreatedItem().apply {
-                    lifecycleRegistry.create()
+                    lifecycleRegistry.moveToCreated()
                 }
 
             Status.STARTED ->
                 getCreatedItem().apply {
                     navigationEventDispatcher.start()
-                    lifecycleRegistry.start()
+                    lifecycleRegistry.moveToStarted()
                 }
 
             Status.RESUMED ->
                 getCreatedItem().apply {
                     navigationEventDispatcher.start()
-                    lifecycleRegistry.resume()
+                    lifecycleRegistry.moveToResumed()
                 }
         }
 
@@ -165,7 +158,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
                                         configuration = state.configuration,
                                         key = child.key,
                                         savedState = child.savedState
-                                    ).apply { lifecycleRegistry.create() },
+                                    ).apply { lifecycleRegistry.moveToCreated() },
                                     second = state.status,
                                 )
                         }
@@ -179,7 +172,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
                             Status.RESUMED ->
                                 Pair(
                                     first = childItemFactory(configuration = state.configuration, key = randomKey())
-                                        .apply { lifecycleRegistry.create() },
+                                        .apply { lifecycleRegistry.moveToCreated() },
                                     second = state.status,
                                 )
                         }
@@ -222,42 +215,27 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             }
 
             Status.CREATED -> {
-                if (item.lifecycleRegistry.state != Lifecycle.State.CREATED) {
-                    item.navigationEventDispatcher.stop()
-                    item.lifecycleRegistry.stop()
-                }
-
+                item.navigationEventDispatcher.stop()
+                item.lifecycleRegistry.moveToCreated()
                 item
             }
 
             Status.STARTED -> {
-                when {
-                    item.lifecycleRegistry.state < Lifecycle.State.STARTED -> {
-                        item.navigationEventDispatcher.start()
-                        item.lifecycleRegistry.start()
-                    }
-
-                    item.lifecycleRegistry.state > Lifecycle.State.STARTED -> {
-                        item.lifecycleRegistry.pause()
-                    }
-                }
-
+                item.navigationEventDispatcher.start()
+                item.lifecycleRegistry.moveToStarted()
                 item
             }
 
             Status.RESUMED -> {
-                if (item.lifecycleRegistry.state != Lifecycle.State.RESUMED) {
-                    item.navigationEventDispatcher.start()
-                    item.lifecycleRegistry.resume()
-                }
-
+                item.navigationEventDispatcher.start()
+                item.lifecycleRegistry.moveToResumed()
                 item
             }
         }
 
     private fun Created<*, *>.destroy() {
         navigationEventDispatcher.destroy()
-        lifecycleRegistry.destroy()
+        lifecycleRegistry.moveToDestroyed()
         instanceKeeperDispatcher.destroy()
     }
 
@@ -268,7 +246,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     )
 
     private class RetainedInstance<C : Any, T : Any> : InstanceKeeper.Instance {
-        val items: MutableList<ChildItem<C, T>> = ArrayList<ChildItem<C, T>>()
+        val items: MutableList<ChildItem<C, T>> = ArrayList()
 
         override fun onDestroy() {
             items.toList().forEach { it.instanceKeeperDispatcher?.destroy() }

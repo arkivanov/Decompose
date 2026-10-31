@@ -1,8 +1,8 @@
 package com.arkivanov.decompose.statekeeper
 
-import com.arkivanov.decompose.isDestroyed
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.doOnDestroy
+import androidx.lifecycle.Lifecycle
+import com.arkivanov.decompose.lifecycle.doOnDestroy
+import com.arkivanov.decompose.lifecycle.isDestroyed
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher

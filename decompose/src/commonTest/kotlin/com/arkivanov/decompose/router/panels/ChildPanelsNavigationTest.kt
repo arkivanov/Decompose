@@ -1,12 +1,12 @@
 package com.arkivanov.decompose.router.panels
 
+import androidx.lifecycle.Lifecycle.State.DESTROYED
 import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.panels.ChildPanelsMode.DUAL
 import com.arkivanov.decompose.router.panels.ChildPanelsMode.SINGLE
 import com.arkivanov.decompose.router.panels.ChildPanelsMode.TRIPLE
 import com.arkivanov.decompose.testutils.getValue
-import com.arkivanov.essenty.lifecycle.Lifecycle.State.DESTROYED
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -76,7 +76,7 @@ class ChildPanelsNavigationTest : BaseChildPanelsTest() {
 
         nav.navigate { it.copy(main = 11) }
 
-        assertEquals(DESTROYED, component.lifecycle.state)
+        assertEquals(DESTROYED, component.lifecycle.currentState)
     }
 
     @Test
@@ -95,7 +95,7 @@ class ChildPanelsNavigationTest : BaseChildPanelsTest() {
 
         nav.navigate { it.copy(details = 22) }
 
-        assertEquals(DESTROYED, component?.lifecycle?.state)
+        assertEquals(DESTROYED, component?.lifecycle?.currentState)
     }
 
     @Test
@@ -114,7 +114,7 @@ class ChildPanelsNavigationTest : BaseChildPanelsTest() {
 
         nav.navigate { it.copy(extra = 33) }
 
-        assertEquals(DESTROYED, component?.lifecycle?.state)
+        assertEquals(DESTROYED, component?.lifecycle?.currentState)
     }
 
     @Test
@@ -178,7 +178,7 @@ class ChildPanelsNavigationTest : BaseChildPanelsTest() {
 
         nav.navigate { it.copy(main = 11) }
 
-        assertEquals(DESTROYED, component.lifecycle.state)
+        assertEquals(DESTROYED, component.lifecycle.currentState)
     }
 
     @Test
@@ -197,7 +197,7 @@ class ChildPanelsNavigationTest : BaseChildPanelsTest() {
 
         nav.navigate { it.copy(details = 22) }
 
-        assertEquals(DESTROYED, component?.lifecycle?.state)
+        assertEquals(DESTROYED, component?.lifecycle?.currentState)
     }
 
     @Test
@@ -216,7 +216,7 @@ class ChildPanelsNavigationTest : BaseChildPanelsTest() {
 
         nav.navigate { it.copy(extra = 33) }
 
-        assertEquals(DESTROYED, component?.lifecycle?.state)
+        assertEquals(DESTROYED, component?.lifecycle?.currentState)
     }
 
     @Test
@@ -280,7 +280,7 @@ class ChildPanelsNavigationTest : BaseChildPanelsTest() {
 
         nav.navigate { it.copy(main = 11) }
 
-        assertEquals(DESTROYED, component.lifecycle.state)
+        assertEquals(DESTROYED, component.lifecycle.currentState)
     }
 
     @Test
@@ -299,7 +299,7 @@ class ChildPanelsNavigationTest : BaseChildPanelsTest() {
 
         nav.navigate { it.copy(details = 22) }
 
-        assertEquals(DESTROYED, component?.lifecycle?.state)
+        assertEquals(DESTROYED, component?.lifecycle?.currentState)
     }
 
     @Test
@@ -318,6 +318,6 @@ class ChildPanelsNavigationTest : BaseChildPanelsTest() {
 
         nav.navigate { it.copy(extra = 33) }
 
-        assertEquals(DESTROYED, component?.lifecycle?.state)
+        assertEquals(DESTROYED, component?.lifecycle?.currentState)
     }
 }

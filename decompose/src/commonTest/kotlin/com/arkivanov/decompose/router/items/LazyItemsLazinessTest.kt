@@ -1,10 +1,10 @@
 package com.arkivanov.decompose.router.items
 
+import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.Component
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
-import com.arkivanov.essenty.lifecycle.Lifecycle
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -39,9 +39,9 @@ class LazyItemsLazinessTest {
 
         val (child1, child2, child3) = items.value.items.map(items::get)
 
-        assertEquals(Lifecycle.State.CREATED, child1.lifecycle.state)
-        assertEquals(Lifecycle.State.CREATED, child2.lifecycle.state)
-        assertEquals(Lifecycle.State.CREATED, child3.lifecycle.state)
+        assertEquals(Lifecycle.State.CREATED, child1.lifecycle.currentState)
+        assertEquals(Lifecycle.State.CREATED, child2.lifecycle.currentState)
+        assertEquals(Lifecycle.State.CREATED, child3.lifecycle.currentState)
     }
 
     @Test
@@ -93,11 +93,11 @@ class LazyItemsLazinessTest {
 
         val (child1, child2, child3, child4, child5) = items.value.items.map(items::get)
 
-        assertEquals(Lifecycle.State.CREATED, child1.lifecycle.state)
-        assertEquals(Lifecycle.State.CREATED, child2.lifecycle.state)
-        assertEquals(Lifecycle.State.STARTED, child3.lifecycle.state)
-        assertEquals(Lifecycle.State.RESUMED, child4.lifecycle.state)
-        assertEquals(Lifecycle.State.CREATED, child5.lifecycle.state)
+        assertEquals(Lifecycle.State.CREATED, child1.lifecycle.currentState)
+        assertEquals(Lifecycle.State.CREATED, child2.lifecycle.currentState)
+        assertEquals(Lifecycle.State.STARTED, child3.lifecycle.currentState)
+        assertEquals(Lifecycle.State.RESUMED, child4.lifecycle.currentState)
+        assertEquals(Lifecycle.State.CREATED, child5.lifecycle.currentState)
     }
 
     @Test
@@ -182,11 +182,11 @@ class LazyItemsLazinessTest {
 
         val (child1, child2, child3, child4, child5) = items.value.items.map(items::get)
 
-        assertEquals(Lifecycle.State.STARTED, child1.lifecycle.state)
-        assertEquals(Lifecycle.State.CREATED, child2.lifecycle.state)
-        assertEquals(Lifecycle.State.CREATED, child3.lifecycle.state)
-        assertEquals(Lifecycle.State.CREATED, child4.lifecycle.state)
-        assertEquals(Lifecycle.State.RESUMED, child5.lifecycle.state)
+        assertEquals(Lifecycle.State.STARTED, child1.lifecycle.currentState)
+        assertEquals(Lifecycle.State.CREATED, child2.lifecycle.currentState)
+        assertEquals(Lifecycle.State.CREATED, child3.lifecycle.currentState)
+        assertEquals(Lifecycle.State.CREATED, child4.lifecycle.currentState)
+        assertEquals(Lifecycle.State.RESUMED, child5.lifecycle.currentState)
     }
 
     @Test
@@ -277,10 +277,10 @@ class LazyItemsLazinessTest {
 
         val (child1, child6, child7, child8, child9) = items.value.items.map(items::get)
 
-        assertEquals(Lifecycle.State.RESUMED, child1.lifecycle.state)
-        assertEquals(Lifecycle.State.CREATED, child6.lifecycle.state)
-        assertEquals(Lifecycle.State.CREATED, child7.lifecycle.state)
-        assertEquals(Lifecycle.State.STARTED, child8.lifecycle.state)
-        assertEquals(Lifecycle.State.RESUMED, child9.lifecycle.state)
+        assertEquals(Lifecycle.State.RESUMED, child1.lifecycle.currentState)
+        assertEquals(Lifecycle.State.CREATED, child6.lifecycle.currentState)
+        assertEquals(Lifecycle.State.CREATED, child7.lifecycle.currentState)
+        assertEquals(Lifecycle.State.STARTED, child8.lifecycle.currentState)
+        assertEquals(Lifecycle.State.RESUMED, child9.lifecycle.currentState)
     }
 }

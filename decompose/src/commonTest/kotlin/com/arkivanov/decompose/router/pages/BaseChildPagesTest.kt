@@ -1,9 +1,9 @@
 package com.arkivanov.decompose.router.pages
 
+import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.lifecycle.Lifecycle
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -46,12 +46,12 @@ abstract class BaseChildPagesTest {
             when (index) {
                 selectedIndex -> {
                     assertIs<Child.Created<Int, Component>>(item)
-                    assertEquals(Lifecycle.State.RESUMED, item.instance.lifecycle.state)
+                    assertEquals(Lifecycle.State.RESUMED, item.instance.lifecycle.currentState)
                 }
 
                 in (selectedIndex - 1)..(selectedIndex + 1) -> {
                     assertIs<Child.Created<Int, Component>>(item)
-                    assertEquals(Lifecycle.State.CREATED, item.instance.lifecycle.state)
+                    assertEquals(Lifecycle.State.CREATED, item.instance.lifecycle.currentState)
                 }
 
                 else -> assertIs<Child.Destroyed<Int>>(item, "Index: $index")

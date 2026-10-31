@@ -58,6 +58,7 @@ kotlin {
         }
 
         jvm.test.dependencies {
+            implementation(project(":decompose-test-utils"))
             implementation(deps.jetbrains.compose.ui.uiTestJunit4)
             implementation(deps.jetbrains.kotlinx.kotlinxCoroutinesSwing)
             implementation(deps.junit.junit)

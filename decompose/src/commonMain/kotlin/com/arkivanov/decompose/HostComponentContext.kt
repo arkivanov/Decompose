@@ -1,12 +1,13 @@
 package com.arkivanov.decompose
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.lifecycle.LifecycleRegistryOwner
+import com.arkivanov.decompose.lifecycle.moveTo
 import com.arkivanov.decompose.navigationevent.addDirectInput
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
 /**
@@ -34,7 +35,7 @@ class HostComponentContext(
     override val instanceKeeper: InstanceKeeperDispatcher = InstanceKeeperDispatcher(),
     override val navigationEventDispatcher: NavigationEventDispatcher = NavigationEventDispatcher(),
 ) : ComponentContext, LifecycleRegistryOwner {
-    override val lifecycle: LifecycleRegistry = LifecycleRegistry(lifecycleState)
+    override val lifecycle: LifecycleRegistry = LifecycleRegistry.createUnsafe(this).moveTo(lifecycleState)
     override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
 
     val navigationEventInput: DirectNavigationEventInput = navigationEventDispatcher.addDirectInput()

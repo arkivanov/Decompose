@@ -1,12 +1,12 @@
 package com.arkivanov.decompose.router.children
 
+import androidx.lifecycle.Lifecycle
 import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.ComponentContextFactory
-import com.arkivanov.decompose.lifecycle.MergedLifecycle
+import com.arkivanov.decompose.lifecycle.DecomposeLifecycleRegistry
+import com.arkivanov.decompose.lifecycle.mergedLifecycle
 import com.arkivanov.decompose.navigationevent.childNavigationEventDispatcher
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
@@ -23,8 +23,8 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
         savedState: SerializableContainer?,
         instanceKeeperDispatcher: InstanceKeeperDispatcher?
     ): ChildItem.Created<C, T> {
-        val componentLifecycleRegistry = LifecycleRegistry()
-        val mergedLifecycle = MergedLifecycle(lifecycle, componentLifecycleRegistry)
+        val componentLifecycleRegistry = DecomposeLifecycleRegistry()
+        val mergedLifecycle = mergedLifecycle(lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
         val instanceKeeperRegistry = instanceKeeperDispatcher ?: InstanceKeeperDispatcher()
         val navigationEventDispatcher = navigationEventDispatcher.childNavigationEventDispatcher()

@@ -1,10 +1,10 @@
 public final class com/arkivanov/decompose/extensions/android/DefaultViewContext : com/arkivanov/decompose/extensions/android/ViewContext {
-	public fun <init> (Landroid/view/ViewGroup;Lcom/arkivanov/essenty/lifecycle/Lifecycle;)V
-	public fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/Lifecycle;
+	public fun <init> (Landroid/view/ViewGroup;Landroidx/lifecycle/Lifecycle;)V
+	public fun getLifecycle ()Landroidx/lifecycle/Lifecycle;
 	public fun getParent ()Landroid/view/ViewGroup;
 }
 
-public abstract interface class com/arkivanov/decompose/extensions/android/ViewContext : com/arkivanov/essenty/lifecycle/LifecycleOwner {
+public abstract interface class com/arkivanov/decompose/extensions/android/ViewContext : androidx/lifecycle/LifecycleOwner {
 	public abstract fun getParent ()Landroid/view/ViewGroup;
 }
 
@@ -20,6 +20,6 @@ public final class com/arkivanov/decompose/extensions/android/stack/StackRouterV
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;)V
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;I)V
 	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun children (Lcom/arkivanov/decompose/value/Value;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function4;)V
+	public final fun children (Lcom/arkivanov/decompose/value/Value;Landroidx/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function4;)V
 }
 

@@ -25,12 +25,20 @@ internal class DefaultChildNavigationEventDispatcher(
     }
 
     override fun start() {
+        if (isStarted) {
+            return
+        }
+
         parent.addHandler(handler = forwardingInput.handler, priority = priority.value)
         parent.addInput(input = parentInput)
         isStarted = true
     }
 
     override fun stop() {
+        if (!isStarted) {
+            return
+        }
+
         isStarted = false
         parent.removeInput(input = parentInput)
         forwardingInput.handler.remove()

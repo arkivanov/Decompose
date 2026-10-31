@@ -1,13 +1,13 @@
 package com.arkivanov.sample.shared.customnavigation
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.lifecycle.addObserver
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.retainedInstance
-import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.sample.shared.ImageResourceId
 import com.arkivanov.sample.shared.customnavigation.KittenComponent.Model
 import com.badoo.reaktive.disposable.Disposable
@@ -30,7 +30,7 @@ class DefaultKittenComponent(
     override val model: Value<Model> = handler.state.map { it.toModel() }
 
     init {
-        lifecycle.subscribe(
+        lifecycle.addObserver(
             onStart = handler::resume,
             onStop = handler::pause,
         )

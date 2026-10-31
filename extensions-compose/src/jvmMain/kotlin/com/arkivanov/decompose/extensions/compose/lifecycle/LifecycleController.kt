@@ -6,14 +6,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.platform.WindowInfo
 import androidx.compose.ui.window.WindowState
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.essenty.lifecycle.create
-import com.arkivanov.essenty.lifecycle.destroy
-import com.arkivanov.essenty.lifecycle.pause
-import com.arkivanov.essenty.lifecycle.resume
-import com.arkivanov.essenty.lifecycle.start
-import com.arkivanov.essenty.lifecycle.stop
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
+import com.arkivanov.decompose.lifecycle.moveToCreated
+import com.arkivanov.decompose.lifecycle.moveToDestroyed
+import com.arkivanov.decompose.lifecycle.moveToResumed
+import com.arkivanov.decompose.lifecycle.moveToStarted
 import kotlinx.coroutines.flow.combine
 
 /**
@@ -42,16 +40,15 @@ fun LifecycleController(
             ::Pair,
         ).collect { (isMinimized, isFocused) ->
             when {
-                isMinimized -> lifecycleRegistry.stop()
-                isFocused -> lifecycleRegistry.resume()
-                lifecycleRegistry.state == Lifecycle.State.RESUMED -> lifecycleRegistry.pause()
-                else -> lifecycleRegistry.start()
+                isMinimized -> lifecycleRegistry.moveToCreated()
+                isFocused -> lifecycleRegistry.moveToResumed()
+                else -> lifecycleRegistry.moveToStarted()
             }
         }
     }
 
     DisposableEffect(lifecycleRegistry) {
-        lifecycleRegistry.create()
-        onDispose(lifecycleRegistry::destroy)
+        lifecycleRegistry.moveToCreated()
+        onDispose(lifecycleRegistry::moveToDestroyed)
     }
 }

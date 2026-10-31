@@ -44,12 +44,12 @@ public abstract interface class com/arkivanov/decompose/ComponentContext : com/a
 }
 
 public final class com/arkivanov/decompose/ComponentContextExtKt {
-	public static final fun childContext-jRnAUhw (Lcom/arkivanov/decompose/GenericComponentContext;Ljava/lang/String;Lcom/arkivanov/essenty/lifecycle/Lifecycle;I)Lcom/arkivanov/decompose/GenericComponentContext;
-	public static synthetic fun childContext-jRnAUhw$default (Lcom/arkivanov/decompose/GenericComponentContext;Ljava/lang/String;Lcom/arkivanov/essenty/lifecycle/Lifecycle;IILjava/lang/Object;)Lcom/arkivanov/decompose/GenericComponentContext;
+	public static final fun childContext-jRnAUhw (Lcom/arkivanov/decompose/GenericComponentContext;Ljava/lang/String;Landroidx/lifecycle/Lifecycle;I)Lcom/arkivanov/decompose/GenericComponentContext;
+	public static synthetic fun childContext-jRnAUhw$default (Lcom/arkivanov/decompose/GenericComponentContext;Ljava/lang/String;Landroidx/lifecycle/Lifecycle;IILjava/lang/Object;)Lcom/arkivanov/decompose/GenericComponentContext;
 }
 
 public abstract interface class com/arkivanov/decompose/ComponentContextFactory {
-	public abstract fun invoke (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Landroidx/navigationevent/NavigationEventDispatcher;)Ljava/lang/Object;
+	public abstract fun invoke (Landroidx/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Landroidx/navigationevent/NavigationEventDispatcher;)Ljava/lang/Object;
 }
 
 public abstract interface class com/arkivanov/decompose/ComponentContextFactoryOwner {
@@ -82,12 +82,12 @@ public final class com/arkivanov/decompose/DecomposeSettings$Companion {
 
 public final class com/arkivanov/decompose/DefaultComponentContext : com/arkivanov/decompose/ComponentContext {
 	public fun <init> ()V
-	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;)V
-	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Landroidx/navigationevent/NavigationEventDispatcher;)V
-	public synthetic fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Landroidx/navigationevent/NavigationEventDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroidx/lifecycle/Lifecycle;)V
+	public fun <init> (Landroidx/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Landroidx/navigationevent/NavigationEventDispatcher;)V
+	public synthetic fun <init> (Landroidx/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;Landroidx/navigationevent/NavigationEventDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getComponentContextFactory ()Lcom/arkivanov/decompose/ComponentContextFactory;
 	public fun getInstanceKeeper ()Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;
-	public fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/Lifecycle;
+	public fun getLifecycle ()Landroidx/lifecycle/Lifecycle;
 	public fun getNavigationEventDispatcher ()Landroidx/navigationevent/NavigationEventDispatcher;
 	public fun getStateKeeper ()Lcom/arkivanov/essenty/statekeeper/StateKeeper;
 }
@@ -101,18 +101,18 @@ public abstract interface annotation class com/arkivanov/decompose/ExperimentalD
 public abstract interface annotation class com/arkivanov/decompose/FaultyDecomposeApi : java/lang/annotation/Annotation {
 }
 
-public abstract interface class com/arkivanov/decompose/GenericComponentContext : androidx/navigationevent/NavigationEventDispatcherOwner, com/arkivanov/decompose/ComponentContextFactoryOwner, com/arkivanov/essenty/instancekeeper/InstanceKeeperOwner, com/arkivanov/essenty/lifecycle/LifecycleOwner, com/arkivanov/essenty/statekeeper/StateKeeperOwner {
+public abstract interface class com/arkivanov/decompose/GenericComponentContext : androidx/lifecycle/LifecycleOwner, androidx/navigationevent/NavigationEventDispatcherOwner, com/arkivanov/decompose/ComponentContextFactoryOwner, com/arkivanov/essenty/instancekeeper/InstanceKeeperOwner, com/arkivanov/essenty/statekeeper/StateKeeperOwner {
 }
 
 public final class com/arkivanov/decompose/HostComponentContext : com/arkivanov/decompose/ComponentContext, com/arkivanov/decompose/lifecycle/LifecycleRegistryOwner {
 	public fun <init> ()V
-	public fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle$State;Lcom/arkivanov/essenty/statekeeper/StateKeeperDispatcher;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeperDispatcher;Landroidx/navigationevent/NavigationEventDispatcher;)V
-	public synthetic fun <init> (Lcom/arkivanov/essenty/lifecycle/Lifecycle$State;Lcom/arkivanov/essenty/statekeeper/StateKeeperDispatcher;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeperDispatcher;Landroidx/navigationevent/NavigationEventDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroidx/lifecycle/Lifecycle$State;Lcom/arkivanov/essenty/statekeeper/StateKeeperDispatcher;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeperDispatcher;Landroidx/navigationevent/NavigationEventDispatcher;)V
+	public synthetic fun <init> (Landroidx/lifecycle/Lifecycle$State;Lcom/arkivanov/essenty/statekeeper/StateKeeperDispatcher;Lcom/arkivanov/essenty/instancekeeper/InstanceKeeperDispatcher;Landroidx/navigationevent/NavigationEventDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getComponentContextFactory ()Lcom/arkivanov/decompose/ComponentContextFactory;
 	public synthetic fun getInstanceKeeper ()Lcom/arkivanov/essenty/instancekeeper/InstanceKeeper;
 	public fun getInstanceKeeper ()Lcom/arkivanov/essenty/instancekeeper/InstanceKeeperDispatcher;
-	public synthetic fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/Lifecycle;
-	public fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/LifecycleRegistry;
+	public synthetic fun getLifecycle ()Landroidx/lifecycle/Lifecycle;
+	public fun getLifecycle ()Landroidx/lifecycle/LifecycleRegistry;
 	public fun getNavigationEventDispatcher ()Landroidx/navigationevent/NavigationEventDispatcher;
 	public final fun getNavigationEventInput ()Landroidx/navigationevent/DirectNavigationEventInput;
 	public synthetic fun getStateKeeper ()Lcom/arkivanov/essenty/statekeeper/StateKeeper;
@@ -122,8 +122,44 @@ public final class com/arkivanov/decompose/HostComponentContext : com/arkivanov/
 public abstract interface annotation class com/arkivanov/decompose/InternalDecomposeApi : java/lang/annotation/Annotation {
 }
 
-public abstract interface class com/arkivanov/decompose/lifecycle/LifecycleRegistryOwner : com/arkivanov/essenty/lifecycle/LifecycleOwner {
-	public abstract fun getLifecycle ()Lcom/arkivanov/essenty/lifecycle/LifecycleRegistry;
+public final class com/arkivanov/decompose/lifecycle/LifecycleExtKt {
+	public static final fun DefaultLifecycleObserver (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Landroidx/lifecycle/DefaultLifecycleObserver;
+	public static synthetic fun DefaultLifecycleObserver$default (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Landroidx/lifecycle/DefaultLifecycleObserver;
+	public static final fun addObserver (Landroidx/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Landroidx/lifecycle/LifecycleObserver;
+	public static synthetic fun addObserver$default (Landroidx/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Landroidx/lifecycle/LifecycleObserver;
+	public static final fun doOnCreate (Landroidx/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function0;)V
+	public static final fun doOnCreate (Landroidx/lifecycle/LifecycleOwner;Lkotlin/jvm/functions/Function0;)V
+	public static final fun doOnDestroy (Landroidx/lifecycle/Lifecycle;Lkotlin/jvm/functions/Function0;)V
+	public static final fun doOnDestroy (Landroidx/lifecycle/LifecycleOwner;Lkotlin/jvm/functions/Function0;)V
+	public static final fun doOnPause (Landroidx/lifecycle/Lifecycle;ZLkotlin/jvm/functions/Function0;)V
+	public static final fun doOnPause (Landroidx/lifecycle/LifecycleOwner;ZLkotlin/jvm/functions/Function0;)V
+	public static synthetic fun doOnPause$default (Landroidx/lifecycle/Lifecycle;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static synthetic fun doOnPause$default (Landroidx/lifecycle/LifecycleOwner;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static final fun doOnResume (Landroidx/lifecycle/Lifecycle;ZLkotlin/jvm/functions/Function0;)V
+	public static final fun doOnResume (Landroidx/lifecycle/LifecycleOwner;ZLkotlin/jvm/functions/Function0;)V
+	public static synthetic fun doOnResume$default (Landroidx/lifecycle/Lifecycle;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static synthetic fun doOnResume$default (Landroidx/lifecycle/LifecycleOwner;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static final fun doOnStart (Landroidx/lifecycle/Lifecycle;ZLkotlin/jvm/functions/Function0;)V
+	public static final fun doOnStart (Landroidx/lifecycle/LifecycleOwner;ZLkotlin/jvm/functions/Function0;)V
+	public static synthetic fun doOnStart$default (Landroidx/lifecycle/Lifecycle;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static synthetic fun doOnStart$default (Landroidx/lifecycle/LifecycleOwner;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static final fun doOnStop (Landroidx/lifecycle/Lifecycle;ZLkotlin/jvm/functions/Function0;)V
+	public static final fun doOnStop (Landroidx/lifecycle/LifecycleOwner;ZLkotlin/jvm/functions/Function0;)V
+	public static synthetic fun doOnStop$default (Landroidx/lifecycle/Lifecycle;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+	public static synthetic fun doOnStop$default (Landroidx/lifecycle/LifecycleOwner;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
+}
+
+public final class com/arkivanov/decompose/lifecycle/LifecycleRegistryExtKt {
+	public static final fun LifecycleRegistry ()Landroidx/lifecycle/LifecycleRegistry;
+	public static final fun moveTo (Landroidx/lifecycle/LifecycleRegistry;Landroidx/lifecycle/Lifecycle$State;)Landroidx/lifecycle/LifecycleRegistry;
+	public static final fun moveToCreated (Landroidx/lifecycle/LifecycleRegistry;)Landroidx/lifecycle/LifecycleRegistry;
+	public static final fun moveToDestroyed (Landroidx/lifecycle/LifecycleRegistry;)Landroidx/lifecycle/LifecycleRegistry;
+	public static final fun moveToResumed (Landroidx/lifecycle/LifecycleRegistry;)Landroidx/lifecycle/LifecycleRegistry;
+	public static final fun moveToStarted (Landroidx/lifecycle/LifecycleRegistry;)Landroidx/lifecycle/LifecycleRegistry;
+}
+
+public abstract interface class com/arkivanov/decompose/lifecycle/LifecycleRegistryOwner : androidx/lifecycle/LifecycleOwner {
+	public abstract fun getLifecycle ()Landroidx/lifecycle/LifecycleRegistry;
 }
 
 public final class com/arkivanov/decompose/lifecycle/LifecycleRegistryOwnerKt {
@@ -757,8 +793,8 @@ public abstract class com/arkivanov/decompose/value/Value {
 }
 
 public final class com/arkivanov/decompose/value/ValueExtKt {
-	public static final fun subscribe (Lcom/arkivanov/decompose/value/Value;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/decompose/value/ObserveLifecycleMode;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun subscribe$default (Lcom/arkivanov/decompose/value/Value;Lcom/arkivanov/essenty/lifecycle/Lifecycle;Lcom/arkivanov/decompose/value/ObserveLifecycleMode;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun subscribe (Lcom/arkivanov/decompose/value/Value;Landroidx/lifecycle/Lifecycle;Lcom/arkivanov/decompose/value/ObserveLifecycleMode;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun subscribe$default (Lcom/arkivanov/decompose/value/Value;Landroidx/lifecycle/Lifecycle;Lcom/arkivanov/decompose/value/ObserveLifecycleMode;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 }
 
 public final class com/arkivanov/decompose/value/operator/MapKt {

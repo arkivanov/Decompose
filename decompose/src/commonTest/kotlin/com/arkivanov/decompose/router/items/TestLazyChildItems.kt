@@ -1,7 +1,9 @@
 package com.arkivanov.decompose.router.items
 
+import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.lifecycle.doOnDestroy
 import com.arkivanov.decompose.router.Component
 import com.arkivanov.decompose.router.children.NavStateSaver
 import com.arkivanov.decompose.router.children.NavigationSource
@@ -13,8 +15,6 @@ import com.arkivanov.decompose.router.items.LazyComponentState.REMOVED
 import com.arkivanov.decompose.router.items.LazyComponentState.RESUMED
 import com.arkivanov.decompose.router.items.LazyComponentState.STARTED
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.doOnDestroy
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.serializer
 import kotlin.test.assertEquals
@@ -125,7 +125,7 @@ fun <C : Any> TestLazyChildItems<C>.assertItems(
             }
 
         assertNotNull(actual = component, message = "Component not found: $cfg, $state")
-        assertEquals(state.toLifecycleState(), component.lifecycle.state)
+        assertEquals(state.toLifecycleState(), component.lifecycle.currentState)
     }
 }
 
