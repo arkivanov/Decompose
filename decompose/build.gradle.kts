@@ -56,9 +56,10 @@ kotlin {
         }
 
         common.main.dependencies {
-            api(deps.essenty.lifecycle)
             api(deps.essenty.stateKeeper)
             api(deps.essenty.instanceKeeper)
+            api(deps.androidx.lifecycle.lifecycleCommon)
+            api(deps.androidx.lifecycle.lifecycleRuntime)
             api(deps.androidx.navigationEvent.navigationEvent)
             api(deps.jetbrains.kotlinx.kotlinxSerializationCore)
         }

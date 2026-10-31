@@ -20,6 +20,11 @@ data class Items<C : Any>(
     val items: List<C> = emptyList(),
     val activeItems: Map<C, ActiveLifecycleState> = emptyMap(),
 ) {
+    /**
+     * Lifecycle state of an instantiated child component.
+     *
+     * @see androidx.lifecycle.Lifecycle.State
+     */
     enum class ActiveLifecycleState {
         CREATED,
         STARTED,

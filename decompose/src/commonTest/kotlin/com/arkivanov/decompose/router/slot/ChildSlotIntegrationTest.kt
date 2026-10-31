@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.router.slot
 
+import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.HostComponentContext
@@ -11,7 +12,6 @@ import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.register
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.instancekeeper.getOrCreate
-import com.arkivanov.essenty.lifecycle.Lifecycle
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -93,7 +93,7 @@ class ChildSlotIntegrationTest {
 
         navigation.activate(1)
 
-        assertEquals(Lifecycle.State.RESUMED, slot.requireChild().instance.lifecycle.state)
+        assertEquals(Lifecycle.State.RESUMED, slot.requireChild().instance.lifecycle.currentState)
     }
 
     @Test
@@ -103,7 +103,7 @@ class ChildSlotIntegrationTest {
 
         navigation.dismiss()
 
-        assertEquals(Lifecycle.State.DESTROYED, lifecycle.state)
+        assertEquals(Lifecycle.State.DESTROYED, lifecycle.currentState)
     }
 
     @Test

@@ -1,11 +1,11 @@
 package com.arkivanov.decompose
 
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.subscribe
+import androidx.lifecycle.Lifecycle
+import com.arkivanov.decompose.lifecycle.addObserver
 
 fun Lifecycle.logEvents(): MutableList<String> =
     ArrayList<String>().apply {
-        subscribe(
+        addObserver(
             onCreate = { add("onCreate") },
             onStart = { add("onStart") },
             onResume = { add("onResume") },

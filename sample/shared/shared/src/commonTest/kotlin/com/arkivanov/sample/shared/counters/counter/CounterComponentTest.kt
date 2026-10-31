@@ -1,9 +1,9 @@
 package com.arkivanov.sample.shared.counters.counter
 
+import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.router.slot.child
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.essenty.lifecycle.resume
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import com.badoo.reaktive.test.scheduler.TestScheduler
 import kotlin.test.Test
@@ -164,6 +164,6 @@ class CounterComponentTest {
                 onPrev = onPrev,
             )
 
-        ctx.lifecycle.resume()
+        ctx.lifecycle.moveToResumed()
     }
 }

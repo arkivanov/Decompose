@@ -1,9 +1,9 @@
 package com.arkivanov.decompose.navigationevent
 
+import androidx.lifecycle.Lifecycle
 import androidx.navigationevent.NavigationEventDispatcher
-import com.arkivanov.decompose.isDestroyed
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.subscribe
+import com.arkivanov.decompose.lifecycle.addObserver
+import com.arkivanov.decompose.lifecycle.isDestroyed
 
 internal interface ChildNavigationEventDispatcher {
 
@@ -25,10 +25,10 @@ internal fun NavigationEventDispatcher.child(
         handler.isEnabled = true
         handler.start()
     } else if (!lifecycle.isDestroyed) {
-        handler.isEnabled = lifecycle.state >= Lifecycle.State.STARTED
+        handler.isEnabled = lifecycle.currentState >= Lifecycle.State.STARTED
         handler.start()
 
-        lifecycle.subscribe(
+        lifecycle.addObserver(
             onStart = { handler.isEnabled = true },
             onStop = { handler.isEnabled = false },
             onDestroy = handler::destroy,

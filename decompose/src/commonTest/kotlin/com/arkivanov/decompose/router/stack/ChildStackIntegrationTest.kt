@@ -1,16 +1,17 @@
 package com.arkivanov.decompose.router.stack
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Lifecycle.Event.ON_CREATE
+import androidx.lifecycle.Lifecycle.Event.ON_DESTROY
+import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
+import androidx.lifecycle.Lifecycle.Event.ON_RESUME
+import androidx.lifecycle.Lifecycle.Event.ON_START
+import androidx.lifecycle.Lifecycle.Event.ON_STOP
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.DelicateDecomposeApi
 import com.arkivanov.decompose.HostComponentContext
-import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks
-import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_CREATE
-import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_DESTROY
-import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_PAUSE
-import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_RESUME
-import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_START
-import com.arkivanov.decompose.lifecycle.TestLifecycleCallbacks.Event.ON_STOP
+import com.arkivanov.decompose.lifecycle.TestLifecycleObserver
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.TestInstance
@@ -21,7 +22,6 @@ import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.register
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.instancekeeper.getOrCreate
-import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
@@ -462,10 +462,10 @@ class ChildStackIntegrationTest {
 
     @Test
     fun WHEN_created_with_multiple_children_THEN_lifecycles_events_in_correct_order() {
-        val events = ArrayList<Pair<Int, TestLifecycleCallbacks.Event>>()
+        val events = ArrayList<Pair<Int, Lifecycle.Event>>()
 
         context.childStack(initialStack = listOf(Config(1), Config(2), Config(3))) { cfg, ctx ->
-            ctx.lifecycle.subscribe(TestLifecycleCallbacks { events += cfg.id to it })
+            ctx.lifecycle.addObserver(TestLifecycleObserver { events += cfg.id to it })
             Component(cfg, ctx)
         }
 
@@ -474,10 +474,10 @@ class ChildStackIntegrationTest {
 
     @Test
     fun WHEN_child_pushed_THEN_lifecycles_events_in_correct_order() {
-        val events = ArrayList<Pair<Int, TestLifecycleCallbacks.Event>>()
+        val events = ArrayList<Pair<Int, Lifecycle.Event>>()
 
         context.childStack(initialStack = listOf(Config(1))) { cfg, ctx ->
-            ctx.lifecycle.subscribe(TestLifecycleCallbacks { events += cfg.id to it })
+            ctx.lifecycle.addObserver(TestLifecycleObserver { events += cfg.id to it })
             Component(cfg, ctx)
         }
 
@@ -490,10 +490,10 @@ class ChildStackIntegrationTest {
 
     @Test
     fun WHEN_child_popped_THEN_lifecycles_events_in_correct_order() {
-        val events = ArrayList<Pair<Int, TestLifecycleCallbacks.Event>>()
+        val events = ArrayList<Pair<Int, Lifecycle.Event>>()
 
         context.childStack(initialStack = listOf(Config(1), Config(2))) { cfg, ctx ->
-            ctx.lifecycle.subscribe(TestLifecycleCallbacks { events += cfg.id to it })
+            ctx.lifecycle.addObserver(TestLifecycleObserver { events += cfg.id to it })
             Component(cfg, ctx)
         }
 
@@ -506,10 +506,10 @@ class ChildStackIntegrationTest {
 
     @Test
     fun WHEN_child_replaced_THEN_lifecycles_events_in_correct_order() {
-        val events = ArrayList<Pair<Int, TestLifecycleCallbacks.Event>>()
+        val events = ArrayList<Pair<Int, Lifecycle.Event>>()
 
         context.childStack(initialStack = listOf(Config(1))) { cfg, ctx ->
-            ctx.lifecycle.subscribe(TestLifecycleCallbacks { events += cfg.id to it })
+            ctx.lifecycle.addObserver(TestLifecycleObserver { events += cfg.id to it })
             Component(cfg, ctx)
         }
 
@@ -521,10 +521,10 @@ class ChildStackIntegrationTest {
 
     @Test
     fun WHEN_multiple_children_popped_THEN_lifecycles_events_in_correct_order() {
-        val events = ArrayList<Pair<Int, TestLifecycleCallbacks.Event>>()
+        val events = ArrayList<Pair<Int, Lifecycle.Event>>()
 
         context.childStack(initialStack = listOf(Config(1), Config(2), Config(3))) { cfg, ctx ->
-            ctx.lifecycle.subscribe(TestLifecycleCallbacks { events += cfg.id to it })
+            ctx.lifecycle.addObserver(TestLifecycleObserver { events += cfg.id to it })
             Component(cfg, ctx)
         }
 
@@ -537,10 +537,10 @@ class ChildStackIntegrationTest {
 
     @Test
     fun WHEN_multiple_children_popped_and_pushed_THEN_lifecycles_events_in_correct_order() {
-        val events = ArrayList<Pair<Int, TestLifecycleCallbacks.Event>>()
+        val events = ArrayList<Pair<Int, Lifecycle.Event>>()
 
         context.childStack(initialStack = listOf(Config(1), Config(2), Config(3))) { cfg, ctx ->
-            ctx.lifecycle.subscribe(TestLifecycleCallbacks { events += cfg.id to it })
+            ctx.lifecycle.addObserver(TestLifecycleObserver { events += cfg.id to it })
             Component(cfg, ctx)
         }
 
@@ -602,11 +602,11 @@ class ChildStackIntegrationTest {
 
     private fun ChildStack<Config, Component>.assertStack(vararg children: Int) {
         assertEquals(children.map { it to it }, this.children)
-        assertEquals(Lifecycle.State.RESUMED, active.instance.lifecycle.state)
+        assertEquals(Lifecycle.State.RESUMED, active.instance.lifecycle.currentState)
 
         assertEquals(
             List(children.size - 1) { Lifecycle.State.CREATED },
-            backStack.map { it.instance.lifecycle.state },
+            backStack.map { it.instance.lifecycle.currentState },
         )
     }
 

@@ -1,12 +1,12 @@
 package com.arkivanov.decompose
 
+import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.instancekeeper.child
-import com.arkivanov.decompose.lifecycle.MergedLifecycle
+import com.arkivanov.decompose.lifecycle.doOnDestroy
+import com.arkivanov.decompose.lifecycle.mergedLifecycle
 import com.arkivanov.decompose.navigationevent.NavigationEventPriority
 import com.arkivanov.decompose.navigationevent.child
 import com.arkivanov.decompose.statekeeper.child
-import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.arkivanov.essenty.lifecycle.doOnDestroy
 
 /**
  * Creates a new instance of child [ComponentContext] of type [Ctx] and attaches it to the parent (`this`) component context.
@@ -14,7 +14,7 @@ import com.arkivanov.essenty.lifecycle.doOnDestroy
  *
  * @param key A key of the child component context, must be unique within the parent context.
  * @param lifecycle An optional [Lifecycle] of the child component context to be merged with the parent [Lifecycle],
- * can be used for manual control (see [LifecycleRegistry][com.arkivanov.essenty.lifecycle.LifecycleRegistry]).
+ * can be used for manual control (see [LifecycleRegistry][com.arkivanov.decompose.lifecycle.LifecycleRegistry]).
  * The following conditions apply:
  * - The resulting [Lifecycle] of the child component will honour both the parent (`this`) [Lifecycle] and the supplied one.
  * - The supplied [Lifecycle] must never be destroyed manually.
@@ -33,7 +33,7 @@ fun <Ctx : GenericComponentContext<Ctx>> Ctx.childContext(
     lifecycle?.doOnDestroy { error("The lifecycle of a child ComponentContext must never be destroyed manually.") }
 
     return componentContextFactory(
-        lifecycle = if (lifecycle == null) this.lifecycle else MergedLifecycle(this.lifecycle, lifecycle),
+        lifecycle = if (lifecycle == null) this.lifecycle else mergedLifecycle(this.lifecycle, lifecycle),
         stateKeeper = stateKeeper.child(key, lifecycle),
         instanceKeeper = instanceKeeper.child(key, lifecycle),
         navigationEventDispatcher = navigationEventDispatcher.child(lifecycle = lifecycle, priority = navigationEventPriority),

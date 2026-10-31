@@ -37,7 +37,8 @@ kotlin {
                     framework {
                         baseName = "Shared" // Used by app-ios
                         export(project(":decompose"))
-                        export(deps.essenty.lifecycle)
+                        export(deps.androidx.lifecycle.lifecycleCommon)
+                        export(deps.androidx.lifecycle.lifecycleRuntime)
 
                         // Optional, only if you need state preservation on Darwin (Apple) targets
                         export(deps.essenty.stateKeeper)
@@ -62,10 +63,10 @@ kotlin {
 
         common.main.dependencies {
             api(project(":decompose"))
+            api(deps.androidx.lifecycle.lifecycleCommon)
+            api(deps.androidx.lifecycle.lifecycleRuntime)
             api(deps.androidx.navigationEvent.navigationEvent)
-            api(deps.essenty.lifecycle)
             api(deps.essenty.stateKeeper)
-            implementation(deps.essenty.lifecycleReaktive)
             implementation(deps.reaktive.reaktive)
             implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
         }

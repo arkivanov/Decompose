@@ -7,8 +7,8 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.android.ViewContext
 import com.arkivanov.decompose.extensions.android.context
 import com.arkivanov.decompose.extensions.android.layoutInflater
+import com.arkivanov.decompose.lifecycle.addObserver
 import com.arkivanov.decompose.value.subscribe
-import com.arkivanov.essenty.lifecycle.subscribe
 import com.arkivanov.sample.shared.R
 import com.arkivanov.sample.shared.dialog.DialogComponent
 
@@ -54,9 +54,9 @@ private fun ViewContext.showDialog(component: DialogComponent): AlertDialog =
         .setNegativeButton(android.R.string.ok, null)
         .show()
         .also { dialog ->
-            val observer = lifecycle.subscribe(onDestroy = dialog::dismiss)
+            val observer = lifecycle.addObserver(onDestroy = dialog::dismiss)
             dialog.setOnDismissListener {
-                lifecycle.unsubscribe(observer)
+                lifecycle.removeObserver(observer)
                 component.onDismissClicked()
             }
         }

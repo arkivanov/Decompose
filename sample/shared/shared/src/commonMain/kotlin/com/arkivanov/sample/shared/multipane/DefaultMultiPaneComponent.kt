@@ -16,8 +16,8 @@ import com.arkivanov.decompose.router.panels.navigate
 import com.arkivanov.decompose.router.panels.pop
 import com.arkivanov.decompose.router.webhistory.WebNavigation
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.lifecycle.reaktive.disposableScope
 import com.arkivanov.sample.shared.Url
+import com.arkivanov.sample.shared.disposableScope
 import com.arkivanov.sample.shared.multipane.author.ArticleAuthorComponent
 import com.arkivanov.sample.shared.multipane.author.DefaultArticleAuthorComponent
 import com.arkivanov.sample.shared.multipane.database.DefaultArticleDatabase

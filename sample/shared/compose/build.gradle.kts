@@ -35,7 +35,8 @@ kotlin {
                         baseName = "Shared" // Used by app-ios-compose
                         export(project(":decompose"))
                         export(project(":sample:shared:shared"))
-                        export(deps.essenty.lifecycle)
+                        export(deps.androidx.lifecycle.lifecycleCommon)
+                        export(deps.androidx.lifecycle.lifecycleRuntime)
 
                         // Optional, only if you need Predictive Back Gesture on Darwin (Apple) targets
                         export(deps.androidx.navigationEvent.navigationEvent)
@@ -60,8 +61,11 @@ kotlin {
 
         common.main.dependencies {
             api(project(":decompose"))
-            implementation(project(":extensions-compose"))
             api(project(":sample:shared:shared"))
+            api(deps.androidx.lifecycle.lifecycleCommon)
+            api(deps.androidx.lifecycle.lifecycleRuntime)
+
+            implementation(project(":extensions-compose"))
             implementation(deps.jetbrains.compose.runtime)
             implementation(deps.jetbrains.compose.foundation)
             implementation(deps.jetbrains.compose.material)

@@ -1,32 +1,33 @@
 package com.arkivanov.decompose.router.panels
 
+import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 
 /**
  * Determines how lifecycles of the child components within the Child Panels navigation model are changing.
  *
- * @see com.arkivanov.essenty.lifecycle.Lifecycle.State
+ * @see Lifecycle.State
  */
 @ExperimentalDecomposeApi
 enum class ChildPanelsMode {
 
     /**
-     * There is only one `RESUMED` panel at a time.
-     * If the Extra panel exists, then it is `RESUMED` and all other panels are `CREATED`.
-     * Otherwise, if the Details panel exists, then it is `RESUMED` and the Main panel is `CREATED`.
-     * Otherwise, the Main panel is `RESUMED`.
+     * There is only one [Lifecycle.State.RESUMED] panel at a time.
+     * If the Extra panel exists, then it is [Lifecycle.State.RESUMED] and all other panels are [Lifecycle.State.CREATED].
+     * Otherwise, if the Details panel exists, then it is [Lifecycle.State.RESUMED] and the Main panel is [Lifecycle.State.CREATED].
+     * Otherwise, the Main panel is [Lifecycle.State.RESUMED].
      */
     SINGLE,
 
     /**
-     * There are at most two panels `RESUMED` at a time. The Main panel is always `RESUMED`.
-     * If the Extra panel exists, then it is `RESUMED` and the Details panel (if exists) is `CREATED`.
-     * Otherwise, if the Details panel exists, then it is `RESUMED`.
+     * There are at most two panels [Lifecycle.State.RESUMED] at a time. The Main panel is always [Lifecycle.State.RESUMED].
+     * If the Extra panel exists, then it is [Lifecycle.State.RESUMED] and the Details panel (if exists) is [Lifecycle.State.CREATED].
+     * Otherwise, if the Details panel exists, then it is [Lifecycle.State.RESUMED].
      */
     DUAL,
 
     /**
-     * Any existing panel is always `RESUMED`.
+     * Any existing panel is always [Lifecycle.State.RESUMED].
      */
     TRIPLE,
 }

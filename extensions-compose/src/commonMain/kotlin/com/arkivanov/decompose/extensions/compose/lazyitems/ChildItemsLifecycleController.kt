@@ -18,8 +18,8 @@ import com.arkivanov.decompose.router.items.setActiveItems
 /**
  * Controls the lifecycle states of child items (components) in a lazy list
  * (e.g. `LazyColumn` or `LazyRow`).
- * The items within the viewport are moved to `RESUMED` state.
- * The items outside the viewport but within the preloading delta are moved to `CREATED` state.
+ * The items within the viewport are moved to [ActiveLifecycleState.RESUMED].
+ * The items outside the viewport but within the preloading delta are moved to [ActiveLifecycleState.CREATED].
  * The items outside the viewport and outside the preloading delta are destroyed.
  *
  * @param C A type of configuration associated with each child item (component).
@@ -64,8 +64,8 @@ fun <C : Any> ChildItemsLifecycleController(
 /**
  * Controls the lifecycle states of child items (components) in a lazy grid
  * (e.g. `LazyVerticalGrid` or `LazyHorizontalGrid`).
- * The items within the viewport are moved to `RESUMED` state.
- * The items outside the viewport but within the preloading delta are moved to `CREATED` state.
+ * The items within the viewport are moved to [ActiveLifecycleState.RESUMED].
+ * The items outside the viewport but within the preloading delta are moved to [ActiveLifecycleState.CREATED].
  * The items outside the viewport and outside the preloading delta are destroyed.
  *
  * @param C A type of configuration associated with each child item (component).
