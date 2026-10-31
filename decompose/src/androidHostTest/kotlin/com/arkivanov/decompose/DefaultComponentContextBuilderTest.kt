@@ -1,11 +1,11 @@
 package com.arkivanov.decompose
 
+import com.arkivanov.decompose.instancekeeper.getOrCreate
 import com.arkivanov.decompose.navigationevent.addDirectInput
 import com.arkivanov.decompose.navigationevent.addHandler
-import com.arkivanov.decompose.router.TestInstance
+import com.arkivanov.decompose.router.TestViewModel
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.register
-import com.arkivanov.essenty.instancekeeper.getOrCreate
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import kotlin.test.Test
@@ -85,11 +85,11 @@ class DefaultComponentContextBuilderTest {
     fun retains_instances() {
         var owner = TestOwner()
         var ctx = owner.defaultComponentContext()
-        val instance1 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance1 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         owner = owner.recreate()
         ctx = owner.defaultComponentContext()
-        val instance2 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance2 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         assertSame(instance1, instance2)
     }
@@ -111,11 +111,11 @@ class DefaultComponentContextBuilderTest {
     fun GIVEN_isStateSavingAllowed_is_false_on_save_WHEN_configuration_changed_THEN_instances_not_retained() {
         var owner = TestOwner()
         var ctx = owner.defaultComponentContext(isStateSavingAllowed = { false })
-        val instance1 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance1 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         owner = owner.recreate()
         ctx = owner.defaultComponentContext()
-        val instance2 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance2 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         assertNotSame(instance1, instance2)
     }
@@ -124,7 +124,7 @@ class DefaultComponentContextBuilderTest {
     fun GIVEN_isStateSavingAllowed_is_false_on_save_WHEN_configuration_changed_THEN_old_instances_destroyed() {
         var owner = TestOwner()
         val ctx = owner.defaultComponentContext(isStateSavingAllowed = { false })
-        val instance1 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance1 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         owner = owner.recreate()
         owner.defaultComponentContext()
@@ -149,11 +149,11 @@ class DefaultComponentContextBuilderTest {
     fun WHEN_configuration_changed_and_discardSavedState_is_true_on_restore_THEN_instances_not_retained() {
         var owner = TestOwner()
         var ctx = owner.defaultComponentContext()
-        val instance1 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance1 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         owner = owner.recreate()
         ctx = owner.defaultComponentContext(discardSavedState = true)
-        val instance2 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance2 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         assertNotSame(instance1, instance2)
     }
@@ -162,7 +162,7 @@ class DefaultComponentContextBuilderTest {
     fun WHEN_configuration_changed_and_discardSavedState_is_true_on_restore_THEN_old_instances_destroyed() {
         var owner = TestOwner()
         val ctx = owner.defaultComponentContext()
-        val instance1 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance1 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         owner = owner.recreate()
         owner.defaultComponentContext(discardSavedState = true)

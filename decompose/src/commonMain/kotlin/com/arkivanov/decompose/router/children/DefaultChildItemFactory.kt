@@ -1,12 +1,12 @@
 package com.arkivanov.decompose.router.children
 
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelStore
 import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.ComponentContextFactory
 import com.arkivanov.decompose.lifecycle.DecomposeLifecycleRegistry
 import com.arkivanov.decompose.lifecycle.mergedLifecycle
 import com.arkivanov.decompose.navigationevent.childNavigationEventDispatcher
-import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
@@ -21,12 +21,12 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
         configuration: C,
         key: String,
         savedState: SerializableContainer?,
-        instanceKeeperDispatcher: InstanceKeeperDispatcher?
+        viewModelStore: ViewModelStore?,
     ): ChildItem.Created<C, T> {
         val componentLifecycleRegistry = DecomposeLifecycleRegistry()
         val mergedLifecycle = mergedLifecycle(lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
-        val instanceKeeperRegistry = instanceKeeperDispatcher ?: InstanceKeeperDispatcher()
+        val viewModelStore = viewModelStore ?: ViewModelStore()
         val navigationEventDispatcher = navigationEventDispatcher.childNavigationEventDispatcher()
 
         val component =
@@ -35,7 +35,7 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
                 contextFactory(
                     lifecycle = mergedLifecycle,
                     stateKeeper = stateKeeperDispatcher,
-                    instanceKeeper = instanceKeeperRegistry,
+                    viewModelStore = viewModelStore,
                     navigationEventDispatcher = navigationEventDispatcher.dispatcher,
                 )
             )
@@ -46,7 +46,7 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
             instance = component,
             lifecycleRegistry = componentLifecycleRegistry,
             stateKeeperDispatcher = stateKeeperDispatcher,
-            instanceKeeperDispatcher = instanceKeeperRegistry,
+            viewModelStore = viewModelStore,
             navigationEventDispatcher = navigationEventDispatcher,
         )
     }

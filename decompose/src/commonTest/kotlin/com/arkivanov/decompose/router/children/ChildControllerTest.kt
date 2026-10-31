@@ -7,14 +7,14 @@ import com.arkivanov.decompose.TestBackHandler
 import com.arkivanov.decompose.TestBackHandler.Event
 import com.arkivanov.decompose.assertEvents
 import com.arkivanov.decompose.assertNoEvents
+import com.arkivanov.decompose.instancekeeper.getOrCreate
 import com.arkivanov.decompose.lifecycle.TestLifecycleObserver
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.Component
-import com.arkivanov.decompose.router.TestInstance
+import com.arkivanov.decompose.router.TestViewModel
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.serializeAndDeserialize
-import com.arkivanov.essenty.instancekeeper.getOrCreate
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -153,7 +153,7 @@ class ChildControllerTest {
 
         val events = ArrayList<Any>()
         controller.requireChild(1).lifecycle.addObserver(TestLifecycleObserver { events += it })
-        controller.requireChild(1).instanceKeeper.getOrCreate("key") { TestInstance { events += "instance_destroyed" } }
+        controller.requireChild(1).viewModelStore.getOrCreate("key") { TestViewModel { events += "instance_destroyed" } }
         events.clear()
 
         controller.destroy(configuration = 1)
@@ -216,7 +216,7 @@ class ChildControllerTest {
         val ctx = HostComponentContext().resumed()
         val controller = controller(ctx = ctx).apply { init() }
         controller.resume(configuration = 1)
-        val instance = controller.requireChild(1).instanceKeeper.getOrCreate(key = "key") { TestInstance() }
+        val instance = controller.requireChild(1).viewModelStore.getOrCreate(key = "key") { TestViewModel() }
 
         controller.destroy(configuration = 1)
 
@@ -228,7 +228,7 @@ class ChildControllerTest {
         var ctx = HostComponentContext().resumed()
         var controller = controller(ctx = ctx).apply { init() }
         controller.resume(configuration = 1)
-        val instance1 = controller.requireChild(1).instanceKeeper.getOrCreate(key = "key") { TestInstance() }
+        val instance1 = controller.requireChild(1).viewModelStore.getOrCreate(key = "key") { TestViewModel() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         controller = controller(ctx = ctx)
@@ -237,7 +237,7 @@ class ChildControllerTest {
             controller.create(configuration = 1)
         }
 
-        val instance2 = controller.requireChild(1).instanceKeeper.getOrCreate(key = "key") { TestInstance() }
+        val instance2 = controller.requireChild(1).viewModelStore.getOrCreate(key = "key") { TestViewModel() }
 
         assertSame(instance1, instance2)
     }
@@ -247,7 +247,7 @@ class ChildControllerTest {
         var ctx = HostComponentContext().resumed()
         var controller = controller(ctx = ctx).apply { init() }
         controller.resume(configuration = 1)
-        val instance = controller.requireChild(1).instanceKeeper.getOrCreate(key = "key") { TestInstance() }
+        val instance = controller.requireChild(1).viewModelStore.getOrCreate(key = "key") { TestViewModel() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         controller = controller(ctx = ctx)
@@ -264,7 +264,7 @@ class ChildControllerTest {
         var ctx = HostComponentContext().resumed()
         var controller = controller(ctx = ctx).apply { init() }
         controller.resume(configuration = 1)
-        val instance1 = controller.requireChild(1).instanceKeeper.getOrCreate(key = "key") { TestInstance() }
+        val instance1 = controller.requireChild(1).viewModelStore.getOrCreate(key = "key") { TestViewModel() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         controller = controller(ctx = ctx)
@@ -273,7 +273,7 @@ class ChildControllerTest {
             controller.create(configuration = 1)
         }
 
-        val instance2 = controller.requireChild(1).instanceKeeper.getOrCreate(key = "key") { TestInstance() }
+        val instance2 = controller.requireChild(1).viewModelStore.getOrCreate(key = "key") { TestViewModel() }
 
         assertNotSame(instance1, instance2)
     }

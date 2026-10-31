@@ -35,7 +35,7 @@ fun <Ctx : GenericComponentContext<Ctx>> Ctx.childContext(
     return componentContextFactory(
         lifecycle = if (lifecycle == null) this.lifecycle else mergedLifecycle(this.lifecycle, lifecycle),
         stateKeeper = stateKeeper.child(key, lifecycle),
-        instanceKeeper = instanceKeeper.child(key, lifecycle),
+        viewModelStore = viewModelStore.child(key),
         navigationEventDispatcher = navigationEventDispatcher.child(lifecycle = lifecycle, priority = navigationEventPriority),
     )
 }

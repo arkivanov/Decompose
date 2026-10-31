@@ -7,12 +7,11 @@ import com.arkivanov.decompose.keyed
 import com.arkivanov.decompose.router.children.ChildItem.Created
 import com.arkivanov.decompose.router.children.ChildItem.Destroyed
 import com.arkivanov.decompose.router.children.ChildNavState.Status
-import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.Serializable
 
 internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
-    retainedInstanceSupplier: (factory: () -> InstanceKeeper.Instance) -> InstanceKeeper.Instance,
+    retainedInstanceSupplier: (factory: () -> AutoCloseable) -> AutoCloseable,
     private val childItemFactory: ChildItemFactory<C, T>,
     navState: N,
     savedChildState: List<SavedChildState>?,
@@ -38,7 +37,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
 
     init {
         if (savedChildState == null) {
-            retainedInstance.onDestroy()
+            retainedInstance.close()
             switch(newStates = navState.children)
         } else {
             restore(navState = navState, savedStates = savedChildState)
@@ -65,13 +64,13 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
                             configuration = childNavState.configuration,
                             key = savedState.key,
                             savedState = savedState.savedState,
-                            instanceKeeperDispatcher = retainedItems?.remove(index)?.instanceKeeperDispatcher,
+                            viewModelStore = retainedItems?.remove(index)?.viewModelStore,
                         )
                     }
                 )
         }
 
-        retainedItems?.values?.forEach { it.instanceKeeperDispatcher?.destroy() }
+        retainedItems?.values?.forEach { it.viewModelStore?.clear() }
     }
 
     private inline fun restoreItem(
@@ -236,7 +235,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     private fun Created<*, *>.destroy() {
         navigationEventDispatcher.destroy()
         lifecycleRegistry.moveToDestroyed()
-        instanceKeeperDispatcher.destroy()
+        viewModelStore.clear()
     }
 
     @Serializable
@@ -245,11 +244,11 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
         val savedState: SerializableContainer?,
     )
 
-    private class RetainedInstance<C : Any, T : Any> : InstanceKeeper.Instance {
+    private class RetainedInstance<C : Any, T : Any> : AutoCloseable {
         val items: MutableList<ChildItem<C, T>> = ArrayList()
 
-        override fun onDestroy() {
-            items.toList().forEach { it.instanceKeeperDispatcher?.destroy() }
+        override fun close() {
+            items.toList().forEach { it.viewModelStore?.clear() }
             items.clear()
         }
     }

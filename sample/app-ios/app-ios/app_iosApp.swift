@@ -27,7 +27,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         componentContext: DefaultComponentContext(
             lifecycle: ApplicationLifecycle(),
             stateKeeper: stateKeeper,
-            instanceKeeper: nil,
+            viewModelStore: nil,
             navigationEventDispatcher: nil
         ),
         deepLinkUrl: nil

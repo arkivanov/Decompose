@@ -1,11 +1,11 @@
 package com.arkivanov.decompose
 
+import com.arkivanov.decompose.instancekeeper.getOrCreate
 import com.arkivanov.decompose.navigationevent.addDirectInput
 import com.arkivanov.decompose.navigationevent.addHandler
-import com.arkivanov.decompose.router.TestInstance
+import com.arkivanov.decompose.router.TestViewModel
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.register
-import com.arkivanov.essenty.instancekeeper.getOrCreate
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import kotlin.test.Test
@@ -109,11 +109,11 @@ class RetainedComponentSingleTest {
     fun GIVEN_isStateSavingAllowed_is_false_on_save_WHEN_configuration_changed_THEN_instances_not_retained() {
         var owner = TestOwner()
         var ctx = owner.retainedComponent(isStateSavingAllowed = { false })
-        val instance1 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance1 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         owner = owner.recreate(isChangingConfigurations = true)
         ctx = owner.retainedComponent()
-        val instance2 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance2 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         assertNotSame(instance1, instance2)
     }
@@ -122,7 +122,7 @@ class RetainedComponentSingleTest {
     fun GIVEN_isStateSavingAllowed_is_false_on_save_WHEN_configuration_changed_THEN_old_instances_destroyed() {
         var owner = TestOwner()
         val ctx = owner.retainedComponent(isStateSavingAllowed = { false })
-        val instance1 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance1 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         owner = owner.recreate(isChangingConfigurations = true)
         owner.retainedComponent()
@@ -147,11 +147,11 @@ class RetainedComponentSingleTest {
     fun WHEN_configuration_changed_and_discardSavedState_is_true_on_restore_THEN_instances_not_retained() {
         var owner = TestOwner()
         var ctx = owner.retainedComponent()
-        val instance1 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance1 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         owner = owner.recreate(isChangingConfigurations = true)
         ctx = owner.retainedComponent(discardSavedState = true)
-        val instance2 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance2 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         assertNotSame(instance1, instance2)
     }
@@ -160,7 +160,7 @@ class RetainedComponentSingleTest {
     fun WHEN_configuration_changed_and_discardSavedState_is_true_on_restore_THEN_old_instances_destroyed() {
         var owner = TestOwner()
         val ctx = owner.retainedComponent()
-        val instance1 = ctx.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance1 = ctx.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         owner = owner.recreate(isChangingConfigurations = true)
         owner.retainedComponent(discardSavedState = true)
@@ -224,6 +224,7 @@ class RetainedComponentSingleTest {
         isStateSavingAllowed: () -> Boolean = { true },
     ): ComponentContext =
         retainedComponent(
+            cast = { it as ComponentContext },
             key = "key",
             navigationEventDispatcher = navigationEventDispatcher,
             discardSavedState = discardSavedState,

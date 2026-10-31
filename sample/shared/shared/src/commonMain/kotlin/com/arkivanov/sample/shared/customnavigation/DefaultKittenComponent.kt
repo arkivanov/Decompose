@@ -1,13 +1,12 @@
 package com.arkivanov.sample.shared.customnavigation
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.instancekeeper.retainedCloseable
 import com.arkivanov.decompose.lifecycle.addObserver
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.decompose.value.update
-import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import com.arkivanov.essenty.instancekeeper.retainedInstance
 import com.arkivanov.sample.shared.ImageResourceId
 import com.arkivanov.sample.shared.customnavigation.KittenComponent.Model
 import com.badoo.reaktive.disposable.Disposable
@@ -23,7 +22,7 @@ class DefaultKittenComponent(
 ) : KittenComponent, ComponentContext by componentContext {
 
     private val handler =
-        retainedInstance {
+        retainedCloseable(key = "handler") {
             Handler(initialState = stateKeeper.consume(key = KEY_STATE, strategy = State.serializer()) ?: State())
         }
 
@@ -53,7 +52,7 @@ class DefaultKittenComponent(
         val count: Int = 0,
     )
 
-    private class Handler(initialState: State) : InstanceKeeper.Instance {
+    private class Handler(initialState: State) : AutoCloseable {
         val state: MutableValue<State> = MutableValue(initialState)
 
         private var disposable: Disposable? = null
@@ -72,7 +71,7 @@ class DefaultKittenComponent(
             disposable = null
         }
 
-        override fun onDestroy() {
+        override fun close() {
             pause()
         }
     }

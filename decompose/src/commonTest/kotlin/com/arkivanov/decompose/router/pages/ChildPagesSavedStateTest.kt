@@ -1,14 +1,14 @@
 package com.arkivanov.decompose.router.pages
 
 import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.instancekeeper.getOrCreate
 import com.arkivanov.decompose.lifecycle.resumed
-import com.arkivanov.decompose.router.TestInstance
+import com.arkivanov.decompose.router.TestViewModel
 import com.arkivanov.decompose.router.children.NavStateSaver
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.register
-import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
@@ -79,7 +79,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
     fun GIVEN_persistent_WHEN_config_changed_with_same_initial_pages_and_state_not_restored_THEN_child_retained_instances_destroyed() {
         var ctx = HostComponentContext().resumed()
         val oldPages by ctx.childPages(initialPages = Pages(items = listOf(1), selectedIndex = 0), persistent = true)
-        val oldInstance = oldPages.requireInstance(0).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val oldInstance = oldPages.requireInstance(0).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         ctx.childPages(
@@ -99,7 +99,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
     fun GIVEN_persistent_WHEN_config_changed_with_same_initial_pages_and_state_not_restored_THEN_retained_instances_are_not_same() {
         var ctx = HostComponentContext().resumed()
         val oldPages by ctx.childPages(initialPages = Pages(items = listOf(1), selectedIndex = 0), persistent = true)
-        val oldInstance = oldPages.requireInstance(0).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val oldInstance = oldPages.requireInstance(0).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         val newPages by ctx.childPages(
@@ -111,7 +111,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
             ),
             childFactory = ::Component,
         )
-        val newInstance = newPages.requireInstance(0).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val newInstance = newPages.requireInstance(0).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         assertNotSame(newInstance, oldInstance)
     }

@@ -1,44 +1,15 @@
 package com.arkivanov.decompose
 
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigationevent.NavigationEventDispatcher
 import androidx.navigationevent.NavigationEventDispatcherOwner
-import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryOwner
+import com.arkivanov.decompose.instancekeeper.child
 import com.arkivanov.decompose.navigationevent.child
-import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import com.arkivanov.essenty.instancekeeper.instanceKeeper
-import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.stateKeeper
 import kotlinx.serialization.builtins.serializer
-
-/**
- * Creates a [DefaultComponentContext] from the provided AndroidX dependencies.
- *
- * @param lifecycle a [Lifecycle] of the component context.
- * @param savedStateRegistry an optional [SavedStateRegistry] for state preservation,
- * or `null` if state preservation is not required. Default value is `null`.
- * @param viewModelStore an optional [ViewModelStore] for instance retaining,
- * or `null` if instance retaining is not required. Default value is `null`.
- * @param navigationEventDispatcher an optional [NavigationEventDispatcher] for navigation event handling,
- * or `null` if back handling is not required. Default value is `null`.
- */
-fun DefaultComponentContext(
-    lifecycle: Lifecycle,
-    savedStateRegistry: SavedStateRegistry? = null,
-    viewModelStore: ViewModelStore? = null,
-    navigationEventDispatcher: NavigationEventDispatcher? = null
-): DefaultComponentContext =
-    DefaultComponentContext(
-        lifecycle = lifecycle,
-        stateKeeper = savedStateRegistry?.let(::StateKeeper),
-        instanceKeeper = viewModelStore?.let(::InstanceKeeper),
-        navigationEventDispatcher = navigationEventDispatcher,
-    )
 
 /**
  * Creates a [DefaultComponentContext] and attaches it to the receiver [T] (e.g., an [Activity][android.app.Activity]).
@@ -116,7 +87,7 @@ private fun <T> T.defaultComponentContextInternal(
     return DefaultComponentContext(
         lifecycle = lifecycle,
         stateKeeper = stateKeeper,
-        instanceKeeper = instanceKeeper(discardRetainedInstances = marker == null),
+        viewModelStore = viewModelStore.child(key = "decompose.DefaultComponentContextViewModelStore", recreate = marker == null),
         navigationEventDispatcher = navigationEventDispatcher,
     )
 }
