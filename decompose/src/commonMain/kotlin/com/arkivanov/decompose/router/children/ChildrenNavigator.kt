@@ -1,5 +1,7 @@
 package com.arkivanov.decompose.router.children
 
+import androidx.savedstate.SavedState
+import androidx.savedstate.serialization.serializers.SavedStateSerializer
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.ItemKey
@@ -11,7 +13,7 @@ import com.arkivanov.decompose.lifecycle.moveToStarted
 import com.arkivanov.decompose.router.children.ChildItem.Created
 import com.arkivanov.decompose.router.children.ChildItem.Destroyed
 import com.arkivanov.decompose.router.children.ChildNavState.Status
-import com.arkivanov.essenty.statekeeper.SerializableContainer
+import com.arkivanov.decompose.savedstate.save
 import kotlinx.serialization.Serializable
 
 internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
@@ -111,9 +113,9 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
             )
         }
 
-    private fun ChildItem<C, T>.saveState(): SerializableContainer? =
+    private fun ChildItem<C, T>.saveState(): SavedState? =
         when (this) {
-            is Created -> stateKeeperDispatcher.save()
+            is Created -> savedStateRegistryController.save()
             is Destroyed -> savedState
         }
 
@@ -212,7 +214,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     private fun processNewItem(item: Created<C, T>, status: Status): ChildItem<C, T> =
         when (status) {
             Status.DESTROYED -> {
-                val savedState = item.stateKeeperDispatcher.save()
+                val savedState = item.savedStateRegistryController.save()
                 item.destroy()
                 Destroyed(configuration = item.configuration, key = item.key, savedState = savedState)
             }
@@ -245,7 +247,7 @@ internal class ChildrenNavigator<out C : Any, out T : Any, N : NavState<C>>(
     @Serializable
     data class SavedChildState(
         val key: String,
-        val savedState: SerializableContainer?,
+        val savedState: @Serializable(SavedStateSerializer::class) SavedState?,
     )
 
     private class RetainedInstance<C : Any, T : Any> : AutoCloseable {

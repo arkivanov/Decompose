@@ -1,7 +1,8 @@
 package com.arkivanov.decompose.router.children
 
+import androidx.savedstate.serialization.decodeFromSavedState
+import androidx.savedstate.serialization.encodeToSavedState
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
@@ -16,10 +17,10 @@ import kotlinx.serialization.Transient
 @ExperimentalDecomposeApi
 fun <T : Any> transientNavStateSaver(): NavStateSaver<T> =
     NavStateSaver(
-        save = { SerializableContainer(value = TransientSavedState(it), strategy = TransientSavedState.serializer()) },
+        save = { encodeToSavedState(serializer = TransientSavedState.serializer(), value = TransientSavedState(it)) },
         restore = {
             @Suppress("UNCHECKED_CAST")
-            it.consume(TransientSavedState.serializer())?.value as T?
+            decodeFromSavedState(deserializer = TransientSavedState.serializer(), savedState = it).value as T
         },
     )
 

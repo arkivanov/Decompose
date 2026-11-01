@@ -1,0 +1,35 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    xmlns:dist="http://schemas.android.com/apk/distribution"
+4    featureSplit="feature2Impl"
+5    package="com.arkivanov.sample.app"
+6    android:versionCode="1"
+7    android:versionName="1.0" >
+8
+9    <uses-sdk
+10        android:minSdkVersion="21"
+11        android:targetSdkVersion="35" />
+12
+13    <dist:module
+13-->/Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:4:5-11:19
+14        dist:instant="false"
+14-->/Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:5:9-29
+15        dist:title="@string/title_feature2" >
+15-->/Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:6:9-44
+16        <dist:delivery>
+16-->/Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:7:9-9:25
+17            <dist:install-time />
+17-->/Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:8:13-34
+18        </dist:delivery>
+19
+20        <dist:fusing dist:include="true" />
+20-->/Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:10:9-44
+20-->/Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:10:22-41
+21    </dist:module>
+22
+23    <application
+24        android:debuggable="true"
+25        android:extractNativeLibs="true"
+26        android:testOnly="true" />
+27
+28</manifest>

@@ -5,12 +5,14 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
+import androidx.savedstate.SavedState
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
 import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.LifecycleRegistryOwner
 import com.arkivanov.decompose.lifecycle.moveToDestroyed
 import com.arkivanov.decompose.navigationevent.addDirectInput
-import com.arkivanov.decompose.statekeeper.StateKeeperDispatcherOwner
-import com.arkivanov.essenty.statekeeper.SerializableContainer
+import com.arkivanov.decompose.statekeeper.SavedStateRegistryControllerOwner
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
 /**
@@ -35,10 +37,10 @@ import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 @ExperimentalDecomposeApi
 class HostComponentContext(
     lifecycleState: Lifecycle.State = Lifecycle.State.INITIALIZED,
-    savedState: SerializableContainer? = null,
+    savedState: SavedState? = null,
     override val viewModelStore: ViewModelStore = ViewModelStore(),
     override val navigationEventDispatcher: NavigationEventDispatcher = NavigationEventDispatcher()
-) : ComponentContext, LifecycleRegistryOwner, StateKeeperDispatcherOwner {
+) : ComponentContext, LifecycleRegistryOwner, SavedStateRegistryControllerOwner {
 
     /**
      * Convenience constructor for calling from Swift.
@@ -52,18 +54,26 @@ class HostComponentContext(
     /**
      * Convenience constructor for calling from Swift.
      */
-    constructor(savedState: SerializableContainer?) : this(
+    constructor(savedState: SavedState?) : this(
         lifecycleState = Lifecycle.State.INITIALIZED,
         savedState = savedState,
         viewModelStore = ViewModelStore(),
     )
 
     override val lifecycle: LifecycleRegistry = LifecycleRegistry(lifecycleState)
-    override val stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(savedState)
+
+    override val savedStateRegistryController: SavedStateRegistryController = SavedStateRegistryController.create(this)
+    override val savedStateRegistry: SavedStateRegistry by savedStateRegistryController::savedStateRegistry
+
     override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::ComponentContext)
 
     val navigationEventInput: DirectNavigationEventInput = navigationEventDispatcher.addDirectInput()
     private var isDestroyed = false
+
+    init {
+        savedStateRegistryController.performAttach()
+        savedStateRegistryController.performRestore(savedState)
+    }
 
     /**
      * Destroys this [HostComponentContext] including its [lifecycle], [viewModelStore] and [navigationEventDispatcher].

@@ -21,6 +21,7 @@ androidxAppcompat = "1.8.0"
 androidxActivity = "1.13.0"
 androidxFragment = "1.9.1"
 androidxLifecycle = "2.11.0"
+androidxSavedState = "1.5.0"
 androidxNavigationEvent = "1.2.0-alpha04"
 dependencyGuard = "0.5.0"
 androidBcvBridge = "0.2.0"
@@ -67,9 +68,10 @@ androidx-activity-activityKtx = { group = "androidx.activity", name = "activity-
 androidx-activity-activityCompose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-fragment-fragmentKtx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidxFragment" }
 androidx-navigationEvent-navigationEvent = { group = "androidx.navigationevent", name = "navigationevent", version.ref = "androidxNavigationEvent" }
-androidx-lifecycle-lifecycleCommon = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-common", version.ref = "androidxLifecycle" }
-androidx-lifecycle-lifecycleRuntime = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime", version.ref = "androidxLifecycle" }
-androidx-lifecycle-lifecycleViewModel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidxLifecycle" }
+androidx-lifecycle-lifecycleCommon = { group = "androidx.lifecycle", name = "lifecycle-common", version.ref = "androidxLifecycle" }
+androidx-lifecycle-lifecycleRuntime = { group = "androidx.lifecycle", name = "lifecycle-runtime", version.ref = "androidxLifecycle" }
+androidx-lifecycle-lifecycleViewModel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidxLifecycle" }
+androidx-savedState-savedState = { group = "androidx.savedstate", name = "savedstate", version.ref = "androidxSavedState" }
 
 dropbox-dependencyGuard = { group = "com.dropbox.dependency-guard", name = "dependency-guard", version.ref = "dependencyGuard" }
 tjokinen-androidBcvBridge = { group = "io.github.tjokinen", name = "android-bcv-bridge", version.ref = "androidBcvBridge" }

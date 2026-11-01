@@ -87,7 +87,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childItems(
             source = source,
             initialState = initialItems,
             key = key,
-            stateKeeper = stateKeeper,
+            savedStateRegistry = savedStateRegistry,
             stateSaver = stateSaver,
         )
 

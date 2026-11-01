@@ -1,0 +1,8 @@
+{
+  "buildPath": ":",
+  "projectPath": ":sample:shared:dynamic-features:feature2Impl",
+  "moduleId": {
+    "groupId": "Decompose.sample.shared.dynamic-features",
+    "moduleId": "feature2Impl"
+  }
+}

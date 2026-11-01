@@ -1,0 +1,7 @@
+#Sun Nov 08 23:54:01 GMT 2026
+base.0=/Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature1Impl/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
+base.1=/Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature1Impl/build/intermediates/dex/debug/mergeProjectDexDebug/5/classes.dex
+path.0=0/classes.dex
+path.1=5/classes.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex

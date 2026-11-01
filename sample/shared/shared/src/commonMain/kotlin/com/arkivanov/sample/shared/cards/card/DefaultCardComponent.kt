@@ -3,11 +3,10 @@ package com.arkivanov.sample.shared.cards.card
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.instancekeeper.retainedCloseable
 import com.arkivanov.decompose.lifecycle.addObserver
+import com.arkivanov.decompose.savedstate.saveable
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.arkivanov.essenty.statekeeper.ExperimentalStateKeeperApi
-import com.arkivanov.essenty.statekeeper.saveable
 import com.arkivanov.sample.shared.cards.card.CardComponent.Model
 import com.arkivanov.sample.shared.disposableScope
 import com.badoo.reaktive.disposable.Disposable
@@ -28,7 +27,6 @@ class DefaultCardComponent(
     tickScheduler: Scheduler = mainScheduler,
 ) : CardComponent, ComponentContext by componentContext, DisposableScope by componentContext.disposableScope() {
 
-    @OptIn(ExperimentalStateKeeperApi::class)
     private val handler: Handler by saveable(serializer = Int.serializer(), state = { it.count.value }) { savedState ->
         retainedCloseable(key = "handler") {
             Handler(savedState = savedState, tickScheduler = tickScheduler)

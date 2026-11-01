@@ -3,7 +3,7 @@ package com.arkivanov.decompose
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelStore
 import androidx.navigationevent.NavigationEventDispatcher
-import com.arkivanov.essenty.statekeeper.StateKeeper
+import androidx.savedstate.SavedStateRegistry
 
 /**
  * A default component context interface provided by Decompose.
@@ -23,20 +23,20 @@ interface ComponentContext : GenericComponentContext<ComponentContext>
  */
 fun ComponentContext(
     lifecycle: Lifecycle,
-    stateKeeper: StateKeeper,
+    savedStateRegistry: SavedStateRegistry,
     viewModelStore: ViewModelStore,
     navigationEventDispatcher: NavigationEventDispatcher,
 ): ComponentContext =
     DefaultComponentContext(
         lifecycle = lifecycle,
-        stateKeeper = stateKeeper,
+        savedStateRegistry = savedStateRegistry,
         viewModelStore = viewModelStore,
         navigationEventDispatcher = navigationEventDispatcher,
     )
 
 private class DefaultComponentContext(
     override val lifecycle: Lifecycle,
-    override val stateKeeper: StateKeeper,
+    override val savedStateRegistry: SavedStateRegistry,
     override val viewModelStore: ViewModelStore,
     override val navigationEventDispatcher: NavigationEventDispatcher,
 ) : ComponentContext {

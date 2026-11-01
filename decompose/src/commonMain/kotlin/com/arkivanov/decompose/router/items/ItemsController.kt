@@ -1,5 +1,8 @@
 package com.arkivanov.decompose.router.items
 
+import androidx.savedstate.SavedState
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.serialization.serializers.SavedStateSerializer
 import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.Relay
 import com.arkivanov.decompose.findFirstDuplicate
@@ -8,10 +11,10 @@ import com.arkivanov.decompose.router.children.NavStateSaver
 import com.arkivanov.decompose.router.children.NavigationSource
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
 import com.arkivanov.decompose.router.items.ItemsNavigation.Event
+import com.arkivanov.decompose.savedstate.consume
+import com.arkivanov.decompose.savedstate.register
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.statekeeper.SerializableContainer
-import com.arkivanov.essenty.statekeeper.StateKeeper
 import kotlinx.serialization.Serializable
 
 internal class ItemsController<C : Any, out T : Any>(
@@ -28,16 +31,16 @@ internal class ItemsController<C : Any, out T : Any>(
         source: NavigationSource<Event<C>>,
         initialState: () -> Items<C>,
         key: String,
-        stateKeeper: StateKeeper,
+        savedStateRegistry: SavedStateRegistry,
         stateSaver: NavStateSaver<Items<C>>?,
     ): Cancellation {
-        val restoredState = stateKeeper.consume(key = key, strategy = SavedState.serializer())
+        val restoredState = savedStateRegistry.consume(key = key, strategy = NavSavedState.serializer())
         val restoredNavState = restoredState?.let { stateSaver?.restoreState(it.navState) }
 
         if (stateSaver != null) {
-            stateKeeper.register(key = key, SavedState.serializer()) {
+            savedStateRegistry.register(key = key, NavSavedState.serializer()) {
                 stateSaver.saveState(navState.value)?.let { navState ->
-                    SavedState(navState = navState, childState = saveChildState())
+                    NavSavedState(navState = navState, childState = saveChildState())
                 }
             }
         }
@@ -59,8 +62,8 @@ internal class ItemsController<C : Any, out T : Any>(
         nav.accept(NavEvent.Event(Event(transformer, onComplete)))
     }
 
-    private fun saveChildState(): Map<Int, SerializableContainer> {
-        val childState = HashMap<Int, SerializableContainer>()
+    private fun saveChildState(): Map<Int, SavedState> {
+        val childState = HashMap<Int, SavedState>()
 
         navState.value.items.forEachIndexed { index, cfg ->
             controller.saveState(cfg)?.also {
@@ -144,7 +147,7 @@ internal class ItemsController<C : Any, out T : Any>(
         event.onComplete(newNavState, oldNavState)
     }
 
-    private fun activateChild(configuration: C, lifecycleState: ActiveLifecycleState, savedState: SerializableContainer? = null): T =
+    private fun activateChild(configuration: C, lifecycleState: ActiveLifecycleState, savedState: SavedState? = null): T =
         when (lifecycleState) {
             ActiveLifecycleState.CREATED -> controller.create(configuration = configuration, savedState = savedState)
             ActiveLifecycleState.STARTED -> controller.start(configuration = configuration, savedState = savedState)
@@ -152,15 +155,15 @@ internal class ItemsController<C : Any, out T : Any>(
         }
 
     @Serializable
-    private class SavedState(
-        val navState: SerializableContainer,
-        val childState: Map<Int, SerializableContainer>,
+    private class NavSavedState(
+        val navState: @Serializable(SavedStateSerializer::class) SavedState,
+        val childState: Map<Int, @Serializable(SavedStateSerializer::class) SavedState>,
     )
 
     private sealed interface NavEvent<C : Any> {
         class Init<C : Any>(
             val initialState: Items<C>,
-            val savedChildState: Map<Int, SerializableContainer>?,
+            val savedChildState: Map<Int, SavedState>?,
         ) : NavEvent<C>
 
         class Event<C : Any>(val event: ItemsNavigation.Event<C>) : NavEvent<C>

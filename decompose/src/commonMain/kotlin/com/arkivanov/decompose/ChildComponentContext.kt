@@ -9,7 +9,7 @@ import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.lifecycle.moveToStarted
 import com.arkivanov.decompose.navigationevent.NavigationEventPriority
 import com.arkivanov.decompose.navigationevent.child
-import com.arkivanov.decompose.statekeeper.child
+import com.arkivanov.decompose.savedstate.child
 
 /**
  * Creates a new instance of child [ComponentContext] of type [Ctx] and attaches it to the parent (`this`) component context.
@@ -32,7 +32,7 @@ fun <Ctx : GenericComponentContext<Ctx>> Ctx.childContext(
 ): Ctx =
     componentContextFactory(
         lifecycle = if (maxLifecycle == null) this.lifecycle else mergedLifecycle(this.lifecycle, maxLifecycle.lifecycle),
-        stateKeeper = stateKeeper.child(key),
+        savedStateRegistry = savedStateRegistry.child(key = key, lifecycle = lifecycle),
         viewModelStore = viewModelStore.child(key),
         navigationEventDispatcher = navigationEventDispatcher.child(
             lifecycle = maxLifecycle?.lifecycle,

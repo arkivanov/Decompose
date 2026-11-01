@@ -8,7 +8,9 @@ import androidx.navigationevent.NavigationEventDispatcherOwner
 import androidx.savedstate.SavedStateRegistryOwner
 import com.arkivanov.decompose.instancekeeper.child
 import com.arkivanov.decompose.navigationevent.child
-import com.arkivanov.essenty.statekeeper.stateKeeper
+import com.arkivanov.decompose.savedstate.child
+import com.arkivanov.decompose.savedstate.consume
+import com.arkivanov.decompose.savedstate.register
 import kotlinx.serialization.builtins.serializer
 
 /**
@@ -87,13 +89,20 @@ private fun <T> T.componentContextInternal(
     discardSavedState: Boolean,
     isStateSavingAllowed: () -> Boolean,
 ): ComponentContext where T : SavedStateRegistryOwner, T : ViewModelStoreOwner, T : LifecycleOwner {
-    val stateKeeper = stateKeeper(discardSavedState = discardSavedState, isSavingAllowed = isStateSavingAllowed)
-    val marker = stateKeeper.consume(key = KEY_STATE_MARKER, strategy = String.serializer())
-    stateKeeper.register(key = KEY_STATE_MARKER, strategy = String.serializer()) { "marker" }
+    val childSavedStateRegistry =
+        savedStateRegistry.child(
+            key = "decompose.DefaultComponentContextSavedStateRegistry",
+            lifecycle = lifecycle,
+            recreate = discardSavedState,
+            isSavingAllowed = isStateSavingAllowed,
+        )
+
+    val marker = childSavedStateRegistry.consume(key = KEY_STATE_MARKER, strategy = String.serializer())
+    childSavedStateRegistry.register(key = KEY_STATE_MARKER, strategy = String.serializer()) { "marker" }
 
     return ComponentContext(
         lifecycle = lifecycle,
-        stateKeeper = stateKeeper,
+        savedStateRegistry = childSavedStateRegistry,
         viewModelStore = viewModelStore.child(key = "decompose.DefaultComponentContextViewModelStore", recreate = marker == null),
         navigationEventDispatcher = navigationEventDispatcher ?: NavigationEventDispatcher(),
     )

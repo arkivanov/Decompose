@@ -1,0 +1,26 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.arkivanov.sample.shared.dynamicfeatures.feature2impl.feature2Impl-mergeDebugResources-2:/values/values.xml",
+            "map": [
+                {
+                    "source": "/Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/res/values/strings.xml",
+                    "from": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "56",
+                        "endColumns": "52",
+                        "endOffsets": "104"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "52",
+                        "endOffsets": "103"
+                    }
+                }
+            ]
+        }
+    ]
+}
