@@ -4,14 +4,14 @@ import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.instancekeeper.getOrCreate
 import com.arkivanov.decompose.lifecycle.resumed
-import com.arkivanov.decompose.router.TestInstance
+import com.arkivanov.decompose.router.TestViewModel
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.register
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.instancekeeper.getOrCreate
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -194,11 +194,11 @@ class ChildSlotIntegrationTest {
     fun GIVEN_persistent_WHEN_recreated_with_configuration_change_THEN_slot_instance_retained() {
         val oldContext = HostComponentContext().resumed()
         val oldSlot by oldContext.childSlot(initialConfiguration = 1, persistent = true)
-        val oldInstance = oldSlot.requireChild().instance.instanceKeeper.getOrCreate("key", ::TestInstance)
+        val oldInstance = oldSlot.requireChild().instance.viewModelStore.getOrCreate("key", ::TestViewModel)
 
         val newContext = oldContext.recreate(isConfigurationChange = true)
         val newSlot by newContext.childSlot(initialConfiguration = null, persistent = true)
-        val retainedInstance = newSlot.requireChild().instance.instanceKeeper.getOrCreate("key", ::TestInstance)
+        val retainedInstance = newSlot.requireChild().instance.viewModelStore.getOrCreate("key", ::TestViewModel)
 
         assertSame(oldInstance, retainedInstance)
     }
@@ -207,7 +207,7 @@ class ChildSlotIntegrationTest {
     fun GIVEN_persistent_WHEN_recreated_with_configuration_change_THEN_slot_instance_not_destroyed() {
         val oldContext = HostComponentContext().resumed()
         val oldSlot by oldContext.childSlot(initialConfiguration = 1, persistent = true)
-        val instance = oldSlot.requireChild().instance.instanceKeeper.getOrCreate("key", ::TestInstance)
+        val instance = oldSlot.requireChild().instance.viewModelStore.getOrCreate("key", ::TestViewModel)
 
         val newContext = oldContext.recreate(isConfigurationChange = true)
         newContext.childSlot(initialConfiguration = null, persistent = true)
@@ -219,18 +219,18 @@ class ChildSlotIntegrationTest {
     fun WHEN_created_persistent_THEN_registered_in_parent_InstanceKeeper() {
         context.childSlot(initialConfiguration = 1, persistent = true)
 
-        assertNotNull(context.instanceKeeper.get(key = "key"))
+        assertNotNull(context.viewModelStore.get(key = "key"))
     }
 
     @Test
     fun GIVEN_not_persistent_WHEN_recreated_with_configuration_change_THEN_slot_instance_not_retained() {
         val oldContext = HostComponentContext().resumed()
         val oldSlot by oldContext.childSlot(initialConfiguration = 1, persistent = false)
-        val oldInstance = oldSlot.requireChild().instance.instanceKeeper.getOrCreate("key", ::TestInstance)
+        val oldInstance = oldSlot.requireChild().instance.viewModelStore.getOrCreate("key", ::TestViewModel)
 
         val newContext = oldContext.recreate(isConfigurationChange = true)
         val newSlot by newContext.childSlot(initialConfiguration = 1, persistent = false)
-        val newInstance = newSlot.requireChild().instance.instanceKeeper.getOrCreate("key", ::TestInstance)
+        val newInstance = newSlot.requireChild().instance.viewModelStore.getOrCreate("key", ::TestViewModel)
 
         assertNotSame(oldInstance, newInstance)
     }
@@ -239,7 +239,7 @@ class ChildSlotIntegrationTest {
     fun GIVEN_not_persistent_WHEN_recreated_with_configuration_change_THEN_slot_instance_destroyed() {
         val oldContext = HostComponentContext().resumed()
         val oldSlot by oldContext.childSlot(initialConfiguration = 1, persistent = false)
-        val instance = oldSlot.requireChild().instance.instanceKeeper.getOrCreate("key", ::TestInstance)
+        val instance = oldSlot.requireChild().instance.viewModelStore.getOrCreate("key", ::TestViewModel)
 
         val newContext = oldContext.recreate(isConfigurationChange = true)
         newContext.childSlot(initialConfiguration = null, persistent = false)

@@ -1,11 +1,11 @@
 package com.arkivanov.decompose
 
+import com.arkivanov.decompose.instancekeeper.getOrCreate
 import com.arkivanov.decompose.navigationevent.addDirectInput
 import com.arkivanov.decompose.navigationevent.addHandler
-import com.arkivanov.decompose.router.TestInstance
+import com.arkivanov.decompose.router.TestViewModel
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.register
-import com.arkivanov.essenty.instancekeeper.getOrCreate
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import kotlin.test.Test
@@ -146,14 +146,14 @@ class RetainedComponentMultipleTest {
         var owner = TestOwner()
         var ctx1 = owner.retainedComponent(key = "key1", isStateSavingAllowed = { false })
         var ctx2 = owner.retainedComponent(key = "key2", isStateSavingAllowed = { false })
-        val instance11 = ctx1.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
-        val instance12 = ctx2.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance11 = ctx1.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
+        val instance12 = ctx2.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         owner = owner.recreate(isChangingConfigurations = true)
         ctx1 = owner.retainedComponent(key = "key1")
         ctx2 = owner.retainedComponent(key = "key2")
-        val instance21 = ctx1.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
-        val instance22 = ctx2.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance21 = ctx1.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
+        val instance22 = ctx2.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         assertNotSame(instance11, instance21)
         assertNotSame(instance12, instance22)
@@ -164,8 +164,8 @@ class RetainedComponentMultipleTest {
         var owner = TestOwner()
         val ctx1 = owner.retainedComponent(key = "key1", isStateSavingAllowed = { false })
         val ctx2 = owner.retainedComponent(key = "key2", isStateSavingAllowed = { false })
-        val instance1 = ctx1.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
-        val instance2 = ctx2.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance1 = ctx1.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
+        val instance2 = ctx2.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         owner = owner.recreate(isChangingConfigurations = true)
         owner.retainedComponent(key = "key1")
@@ -198,14 +198,14 @@ class RetainedComponentMultipleTest {
         var owner = TestOwner()
         var ctx1 = owner.retainedComponent(key = "key1")
         var ctx2 = owner.retainedComponent(key = "key2")
-        val instance11 = ctx1.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
-        val instance12 = ctx2.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance11 = ctx1.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
+        val instance12 = ctx2.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         owner = owner.recreate(isChangingConfigurations = true)
         ctx1 = owner.retainedComponent(key = "key1", discardSavedState = true)
         ctx2 = owner.retainedComponent(key = "key2", discardSavedState = true)
-        val instance21 = ctx1.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
-        val instance22 = ctx2.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance21 = ctx1.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
+        val instance22 = ctx2.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         assertNotSame(instance11, instance21)
         assertNotSame(instance12, instance22)
@@ -216,8 +216,8 @@ class RetainedComponentMultipleTest {
         var owner = TestOwner()
         val ctx1 = owner.retainedComponent(key = "key1")
         val ctx2 = owner.retainedComponent(key = "key2")
-        val instance1 = ctx1.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
-        val instance2 = ctx2.instanceKeeper.getOrCreate(key = "key", factory = ::TestInstance)
+        val instance1 = ctx1.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
+        val instance2 = ctx2.viewModelStore.getOrCreate(key = "key", factory = ::TestViewModel)
 
         owner = owner.recreate(isChangingConfigurations = true)
         owner.retainedComponent(key = "key1", discardSavedState = true)
@@ -327,6 +327,7 @@ class RetainedComponentMultipleTest {
         isStateSavingAllowed: () -> Boolean = { true },
     ): ComponentContext =
         retainedComponent(
+            cast = { it as ComponentContext },
             key = key,
             navigationEventDispatcher = navigationEventDispatcher,
             discardSavedState = discardSavedState,

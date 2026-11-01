@@ -1,14 +1,14 @@
 package com.arkivanov.decompose.router
 
-import com.arkivanov.essenty.instancekeeper.InstanceKeeper
+import androidx.lifecycle.ViewModel
 
-class TestInstance(
+class TestViewModel(
     var onDestroyed: () -> Unit = {},
-) : InstanceKeeper.Instance {
+) : ViewModel() {
 
     var isDestroyed: Boolean = false
 
-    override fun onDestroy() {
+    override fun onCleared() {
         isDestroyed = true
         onDestroyed()
     }

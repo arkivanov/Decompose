@@ -5,20 +5,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
 import androidx.savedstate.SavedStateRegistryOwner
+import com.arkivanov.decompose.instancekeeper.viewModel
 import com.arkivanov.decompose.lifecycle.addObserver
 import com.arkivanov.decompose.lifecycle.moveToCreated
 import com.arkivanov.decompose.lifecycle.moveToDestroyed
 import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.lifecycle.moveToStarted
 import com.arkivanov.decompose.navigationevent.ForwardingNavigationEventInput
-import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.essenty.instancekeeper.getOrCreate
-import com.arkivanov.essenty.instancekeeper.instanceKeeper
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import com.arkivanov.essenty.statekeeper.stateKeeper
@@ -40,14 +39,33 @@ import kotlinx.serialization.builtins.serializer
  * otherwise it won't. Default value is `true`.
  * @param factory a function that returns a new instance of the component.
  */
-fun <T> ComponentActivity.retainedComponent(
+inline fun <reified T : Any> ComponentActivity.retainedComponent(
     key: String = "RootRetainedComponent",
     handleNavigationEvents: Boolean = true,
     discardSavedState: Boolean = false,
-    isStateSavingAllowed: () -> Boolean = { true },
+    noinline isStateSavingAllowed: () -> Boolean = { true },
+    noinline factory: (ComponentContext) -> T,
+): T =
+    retainedComponent(
+        cast = { it as T },
+        key = key,
+        handleNavigationEvents = handleNavigationEvents,
+        discardSavedState = discardSavedState,
+        isStateSavingAllowed = isStateSavingAllowed,
+        factory = factory,
+    )
+
+@PublishedApi
+internal fun <T : Any> ComponentActivity.retainedComponent(
+    cast: (Any) -> T,
+    key: String,
+    handleNavigationEvents: Boolean,
+    discardSavedState: Boolean,
+    isStateSavingAllowed: () -> Boolean,
     factory: (ComponentContext) -> T,
 ): T =
     retainedComponent(
+        cast = cast,
         key = key,
         navigationEventDispatcher = if (handleNavigationEvents) navigationEventDispatcher else null,
         discardSavedState = discardSavedState,
@@ -72,14 +90,33 @@ fun <T> ComponentActivity.retainedComponent(
  * otherwise it won't. Default value is `true`.
  * @param factory a function that returns a new instance of the component.
  */
-fun <T> Fragment.retainedComponent(
+inline fun <reified T : Any> Fragment.retainedComponent(
     key: String = "RootRetainedComponent",
     handleNavigationEvents: Boolean = true,
     discardSavedState: Boolean = false,
-    isStateSavingAllowed: () -> Boolean = { true },
+    noinline isStateSavingAllowed: () -> Boolean = { true },
+    noinline factory: (ComponentContext) -> T,
+): T =
+    retainedComponent(
+        cast = { it as T },
+        key = key,
+        handleNavigationEvents = handleNavigationEvents,
+        discardSavedState = discardSavedState,
+        isStateSavingAllowed = isStateSavingAllowed,
+        factory = factory,
+    )
+
+@PublishedApi
+internal fun <T : Any> Fragment.retainedComponent(
+    cast: (Any) -> T,
+    key: String,
+    handleNavigationEvents: Boolean,
+    discardSavedState: Boolean,
+    isStateSavingAllowed: () -> Boolean,
     factory: (ComponentContext) -> T,
 ): T =
     retainedComponent(
+        cast = cast,
         key = key,
         navigationEventDispatcher = if (handleNavigationEvents) requireActivity().navigationEventDispatcher else null,
         discardSavedState = discardSavedState,
@@ -88,7 +125,8 @@ fun <T> Fragment.retainedComponent(
         factory = factory,
     )
 
-internal fun <T, O> O.retainedComponent(
+internal fun <T : Any, O> O.retainedComponent(
+    cast: (Any) -> T,
     key: String,
     navigationEventDispatcher: NavigationEventDispatcher?,
     discardSavedState: Boolean,
@@ -101,20 +139,21 @@ internal fun <T, O> O.retainedComponent(
     }
 
     val stateKeeper = stateKeeper(key = key, discardSavedState = discardSavedState, isSavingAllowed = isStateSavingAllowed)
-    val instanceKeeper = instanceKeeper()
 
     val discardRetainedInstance = stateKeeper.consume(key = KEY_STATE_MARKER, strategy = Boolean.serializer()) == null
     stateKeeper.register(key = KEY_STATE_MARKER, strategy = Boolean.serializer()) { true }
 
+    val retainedComponentHolders = viewModel(key = "decompose.RetainedComponentHolders", factory = ::RetainedComponentHolders)
+
     if (discardRetainedInstance) {
-        (instanceKeeper.remove(key = key) as RetainedComponentHolder<*>?)?.also { holder ->
+        retainedComponentHolders.map.remove(key = key)?.also { holder ->
             holder.lifecycle.moveToDestroyed()
             holder.onDestroy()
         }
     }
 
     val holder =
-        instanceKeeper.getOrCreate(key = key) {
+        retainedComponentHolders.map.getOrPut(key = key) {
             RetainedComponentHolder(
                 savedState = stateKeeper.consume(key = key, strategy = SerializableContainer.serializer()),
                 factory = factory,
@@ -170,19 +209,27 @@ internal fun <T, O> O.retainedComponent(
         )
     }
 
-    return holder.component
+    return cast(holder.component)
 }
 
 private const val KEY_STATE_MARKER = "RetainedComponent_state_marker"
 
-private class RetainedComponentHolder<out T>(
+private class RetainedComponentHolders : ViewModel() {
+    val map: MutableMap<Any, RetainedComponentHolder<*>> = HashMap()
+
+    override fun onCleared() {
+        map.values.forEach { it.onDestroy() }
+    }
+}
+
+private class RetainedComponentHolder<out T : Any>(
     savedState: SerializableContainer?,
     factory: (ComponentContext) -> T,
-) : InstanceKeeper.Instance, LifecycleOwner {
+) : LifecycleOwner {
     override val lifecycle: LifecycleRegistry = LifecycleRegistry(this)
 
     val stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(savedState = savedState)
-    private val instanceKeeper = InstanceKeeperDispatcher()
+    private val viewModelStore = ViewModelStore()
 
     val fallbackNavigationEventInput: DirectNavigationEventInput = DirectNavigationEventInput()
     val navigationEventInput: ForwardingNavigationEventInput = ForwardingNavigationEventInput(isEnabled = false)
@@ -203,7 +250,7 @@ private class RetainedComponentHolder<out T>(
             DefaultComponentContext(
                 lifecycle = lifecycle,
                 stateKeeper = stateKeeper,
-                instanceKeeper = instanceKeeper,
+                viewModelStore = viewModelStore,
                 navigationEventDispatcher = navigationEventDispatcher,
             )
         )
@@ -212,8 +259,8 @@ private class RetainedComponentHolder<out T>(
         navigationEventDispatcher.addInput(navigationEventInput)
     }
 
-    override fun onDestroy() {
-        instanceKeeper.destroy()
+    fun onDestroy() {
+        viewModelStore.clear()
         navigationEventDispatcher.dispose()
     }
 }

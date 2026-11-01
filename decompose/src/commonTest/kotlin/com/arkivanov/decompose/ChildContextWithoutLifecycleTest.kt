@@ -1,13 +1,13 @@
 package com.arkivanov.decompose
 
 import androidx.lifecycle.Lifecycle
+import com.arkivanov.decompose.instancekeeper.getOrCreate
 import com.arkivanov.decompose.lifecycle.moveToDestroyed
 import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addHandler
-import com.arkivanov.decompose.router.TestInstance
+import com.arkivanov.decompose.router.TestViewModel
 import com.arkivanov.decompose.testutils.recreate
-import com.arkivanov.essenty.instancekeeper.getOrCreate
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -67,12 +67,12 @@ class ChildContextWithoutLifecycleTest {
     fun WHEN_recreated_with_configuration_change_THEN_child_instance_retained() {
         val context = HostComponentContext()
         val childContext = context.childContext(key = "key")
-        val instance = childContext.instanceKeeper.getOrCreate(key = "child", factory = ::TestInstance)
+        val instance = childContext.viewModelStore.getOrCreate(key = "child", factory = ::TestViewModel)
         context.lifecycle.moveToResumed()
 
         val newContext = context.recreate(isConfigurationChange = true)
         val newChildContext = newContext.childContext(key = "key")
-        val newInstance = newChildContext.instanceKeeper.getOrCreate(key = "child", factory = ::TestInstance)
+        val newInstance = newChildContext.viewModelStore.getOrCreate(key = "child", factory = ::TestViewModel)
 
         assertSame(instance, newInstance)
     }
@@ -81,7 +81,7 @@ class ChildContextWithoutLifecycleTest {
     fun WHEN_destroyed_THEN_child_instance_not_destroyed() {
         val context = HostComponentContext()
         val childContext = context.childContext(key = "key")
-        val instance = childContext.instanceKeeper.getOrCreate(key = "child", factory = ::TestInstance)
+        val instance = childContext.viewModelStore.getOrCreate(key = "child", factory = ::TestViewModel)
         context.lifecycle.moveToResumed()
         context.lifecycle.moveToDestroyed()
 
@@ -92,9 +92,9 @@ class ChildContextWithoutLifecycleTest {
     fun WHEN_parent_InstanceKeeper_destroyed_THEN_child_instance_destroyed() {
         val context = HostComponentContext().resumed()
         val childContext = context.childContext(key = "key")
-        val instance = childContext.instanceKeeper.getOrCreate(key = "child", factory = ::TestInstance)
+        val instance = childContext.viewModelStore.getOrCreate(key = "child", factory = ::TestViewModel)
 
-        context.instanceKeeper.destroy()
+        context.viewModelStore.clear()
 
         assertTrue(instance.isDestroyed)
     }
@@ -105,7 +105,7 @@ class ChildContextWithoutLifecycleTest {
 
         context.childContext(key = "key")
 
-        assertNotNull(context.instanceKeeper.get(key = "key"))
+        assertNotNull(context.viewModelStore.get(key = "key"))
     }
 
     @Test

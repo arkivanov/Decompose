@@ -1,9 +1,9 @@
 package com.arkivanov.sample.shared.counters.counter
 
-import com.arkivanov.decompose.lifecycle.moveToResumed
+import androidx.lifecycle.ViewModelStore
 import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.router.slot.child
-import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import com.badoo.reaktive.test.scheduler.TestScheduler
 import kotlin.test.Test
@@ -67,11 +67,11 @@ class CounterComponentTest {
 
     @Test
     fun WHEN_recreated_and_instance_retained_THEN_text_not_changed() {
-        val instanceKeeper = InstanceKeeperDispatcher()
-        createComponent(instanceKeeper = instanceKeeper)
+        val viewModelStore = ViewModelStore()
+        createComponent(viewModelStore = viewModelStore)
         tick(n = 1)
 
-        createComponent(instanceKeeper = instanceKeeper)
+        createComponent(viewModelStore = viewModelStore)
 
         assertEquals("001", model.text)
     }
@@ -90,9 +90,9 @@ class CounterComponentTest {
 
     @Test
     fun GIVEN_InstanceKeeper_destroyed_WHEN_tick_THEN_text_not_changed() {
-        val instanceKeeper = InstanceKeeperDispatcher()
-        createComponent(instanceKeeper = instanceKeeper)
-        instanceKeeper.destroy()
+        val viewModelStore = ViewModelStore()
+        createComponent(viewModelStore = viewModelStore)
+        viewModelStore.clear()
 
         tick(n = 1)
 
@@ -146,13 +146,13 @@ class CounterComponentTest {
 
     private fun createComponent(
         stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(),
-        instanceKeeper: InstanceKeeperDispatcher = InstanceKeeperDispatcher(),
+        viewModelStore: ViewModelStore = ViewModelStore(),
         title: String = "",
         isBackEnabled: Boolean = false,
         onNext: () -> Unit = {},
         onPrev: () -> Unit = {},
     ) {
-        val ctx = HostComponentContext(stateKeeper = stateKeeper, instanceKeeper = instanceKeeper)
+        val ctx = HostComponentContext(stateKeeper = stateKeeper, viewModelStore = viewModelStore)
 
         component =
             DefaultCounterComponent(

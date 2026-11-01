@@ -43,8 +43,6 @@ androidx.tracing:tracing-android:2.0.0
 androidx.tracing:tracing:2.0.0
 androidx.versionedparcelable:versionedparcelable:1.1.1
 androidx.viewpager:viewpager:1.0.0
-com.arkivanov.essenty:instance-keeper-android:2.7.0-alpha01
-com.arkivanov.essenty:instance-keeper:2.7.0-alpha01
 com.arkivanov.essenty:state-keeper-android:2.7.0-alpha01
 com.arkivanov.essenty:state-keeper:2.7.0-alpha01
 com.arkivanov.essenty:utils-internal-android:2.7.0-alpha01
@@ -54,6 +52,8 @@ org.jetbrains.androidx.lifecycle:lifecycle-common-jvm:2.11.0
 org.jetbrains.androidx.lifecycle:lifecycle-common:2.11.0
 org.jetbrains.androidx.lifecycle:lifecycle-runtime-android:2.11.0
 org.jetbrains.androidx.lifecycle:lifecycle-runtime:2.11.0
+org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-android:2.11.0
+org.jetbrains.androidx.lifecycle:lifecycle-viewmodel:2.11.0
 org.jetbrains.kotlin:kotlin-stdlib:2.3.21
 org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0
 org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.9.0
