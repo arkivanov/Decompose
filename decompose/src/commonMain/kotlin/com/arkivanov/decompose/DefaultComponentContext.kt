@@ -3,6 +3,8 @@ package com.arkivanov.decompose
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelStore
 import androidx.navigationevent.NavigationEventDispatcher
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
 import com.arkivanov.decompose.instancekeeper.attachTo
 import com.arkivanov.decompose.lifecycle.DecomposeLifecycleRegistry
 import com.arkivanov.essenty.statekeeper.StateKeeper
@@ -24,20 +26,20 @@ import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
  */
 class DefaultComponentContext(
     lifecycle: Lifecycle? = null,
-    stateKeeper: StateKeeper? = null,
+    savedStateRegistry: SavedStateRegistry? = null,
     viewModelStore: ViewModelStore? = null,
     navigationEventDispatcher: NavigationEventDispatcher? = null,
 ) : ComponentContext {
 
-    override val lifecycle: Lifecycle = lifecycle ?: DecomposeLifecycleRegistry()
-    override val stateKeeper: StateKeeper = stateKeeper ?: StateKeeperDispatcher()
+    override val lifecycle: Lifecycle = lifecycle ?: DecomposeLifecycleRegistry(owner = this)
+    override val savedStateRegistry: SavedStateRegistry = savedStateRegistry ?: SavedStateRegistryController.create(this).savedStateRegistry
     override val viewModelStore: ViewModelStore = viewModelStore ?: ViewModelStore().attachTo(this.lifecycle)
     override val navigationEventDispatcher: NavigationEventDispatcher = navigationEventDispatcher ?: NavigationEventDispatcher()
     override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
 
     constructor(lifecycle: Lifecycle) : this(
         lifecycle = lifecycle,
-        stateKeeper = null,
+        savedStateRegistry = null,
         viewModelStore = null,
         navigationEventDispatcher = null,
     )

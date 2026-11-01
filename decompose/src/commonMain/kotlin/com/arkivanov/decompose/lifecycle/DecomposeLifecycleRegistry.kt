@@ -6,43 +6,49 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import kotlinx.coroutines.flow.StateFlow
 
+internal class DecomposeLifecycleRegistryOwner(
+    initialState: Lifecycle.State = Lifecycle.State.INITIALIZED,
+) : LifecycleOwner {
+    override val lifecycle: DecomposeLifecycleRegistry = DecomposeLifecycleRegistry(owner = this, initialState = initialState)
+}
+
 internal class DecomposeLifecycleRegistry(
+    owner: LifecycleOwner,
     initialState: State = State.INITIALIZED,
 ) : Lifecycle() {
-    private val owner =
-        object : LifecycleOwner {
-            @Suppress("VisibleForTests") // Decompose synchronizes access and has its own checks for main thread, don't want to throw
-            override val lifecycle: LifecycleRegistry = LifecycleRegistry.createUnsafe(this).moveTo(initialState)
-        }
+    @Suppress("VisibleForTests") // Decompose synchronizes access and has its own checks for main thread, don't want to throw
+    private val registry: LifecycleRegistry = LifecycleRegistry.createUnsafe(owner).moveTo(initialState)
 
-    override var currentState: State by owner.lifecycle::currentState
-    override val currentStateFlow: StateFlow<State> = owner.lifecycle.currentStateFlow
+    override var currentState: State by registry::currentState
+
+    // TODO: Just use LifecycleRegistry directly when https://issuetracker.google.com/issues/579057749 is fixed
+    override val currentStateFlow: StateFlow<State> = registry.currentStateFlow
 
     override fun addObserver(observer: LifecycleObserver) {
-        owner.lifecycle.addObserver(observer)
+        registry.addObserver(observer)
     }
 
     override fun removeObserver(observer: LifecycleObserver) {
-        owner.lifecycle.removeObserver(observer)
+        registry.removeObserver(observer)
     }
 
     fun moveTo(state: State) {
-        owner.lifecycle.moveTo(state)
+        registry.moveTo(state)
     }
 
     fun moveToCreated() {
-        owner.lifecycle.moveToCreated()
+        registry.moveToCreated()
     }
 
     fun moveToStarted() {
-        owner.lifecycle.moveToStarted()
+        registry.moveToStarted()
     }
 
     fun moveToResumed() {
-        owner.lifecycle.moveToResumed()
+        registry.moveToResumed()
     }
 
     fun moveToDestroyed() {
-        owner.lifecycle.moveToDestroyed()
+        registry.moveToDestroyed()
     }
 }

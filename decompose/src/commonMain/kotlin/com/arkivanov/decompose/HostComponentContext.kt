@@ -5,6 +5,9 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
+import androidx.savedstate.SavedState
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
 import com.arkivanov.decompose.lifecycle.LifecycleRegistryOwner
 import com.arkivanov.decompose.lifecycle.moveTo
 import com.arkivanov.decompose.navigationevent.addDirectInput
@@ -31,12 +34,21 @@ import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 @ExperimentalDecomposeApi
 class HostComponentContext(
     lifecycleState: Lifecycle.State = Lifecycle.State.INITIALIZED,
-    override val stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(),
+    savedState: SavedState? = null,
     override val viewModelStore: ViewModelStore = ViewModelStore(),
     override val navigationEventDispatcher: NavigationEventDispatcher = NavigationEventDispatcher(),
 ) : ComponentContext, LifecycleRegistryOwner {
     override val lifecycle: LifecycleRegistry = LifecycleRegistry.createUnsafe(this).moveTo(lifecycleState)
+
+    val savedStateRegistryController = SavedStateRegistryController.create(this)
+    override val savedStateRegistry: SavedStateRegistry by savedStateRegistryController::savedStateRegistry
+
     override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
 
     val navigationEventInput: DirectNavigationEventInput = navigationEventDispatcher.addDirectInput()
+
+    init {
+        savedStateRegistryController.performAttach()
+        savedStateRegistryController.performRestore(savedState)
+    }
 }

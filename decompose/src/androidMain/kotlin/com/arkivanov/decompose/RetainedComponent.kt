@@ -10,6 +10,9 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
+import androidx.savedstate.SavedState
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import com.arkivanov.decompose.instancekeeper.viewModel
 import com.arkivanov.decompose.lifecycle.addObserver
@@ -18,9 +21,10 @@ import com.arkivanov.decompose.lifecycle.moveToDestroyed
 import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.lifecycle.moveToStarted
 import com.arkivanov.decompose.navigationevent.ForwardingNavigationEventInput
-import com.arkivanov.essenty.statekeeper.SerializableContainer
-import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
-import com.arkivanov.essenty.statekeeper.stateKeeper
+import com.arkivanov.decompose.savedstate.childSavedStateRegistry
+import com.arkivanov.decompose.savedstate.consume
+import com.arkivanov.decompose.savedstate.register
+import com.arkivanov.decompose.savedstate.save
 import kotlinx.serialization.builtins.serializer
 
 /**
@@ -138,10 +142,11 @@ internal fun <T : Any, O> O.retainedComponent(
         "Another retained component is already registered with the key: $key"
     }
 
-    val stateKeeper = stateKeeper(key = key, discardSavedState = discardSavedState, isSavingAllowed = isStateSavingAllowed)
+    // FIXME: Rename?
+    val savedStateRegistry = childSavedStateRegistry(key = key, recreate = discardSavedState, isSavingAllowed = isStateSavingAllowed)
 
-    val discardRetainedInstance = stateKeeper.consume(key = KEY_STATE_MARKER, strategy = Boolean.serializer()) == null
-    stateKeeper.register(key = KEY_STATE_MARKER, strategy = Boolean.serializer()) { true }
+    val discardRetainedInstance = savedStateRegistry.consume(key = KEY_STATE_MARKER, strategy = Boolean.serializer()) == null
+    savedStateRegistry.register(key = KEY_STATE_MARKER, strategy = Boolean.serializer()) { true }
 
     val retainedComponentHolders = viewModel(key = "decompose.RetainedComponentHolders", factory = ::RetainedComponentHolders)
 
@@ -155,7 +160,7 @@ internal fun <T : Any, O> O.retainedComponent(
     val holder =
         retainedComponentHolders.map.getOrPut(key = key) {
             RetainedComponentHolder(
-                savedState = stateKeeper.consume(key = key, strategy = SerializableContainer.serializer()),
+                savedState = savedStateRegistry.consumeRestoredStateForKey(key = key),
                 factory = factory,
             )
         }
@@ -193,7 +198,7 @@ internal fun <T : Any, O> O.retainedComponent(
         },
     )
 
-    stateKeeper.register(key = key, strategy = SerializableContainer.serializer()) { holder.stateKeeper.save() }
+    savedStateRegistry.registerSavedStateProvider(key = key) { holder.savedStateRegistryController.save() }
 
     if (navigationEventDispatcher != null) {
         navigationEventDispatcher.addHandler(holder.navigationEventInput.handler)
@@ -223,12 +228,19 @@ private class RetainedComponentHolders : ViewModel() {
 }
 
 private class RetainedComponentHolder<out T : Any>(
-    savedState: SerializableContainer?,
+    savedState: SavedState?,
     factory: (ComponentContext) -> T,
-) : LifecycleOwner {
+) : LifecycleOwner, SavedStateRegistryOwner {
     override val lifecycle: LifecycleRegistry = LifecycleRegistry(this)
 
-    val stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(savedState = savedState)
+    val savedStateRegistryController = SavedStateRegistryController.create(this)
+    override val savedStateRegistry: SavedStateRegistry by savedStateRegistryController::savedStateRegistry
+
+    init {
+        savedStateRegistryController.performAttach()
+        savedStateRegistryController.performRestore(savedState)
+    }
+
     private val viewModelStore = ViewModelStore()
 
     val fallbackNavigationEventInput: DirectNavigationEventInput = DirectNavigationEventInput()
@@ -249,7 +261,7 @@ private class RetainedComponentHolder<out T : Any>(
         factory(
             DefaultComponentContext(
                 lifecycle = lifecycle,
-                stateKeeper = stateKeeper,
+                savedStateRegistry = savedStateRegistry,
                 viewModelStore = viewModelStore,
                 navigationEventDispatcher = navigationEventDispatcher,
             )

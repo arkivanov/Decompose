@@ -9,6 +9,8 @@ import com.arkivanov.decompose.mainthread.checkMainThread
 import com.arkivanov.decompose.navigationevent.NavigationEventPriority
 import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.navigationevent.child
+import com.arkivanov.decompose.savedstate.consume
+import com.arkivanov.decompose.savedstate.register
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.statekeeper.SerializableContainer
@@ -219,7 +221,7 @@ private fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, N : NavState<
     childFactory: (configuration: C, componentContext: Ctx) -> T,
 ): ChildrenNavigator<C, T, N> {
     val navigator =
-        stateKeeper.consume(key = key, strategy = SavedState.serializer()).let { savedState ->
+        savedStateRegistry.consume(key = key, strategy = NavSavedState.serializer()).let { savedState ->
             val restoredNavState: N? = savedState?.navState?.let { stateSaver?.restoreState(it) }
 
             ChildrenNavigator(
@@ -235,9 +237,9 @@ private fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, N : NavState<
             )
         }
 
-    stateKeeper.register(key = key, strategy = SavedState.serializer()) {
+    savedStateRegistry.register(key = key, strategy = NavSavedState.serializer()) {
         stateSaver?.saveState(navigator.navState)?.let { savedState ->
-            SavedState(
+            NavSavedState(
                 navState = savedState,
                 childState = navigator.saveChildState(),
             )
@@ -248,7 +250,7 @@ private fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, N : NavState<
 }
 
 @Serializable
-private class SavedState(
+private class NavSavedState(
     val navState: SerializableContainer,
     val childState: List<ChildrenNavigator.SavedChildState>,
 )

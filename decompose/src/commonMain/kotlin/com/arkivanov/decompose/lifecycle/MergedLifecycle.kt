@@ -3,15 +3,16 @@ package com.arkivanov.decompose.lifecycle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.arkivanov.decompose.InternalDecomposeApi
 
 @InternalDecomposeApi
-fun mergedLifecycle(lifecycle1: Lifecycle, lifecycle2: Lifecycle): Lifecycle {
+fun LifecycleOwner.mergedLifecycle(lifecycle1: Lifecycle, lifecycle2: Lifecycle): Lifecycle {
     if (lifecycle1.isDestroyed || lifecycle2.isDestroyed) {
-        return DecomposeLifecycleRegistry(initialState = State.DESTROYED)
+        return DecomposeLifecycleRegistry(owner = this, initialState = State.DESTROYED)
     }
 
-    val registry = DecomposeLifecycleRegistry()
+    val registry = DecomposeLifecycleRegistry(owner = this)
     var state1 = State.INITIALIZED
     var state2 = State.INITIALIZED
 

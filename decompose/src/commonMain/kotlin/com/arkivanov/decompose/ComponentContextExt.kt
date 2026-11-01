@@ -6,6 +6,7 @@ import com.arkivanov.decompose.lifecycle.doOnDestroy
 import com.arkivanov.decompose.lifecycle.mergedLifecycle
 import com.arkivanov.decompose.navigationevent.NavigationEventPriority
 import com.arkivanov.decompose.navigationevent.child
+import com.arkivanov.decompose.savedstate.childSavedStateRegistry
 import com.arkivanov.decompose.statekeeper.child
 
 /**
@@ -34,7 +35,7 @@ fun <Ctx : GenericComponentContext<Ctx>> Ctx.childContext(
 
     return componentContextFactory(
         lifecycle = if (lifecycle == null) this.lifecycle else mergedLifecycle(this.lifecycle, lifecycle),
-        stateKeeper = stateKeeper.child(key, lifecycle),
+        savedStateRegistry = childSavedStateRegistry(key),
         viewModelStore = viewModelStore.child(key),
         navigationEventDispatcher = navigationEventDispatcher.child(lifecycle = lifecycle, priority = navigationEventPriority),
     )
