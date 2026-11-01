@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2026-11-15T13:25:09.455Z" hostname="Arkadiis-MacBook-Air.local" time="0.328">
+  <properties/>
+  <testcase name="test[0][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.022"/>
+  <testcase name="test[1][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.018"/>
+  <testcase name="test[2][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.017"/>
+  <testcase name="test[3][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.017"/>
+  <testcase name="test[4][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.017"/>
+  <testcase name="test[5][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.017"/>
+  <testcase name="test[6][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.017"/>
+  <testcase name="test[7][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.02"/>
+  <testcase name="test[8][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.018"/>
+  <testcase name="test[9][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.018"/>
+  <testcase name="test[10][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.016"/>
+  <testcase name="test[11][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.017"/>
+  <testcase name="test[12][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.017"/>
+  <testcase name="test[13][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.016"/>
+  <testcase name="test[14][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.016"/>
+  <testcase name="test[15][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.018"/>
+  <testcase name="test[16][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.015"/>
+  <testcase name="test[17][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.016"/>
+  <testcase name="test[18][jvm]" classname="com.arkivanov.decompose.extensions.compose.experimental.stack.animation.StackAnimationDirectionsTest" time="0.015"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,14 +1,18 @@
 package com.arkivanov.decompose.router.children
 
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStore
 import androidx.navigationevent.NavigationEventDispatcher
+import androidx.savedstate.SavedState
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
+import androidx.savedstate.SavedStateRegistryOwner
 import com.arkivanov.decompose.ComponentContextFactory
 import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.mergedLifecycle
 import com.arkivanov.decompose.navigationevent.childNavigationEventDispatcher
-import com.arkivanov.essenty.statekeeper.SerializableContainer
-import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
+import com.arkivanov.decompose.statekeeper.SavedStateRegistryControllerOwner
 
 internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
     private val contextFactory: ComponentContextFactory<Ctx>,
@@ -20,12 +24,21 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
     override fun invoke(
         configuration: C,
         key: String,
-        savedState: SerializableContainer?,
+        savedState: SavedState?,
         viewModelStore: ViewModelStore?,
     ): ChildItem.Created<C, T> {
         val componentLifecycleRegistry = LifecycleRegistry()
-        val mergedLifecycle = mergedLifecycle(lifecycle, componentLifecycleRegistry)
-        val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
+
+        val owner =
+            object : LifecycleOwner, SavedStateRegistryOwner, SavedStateRegistryControllerOwner {
+                override val lifecycle: Lifecycle = mergedLifecycle(this@DefaultChildItemFactory.lifecycle, componentLifecycleRegistry)
+                override val savedStateRegistryController: SavedStateRegistryController = SavedStateRegistryController.create(this)
+                override val savedStateRegistry: SavedStateRegistry by savedStateRegistryController::savedStateRegistry
+            }
+
+        owner.savedStateRegistryController.performAttach()
+        owner.savedStateRegistryController.performRestore(savedState)
+
         val viewModelStore = viewModelStore ?: ViewModelStore()
         val navigationEventDispatcher = navigationEventDispatcher.childNavigationEventDispatcher()
 
@@ -33,8 +46,8 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
             childFactory(
                 configuration,
                 contextFactory(
-                    lifecycle = mergedLifecycle,
-                    stateKeeper = stateKeeperDispatcher,
+                    lifecycle = owner.lifecycle,
+                    savedStateRegistry = owner.savedStateRegistry,
                     viewModelStore = viewModelStore,
                     navigationEventDispatcher = navigationEventDispatcher.dispatcher,
                 )
@@ -45,7 +58,7 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
             key = key,
             instance = component,
             lifecycleRegistry = componentLifecycleRegistry,
-            stateKeeperDispatcher = stateKeeperDispatcher,
+            savedStateRegistryController = owner.savedStateRegistryController,
             viewModelStore = viewModelStore,
             navigationEventDispatcher = navigationEventDispatcher,
         )

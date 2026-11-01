@@ -7,6 +7,7 @@ import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
 import androidx.lifecycle.Lifecycle.Event.ON_RESUME
 import androidx.lifecycle.Lifecycle.Event.ON_START
 import androidx.lifecycle.Lifecycle.Event.ON_STOP
+import androidx.savedstate.serialization.encodeToSavedState
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.DelicateDecomposeApi
@@ -22,7 +23,6 @@ import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.register
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlin.test.AfterTest
@@ -232,7 +232,7 @@ class ChildStackIntegrationTest {
             source = navigation,
             initialStack = { listOf(Config(2), Config(3)) },
             stateSaver = NavStateSaver(
-                save = { SerializableContainer(it, ListSerializer(Config.serializer())) },
+                save = { encodeToSavedState(ListSerializer(Config.serializer()), it) },
                 restore = { null },
             ),
             childFactory = ::Component,
@@ -245,20 +245,20 @@ class ChildStackIntegrationTest {
     fun GIVEN_persistent_WHEN_recreated_with_same_initial_stack_and_state_not_restored_THEN_child_state_not_restored() {
         var ctx = HostComponentContext().resumed()
         val oldStack by ctx.childStack(initialStack = listOf(Config(1)), persistent = true)
-        oldStack.active.instance.stateKeeper.register("key") { 1 }
+        oldStack.active.instance.savedStateRegistry.register("key") { 1 }
 
         ctx = ctx.recreate()
         val newStack by ctx.childStack(
             source = navigation,
             initialStack = { listOf(Config(1)) },
             stateSaver = NavStateSaver(
-                save = { SerializableContainer(it, ListSerializer(Config.serializer())) },
+                save = { encodeToSavedState(ListSerializer(Config.serializer()), it) },
                 restore = { null },
             ),
             childFactory = ::Component,
         )
 
-        val restoredState = newStack.active.instance.stateKeeper.consume<Int>("key")
+        val restoredState = newStack.active.instance.savedStateRegistry.consume<Int>("key")
 
         assertNull(restoredState)
     }
@@ -274,7 +274,7 @@ class ChildStackIntegrationTest {
             source = navigation,
             initialStack = { listOf(Config(1)) },
             stateSaver = NavStateSaver(
-                save = { SerializableContainer(it, ListSerializer(Config.serializer())) },
+                save = { encodeToSavedState(ListSerializer(Config.serializer()), it) },
                 restore = { null },
             ),
             childFactory = ::Component,
@@ -294,7 +294,7 @@ class ChildStackIntegrationTest {
             source = navigation,
             initialStack = { listOf(Config(1)) },
             stateSaver = NavStateSaver(
-                save = { SerializableContainer(it, ListSerializer(Config.serializer())) },
+                save = { encodeToSavedState(ListSerializer(Config.serializer()), it) },
                 restore = { null },
             ),
             childFactory = ::Component,
@@ -319,7 +319,7 @@ class ChildStackIntegrationTest {
     fun WHEN_component_pushed_THEN_state_not_saved_for_previous_component() {
         val stack by context.childStack(initialStack = listOf(Config(1)))
         var isCalled = false
-        stack.active.instance.stateKeeper.register(key = "key") {
+        stack.active.instance.savedStateRegistry.register(key = "key") {
             isCalled = true
             Config(10)
         }
@@ -334,12 +334,12 @@ class ChildStackIntegrationTest {
         val oldContext = HostComponentContext().resumed()
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = true)
         oldStack.items.forEach { (configuration, instance) ->
-            instance.stateKeeper.register(key = "key") { configuration.id }
+            instance.savedStateRegistry.register(key = "key") { configuration.id }
         }
 
         val newContext = oldContext.recreate()
         val newStack by newContext.childStack()
-        val restoredStates = newStack.items.map { it.instance.stateKeeper.consume<Int>(key = "key") }
+        val restoredStates = newStack.items.map { it.instance.savedStateRegistry.consume<Int>(key = "key") }
 
         assertContentEquals(listOf(1, 2, 3), restoredStates)
     }
@@ -349,19 +349,19 @@ class ChildStackIntegrationTest {
         val oldContext = HostComponentContext().resumed()
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = true)
         oldStack.items.forEach { (configuration, instance) ->
-            instance.stateKeeper.register(key = "key") { configuration.id }
+            instance.savedStateRegistry.register(key = "key") { configuration.id }
         }
 
         val newContext = oldContext.recreate()
         val newStack1 by newContext.childStack(persistent = true)
-        newStack1.items.forEach { it.instance.stateKeeper.consume<Int>(key = "key") }
+        newStack1.items.forEach { it.instance.savedStateRegistry.consume<Int>(key = "key") }
         newStack1.items.forEach { (configuration, instance) ->
-            instance.stateKeeper.register(key = "key") { configuration.id }
+            instance.savedStateRegistry.register(key = "key") { configuration.id }
         }
 
         val newContext2 = newContext.recreate()
         val newStack2 by newContext2.childStack(persistent = true)
-        val restoredStates = newStack2.items.map { it.instance.stateKeeper.consume<Int>(key = "key") }
+        val restoredStates = newStack2.items.map { it.instance.savedStateRegistry.consume<Int>(key = "key") }
 
         assertContentEquals(listOf(1, 2, 3), restoredStates)
     }
@@ -371,12 +371,12 @@ class ChildStackIntegrationTest {
         val oldContext = HostComponentContext().resumed()
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = false)
         oldStack.items.forEach { (configuration, instance) ->
-            instance.stateKeeper.register(key = "key") { configuration.id }
+            instance.savedStateRegistry.register(key = "key") { configuration.id }
         }
 
         val newContext = oldContext.recreate()
         val newStack by newContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)))
-        val restoredStates = newStack.items.map { it.instance.stateKeeper.consume<Int>(key = "key") }
+        val restoredStates = newStack.items.map { it.instance.savedStateRegistry.consume<Int>(key = "key") }
 
         assertContentEquals(listOf(null, null, null), restoredStates)
     }

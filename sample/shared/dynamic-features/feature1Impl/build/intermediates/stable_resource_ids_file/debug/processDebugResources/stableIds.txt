@@ -1,0 +1,1 @@
+com.arkivanov.sample.app:string/title_feature1 = 0x7e010000

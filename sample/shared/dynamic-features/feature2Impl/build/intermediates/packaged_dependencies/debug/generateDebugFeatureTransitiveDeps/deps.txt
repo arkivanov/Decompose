@@ -1,0 +1,1 @@
+:sample:shared:dynamic-features:feature2Impl::debug;Capability: group='Decompose.sample.shared.dynamic-features', name='feature2Impl'

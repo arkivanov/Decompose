@@ -13,7 +13,11 @@ import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.Component
 import com.arkivanov.decompose.router.TestViewModel
+import com.arkivanov.decompose.savedstate.consume
+import com.arkivanov.decompose.savedstate.register
+import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.recreate
+import com.arkivanov.decompose.testutils.register
 import com.arkivanov.decompose.testutils.serializeAndDeserialize
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
@@ -174,7 +178,7 @@ class ChildControllerTest {
         var ctx = HostComponentContext().resumed()
         var controller = controller(ctx = ctx).apply { init() }
         controller.create(configuration = 1)
-        controller.requireChild(1).stateKeeper.register(key = "key", strategy = Int.serializer()) { 100 }
+        controller.requireChild(1).savedStateRegistry.register(key = "key") { 100 }
 
         val savedState = controller.saveState(configuration = 1)?.serializeAndDeserialize()
 
@@ -185,7 +189,7 @@ class ChildControllerTest {
             controller.create(configuration = 1, savedState = savedState)
         }
 
-        val restoredState = controller.requireChild(1).stateKeeper.consume(key = "key", strategy = Int.serializer())
+        val restoredState = controller.requireChild(1).savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(100, restoredState)
     }
@@ -195,7 +199,7 @@ class ChildControllerTest {
         var ctx = HostComponentContext().resumed()
         var controller = controller(ctx = ctx).apply { init() }
         controller.resume(configuration = 1)
-        controller.requireChild(1).stateKeeper.register(key = "key", strategy = Int.serializer()) { 100 }
+        controller.requireChild(1).savedStateRegistry.register(key = "key", strategy = Int.serializer()) { 100 }
 
         val savedState = controller.saveState(configuration = 1)?.serializeAndDeserialize()
 
@@ -206,7 +210,7 @@ class ChildControllerTest {
             controller.create(configuration = 1, savedState = savedState)
         }
 
-        val restoredState = controller.requireChild(1).stateKeeper.consume(key = "key", strategy = Int.serializer())
+        val restoredState = controller.requireChild(1).savedStateRegistry.consume(key = "key", strategy = Int.serializer())
 
         assertEquals(100, restoredState)
     }

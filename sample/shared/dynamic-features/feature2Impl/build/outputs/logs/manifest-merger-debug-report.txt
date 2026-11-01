@@ -1,0 +1,41 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:2:1-12:12
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:2:1-12:12
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:2:1-12:12
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:2:1-12:12
+	package
+		INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml
+	xmlns:dist
+		ADDED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:2:11-67
+	android:versionCode
+		INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml
+dist:module
+ADDED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:4:5-11:19
+	dist:instant
+		ADDED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:5:9-29
+	dist:title
+		ADDED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:6:9-44
+dist:delivery
+ADDED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:7:9-9:25
+dist:install-time
+ADDED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:8:13-34
+dist:fusing
+ADDED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:10:9-44
+	dist:include
+		ADDED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml:10:22-41
+application
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml reason: application injection requested
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml
+	android:extractNativeLibs
+		INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml
+uses-sdk
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml
+INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/AndroidManifest.xml

@@ -1,0 +1,8 @@
+{
+  "buildPath": ":",
+  "projectPath": ":sample:shared:dynamic-features:api",
+  "moduleId": {
+    "groupId": "Decompose.sample.shared.dynamic-features",
+    "moduleId": "api"
+  }
+}

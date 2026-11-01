@@ -7,6 +7,8 @@ import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.slot.dismiss
+import com.arkivanov.decompose.savedstate.consume
+import com.arkivanov.decompose.savedstate.register
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
@@ -33,7 +35,7 @@ internal class DefaultCounterComponent(
     private val handler =
         retainedCloseable(key = "handler") {
             Handler(
-                initialState = stateKeeper.consume(key = KEY_STATE, strategy = State.serializer()) ?: State(),
+                initialState = savedStateRegistry.consume(key = KEY_STATE, strategy = State.serializer()) ?: State(),
                 tickScheduler = tickScheduler,
             )
         }
@@ -63,7 +65,7 @@ internal class DefaultCounterComponent(
     }
 
     init {
-        stateKeeper.register(key = KEY_STATE, strategy = State.serializer()) { handler.state.value }
+        savedStateRegistry.register(key = KEY_STATE, strategy = State.serializer()) { handler.state.value }
     }
 
     private fun State.toModel(): Model =

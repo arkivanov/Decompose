@@ -1,8 +1,13 @@
 package com.arkivanov.decompose.router.children
 
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
+import androidx.savedstate.SavedState
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
+import androidx.savedstate.SavedStateRegistryOwner
 import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.instancekeeper.retainedCloseable
 import com.arkivanov.decompose.lifecycle.LifecycleRegistry
@@ -15,8 +20,8 @@ import com.arkivanov.decompose.navigationevent.ChildNavigationEventDispatcher
 import com.arkivanov.decompose.navigationevent.NavigationEventPriority
 import com.arkivanov.decompose.navigationevent.child
 import com.arkivanov.decompose.navigationevent.childNavigationEventDispatcher
-import com.arkivanov.essenty.statekeeper.SerializableContainer
-import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
+import com.arkivanov.decompose.savedstate.save
+import com.arkivanov.decompose.statekeeper.SavedStateRegistryControllerOwner
 
 internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentContext<Ctx>>(
     private val componentContext: Ctx,
@@ -50,12 +55,12 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         }
     }
 
-    fun saveState(configuration: C): SerializableContainer? =
+    fun saveState(configuration: C): SavedState? =
         items[configuration]?.saveState()
 
-    private fun Item<*>.saveState(): SerializableContainer? =
+    private fun Item<*>.saveState(): SavedState? =
         when (this) {
-            is Item.Created -> stateKeeperDispatcher.save()
+            is Item.Created -> savedStateRegistryController.save()
             is Item.Destroyed -> savedState
         }
 
@@ -76,7 +81,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         retainedInstance.map -= configuration
     }
 
-    fun destroy(configuration: C, savedState: SerializableContainer? = null) {
+    fun destroy(configuration: C, savedState: SavedState? = null) {
         val item = items.remove(configuration) as? Item.Created
 
         if (item == null) {
@@ -84,14 +89,14 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
             return
         }
 
-        val childSavedState = savedState ?: item.stateKeeperDispatcher.save()
+        val childSavedState = savedState ?: item.savedStateRegistryController.save()
         item.destroy()
         retainedInstance.map -= configuration
 
         items[configuration] = Item.Destroyed(childSavedState)
     }
 
-    fun create(configuration: C, savedState: SerializableContainer? = null): T =
+    fun create(configuration: C, savedState: SavedState? = null): T =
         activate(
             configuration = configuration,
             lifecycleState = ActiveLifecycleState.CREATED,
@@ -100,7 +105,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
 
     fun start(
         configuration: C,
-        savedState: SerializableContainer? = null
+        savedState: SavedState? = null
     ): T =
         activate(
             configuration = configuration,
@@ -110,7 +115,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
 
     fun resume(
         configuration: C,
-        savedState: SerializableContainer? = null
+        savedState: SavedState? = null
     ): T =
         activate(
             configuration = configuration,
@@ -121,7 +126,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
     private fun activate(
         configuration: C,
         lifecycleState: ActiveLifecycleState,
-        savedState: SerializableContainer? = null
+        savedState: SavedState? = null
     ): T =
         when (val oldItem = items[configuration]) {
             is Item.Created -> oldItem.apply { setState(lifecycleState) }.instance
@@ -132,7 +137,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
     private fun activateNew(
         configuration: C,
         lifecycleState: ActiveLifecycleState,
-        savedState: SerializableContainer? = null,
+        savedState: SavedState? = null,
     ): T {
         val item = item(configuration = configuration, savedState = savedState)
         item.setState(lifecycleState = lifecycleState)
@@ -165,11 +170,20 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
 
     private fun item(
         configuration: C,
-        savedState: SerializableContainer?,
+        savedState: SavedState?,
     ): Item.Created<T> {
         val componentLifecycleRegistry = LifecycleRegistry()
-        val mergedLifecycle = mergedLifecycle(componentContext.lifecycle, componentLifecycleRegistry)
-        val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
+
+        val owner =
+            object : LifecycleOwner, SavedStateRegistryOwner, SavedStateRegistryControllerOwner {
+                override val lifecycle: Lifecycle = mergedLifecycle(componentContext.lifecycle, componentLifecycleRegistry)
+                override val savedStateRegistryController: SavedStateRegistryController = SavedStateRegistryController.create(this)
+                override val savedStateRegistry: SavedStateRegistry by savedStateRegistryController::savedStateRegistry
+            }
+
+        owner.savedStateRegistryController.performAttach()
+        owner.savedStateRegistryController.performRestore(savedState)
+
         val viewModelStore = retainedInstance.map[configuration] ?: ViewModelStore()
         val navigationEventDispatcher = childNavigationEventDispatcher.childNavigationEventDispatcher()
 
@@ -177,8 +191,8 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
             childFactory(
                 configuration,
                 componentContext.componentContextFactory(
-                    lifecycle = mergedLifecycle,
-                    stateKeeper = stateKeeperDispatcher,
+                    lifecycle = owner.lifecycle,
+                    savedStateRegistry = owner.savedStateRegistry,
                     viewModelStore = viewModelStore,
                     navigationEventDispatcher = navigationEventDispatcher.dispatcher,
                 )
@@ -187,7 +201,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         return Item.Created(
             instance = component,
             lifecycleRegistry = componentLifecycleRegistry,
-            stateKeeperDispatcher = stateKeeperDispatcher,
+            savedStateRegistryController = owner.savedStateRegistryController,
             viewModelStore = viewModelStore,
             navigationEventDispatcher = navigationEventDispatcher,
         )
@@ -209,7 +223,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         val instance: T?
 
         class Destroyed(
-            val savedState: SerializableContainer? = null,
+            val savedState: SavedState? = null,
         ) : Item<Nothing> {
             override val instance: Nothing? = null
         }
@@ -217,7 +231,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         class Created<out T : Any>(
             override val instance: T,
             val lifecycleRegistry: LifecycleRegistry,
-            val stateKeeperDispatcher: StateKeeperDispatcher,
+            val savedStateRegistryController: SavedStateRegistryController,
             val viewModelStore: ViewModelStore,
             val navigationEventDispatcher: ChildNavigationEventDispatcher,
         ) : Item<T>

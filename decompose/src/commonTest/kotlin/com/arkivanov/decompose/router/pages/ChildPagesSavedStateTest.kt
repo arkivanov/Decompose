@@ -1,5 +1,6 @@
 package com.arkivanov.decompose.router.pages
 
+import androidx.savedstate.serialization.encodeToSavedState
 import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.instancekeeper.getOrCreate
 import com.arkivanov.decompose.lifecycle.resumed
@@ -9,7 +10,6 @@ import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.register
-import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
 import kotlin.test.assertNotNull
@@ -44,7 +44,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
             source = navigation,
             initialPages = { Pages(items = listOf(2, 3), selectedIndex = 1) },
             stateSaver = NavStateSaver(
-                save = { SerializableContainer(it, Pages.serializer(Int.serializer())) },
+                save = { encodeToSavedState(Pages.serializer(Int.serializer()), it) },
                 restore = { null },
             ),
             childFactory = ::Component,
@@ -57,20 +57,20 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
     fun GIVEN_persistent_WHEN_recreated_with_same_initial_pages_and_state_not_restored_THEN_child_state_not_restored() {
         var ctx = HostComponentContext().resumed()
         val oldPages by ctx.childPages(initialPages = Pages(items = listOf(1), selectedIndex = 0), persistent = true)
-        oldPages.requireInstance(0).stateKeeper.register("key") { 1 }
+        oldPages.requireInstance(0).savedStateRegistry.register("key") { 1 }
 
         ctx = ctx.recreate()
         val newPages by ctx.childPages(
             source = navigation,
             initialPages = { Pages(items = listOf(1), selectedIndex = 0) },
             stateSaver = NavStateSaver(
-                save = { SerializableContainer(it, Pages.serializer(Int.serializer())) },
+                save = { encodeToSavedState(Pages.serializer(Int.serializer()), it) },
                 restore = { null },
             ),
             childFactory = ::Component,
         )
 
-        val restoredState = newPages.requireInstance(0).stateKeeper.consume<Int>("key")
+        val restoredState = newPages.requireInstance(0).savedStateRegistry.consume<Int>("key")
 
         assertNull(restoredState)
     }
@@ -86,7 +86,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
             source = navigation,
             initialPages = { Pages(items = listOf(1), selectedIndex = 0) },
             stateSaver = NavStateSaver(
-                save = { SerializableContainer(it, Pages.serializer(Int.serializer())) },
+                save = { encodeToSavedState(Pages.serializer(Int.serializer()), it) },
                 restore = { null },
             ),
             childFactory = ::Component,
@@ -106,7 +106,7 @@ class ChildPagesSavedStateTest : BaseChildPagesTest() {
             source = navigation,
             initialPages = { Pages(items = listOf(1), selectedIndex = 0) },
             stateSaver = NavStateSaver(
-                save = { SerializableContainer(it, Pages.serializer(Int.serializer())) },
+                save = { encodeToSavedState(Pages.serializer(Int.serializer()), it) },
                 restore = { null },
             ),
             childFactory = ::Component,

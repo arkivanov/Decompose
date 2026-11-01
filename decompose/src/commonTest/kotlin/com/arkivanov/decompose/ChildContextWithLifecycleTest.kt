@@ -70,12 +70,12 @@ class ChildContextWithLifecycleTest {
     fun WHEN_recreated_THEN_child_state_restored() {
         val context = HostComponentContext()
         val childContext = context.childContext(key = "key", maxLifecycle = ChildContextLifecycle())
-        childContext.stateKeeper.register("child_key") { "savedChildState" }
+        childContext.savedStateRegistry.register("child_key") { "savedChildState" }
         context.lifecycle.moveToResumed()
 
         val newContext = context.recreate()
         val newChild = newContext.childContext(key = "key", maxLifecycle = ChildContextLifecycle())
-        val restoredChildState = newChild.stateKeeper.consume<String>("child_key")
+        val restoredChildState = newChild.savedStateRegistry.consume<String>("child_key")
 
         assertEquals("savedChildState", restoredChildState)
     }
@@ -86,7 +86,7 @@ class ChildContextWithLifecycleTest {
 
         context.childContext(key = "key", maxLifecycle = ChildContextLifecycle())
 
-        assertTrue(context.stateKeeper.isRegistered("key"))
+        assertNotNull(context.savedStateRegistry.getSavedStateProvider("key"))
     }
 
     @Test

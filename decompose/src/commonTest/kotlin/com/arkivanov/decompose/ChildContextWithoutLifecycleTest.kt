@@ -7,8 +7,9 @@ import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.TestViewModel
+import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.recreate
-import kotlinx.serialization.builtins.serializer
+import com.arkivanov.decompose.testutils.register
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -44,12 +45,12 @@ class ChildContextWithoutLifecycleTest {
     fun WHEN_recreated_THEN_child_state_restored() {
         val context = HostComponentContext()
         val childContext = context.childContext(key = "key")
-        childContext.stateKeeper.register(key = "child_key", strategy = String.serializer()) { "savedChildState" }
+        childContext.savedStateRegistry.register(key = "child_key") { "savedChildState" }
         context.lifecycle.moveToResumed()
 
         val newContext = context.recreate()
         val newChild = newContext.childContext(key = "key")
-        val restoredChildState = newChild.stateKeeper.consume(key = "child_key", strategy = String.serializer())
+        val restoredChildState = newChild.savedStateRegistry.consume<String>(key = "child_key")
 
         assertEquals("savedChildState", restoredChildState)
     }
@@ -60,7 +61,7 @@ class ChildContextWithoutLifecycleTest {
 
         context.childContext(key = "key")
 
-        assertTrue(context.stateKeeper.isRegistered("key"))
+        assertNotNull(context.savedStateRegistry.getSavedStateProvider("key"))
     }
 
     @Test

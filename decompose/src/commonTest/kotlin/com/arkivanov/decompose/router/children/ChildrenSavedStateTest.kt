@@ -24,7 +24,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun WHEN_child_switched_from_resumed_to_started_THEN_state_not_saved() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         var isCalled = false
-        children.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") {
+        children.getByConfig(config = 4).requireInstance().savedStateRegistry.register(key = "key") {
             isCalled = true
             "SavedState"
         }
@@ -38,7 +38,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun WHEN_child_switched_from_resumed_to_created_THEN_state_not_saved() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         var isCalled = false
-        children.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") {
+        children.getByConfig(config = 4).requireInstance().savedStateRegistry.register(key = "key") {
             isCalled = true
             "SavedState"
         }
@@ -52,7 +52,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun WHEN_child_switched_from_resumed_to_destroyed_THEN_state_saved() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         var isCalled = false
-        children.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") {
+        children.getByConfig(config = 4).requireInstance().savedStateRegistry.register(key = "key") {
             isCalled = true
             "SavedState"
         }
@@ -66,7 +66,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun WHEN_child_switched_from_created_to_destroyed_THEN_state_saved() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         var isCalled = false
-        children.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") {
+        children.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") {
             isCalled = true
             "SavedState"
         }
@@ -80,7 +80,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun WHEN_child_switched_from_created_to_started_THEN_state_not_saved() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         var isCalled = false
-        children.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") {
+        children.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") {
             isCalled = true
             "SavedState"
         }
@@ -94,7 +94,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun WHEN_child_switched_from_created_to_resumed_THEN_state_not_saved() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
         var isCalled = false
-        children.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") {
+        children.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") {
             isCalled = true
             "SavedState"
         }
@@ -110,7 +110,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
         context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED)) { config, componentContext ->
             val component = Component(config, componentContext)
             if (config == 1) {
-                component.stateKeeper.register(key = "key") {
+                component.savedStateRegistry.register(key = "key") {
                     isCalled = true
                     "SavedState"
                 }
@@ -129,7 +129,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
         context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED)) { config, componentContext ->
             val component = Component(config, componentContext)
             if (config == 1) {
-                component.stateKeeper.register(key = "key") {
+                component.savedStateRegistry.register(key = "key") {
                     isCalled = true
                     "SavedState"
                 }
@@ -148,7 +148,7 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
         context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED)) { config, componentContext ->
             val component = Component(config, componentContext)
             if (config == 1) {
-                component.stateKeeper.register(key = "key") {
+                component.savedStateRegistry.register(key = "key") {
                     isCalled = true
                     "SavedState"
                 }
@@ -164,11 +164,11 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     @Test
     fun GIVEN_child_switched_from_resumed_to_destroyed_WHEN_child_switched_to_resumed_THEN_state_restored() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        children.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") { 40 }
+        children.getByConfig(config = 4).requireInstance().savedStateRegistry.register(key = "key") { 40 }
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by DESTROYED) }
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED) }
-        val restoredState = children.getByConfig(config = 4).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState = children.getByConfig(config = 4).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(40, restoredState)
     }
@@ -176,11 +176,11 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     @Test
     fun GIVEN_child_switched_from_resumed_to_destroyed_WHEN_child_switched_to_started_THEN_state_restored() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        children.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") { 40 }
+        children.getByConfig(config = 4).requireInstance().savedStateRegistry.register(key = "key") { 40 }
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by DESTROYED) }
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by STARTED) }
-        val restoredState = children.getByConfig(config = 4).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState = children.getByConfig(config = 4).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(40, restoredState)
     }
@@ -188,11 +188,11 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     @Test
     fun GIVEN_child_switched_from_resumed_to_destroyed_WHEN_child_switched_to_created_THEN_state_restored() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        children.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") { 40 }
+        children.getByConfig(config = 4).requireInstance().savedStateRegistry.register(key = "key") { 40 }
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by DESTROYED) }
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by CREATED) }
-        val restoredState = children.getByConfig(config = 4).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState = children.getByConfig(config = 4).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(40, restoredState)
     }
@@ -200,11 +200,11 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     @Test
     fun GIVEN_child_switched_from_started_to_destroyed_WHEN_child_switched_to_resumed_THEN_state_restored() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        children.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
+        children.getByConfig(config = 3).requireInstance().savedStateRegistry.register(key = "key") { 30 }
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by DESTROYED, 4 by RESUMED) }
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by RESUMED, 4 by RESUMED) }
-        val restoredState = children.getByConfig(config = 3).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState = children.getByConfig(config = 3).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(30, restoredState)
     }
@@ -212,11 +212,11 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     @Test
     fun GIVEN_child_switched_from_started_to_destroyed_WHEN_child_switched_to_started_THEN_state_restored() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        children.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
+        children.getByConfig(config = 3).requireInstance().savedStateRegistry.register(key = "key") { 30 }
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by DESTROYED, 4 by RESUMED) }
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED) }
-        val restoredState = children.getByConfig(config = 3).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState = children.getByConfig(config = 3).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(30, restoredState)
     }
@@ -224,11 +224,11 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     @Test
     fun GIVEN_child_switched_from_started_to_destroyed_WHEN_child_switched_to_created_THEN_state_restored() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        children.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
+        children.getByConfig(config = 3).requireInstance().savedStateRegistry.register(key = "key") { 30 }
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by DESTROYED, 4 by RESUMED) }
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by CREATED, 4 by RESUMED) }
-        val restoredState = children.getByConfig(config = 3).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState = children.getByConfig(config = 3).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(30, restoredState)
     }
@@ -236,11 +236,11 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     @Test
     fun GIVEN_child_switched_from_created_to_destroyed_WHEN_child_switched_to_resumed_THEN_state_restored() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        children.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
+        children.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") { 20 }
         navigate { listOf(1 by DESTROYED, 2 by DESTROYED, 3 by STARTED, 4 by RESUMED) }
 
         navigate { listOf(1 by DESTROYED, 2 by RESUMED, 3 by STARTED, 4 by RESUMED) }
-        val restoredState = children.getByConfig(config = 2).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState = children.getByConfig(config = 2).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(20, restoredState)
     }
@@ -248,11 +248,11 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     @Test
     fun GIVEN_child_switched_from_created_to_destroyed_WHEN_child_switched_to_started_THEN_state_restored() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        children.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
+        children.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") { 20 }
         navigate { listOf(1 by DESTROYED, 2 by DESTROYED, 3 by STARTED, 4 by RESUMED) }
 
         navigate { listOf(1 by DESTROYED, 2 by STARTED, 3 by STARTED, 4 by RESUMED) }
-        val restoredState = children.getByConfig(config = 2).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState = children.getByConfig(config = 2).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(20, restoredState)
     }
@@ -260,11 +260,11 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     @Test
     fun GIVEN_child_switched_from_created_to_destroyed_WHEN_child_switched_to_created_THEN_state_restored() {
         val children by context.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        children.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
+        children.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") { 20 }
         navigate { listOf(1 by DESTROYED, 2 by DESTROYED, 3 by STARTED, 4 by RESUMED) }
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED) }
-        val restoredState = children.getByConfig(config = 2).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState = children.getByConfig(config = 2).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(20, restoredState)
     }
@@ -306,15 +306,15 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_saving_state_WHEN_recreated_THEN_child_states_restored() {
         val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
-        oldChildren.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
-        oldChildren.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") { 40 }
+        oldChildren.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") { 20 }
+        oldChildren.getByConfig(config = 3).requireInstance().savedStateRegistry.register(key = "key") { 30 }
+        oldChildren.getByConfig(config = 4).requireInstance().savedStateRegistry.register(key = "key") { 40 }
 
         val newContext = oldContext.recreate()
         val newChildren by newContext.children()
-        val restoredState2 = newChildren.getByConfig(config = 2).requireInstance().stateKeeper.consume<Int>(key = "key")
-        val restoredState3 = newChildren.getByConfig(config = 3).requireInstance().stateKeeper.consume<Int>(key = "key")
-        val restoredState4 = newChildren.getByConfig(config = 4).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState2 = newChildren.getByConfig(config = 2).requireInstance().savedStateRegistry.consume<Int>(key = "key")
+        val restoredState3 = newChildren.getByConfig(config = 3).requireInstance().savedStateRegistry.consume<Int>(key = "key")
+        val restoredState4 = newChildren.getByConfig(config = 4).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(20, restoredState2)
         assertEquals(30, restoredState3)
@@ -328,15 +328,15 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
             initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED),
             saveState = { null },
         )
-        oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
-        oldChildren.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
-        oldChildren.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") { 40 }
+        oldChildren.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") { 20 }
+        oldChildren.getByConfig(config = 3).requireInstance().savedStateRegistry.register(key = "key") { 30 }
+        oldChildren.getByConfig(config = 4).requireInstance().savedStateRegistry.register(key = "key") { 40 }
 
         val newContext = oldContext.recreate()
         val newChildren by newContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        val restoredState2 = newChildren.getByConfig(config = 2).requireInstance().stateKeeper.consume<Int>(key = "key")
-        val restoredState3 = newChildren.getByConfig(config = 3).requireInstance().stateKeeper.consume<Int>(key = "key")
-        val restoredState4 = newChildren.getByConfig(config = 4).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState2 = newChildren.getByConfig(config = 2).requireInstance().savedStateRegistry.consume<Int>(key = "key")
+        val restoredState3 = newChildren.getByConfig(config = 3).requireInstance().savedStateRegistry.consume<Int>(key = "key")
+        val restoredState4 = newChildren.getByConfig(config = 4).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertNull(restoredState2)
         assertNull(restoredState3)
@@ -347,18 +347,18 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_not_restoring_state_WHEN_recreated_THEN_child_states_not_restored() {
         val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
-        oldChildren.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
-        oldChildren.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") { 40 }
+        oldChildren.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") { 20 }
+        oldChildren.getByConfig(config = 3).requireInstance().savedStateRegistry.register(key = "key") { 30 }
+        oldChildren.getByConfig(config = 4).requireInstance().savedStateRegistry.register(key = "key") { 40 }
 
         val newContext = oldContext.recreate()
         val newChildren by newContext.children(
             initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED),
             restoreState = { null },
         )
-        val restoredState2 = newChildren.getByConfig(config = 2).requireInstance().stateKeeper.consume<Int>(key = "key")
-        val restoredState3 = newChildren.getByConfig(config = 3).requireInstance().stateKeeper.consume<Int>(key = "key")
-        val restoredState4 = newChildren.getByConfig(config = 4).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState2 = newChildren.getByConfig(config = 2).requireInstance().savedStateRegistry.consume<Int>(key = "key")
+        val restoredState3 = newChildren.getByConfig(config = 3).requireInstance().savedStateRegistry.consume<Int>(key = "key")
+        val restoredState4 = newChildren.getByConfig(config = 4).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertNull(restoredState2)
         assertNull(restoredState3)
@@ -369,12 +369,12 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_recreated_and_created_child_restored_as_destroyed_WHEN_child_switched_to_created_THEN_state_restored() {
         val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
+        oldChildren.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") { 20 }
         val newContext = oldContext.recreate()
         val newChildren by newContext.children(restoreState = { stateOf(1 by DESTROYED, 2 by DESTROYED, 3 by STARTED, 4 by RESUMED) })
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED) }
-        val restoredState3 = newChildren.getByConfig(config = 2).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState3 = newChildren.getByConfig(config = 2).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(20, restoredState3)
     }
@@ -383,12 +383,12 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_recreated_and_created_child_restored_as_destroyed_WHEN_child_switched_to_started_THEN_state_restored() {
         val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
+        oldChildren.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") { 20 }
         val newContext = oldContext.recreate()
         val newChildren by newContext.children(restoreState = { stateOf(1 by DESTROYED, 2 by DESTROYED, 3 by STARTED, 4 by RESUMED) })
 
         navigate { listOf(1 by DESTROYED, 2 by STARTED, 3 by STARTED, 4 by RESUMED) }
-        val restoredState3 = newChildren.getByConfig(config = 2).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState3 = newChildren.getByConfig(config = 2).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(20, restoredState3)
     }
@@ -397,12 +397,12 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_recreated_and_created_child_restored_as_destroyed_WHEN_child_switched_to_resumed_THEN_state_restored() {
         val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 20 }
+        oldChildren.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") { 20 }
         val newContext = oldContext.recreate()
         val newChildren by newContext.children(restoreState = { stateOf(1 by DESTROYED, 2 by DESTROYED, 3 by STARTED, 4 by RESUMED) })
 
         navigate { listOf(1 by DESTROYED, 2 by RESUMED, 3 by STARTED, 4 by RESUMED) }
-        val restoredState3 = newChildren.getByConfig(config = 2).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState3 = newChildren.getByConfig(config = 2).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(20, restoredState3)
     }
@@ -411,12 +411,12 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_recreated_and_started_child_restored_as_destroyed_WHEN_child_switched_to_created_THEN_state_restored() {
         val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        oldChildren.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
+        oldChildren.getByConfig(config = 3).requireInstance().savedStateRegistry.register(key = "key") { 30 }
         val newContext = oldContext.recreate()
         val newChildren by newContext.children(restoreState = { stateOf(1 by DESTROYED, 2 by CREATED, 3 by DESTROYED, 4 by RESUMED) })
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by CREATED, 4 by RESUMED) }
-        val restoredState3 = newChildren.getByConfig(config = 3).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState3 = newChildren.getByConfig(config = 3).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(30, restoredState3)
     }
@@ -425,12 +425,12 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_recreated_and_started_child_restored_as_destroyed_WHEN_child_switched_to_started_THEN_state_restored() {
         val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        oldChildren.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
+        oldChildren.getByConfig(config = 3).requireInstance().savedStateRegistry.register(key = "key") { 30 }
         val newContext = oldContext.recreate()
         val newChildren by newContext.children(restoreState = { stateOf(1 by DESTROYED, 2 by CREATED, 3 by DESTROYED, 4 by RESUMED) })
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED) }
-        val restoredState3 = newChildren.getByConfig(config = 3).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState3 = newChildren.getByConfig(config = 3).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(30, restoredState3)
     }
@@ -439,12 +439,12 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_recreated_and_started_child_restored_as_destroyed_WHEN_child_switched_to_resumed_THEN_state_restored() {
         val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        oldChildren.getByConfig(config = 3).requireInstance().stateKeeper.register(key = "key") { 30 }
+        oldChildren.getByConfig(config = 3).requireInstance().savedStateRegistry.register(key = "key") { 30 }
         val newContext = oldContext.recreate()
         val newChildren by newContext.children(restoreState = { stateOf(1 by DESTROYED, 2 by CREATED, 3 by DESTROYED, 4 by RESUMED) })
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by RESUMED, 4 by RESUMED) }
-        val restoredState3 = newChildren.getByConfig(config = 3).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState3 = newChildren.getByConfig(config = 3).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(30, restoredState3)
     }
@@ -453,12 +453,12 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_recreated_and_resumed_child_restored_as_destroyed_WHEN_child_switched_to_created_THEN_state_restored() {
         val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        oldChildren.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") { 40 }
+        oldChildren.getByConfig(config = 4).requireInstance().savedStateRegistry.register(key = "key") { 40 }
         val newContext = oldContext.recreate()
         val newChildren by newContext.children(restoreState = { stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by DESTROYED) })
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by CREATED) }
-        val restoredState3 = newChildren.getByConfig(config = 4).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState3 = newChildren.getByConfig(config = 4).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(40, restoredState3)
     }
@@ -467,12 +467,12 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_recreated_and_resumed_child_restored_as_destroyed_WHEN_child_switched_to_started_THEN_state_restored() {
         val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        oldChildren.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") { 40 }
+        oldChildren.getByConfig(config = 4).requireInstance().savedStateRegistry.register(key = "key") { 40 }
         val newContext = oldContext.recreate()
         val newChildren by newContext.children(restoreState = { stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by DESTROYED) })
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by STARTED) }
-        val restoredState3 = newChildren.getByConfig(config = 4).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState3 = newChildren.getByConfig(config = 4).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(40, restoredState3)
     }
@@ -481,12 +481,12 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_recreated_and_resumed_child_restored_as_destroyed_WHEN_child_switched_to_resumed_THEN_state_restored() {
         val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED))
-        oldChildren.getByConfig(config = 4).requireInstance().stateKeeper.register(key = "key") { 40 }
+        oldChildren.getByConfig(config = 4).requireInstance().savedStateRegistry.register(key = "key") { 40 }
         val newContext = oldContext.recreate()
         val newChildren by newContext.children(restoreState = { stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by DESTROYED) })
 
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED, 4 by RESUMED) }
-        val restoredState3 = newChildren.getByConfig(config = 4).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState3 = newChildren.getByConfig(config = 4).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(40, restoredState3)
     }
@@ -495,17 +495,17 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_child_switched_to_created_and_recreated_twice_WHEN_child_switched_to_resumed_THEN_state_restored() {
         val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by DESTROYED, 2 by RESUMED, 3 by STARTED))
-        oldChildren.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 30 }
+        oldChildren.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") { 30 }
         navigate { listOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED) }
 
         val newContext1 = oldContext.recreate()
         val newChildren1 by newContext1.children(restoreState = { stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED) })
-        newChildren1.getByConfig(config = 2).requireInstance().stateKeeper.register(key = "key") { 31 }
+        newChildren1.getByConfig(config = 2).requireInstance().savedStateRegistry.register(key = "key") { 31 }
 
         val newContext2 = newContext1.recreate()
         val newChildren2 by newContext2.children(restoreState = { stateOf(1 by DESTROYED, 2 by CREATED, 3 by STARTED) })
 
-        val restoredState2 = newChildren2.getByConfig(config = 2).requireInstance().stateKeeper.consume<Int>(key = "key")
+        val restoredState2 = newChildren2.getByConfig(config = 2).requireInstance().savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(31, restoredState2)
     }
@@ -515,14 +515,14 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
         DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
         val oldContext = HostComponentContext().resumed()
         val oldChildren by oldContext.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
-        oldChildren.first().requireInstance().stateKeeper.register("key") { 10 }
-        oldChildren.last().requireInstance().stateKeeper.register("key") { 30 }
+        oldChildren.first().requireInstance().savedStateRegistry.register("key") { 10 }
+        oldChildren.last().requireInstance().savedStateRegistry.register("key") { 30 }
 
         val newContext = oldContext.recreate()
         val newChildren by newContext.children()
 
-        val restoredState1 = newChildren.first().requireInstance().stateKeeper.consume<Int>("key")
-        val restoredState3 = newChildren.last().requireInstance().stateKeeper.consume<Int>("key")
+        val restoredState1 = newChildren.first().requireInstance().savedStateRegistry.consume<Int>("key")
+        val restoredState3 = newChildren.last().requireInstance().savedStateRegistry.consume<Int>("key")
 
         assertEquals(10, restoredState1)
         assertEquals(30, restoredState3)
@@ -532,14 +532,14 @@ class ChildrenSavedStateTest : ChildrenTestBase() {
     fun GIVEN_first_and_last_children_duplicated_WHEN_children_recreated_THEN_states_restored() {
         DecomposeSettings.settings = DecomposeSettings.settings.copy(duplicateConfigurationsEnabled = true)
         val children by context.children(initialState = stateOf(1 by CREATED, 2 by STARTED, 1 by RESUMED))
-        children.first().requireInstance().stateKeeper.register("key") { 10 }
-        children.last().requireInstance().stateKeeper.register("key") { 30 }
+        children.first().requireInstance().savedStateRegistry.register("key") { 10 }
+        children.last().requireInstance().savedStateRegistry.register("key") { 30 }
 
         navigate { listOf(1 by DESTROYED, 2 by STARTED, 1 by DESTROYED) }
         navigate { listOf(1 by CREATED, 2 by STARTED, 1 by RESUMED) }
 
-        val restoredState1 = children.first().requireInstance().stateKeeper.consume<Int>("key")
-        val restoredState3 = children.last().requireInstance().stateKeeper.consume<Int>("key")
+        val restoredState1 = children.first().requireInstance().savedStateRegistry.consume<Int>("key")
+        val restoredState3 = children.last().requireInstance().savedStateRegistry.consume<Int>("key")
 
         assertEquals(10, restoredState1)
         assertEquals(30, restoredState3)

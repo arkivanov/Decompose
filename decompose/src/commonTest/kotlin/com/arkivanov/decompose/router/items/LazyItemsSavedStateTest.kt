@@ -28,16 +28,16 @@ class LazyItemsSavedStateTest {
                 ),
             )
 
-        items.require(1).stateKeeper.register(key = "key") { 1 }
-        items.require(2).stateKeeper.register(key = "key") { 2 }
-        items.require(3).stateKeeper.register(key = "key") { 3 }
+        items.require(1).savedStateRegistry.register(key = "key") { 1 }
+        items.require(2).savedStateRegistry.register(key = "key") { 2 }
+        items.require(3).savedStateRegistry.register(key = "key") { 3 }
 
         ctx = ctx.recreate()
         items = ctx.childLazyItems()
 
-        val state1 = items.require(1).stateKeeper.consume<Int>(key = "key")
-        val state2 = items.require(2).stateKeeper.consume<Int>(key = "key")
-        val state3 = items.require(3).stateKeeper.consume<Int>(key = "key")
+        val state1 = items.require(1).savedStateRegistry.consume<Int>(key = "key")
+        val state2 = items.require(2).savedStateRegistry.consume<Int>(key = "key")
+        val state3 = items.require(3).savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(1, state1)
         assertEquals(2, state2)
@@ -59,9 +59,9 @@ class LazyItemsSavedStateTest {
                 stateSaver = null,
             )
 
-        items.require(1).stateKeeper.register(key = "key") { 1 }
-        items.require(2).stateKeeper.register(key = "key") { 2 }
-        items.require(3).stateKeeper.register(key = "key") { 3 }
+        items.require(1).savedStateRegistry.register(key = "key") { 1 }
+        items.require(2).savedStateRegistry.register(key = "key") { 2 }
+        items.require(3).savedStateRegistry.register(key = "key") { 3 }
 
         ctx = ctx.recreate()
 
@@ -75,9 +75,9 @@ class LazyItemsSavedStateTest {
                 ),
             )
 
-        val state1 = items.require(1).stateKeeper.consume<Int>(key = "key")
-        val state2 = items.require(2).stateKeeper.consume<Int>(key = "key")
-        val state3 = items.require(3).stateKeeper.consume<Int>(key = "key")
+        val state1 = items.require(1).savedStateRegistry.consume<Int>(key = "key")
+        val state2 = items.require(2).savedStateRegistry.consume<Int>(key = "key")
+        val state3 = items.require(3).savedStateRegistry.consume<Int>(key = "key")
 
         assertNull(state1)
         assertNull(state2)
@@ -182,9 +182,9 @@ class LazyItemsSavedStateTest {
                 ),
             )
 
-        items.require(1).stateKeeper.register(key = "key") { 1 }
-        items.require(2).stateKeeper.register(key = "key") { 2 }
-        items.require(3).stateKeeper.register(key = "key") { 3 }
+        items.require(1).savedStateRegistry.register(key = "key") { 1 }
+        items.require(2).savedStateRegistry.register(key = "key") { 2 }
+        items.require(3).savedStateRegistry.register(key = "key") { 3 }
         nav.navigate { it.copy(activeItems = emptyMap()) }
 
         nav.navigate {
@@ -197,9 +197,9 @@ class LazyItemsSavedStateTest {
             )
         }
 
-        val state1 = items.require(1).stateKeeper.consume<Int>(key = "key")
-        val state2 = items.require(2).stateKeeper.consume<Int>(key = "key")
-        val state3 = items.require(3).stateKeeper.consume<Int>(key = "key")
+        val state1 = items.require(1).savedStateRegistry.consume<Int>(key = "key")
+        val state2 = items.require(2).savedStateRegistry.consume<Int>(key = "key")
+        val state3 = items.require(3).savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(1, state1)
         assertEquals(2, state2)
@@ -222,9 +222,9 @@ class LazyItemsSavedStateTest {
                 ),
             )
 
-        items.require(1).stateKeeper.register(key = "key") { 1 }
-        items.require(2).stateKeeper.register(key = "key") { 2 }
-        items.require(3).stateKeeper.register(key = "key") { 3 }
+        items.require(1).savedStateRegistry.register(key = "key") { 1 }
+        items.require(2).savedStateRegistry.register(key = "key") { 2 }
+        items.require(3).savedStateRegistry.register(key = "key") { 3 }
         nav.navigate { it.copy(items = emptyList()) }
 
         nav.navigate {
@@ -238,9 +238,9 @@ class LazyItemsSavedStateTest {
             )
         }
 
-        val state1 = items.require(1).stateKeeper.consume<Int>(key = "key")
-        val state2 = items.require(2).stateKeeper.consume<Int>(key = "key")
-        val state3 = items.require(3).stateKeeper.consume<Int>(key = "key")
+        val state1 = items.require(1).savedStateRegistry.consume<Int>(key = "key")
+        val state2 = items.require(2).savedStateRegistry.consume<Int>(key = "key")
+        val state3 = items.require(3).savedStateRegistry.consume<Int>(key = "key")
 
         assertNull(state1)
         assertNull(state2)
@@ -263,9 +263,9 @@ class LazyItemsSavedStateTest {
                 ),
             )
 
-        items.require(1).stateKeeper.register(key = "key") { 1 }
-        items.require(2).stateKeeper.register(key = "key") { 2 }
-        items.require(3).stateKeeper.register(key = "key") { 3 }
+        items.require(1).savedStateRegistry.register(key = "key") { 1 }
+        items.require(2).savedStateRegistry.register(key = "key") { 2 }
+        items.require(3).savedStateRegistry.register(key = "key") { 3 }
         nav.navigate { it.copy(activeItems = emptyMap()) }
 
         nav = ItemsNavigation()
@@ -282,9 +282,9 @@ class LazyItemsSavedStateTest {
             )
         }
 
-        val state1 = items.require(1).stateKeeper.consume<Int>(key = "key")
-        val state2 = items.require(2).stateKeeper.consume<Int>(key = "key")
-        val state3 = items.require(3).stateKeeper.consume<Int>(key = "key")
+        val state1 = items.require(1).savedStateRegistry.consume<Int>(key = "key")
+        val state2 = items.require(2).savedStateRegistry.consume<Int>(key = "key")
+        val state3 = items.require(3).savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(1, state1)
         assertEquals(2, state2)
@@ -307,9 +307,9 @@ class LazyItemsSavedStateTest {
                 ),
             )
 
-        items.require(1).stateKeeper.register(key = "key") { 1 }
-        items.require(2).stateKeeper.register(key = "key") { 2 }
-        items.require(3).stateKeeper.register(key = "key") { 3 }
+        items.require(1).savedStateRegistry.register(key = "key") { 1 }
+        items.require(2).savedStateRegistry.register(key = "key") { 2 }
+        items.require(3).savedStateRegistry.register(key = "key") { 3 }
         nav.navigate { it.copy(activeItems = emptyMap()) }
 
         ctx = ctx.recreate()
@@ -328,9 +328,9 @@ class LazyItemsSavedStateTest {
             )
         }
 
-        val state1 = items.require(1).stateKeeper.consume<Int>(key = "key")
-        val state2 = items.require(2).stateKeeper.consume<Int>(key = "key")
-        val state3 = items.require(3).stateKeeper.consume<Int>(key = "key")
+        val state1 = items.require(1).savedStateRegistry.consume<Int>(key = "key")
+        val state2 = items.require(2).savedStateRegistry.consume<Int>(key = "key")
+        val state3 = items.require(3).savedStateRegistry.consume<Int>(key = "key")
 
         assertEquals(1, state1)
         assertEquals(2, state2)

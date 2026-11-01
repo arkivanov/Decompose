@@ -1,0 +1,10 @@
+com.arkivanov.sample.shared.dynamicfeatures.feature2impl.feature2Impl-pngs-0 /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/build/generated/res/pngs/debug
+com.arkivanov.sample.shared.dynamicfeatures.feature2impl.feature2Impl-resValues-1 /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/build/generated/res/resValues/debug
+com.arkivanov.sample.shared.dynamicfeatures.feature2impl.feature2Impl-updated_navigation_xml-2 /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/build/generated/updated_navigation_xml/debug
+com.arkivanov.sample.shared.dynamicfeatures.feature2impl.feature2Impl-packageDebugResources-3 /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.arkivanov.sample.shared.dynamicfeatures.feature2impl.feature2Impl-packageDebugResources-4 /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.arkivanov.sample.shared.dynamicfeatures.feature2impl.feature2Impl-debug-5 /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/build/intermediates/merged_res/debug/mergeDebugResources
+com.arkivanov.sample.shared.dynamicfeatures.feature2impl.feature2Impl-androidDebug-6 /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidDebug/res
+com.arkivanov.sample.shared.dynamicfeatures.feature2impl.feature2Impl-androidMain-7 /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/androidMain/res
+com.arkivanov.sample.shared.dynamicfeatures.feature2impl.feature2Impl-debug-8 /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/debug/res
+com.arkivanov.sample.shared.dynamicfeatures.feature2impl.feature2Impl-main-9 /Users/arkivanov/dev/workspace/Decompose/sample/shared/dynamic-features/feature2Impl/src/main/res

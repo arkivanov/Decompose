@@ -1,5 +1,8 @@
 package com.arkivanov.decompose.router.children
 
+import androidx.savedstate.SavedState
+import androidx.savedstate.serialization.decodeFromSavedState
+import androidx.savedstate.serialization.encodeToSavedState
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.KSerializer
@@ -17,7 +20,7 @@ interface NavStateSaver<T> {
      * @param state the navigation state to be saved
      * @return a serializable container that holds the saved state, or `null` if the state should not be saved.
      */
-    fun saveState(state: T): SerializableContainer?
+    fun saveState(state: T): SavedState?
 
     /**
      * Restores the previously saved navigation state from the provided [SerializableContainer].
@@ -25,7 +28,7 @@ interface NavStateSaver<T> {
      * @param container the serializable container holding the previously saved state.
      * @return the restored navigation state, or `null` if the state could not be restored.
      */
-    fun restoreState(container: SerializableContainer): T?
+    fun restoreState(container: SavedState): T? // FIXME: Change to non-null?
 }
 
 /**
@@ -34,12 +37,12 @@ interface NavStateSaver<T> {
  */
 @ExperimentalDecomposeApi
 inline fun <T> NavStateSaver(
-    crossinline save: (T) -> SerializableContainer?,
-    crossinline restore: (SerializableContainer) -> T?,
+    crossinline save: (T) -> SavedState?,
+    crossinline restore: (SavedState) -> T?,
 ): NavStateSaver<T> =
     object : NavStateSaver<T> {
-        override fun saveState(state: T): SerializableContainer? = save(state)
-        override fun restoreState(container: SerializableContainer): T? = restore(container)
+        override fun saveState(state: T): SavedState? = save(state)
+        override fun restoreState(container: SavedState): T? = restore(container)
     }
 
 /**
@@ -47,14 +50,10 @@ inline fun <T> NavStateSaver(
  * that saves and restores the navigation state using the provided [serializer].
  */
 @ExperimentalDecomposeApi
-fun <T> NavStateSaver(serializer: KSerializer<T & Any>): NavStateSaver<T> =
+fun <T> NavStateSaver(serializer: KSerializer<T>): NavStateSaver<T> =
     NavStateSaver(
-        save = {
-            SerializableContainer(value = it, strategy = serializer)
-        },
-        restore = {
-            it.consume(strategy = serializer)
-        },
+        save = { encodeToSavedState(serializer = serializer, value = it) },
+        restore = { decodeFromSavedState(deserializer = serializer, savedState = it) },
     )
 
 internal inline fun <T, R> NavStateSaver<T>.mapNullable(

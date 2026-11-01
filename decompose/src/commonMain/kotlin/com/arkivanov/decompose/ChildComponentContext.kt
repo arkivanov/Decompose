@@ -1,6 +1,7 @@
 package com.arkivanov.decompose
 
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.arkivanov.decompose.instancekeeper.child
 import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.mergedLifecycle
@@ -9,7 +10,7 @@ import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.lifecycle.moveToStarted
 import com.arkivanov.decompose.navigationevent.NavigationEventPriority
 import com.arkivanov.decompose.navigationevent.child
-import com.arkivanov.decompose.statekeeper.child
+import com.arkivanov.decompose.savedstate.child
 
 /**
  * Creates a new instance of child [ComponentContext] of type [Ctx] and attaches it to the parent (`this`) component context.
@@ -29,16 +30,24 @@ fun <Ctx : GenericComponentContext<Ctx>> Ctx.childContext(
     key: String,
     maxLifecycle: ChildContextLifecycle? = null,
     navigationEventPriority: NavigationEventPriority = NavigationEventPriority.Default,
-): Ctx =
-    componentContextFactory(
-        lifecycle = if (maxLifecycle == null) this.lifecycle else mergedLifecycle(this.lifecycle, maxLifecycle.lifecycle),
-        stateKeeper = stateKeeper.child(key),
-        viewModelStore = viewModelStore.child(key),
-        navigationEventDispatcher = navigationEventDispatcher.child(
-            lifecycle = maxLifecycle?.lifecycle,
-            priority = navigationEventPriority
-        ),
-    )
+): Ctx {
+    val newLifecycle = LifecycleRegistry()
+
+    val childContext =
+        componentContextFactory(
+            lifecycle = if (maxLifecycle == null) newLifecycle else mergedLifecycle(this.lifecycle, maxLifecycle.lifecycle),
+            savedStateRegistry = savedStateRegistry.child(key = key, lifecycle = newLifecycle),
+            viewModelStore = viewModelStore.child(key),
+            navigationEventDispatcher = navigationEventDispatcher.child(
+                lifecycle = maxLifecycle?.lifecycle,
+                priority = navigationEventPriority
+            ),
+        )
+
+    lifecycle.addObserver(LifecycleEventObserver { _, event -> newLifecycle.currentState = event.targetState })
+
+    return childContext
+}
 
 /**
  * Designed for use with the [childContext] extension function.

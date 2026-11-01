@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    featureSplit="feature2Impl"
+    package="com.arkivanov.sample.app"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="35" />
+
+    <dist:module
+        dist:instant="false"
+        dist:title="@string/title_feature2" >
+        <dist:delivery>
+            <dist:install-time />
+        </dist:delivery>
+
+        <dist:fusing dist:include="true" />
+    </dist:module>
+
+    <application
+        android:debuggable="true"
+        android:extractNativeLibs="true"
+        android:testOnly="true" />
+
+</manifest>

@@ -1,0 +1,87 @@
+{
+  "projectStructure": {
+    "formatVersion": "0.3.3",
+    "isPublishedAsRoot": "true",
+    "variants": [
+      {
+        "name": "debugApiElements",
+        "sourceSet": [
+          "commonMain"
+        ]
+      },
+      {
+        "name": "debugRuntimeElements",
+        "sourceSet": [
+          "commonMain"
+        ]
+      },
+      {
+        "name": "releaseApiElements",
+        "sourceSet": [
+          "commonMain"
+        ]
+      },
+      {
+        "name": "releaseRuntimeElements",
+        "sourceSet": [
+          "commonMain"
+        ]
+      },
+      {
+        "name": "iosArm64ApiElements",
+        "sourceSet": [
+          "commonMain"
+        ]
+      },
+      {
+        "name": "iosSimulatorArm64ApiElements",
+        "sourceSet": [
+          "commonMain"
+        ]
+      },
+      {
+        "name": "iosX64ApiElements",
+        "sourceSet": [
+          "commonMain"
+        ]
+      },
+      {
+        "name": "jsApiElements",
+        "sourceSet": [
+          "commonMain"
+        ]
+      },
+      {
+        "name": "jsRuntimeElements",
+        "sourceSet": [
+          "commonMain"
+        ]
+      },
+      {
+        "name": "jvmApiElements",
+        "sourceSet": [
+          "commonMain"
+        ]
+      },
+      {
+        "name": "jvmRuntimeElements",
+        "sourceSet": [
+          "commonMain"
+        ]
+      }
+    ],
+    "sourceSets": [
+      {
+        "name": "commonMain",
+        "dependsOn": [],
+        "moduleDependency": [
+          "org.jetbrains.kotlin:kotlin-stdlib",
+          "Decompose.sample.shared.dynamic-features:api",
+          "org.jetbrains.compose.runtime:runtime",
+          "org.jetbrains.compose.ui:ui"
+        ],
+        "binaryLayout": "klib"
+      }
+    ]
+  }
+}

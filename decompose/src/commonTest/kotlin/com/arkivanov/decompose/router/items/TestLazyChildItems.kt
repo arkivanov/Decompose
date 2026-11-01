@@ -14,6 +14,7 @@ import com.arkivanov.decompose.router.items.LazyComponentState.PENDING
 import com.arkivanov.decompose.router.items.LazyComponentState.REMOVED
 import com.arkivanov.decompose.router.items.LazyComponentState.RESUMED
 import com.arkivanov.decompose.router.items.LazyComponentState.STARTED
+import com.arkivanov.decompose.savedstate.register
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.serializer
@@ -62,7 +63,7 @@ inline fun <reified C : Any> ComponentContext.childLazyItems(
                 destroyedComponents -= cfg
 
                 var isStateSaved = false
-                ctx.stateKeeper.register("saved_state_marker", Boolean.serializer()) {
+                ctx.savedStateRegistry.register("saved_state_marker", Boolean.serializer()) {
                     isStateSaved = true
                     true
                 }

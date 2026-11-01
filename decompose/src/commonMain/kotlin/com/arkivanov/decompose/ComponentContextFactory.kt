@@ -3,6 +3,7 @@ package com.arkivanov.decompose
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelStore
 import androidx.navigationevent.NavigationEventDispatcher
+import androidx.savedstate.SavedStateRegistry
 import com.arkivanov.essenty.statekeeper.StateKeeper
 
 /**
@@ -22,7 +23,7 @@ fun interface ComponentContextFactory<out T : Any> {
      */
     operator fun invoke(
         lifecycle: Lifecycle,
-        stateKeeper: StateKeeper,
+        savedStateRegistry: SavedStateRegistry,
         viewModelStore: ViewModelStore,
         navigationEventDispatcher: NavigationEventDispatcher,
     ): T

@@ -1,6 +1,9 @@
 package com.arkivanov.decompose.router.children
 
 import androidx.navigationevent.NavigationEventDispatcher
+import androidx.savedstate.SavedState
+import androidx.savedstate.serialization.decodeFromSavedState
+import androidx.savedstate.serialization.encodeToSavedState
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeSettings
@@ -9,8 +12,6 @@ import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addDirectInput
 import com.arkivanov.decompose.testutils.keys
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.statekeeper.SerializableContainer
-import com.arkivanov.essenty.statekeeper.consumeRequired
 import kotlinx.serialization.Serializable
 import kotlin.test.AfterTest
 import kotlin.test.assertContentEquals
@@ -41,17 +42,17 @@ open class ChildrenTestBase {
 
     protected fun ComponentContext.children(
         initialState: TestNavState = TestNavState(),
-        saveState: (state: TestNavState) -> SerializableContainer? = { state ->
-            SerializableContainer(
+        saveState: (state: TestNavState) -> SavedState? = { state ->
+            encodeToSavedState(
                 value = SavedNavState(
                     configurations = state.children.map { it.configuration },
                     statuses = state.children.map { it.status },
                 ),
-                strategy = SavedNavState.serializer(),
+                serializer = SavedNavState.serializer(),
             )
         },
-        restoreState: (container: SerializableContainer) -> TestNavState? = { container ->
-            val savedState = container.consumeRequired(SavedNavState.serializer())
+        restoreState: (container: SavedState) -> TestNavState? = { container ->
+            val savedState = decodeFromSavedState(SavedNavState.serializer(), container)
             TestNavState(
                 children = savedState.configurations.zip(savedState.statuses).map { (configuration, status) ->
                     SimpleChildNavState(

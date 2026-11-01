@@ -3,6 +3,8 @@ package com.arkivanov.sample.shared.customnavigation
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.instancekeeper.retainedCloseable
 import com.arkivanov.decompose.lifecycle.addObserver
+import com.arkivanov.decompose.savedstate.consume
+import com.arkivanov.decompose.savedstate.register
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
@@ -23,7 +25,7 @@ class DefaultKittenComponent(
 
     private val handler =
         retainedCloseable(key = "handler") {
-            Handler(initialState = stateKeeper.consume(key = KEY_STATE, strategy = State.serializer()) ?: State())
+            Handler(initialState = savedStateRegistry.consume(key = KEY_STATE, strategy = State.serializer()) ?: State())
         }
 
     override val model: Value<Model> = handler.state.map { it.toModel() }
@@ -34,7 +36,7 @@ class DefaultKittenComponent(
             onStop = handler::pause,
         )
 
-        stateKeeper.register(key = KEY_STATE, strategy = State.serializer()) { handler.state.value }
+        savedStateRegistry.register(key = KEY_STATE, strategy = State.serializer()) { handler.state.value }
     }
 
     private fun State.toModel(): Model =

@@ -163,11 +163,11 @@ class ChildSlotIntegrationTest {
     fun GIVEN_persistent_WHEN_recreated_THEN_slot_state_restored() {
         val oldContext = HostComponentContext().resumed()
         val slot by oldContext.childSlot(initialConfiguration = 1, persistent = true)
-        slot.requireChild().instance.stateKeeper.register("key") { 10 }
+        slot.requireChild().instance.savedStateRegistry.register("key") { 10 }
 
         val newContext = oldContext.recreate()
         val newSlot by newContext.childSlot(initialConfiguration = null, persistent = true)
-        val restoredState = newSlot.requireChild().instance.stateKeeper.consume<Int>("key")
+        val restoredState = newSlot.requireChild().instance.savedStateRegistry.consume<Int>("key")
 
         assertEquals(10, restoredState)
     }
@@ -187,7 +187,7 @@ class ChildSlotIntegrationTest {
     fun WHEN_created_persistent_THEN_registered_in_parent_StateKeeper() {
         context.childSlot(initialConfiguration = 1, persistent = true)
 
-        assertTrue(context.stateKeeper.isRegistered("key"))
+        assertNotNull(context.savedStateRegistry.getSavedStateProvider("key"))
     }
 
     @Test

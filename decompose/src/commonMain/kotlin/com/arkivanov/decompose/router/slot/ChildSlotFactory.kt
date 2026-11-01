@@ -11,6 +11,7 @@ import com.arkivanov.decompose.router.children.children
 import com.arkivanov.decompose.router.children.mapNullable
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.nullable
 
 /**
  * Initializes and manages a slot for one child component.
@@ -39,7 +40,7 @@ fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any> Ctx.childSlot(
 ): Value<ChildSlot<C, T>> =
     childSlot(
         source = source,
-        stateSaver = serializer?.let(::NavStateSaver),
+        stateSaver = serializer?.nullable?.let(::NavStateSaver),
         key = key,
         initialConfiguration = initialConfiguration,
         handleBackButton = handleBackButton,
