@@ -1,11 +1,11 @@
 package com.arkivanov.decompose.router.items
 
 import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.instancekeeper.getOrCreate
 import com.arkivanov.decompose.lifecycle.resumed
-import com.arkivanov.decompose.router.TestInstance
+import com.arkivanov.decompose.router.TestViewModel
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState
 import com.arkivanov.decompose.testutils.recreate
-import com.arkivanov.essenty.instancekeeper.getOrCreate
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNotSame
@@ -34,9 +34,9 @@ class LazyItemsRetainedInstanceTest {
                 ),
             )
 
-        val instance1 = items.require(1).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance2 = items.require(2).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance3 = items.require(3).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val instance1 = items.require(1).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance2 = items.require(2).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance3 = items.require(3).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         nav.navigate { it.copy(items = it.items - listOf(4, 5, 6)) }
 
@@ -64,15 +64,15 @@ class LazyItemsRetainedInstanceTest {
                 ),
             )
 
-        val instance1 = items.require(1).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance2 = items.require(2).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance3 = items.require(3).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val instance1 = items.require(1).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance2 = items.require(2).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance3 = items.require(3).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         nav.navigate { it.copy(items = it.items - listOf(4, 5, 6)) }
 
-        val newInstance1 = items.require(1).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val newInstance2 = items.require(2).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val newInstance3 = items.require(3).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val newInstance1 = items.require(1).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val newInstance2 = items.require(2).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val newInstance3 = items.require(3).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         assertSame(instance1, newInstance1)
         assertSame(instance2, newInstance2)
@@ -98,9 +98,9 @@ class LazyItemsRetainedInstanceTest {
                 ),
             )
 
-        val instance4 = items.require(4).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance5 = items.require(5).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance6 = items.require(6).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val instance4 = items.require(4).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance5 = items.require(5).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance6 = items.require(6).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         nav.navigate { it.copy(items = it.items - listOf(4, 5, 6)) }
 
@@ -128,9 +128,9 @@ class LazyItemsRetainedInstanceTest {
                 ),
             )
 
-        val instance1 = items.require(1).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance2 = items.require(2).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance3 = items.require(3).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val instance1 = items.require(1).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance2 = items.require(2).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance3 = items.require(3).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         nav.navigate { it.copy(activeItems = it.activeItems - setOf(4, 5, 6)) }
 
@@ -158,15 +158,15 @@ class LazyItemsRetainedInstanceTest {
                 ),
             )
 
-        val instance1 = items.require(1).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance2 = items.require(2).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance3 = items.require(3).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val instance1 = items.require(1).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance2 = items.require(2).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance3 = items.require(3).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         nav.navigate { it.copy(activeItems = it.activeItems - setOf(4, 5, 6)) }
 
-        val newInstance1 = items.require(1).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val newInstance2 = items.require(2).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val newInstance3 = items.require(3).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val newInstance1 = items.require(1).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val newInstance2 = items.require(2).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val newInstance3 = items.require(3).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         assertSame(instance1, newInstance1)
         assertSame(instance2, newInstance2)
@@ -192,9 +192,9 @@ class LazyItemsRetainedInstanceTest {
                 ),
             )
 
-        val instance4 = items.require(4).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance5 = items.require(5).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance6 = items.require(6).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val instance4 = items.require(4).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance5 = items.require(5).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance6 = items.require(6).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         nav.navigate {
             it.copy(
@@ -225,9 +225,9 @@ class LazyItemsRetainedInstanceTest {
                 ),
             )
 
-        val instance1 = items.require(1).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance2 = items.require(2).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance3 = items.require(3).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val instance1 = items.require(1).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance2 = items.require(2).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance3 = items.require(3).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         ctx.childLazyItems<Int>()
@@ -251,16 +251,16 @@ class LazyItemsRetainedInstanceTest {
                 ),
             )
 
-        val instance1 = items.require(1).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance2 = items.require(2).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance3 = items.require(3).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val instance1 = items.require(1).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance2 = items.require(2).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance3 = items.require(3).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         items = ctx.childLazyItems()
 
-        val newInstance1 = items.require(1).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val newInstance2 = items.require(2).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val newInstance3 = items.require(3).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val newInstance1 = items.require(1).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val newInstance2 = items.require(2).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val newInstance3 = items.require(3).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         assertSame(instance1, newInstance1)
         assertSame(instance2, newInstance2)
@@ -282,9 +282,9 @@ class LazyItemsRetainedInstanceTest {
                 stateSaver = null,
             )
 
-        val instance1 = items.require(1).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance2 = items.require(2).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance3 = items.require(3).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val instance1 = items.require(1).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance2 = items.require(2).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance3 = items.require(3).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         ctx.childLazyItems<Int>()
@@ -309,9 +309,9 @@ class LazyItemsRetainedInstanceTest {
                 stateSaver = null,
             )
 
-        val instance1 = items.require(1).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance2 = items.require(2).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance3 = items.require(3).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val instance1 = items.require(1).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance2 = items.require(2).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance3 = items.require(3).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
 
@@ -344,9 +344,9 @@ class LazyItemsRetainedInstanceTest {
                 stateSaver = null,
             )
 
-        val instance1 = items.require(1).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance2 = items.require(2).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val instance3 = items.require(3).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val instance1 = items.require(1).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance2 = items.require(2).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val instance3 = items.require(3).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
 
@@ -360,9 +360,9 @@ class LazyItemsRetainedInstanceTest {
                 ),
             )
 
-        val newInstance1 = items.require(1).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val newInstance2 = items.require(2).instanceKeeper.getOrCreate("key") { TestInstance() }
-        val newInstance3 = items.require(3).instanceKeeper.getOrCreate("key") { TestInstance() }
+        val newInstance1 = items.require(1).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val newInstance2 = items.require(2).viewModelStore.getOrCreate("key") { TestViewModel() }
+        val newInstance3 = items.require(3).viewModelStore.getOrCreate("key") { TestViewModel() }
 
         assertNotSame(instance1, newInstance1)
         assertNotSame(instance2, newInstance2)

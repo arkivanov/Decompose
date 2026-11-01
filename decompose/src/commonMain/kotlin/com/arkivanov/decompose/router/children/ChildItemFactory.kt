@@ -1,6 +1,6 @@
 package com.arkivanov.decompose.router.children
 
-import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
+import androidx.lifecycle.ViewModelStore
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 
 internal interface ChildItemFactory<C : Any, out T : Any> {
@@ -9,6 +9,6 @@ internal interface ChildItemFactory<C : Any, out T : Any> {
         configuration: C,
         key: String,
         savedState: SerializableContainer? = null,
-        instanceKeeperDispatcher: InstanceKeeperDispatcher? = null,
+        viewModelStore: ViewModelStore? = null,
     ): ChildItem.Created<C, T>
 }

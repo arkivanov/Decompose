@@ -11,17 +11,17 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.DelicateDecomposeApi
 import com.arkivanov.decompose.HostComponentContext
+import com.arkivanov.decompose.instancekeeper.getOrCreate
 import com.arkivanov.decompose.lifecycle.TestLifecycleObserver
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addHandler
-import com.arkivanov.decompose.router.TestInstance
+import com.arkivanov.decompose.router.TestViewModel
 import com.arkivanov.decompose.router.children.NavStateSaver
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.getValue
 import com.arkivanov.decompose.testutils.recreate
 import com.arkivanov.decompose.testutils.register
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
@@ -267,7 +267,7 @@ class ChildStackIntegrationTest {
     fun GIVEN_persistent_WHEN_config_changed_with_same_initial_stack_and_state_not_restored_THEN_child_retained_instances_destroyed() {
         var ctx = HostComponentContext().resumed()
         val oldStack by ctx.childStack(initialStack = listOf(Config(1)), persistent = true)
-        val oldInstance = oldStack.active.instance.instanceKeeper.getOrCreate("key") { TestInstance() }
+        val oldInstance = oldStack.active.instance.viewModelStore.getOrCreate("key") { TestViewModel() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         ctx.childStack(
@@ -287,7 +287,7 @@ class ChildStackIntegrationTest {
     fun GIVEN_persistent_WHEN_config_changed_with_same_initial_stack_and_state_not_restored_THEN_retained_instances_are_not_same() {
         var ctx = HostComponentContext().resumed()
         val oldStack by ctx.childStack(initialStack = listOf(Config(1)), persistent = true)
-        val oldInstance = oldStack.active.instance.instanceKeeper.getOrCreate("key") { TestInstance() }
+        val oldInstance = oldStack.active.instance.viewModelStore.getOrCreate("key") { TestViewModel() }
 
         ctx = ctx.recreate(isConfigurationChange = true)
         val newStack by ctx.childStack(
@@ -299,7 +299,7 @@ class ChildStackIntegrationTest {
             ),
             childFactory = ::Component,
         )
-        val newInstance = newStack.active.instance.instanceKeeper.getOrCreate("key") { TestInstance() }
+        val newInstance = newStack.active.instance.viewModelStore.getOrCreate("key") { TestViewModel() }
 
         assertNotSame(newInstance, oldInstance)
     }
@@ -385,11 +385,11 @@ class ChildStackIntegrationTest {
     fun GIVEN_persistent_WHEN_recreated_with_configuration_change_THEN_instance_retained_for_all_components() {
         val oldContext = HostComponentContext().resumed()
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = true)
-        val oldInstances = oldStack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
+        val oldInstances = oldStack.items.map { it.instance.viewModelStore.getOrCreate("key", ::TestViewModel) }
 
         val newContext = oldContext.recreate(isConfigurationChange = true)
         val newStack by newContext.childStack()
-        val retainedInstances = newStack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
+        val retainedInstances = newStack.items.map { it.instance.viewModelStore.getOrCreate("key", ::TestViewModel) }
 
         assertContentEquals(oldInstances, retainedInstances)
     }
@@ -398,11 +398,11 @@ class ChildStackIntegrationTest {
     fun GIVEN_not_persistent_WHEN_recreated_with_configuration_change_THEN_instance_not_retained_for_any_component() {
         val oldContext = HostComponentContext().resumed()
         val oldStack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = false)
-        val oldInstances = oldStack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
+        val oldInstances = oldStack.items.map { it.instance.viewModelStore.getOrCreate("key", ::TestViewModel) }
 
         val newContext = oldContext.recreate(isConfigurationChange = true)
         val newStack by newContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)))
-        val retainedInstances = newStack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
+        val retainedInstances = newStack.items.map { it.instance.viewModelStore.getOrCreate("key", ::TestViewModel) }
 
         oldInstances.forEachIndexed { index, instance ->
             assertNotEquals(instance, retainedInstances[index])
@@ -413,7 +413,7 @@ class ChildStackIntegrationTest {
     fun GIVEN_persistent_WHEN_recreated_with_configuration_change_THEN_instance_not_destroyed_for_any_component() {
         val oldContext = HostComponentContext().resumed()
         val stack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = true)
-        val instances = stack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
+        val instances = stack.items.map { it.instance.viewModelStore.getOrCreate("key", ::TestViewModel) }
 
         val newContext = oldContext.recreate(isConfigurationChange = true)
         newContext.childStack()
@@ -427,7 +427,7 @@ class ChildStackIntegrationTest {
     fun GIVEN_not_persistent_WHEN_recreated_with_configuration_change_THEN_instances_destroyed_for_all_component() {
         val oldContext = HostComponentContext().resumed()
         val stack by oldContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)), persistent = false)
-        val instances = stack.items.map { it.instance.instanceKeeper.getOrCreate("key", ::TestInstance) }
+        val instances = stack.items.map { it.instance.viewModelStore.getOrCreate("key", ::TestViewModel) }
 
         val newContext = oldContext.recreate(isConfigurationChange = true)
         newContext.childStack(initialStack = listOf(Config(1), Config(2), Config(3)))
@@ -440,7 +440,7 @@ class ChildStackIntegrationTest {
     @Test
     fun WHEN_another_child_pushed_THEN_instance_not_destroyed_for_previous_child() {
         val stack by context.childStack(initialStack = listOf(Config(1)))
-        val instance = stack.active.instance.instanceKeeper.getOrCreate("key", ::TestInstance)
+        val instance = stack.active.instance.viewModelStore.getOrCreate("key", ::TestViewModel)
 
         navigation.push(Config(2))
 
@@ -451,7 +451,7 @@ class ChildStackIntegrationTest {
     fun GIVEN_another_child_pushed_WHEN_recreated_with_configuration_change_THEN_instance_not_destroyed_for_previous_child() {
         val oldContext = HostComponentContext().resumed()
         val stack by oldContext.childStack(initialStack = listOf(Config(1)))
-        val instance = stack.active.instance.instanceKeeper.getOrCreate("key", ::TestInstance)
+        val instance = stack.active.instance.viewModelStore.getOrCreate("key", ::TestViewModel)
         navigation.push(Config(2))
 
         val newContext = oldContext.recreate(isConfigurationChange = true)

@@ -2,17 +2,17 @@ package com.arkivanov.decompose
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.ViewModelStore
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.lifecycle.LifecycleRegistryOwner
 import com.arkivanov.decompose.lifecycle.moveTo
 import com.arkivanov.decompose.navigationevent.addDirectInput
-import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
 /**
  * An implementation of [ComponentContext] that (unlike [DefaultComponentContext]) exposes manipulatable
- * [LifecycleRegistry], [StateKeeperDispatcher], [InstanceKeeperDispatcher], and [NavigationEventDispatcher].
+ * [LifecycleRegistry], [StateKeeperDispatcher], [ViewModelStore], and [NavigationEventDispatcher].
  *
  * Primarily designed for using in tests and Compose previews.
  *
@@ -23,7 +23,7 @@ import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
  * - [LifecycleRegistryOwner.resumed][com.arkivanov.decompose.lifecycle.resumed]
  * @param stateKeeper a [StateKeeperDispatcher] to be used by this [HostComponentContext],
  * creates a new instance if not provided.
- * @param instanceKeeper a [InstanceKeeperDispatcher] to be used by this [HostComponentContext],
+ * @param viewModelStore a [ViewModelStore] to be used by this [HostComponentContext],
  * creates a new instance if not provided.
  * @param navigationEventDispatcher a [NavigationEventDispatcher] to be used by this [HostComponentContext],
  * creates a new instance if not provided.
@@ -32,7 +32,7 @@ import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 class HostComponentContext(
     lifecycleState: Lifecycle.State = Lifecycle.State.INITIALIZED,
     override val stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(),
-    override val instanceKeeper: InstanceKeeperDispatcher = InstanceKeeperDispatcher(),
+    override val viewModelStore: ViewModelStore = ViewModelStore(),
     override val navigationEventDispatcher: NavigationEventDispatcher = NavigationEventDispatcher(),
 ) : ComponentContext, LifecycleRegistryOwner {
     override val lifecycle: LifecycleRegistry = LifecycleRegistry.createUnsafe(this).moveTo(lifecycleState)

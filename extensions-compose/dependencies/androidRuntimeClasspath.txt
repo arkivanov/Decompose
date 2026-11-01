@@ -82,8 +82,6 @@ androidx.viewpager:viewpager:1.0.0
 androidx.window:window-core-android:1.5.0
 androidx.window:window-core:1.5.0
 androidx.window:window:1.5.0
-com.arkivanov.essenty:instance-keeper-android:2.7.0-alpha01
-com.arkivanov.essenty:instance-keeper:2.7.0-alpha01
 com.arkivanov.essenty:state-keeper-android:2.7.0-alpha01
 com.arkivanov.essenty:state-keeper:2.7.0-alpha01
 com.arkivanov.essenty:utils-internal-android:2.7.0-alpha01
@@ -95,6 +93,8 @@ org.jetbrains.androidx.lifecycle:lifecycle-runtime-android:2.11.0
 org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose-android:2.11.0
 org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:2.11.0
 org.jetbrains.androidx.lifecycle:lifecycle-runtime:2.11.0
+org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-android:2.11.0
+org.jetbrains.androidx.lifecycle:lifecycle-viewmodel:2.11.0
 org.jetbrains.androidx.savedstate:savedstate-compose:1.3.6
 org.jetbrains.androidx.savedstate:savedstate:1.3.6
 org.jetbrains.compose.animation:animation-android:1.12.2

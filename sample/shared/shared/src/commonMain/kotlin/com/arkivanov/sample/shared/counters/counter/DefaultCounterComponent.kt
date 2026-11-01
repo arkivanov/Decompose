@@ -1,6 +1,7 @@
 package com.arkivanov.sample.shared.counters.counter
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.instancekeeper.retainedCloseable
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
@@ -10,8 +11,6 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.decompose.value.update
-import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import com.arkivanov.essenty.instancekeeper.retainedInstance
 import com.arkivanov.sample.shared.counters.counter.CounterComponent.Model
 import com.arkivanov.sample.shared.dialog.DefaultDialogComponent
 import com.arkivanov.sample.shared.dialog.DialogComponent
@@ -32,7 +31,7 @@ internal class DefaultCounterComponent(
 ) : CounterComponent, ComponentContext by componentContext {
 
     private val handler =
-        retainedInstance {
+        retainedCloseable(key = "handler") {
             Handler(
                 initialState = stateKeeper.consume(key = KEY_STATE, strategy = State.serializer()) ?: State(),
                 tickScheduler = tickScheduler,
@@ -102,7 +101,7 @@ internal class DefaultCounterComponent(
     private class Handler(
         initialState: State,
         tickScheduler: Scheduler,
-    ) : InstanceKeeper.Instance, DisposableScope by DisposableScope() {
+    ) : AutoCloseable, DisposableScope by DisposableScope() {
         val state: MutableValue<State> = MutableValue(initialState)
 
         init {
@@ -111,7 +110,7 @@ internal class DefaultCounterComponent(
             }
         }
 
-        override fun onDestroy() {
+        override fun close() {
             dispose()
         }
     }

@@ -3,6 +3,7 @@ package com.arkivanov.decompose.router.children
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.Relay
+import com.arkivanov.decompose.instancekeeper.getOrCreateCloseable
 import com.arkivanov.decompose.lifecycle.doOnDestroy
 import com.arkivanov.decompose.mainthread.checkMainThread
 import com.arkivanov.decompose.navigationevent.NavigationEventPriority
@@ -10,7 +11,6 @@ import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.navigationevent.child
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -223,7 +223,7 @@ private fun <Ctx : GenericComponentContext<Ctx>, C : Any, T : Any, N : NavState<
             val restoredNavState: N? = savedState?.navState?.let { stateSaver?.restoreState(it) }
 
             ChildrenNavigator(
-                retainedInstanceSupplier = { factory -> instanceKeeper.getOrCreate(key = key, factory = factory) },
+                retainedInstanceSupplier = { factory -> viewModelStore.getOrCreateCloseable(key = key, factory = factory) },
                 childItemFactory = DefaultChildItemFactory(
                     contextFactory = componentContextFactory,
                     lifecycle = lifecycle,

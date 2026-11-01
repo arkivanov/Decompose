@@ -1,27 +1,26 @@
 package com.arkivanov.decompose.router.children
 
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelStore
 import com.arkivanov.decompose.GenericComponentContext
+import com.arkivanov.decompose.instancekeeper.retainedCloseable
 import com.arkivanov.decompose.lifecycle.DecomposeLifecycleRegistry
 import com.arkivanov.decompose.lifecycle.mergedLifecycle
 import com.arkivanov.decompose.navigationevent.ChildNavigationEventDispatcher
 import com.arkivanov.decompose.navigationevent.NavigationEventPriority
 import com.arkivanov.decompose.navigationevent.child
 import com.arkivanov.decompose.navigationevent.childNavigationEventDispatcher
-import com.arkivanov.essenty.instancekeeper.InstanceKeeper
-import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
-import com.arkivanov.essenty.instancekeeper.retainedInstance
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
 internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentContext<Ctx>>(
     private val componentContext: Ctx,
-    key: Any,
+    key: String,
     private val childFactory: (C, Ctx) -> T,
 ) {
 
     private val retainedInstance =
-        componentContext.retainedInstance<RetainedInstance<C>>(key = key, factory = ::RetainedInstance)
+        componentContext.retainedCloseable<RetainedInstance<C>>(key = key, factory = ::RetainedInstance)
 
     private val childNavigationEventDispatcher =
         componentContext.navigationEventDispatcher.child(priority = NavigationEventPriority.Overlay)
@@ -30,17 +29,17 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
 
     fun init(dropState: Boolean = false, block: () -> Unit = {}) {
         if (dropState) {
-            retainedInstance.onDestroy()
+            retainedInstance.close()
         }
 
         block()
 
         val iter = retainedInstance.map.iterator()
         while (iter.hasNext()) {
-            val (cfg, instanceKeeper) = iter.next()
+            val (cfg, viewModelStore) = iter.next()
 
             if (items[cfg]?.instance == null) {
-                instanceKeeper.destroy()
+                viewModelStore.clear()
                 iter.remove()
             }
         }
@@ -132,7 +131,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
     ): T {
         val item = item(configuration = configuration, savedState = savedState)
         item.setState(lifecycleState = lifecycleState)
-        retainedInstance.map[configuration] = item.instanceKeeperDispatcher
+        retainedInstance.map[configuration] = item.viewModelStore
         items[configuration] = item
 
         return item.instance
@@ -166,7 +165,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         val componentLifecycleRegistry = DecomposeLifecycleRegistry()
         val mergedLifecycle = mergedLifecycle(componentContext.lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
-        val instanceKeeperDispatcher = retainedInstance.map[configuration] ?: InstanceKeeperDispatcher()
+        val viewModelStore = retainedInstance.map[configuration] ?: ViewModelStore()
         val navigationEventDispatcher = childNavigationEventDispatcher.childNavigationEventDispatcher()
 
         val component =
@@ -175,7 +174,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
                 componentContext.componentContextFactory(
                     lifecycle = mergedLifecycle,
                     stateKeeper = stateKeeperDispatcher,
-                    instanceKeeper = instanceKeeperDispatcher,
+                    viewModelStore = viewModelStore,
                     navigationEventDispatcher = navigationEventDispatcher.dispatcher,
                 )
             )
@@ -184,7 +183,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
             instance = component,
             lifecycleRegistry = componentLifecycleRegistry,
             stateKeeperDispatcher = stateKeeperDispatcher,
-            instanceKeeperDispatcher = instanceKeeperDispatcher,
+            viewModelStore = viewModelStore,
             navigationEventDispatcher = navigationEventDispatcher,
         )
     }
@@ -192,7 +191,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
     private fun Item.Created<*>.destroy() {
         navigationEventDispatcher.destroy()
         lifecycleRegistry.moveToDestroyed()
-        instanceKeeperDispatcher.destroy()
+        viewModelStore.clear()
     }
 
     private enum class ActiveLifecycleState {
@@ -214,16 +213,16 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
             override val instance: T,
             val lifecycleRegistry: DecomposeLifecycleRegistry,
             val stateKeeperDispatcher: StateKeeperDispatcher,
-            val instanceKeeperDispatcher: InstanceKeeperDispatcher,
+            val viewModelStore: ViewModelStore,
             val navigationEventDispatcher: ChildNavigationEventDispatcher,
         ) : Item<T>
     }
 
-    private class RetainedInstance<C : Any> : InstanceKeeper.Instance {
-        val map: MutableMap<C, InstanceKeeperDispatcher> = HashMap()
+    private class RetainedInstance<C : Any> : AutoCloseable {
+        val map: MutableMap<C, ViewModelStore> = HashMap()
 
-        override fun onDestroy() {
-            map.values.forEach { it.destroy() }
+        override fun close() {
+            map.values.forEach { it.clear() }
             map.clear()
         }
     }
