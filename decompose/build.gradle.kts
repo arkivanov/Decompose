@@ -13,6 +13,8 @@ plugins {
     id("kotlinx-serialization")
     id("com.arkivanov.gradle.setup")
     id("com.dropbox.dependency-guard")
+
+    id("io.github.tjokinen.android-bcv-bridge") // See the root build.gradle.kts
 }
 
 setupMultiplatform()

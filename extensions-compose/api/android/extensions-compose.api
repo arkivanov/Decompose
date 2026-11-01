@@ -19,8 +19,8 @@ public final class com/arkivanov/decompose/extensions/compose/pages/ChildPagesKt
 public final class com/arkivanov/decompose/extensions/compose/pages/ComposableSingletons$ChildPagesKt {
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/pages/ComposableSingletons$ChildPagesKt;
 	public fun <init> ()V
-	public final fun getLambda$-896049490$extensions_compose_release ()Lkotlin/jvm/functions/Function6;
-	public final fun getLambda$1649886492$extensions_compose_release ()Lkotlin/jvm/functions/Function6;
+	public final fun getLambda$-896049490$extensions_compose ()Lkotlin/jvm/functions/Function6;
+	public final fun getLambda$1649886492$extensions_compose ()Lkotlin/jvm/functions/Function6;
 }
 
 public abstract interface class com/arkivanov/decompose/extensions/compose/pages/PagesScrollAnimation {
@@ -74,14 +74,14 @@ public abstract interface class com/arkivanov/decompose/extensions/compose/panel
 public final class com/arkivanov/decompose/extensions/compose/panels/ComposableSingletons$ChildPanelsKt {
 	public static final field INSTANCE Lcom/arkivanov/decompose/extensions/compose/panels/ComposableSingletons$ChildPanelsKt;
 	public fun <init> ()V
-	public final fun getLambda$-1451017226$extensions_compose_release ()Lkotlin/jvm/functions/Function3;
-	public final fun getLambda$-1505121468$extensions_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$-38467832$extensions_compose_release ()Lkotlin/jvm/functions/Function3;
-	public final fun getLambda$1233011580$extensions_compose_release ()Lkotlin/jvm/functions/Function3;
-	public final fun getLambda$1447542165$extensions_compose_release ()Lkotlin/jvm/functions/Function3;
-	public final fun getLambda$194740298$extensions_compose_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda$474367771$extensions_compose_release ()Lkotlin/jvm/functions/Function3;
-	public final fun getLambda$675638862$extensions_compose_release ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$-1451017226$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$-1505121468$extensions_compose ()Lkotlin/jvm/functions/Function4;
+	public final fun getLambda$-38467832$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$1233011580$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$1447542165$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$194740298$extensions_compose ()Lkotlin/jvm/functions/Function4;
+	public final fun getLambda$474367771$extensions_compose ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$675638862$extensions_compose ()Lkotlin/jvm/functions/Function3;
 }
 
 public final class com/arkivanov/decompose/extensions/compose/panels/HorizontalChildPanelsLayout : com/arkivanov/decompose/extensions/compose/panels/ChildPanelsLayout {

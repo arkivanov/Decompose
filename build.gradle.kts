@@ -74,6 +74,23 @@ setupDefaults(
 
 ensureUnreachableTasksDisabled()
 
+// Workaround for API validation of the Android target in KMP modules:
+// https://github.com/Kotlin/binary-compatibility-validator/issues/312#issuecomment-4873043356
+// -Dsplit_targets enables Android compilation only on Linux, so the android-bcv-bridge tasks follow it.
+// Applies to KMP modules only; Android-only modules (e.g. extensions-android) configure their own tasks.
+subprojects {
+    plugins.withId("io.github.tjokinen.android-bcv-bridge") {
+        plugins.withId("org.jetbrains.kotlin.multiplatform") {
+            afterEvaluate {
+                val compileEnabled = tasks.named("compileAndroidMain").get().enabled
+                listOf("androidApiBuild", "androidApiCheck", "androidApiDump").forEach { taskName ->
+                    tasks.named(taskName).configure { enabled = compileEnabled }
+                }
+            }
+        }
+    }
+}
+
 allprojects {
     repositories {
         mavenCentral()
