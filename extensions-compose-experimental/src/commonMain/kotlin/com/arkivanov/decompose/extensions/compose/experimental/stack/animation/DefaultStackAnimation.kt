@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +30,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.backhandler.BackEvent
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -150,6 +152,8 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                 content(item.child)
             }
         }
+
+        item.onTransitionCreated?.let { SideEffect(it) }
     }
 
     private fun getAnimationItems(newStack: ChildStack<C, T>, oldStack: ChildStack<C, T>? = null): Map<String, AnimationItem<C, T>> =
@@ -232,12 +236,14 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         otherChild: Child.Created<C, T>,
         isPredictiveBack: Boolean = false,
         predictiveBackAnimator: StackAnimator? = null,
+        onTransitionCreated: (() -> Unit)? = null,
     ): AnimationItem<C, T> =
         AnimationItem(
             child = child,
             direction = direction,
             transitionState = transitionState,
             animator = predictiveBackAnimator ?: selector(child, otherChild, direction, isPredictiveBack),
+            onTransitionCreated = onTransitionCreated,
         )
 
     private inner class PredictiveBackCallback(
@@ -288,6 +294,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                         otherChild = exitChild,
                         isPredictiveBack = true,
                         predictiveBackAnimator = animationHandler.animatable?.let { anim -> SimpleStackAnimator { anim.enterModifier } },
+                        onTransitionCreated = { animationHandler.enterTransitionCreated.complete(Unit) },
                     ),
                     AnimationItem(
                         child = exitChild,
@@ -296,6 +303,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                         otherChild = enterChild,
                         isPredictiveBack = true,
                         predictiveBackAnimator = animationHandler.animatable?.let { anim -> SimpleStackAnimator { anim.exitModifier } },
+                        onTransitionCreated = { animationHandler.exitTransitionCreated.complete(Unit) },
                     ),
                 )
             )
@@ -379,12 +387,17 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     ) {
         val exitTransitionState: SeekableTransitionState<EnterExitState> = SeekableTransitionState(EnterExitState.Visible)
         val enterTransitionState: SeekableTransitionState<EnterExitState> = SeekableTransitionState(EnterExitState.PreEnter)
+        val exitTransitionCreated = CompletableDeferred<Unit>()
+        val enterTransitionCreated = CompletableDeferred<Unit>()
 
         suspend fun progress(backEvent: BackEvent) {
             animatable?.run {
                 animate(backEvent)
                 return@progress // Don't animate transition states on back progress if there is PredictiveBackAnimatable
             }
+
+            exitTransitionCreated.await()
+            enterTransitionCreated.await()
 
             awaitAll(
                 { exitTransitionState.seekTo(fraction = backEvent.progress, targetState = EnterExitState.PostExit) },
@@ -401,6 +414,9 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         }
 
         suspend fun finish() {
+            exitTransitionCreated.await()
+            enterTransitionCreated.await()
+
             awaitAll(
                 { exitTransitionState.animateTo(EnterExitState.PostExit) },
                 { enterTransitionState.animateTo(EnterExitState.Visible) },
@@ -430,6 +446,7 @@ private data class AnimationItem<out C : Any, out T : Any>(
     val direction: Direction,
     val transitionState: TransitionState<EnterExitState>,
     val animator: StackAnimator? = null,
+    val onTransitionCreated: (() -> Unit)? = null,
 )
 
 @ExperimentalDecomposeApi
