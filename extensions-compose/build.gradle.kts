@@ -14,6 +14,9 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.arkivanov.gradle.setup")
     id("com.dropbox.dependency-guard")
+
+    // Workaround: https://github.com/Kotlin/binary-compatibility-validator/issues/312#issuecomment-4873043356
+    id("io.github.tjokinen.android-bcv-bridge")
 }
 
 setupMultiplatform {
@@ -71,4 +74,13 @@ kotlin {
 // Otherwise, remove it and add js.binaries.executable().
 tasks.matching { it.name.startsWith("checkComposeUiTestConfiguration") }.configureEach {
     enabled = false
+}
+
+// For android-bcv-bridge.
+// -Dsplit_targets enables this module's Android compilation only on Linux.
+afterEvaluate {
+    val compileEnabled = tasks.named("compileAndroidMain").get().enabled
+    listOf("androidApiBuild", "androidApiCheck", "androidApiDump").forEach { taskName ->
+        tasks.named(taskName).configure { enabled = compileEnabled }
+    }
 }
