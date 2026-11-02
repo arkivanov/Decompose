@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +30,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.essenty.backhandler.BackCallback
 import com.arkivanov.essenty.backhandler.BackEvent
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -262,7 +264,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         }
 
         override fun onBackProgressed(backEvent: BackEvent) {
-            startIfNeeded()
+            startIfNeeded(backEvent)
             val currentState = state as? State.Progress ?: return
             currentState.backEvent = backEvent
 
@@ -271,8 +273,11 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             }
         }
 
-        private fun startIfNeeded() {
+        private fun startIfNeeded(backEvent: BackEvent) {
             val currentState = state as? State.Started ?: return
+            if (backEvent.progress == currentState.initialBackEvent.progress) {
+                return
+            }
             val backEvent = currentState.initialBackEvent
             val animationHandler = AnimationHandler(animatable = predictiveBackParams.animatable(backEvent))
             state = State.Progress(animationHandler, currentState.initialBackEvent, currentState.scope)
