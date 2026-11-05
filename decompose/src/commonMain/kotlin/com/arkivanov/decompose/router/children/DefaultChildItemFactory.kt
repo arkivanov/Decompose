@@ -4,7 +4,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelStore
 import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.ComponentContextFactory
-import com.arkivanov.decompose.lifecycle.DecomposeLifecycleRegistry
+import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.mergedLifecycle
 import com.arkivanov.decompose.navigationevent.childNavigationEventDispatcher
 import com.arkivanov.essenty.statekeeper.SerializableContainer
@@ -23,7 +23,7 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
         savedState: SerializableContainer?,
         viewModelStore: ViewModelStore?,
     ): ChildItem.Created<C, T> {
-        val componentLifecycleRegistry = DecomposeLifecycleRegistry()
+        val componentLifecycleRegistry = LifecycleRegistry()
         val mergedLifecycle = mergedLifecycle(lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
         val viewModelStore = viewModelStore ?: ViewModelStore()

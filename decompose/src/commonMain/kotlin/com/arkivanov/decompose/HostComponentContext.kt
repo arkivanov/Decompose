@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
+import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.LifecycleRegistryOwner
 import com.arkivanov.decompose.lifecycle.moveTo
 import com.arkivanov.decompose.navigationevent.addDirectInput
@@ -35,7 +36,7 @@ class HostComponentContext(
     override val viewModelStore: ViewModelStore = ViewModelStore(),
     override val navigationEventDispatcher: NavigationEventDispatcher = NavigationEventDispatcher(),
 ) : ComponentContext, LifecycleRegistryOwner {
-    override val lifecycle: LifecycleRegistry = LifecycleRegistry.createUnsafe(this).moveTo(lifecycleState)
+    override val lifecycle: LifecycleRegistry = LifecycleRegistry(lifecycleState).moveTo(lifecycleState)
     override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
 
     val navigationEventInput: DirectNavigationEventInput = navigationEventDispatcher.addDirectInput()
