@@ -4,7 +4,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelStore
 import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.instancekeeper.attachTo
-import com.arkivanov.decompose.lifecycle.DecomposeLifecycleRegistry
+import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
@@ -29,7 +29,7 @@ class DefaultComponentContext(
     navigationEventDispatcher: NavigationEventDispatcher? = null,
 ) : ComponentContext {
 
-    override val lifecycle: Lifecycle = lifecycle ?: DecomposeLifecycleRegistry()
+    override val lifecycle: Lifecycle = lifecycle ?: LifecycleRegistry()
     override val stateKeeper: StateKeeper = stateKeeper ?: StateKeeperDispatcher()
     override val viewModelStore: ViewModelStore = viewModelStore ?: ViewModelStore().attachTo(this.lifecycle)
     override val navigationEventDispatcher: NavigationEventDispatcher = navigationEventDispatcher ?: NavigationEventDispatcher()
