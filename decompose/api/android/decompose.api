@@ -40,12 +40,19 @@ public final class com/arkivanov/decompose/Child$Destroyed : com/arkivanov/decom
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class com/arkivanov/decompose/ComponentContext : com/arkivanov/decompose/GenericComponentContext {
+public final class com/arkivanov/decompose/ChildComponentContextKt {
+	public static final fun childContext-jRnAUhw (Lcom/arkivanov/decompose/GenericComponentContext;Ljava/lang/String;Lcom/arkivanov/decompose/ChildContextLifecycle;I)Lcom/arkivanov/decompose/GenericComponentContext;
+	public static synthetic fun childContext-jRnAUhw$default (Lcom/arkivanov/decompose/GenericComponentContext;Ljava/lang/String;Lcom/arkivanov/decompose/ChildContextLifecycle;IILjava/lang/Object;)Lcom/arkivanov/decompose/GenericComponentContext;
 }
 
-public final class com/arkivanov/decompose/ComponentContextExtKt {
-	public static final fun childContext-jRnAUhw (Lcom/arkivanov/decompose/GenericComponentContext;Ljava/lang/String;Landroidx/lifecycle/Lifecycle;I)Lcom/arkivanov/decompose/GenericComponentContext;
-	public static synthetic fun childContext-jRnAUhw$default (Lcom/arkivanov/decompose/GenericComponentContext;Ljava/lang/String;Landroidx/lifecycle/Lifecycle;IILjava/lang/Object;)Lcom/arkivanov/decompose/GenericComponentContext;
+public final class com/arkivanov/decompose/ChildContextLifecycle {
+	public fun <init> ()V
+	public final fun moveToCreated ()Lcom/arkivanov/decompose/ChildContextLifecycle;
+	public final fun moveToResumed ()Lcom/arkivanov/decompose/ChildContextLifecycle;
+	public final fun moveToStarted ()Lcom/arkivanov/decompose/ChildContextLifecycle;
+}
+
+public abstract interface class com/arkivanov/decompose/ComponentContext : com/arkivanov/decompose/GenericComponentContext {
 }
 
 public abstract interface class com/arkivanov/decompose/ComponentContextFactory {
