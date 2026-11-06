@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.router.children
 
+import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
-import com.arkivanov.decompose.lifecycle.DecomposeLifecycleRegistry
 import com.arkivanov.decompose.navigationevent.ChildNavigationEventDispatcher
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
@@ -13,7 +13,7 @@ internal sealed interface ChildItem<out C : Any, out T : Any> {
     val configuration: C
     val key: String
     val instance: T?
-    val lifecycleRegistry: DecomposeLifecycleRegistry?
+    val lifecycleRegistry: LifecycleRegistry?
     val stateKeeperDispatcher: StateKeeperDispatcher?
     val viewModelStore: ViewModelStore?
     val navigationEventDispatcher: ChildNavigationEventDispatcher?
@@ -22,7 +22,7 @@ internal sealed interface ChildItem<out C : Any, out T : Any> {
         override val configuration: C,
         override val key: String,
         override val instance: T,
-        override val lifecycleRegistry: DecomposeLifecycleRegistry,
+        override val lifecycleRegistry: LifecycleRegistry,
         override val stateKeeperDispatcher: StateKeeperDispatcher,
         override val viewModelStore: ViewModelStore,
         override val navigationEventDispatcher: ChildNavigationEventDispatcher,
@@ -34,7 +34,7 @@ internal sealed interface ChildItem<out C : Any, out T : Any> {
         val savedState: SerializableContainer? = null
     ) : ChildItem<C, Nothing> {
         override val instance: Nothing? = null
-        override val lifecycleRegistry: DecomposeLifecycleRegistry? = null
+        override val lifecycleRegistry: LifecycleRegistry? = null
         override val stateKeeperDispatcher: StateKeeperDispatcher? = null
         override val viewModelStore: ViewModelStore? = null
         override val navigationEventDispatcher: ChildNavigationEventDispatcher? = null
