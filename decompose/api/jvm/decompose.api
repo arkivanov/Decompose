@@ -154,7 +154,8 @@ public final class com/arkivanov/decompose/lifecycle/LifecycleExtKt {
 }
 
 public final class com/arkivanov/decompose/lifecycle/LifecycleRegistryExtKt {
-	public static final fun LifecycleRegistry ()Landroidx/lifecycle/LifecycleRegistry;
+	public static final fun LifecycleRegistry (Landroidx/lifecycle/Lifecycle$State;)Landroidx/lifecycle/LifecycleRegistry;
+	public static synthetic fun LifecycleRegistry$default (Landroidx/lifecycle/Lifecycle$State;ILjava/lang/Object;)Landroidx/lifecycle/LifecycleRegistry;
 	public static final fun moveTo (Landroidx/lifecycle/LifecycleRegistry;Landroidx/lifecycle/Lifecycle$State;)Landroidx/lifecycle/LifecycleRegistry;
 	public static final fun moveToCreated (Landroidx/lifecycle/LifecycleRegistry;)Landroidx/lifecycle/LifecycleRegistry;
 	public static final fun moveToDestroyed (Landroidx/lifecycle/LifecycleRegistry;)Landroidx/lifecycle/LifecycleRegistry;

@@ -4,6 +4,10 @@ import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.ItemKey
 import com.arkivanov.decompose.keyed
+import com.arkivanov.decompose.lifecycle.moveToCreated
+import com.arkivanov.decompose.lifecycle.moveToDestroyed
+import com.arkivanov.decompose.lifecycle.moveToResumed
+import com.arkivanov.decompose.lifecycle.moveToStarted
 import com.arkivanov.decompose.router.children.ChildItem.Created
 import com.arkivanov.decompose.router.children.ChildItem.Destroyed
 import com.arkivanov.decompose.router.children.ChildNavState.Status

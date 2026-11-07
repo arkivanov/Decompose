@@ -1,8 +1,9 @@
 package com.arkivanov.decompose.lifecycle
 
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleRegistry
+import com.arkivanov.decompose.mainthread.checkMainThread
 
 /**
  * Moves this [LifecycleRegistry] to the provided [state].
@@ -45,21 +46,32 @@ fun LifecycleRegistry.moveToDestroyed(): LifecycleRegistry =
     moveTo(Lifecycle.State.DESTROYED)
 
 /**
- * Creates a [LifecycleRegistry] in [Lifecycle.State.INITIALIZED] state.
+ * Creates a [LifecycleRegistry] with the provided initial [state].
+ * The returned [LifecycleRegistry] honors the
+ * [DecomposeSettings.mainThreadCheckEnabled][com.arkivanov.decompose.DecomposeSettings.mainThreadCheckEnabled]
+ * settings parameter for main thread checks and reports violations via
+ * [DecomposeSettings.onDecomposeError][com.arkivanov.decompose.DecomposeSettings.onDecomposeError].
  */
-fun LifecycleRegistry(): LifecycleRegistry =
-    LifecycleRegistryImpl()
+fun LifecycleRegistry(state: Lifecycle.State = Lifecycle.State.INITIALIZED): LifecycleRegistry {
+    val owner =
+        // The damn LifecycleRegistry requires a LifecycleOwner pointing to the LifecycleRegistry itself (╯°□°)╯︵ ┻━┻
+        object : LifecycleRegistryOwner {
+            override val lifecycle: LifecycleRegistry = LifecycleRegistry.createUnsafe(this).moveTo(state)
+        }
 
-@Suppress("CanBeParameter") // The damn LifecycleRegistry holds a WeakReference to the LifecycleOwner, so we need a strong reference
-private class LifecycleRegistryImpl(
-    private val owner: LateInitLifecycleOwner = LateInitLifecycleOwner(),
-) : LifecycleRegistry(owner) {
-    init {
-        owner.lifecycle = this
-    }
-}
+    var isObserverEnabled = false
 
-// The damn LifecycleRegistry requires a LifecycleOwner pointing to the LifecycleRegistry itself (╯°□°)╯︵ ┻━┻
-private class LateInitLifecycleOwner : LifecycleOwner {
-    override lateinit var lifecycle: Lifecycle
+    owner.lifecycle.addObserver(
+        LifecycleEventObserver { _, _ ->
+            if (isObserverEnabled) {
+                checkMainThread()
+            }
+
+            owner.lifecycle // The damn LifecycleRegistry holds a WeakReference to the LifecycleOwner, we need a strong one (╯°□°)╯︵ ┻━┻
+        },
+    )
+
+    isObserverEnabled = true
+
+    return owner.lifecycle
 }

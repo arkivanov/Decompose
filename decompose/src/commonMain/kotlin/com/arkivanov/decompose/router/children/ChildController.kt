@@ -1,11 +1,16 @@
 package com.arkivanov.decompose.router.children
 
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
 import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.instancekeeper.retainedCloseable
-import com.arkivanov.decompose.lifecycle.DecomposeLifecycleRegistry
+import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.mergedLifecycle
+import com.arkivanov.decompose.lifecycle.moveToCreated
+import com.arkivanov.decompose.lifecycle.moveToDestroyed
+import com.arkivanov.decompose.lifecycle.moveToResumed
+import com.arkivanov.decompose.lifecycle.moveToStarted
 import com.arkivanov.decompose.navigationevent.ChildNavigationEventDispatcher
 import com.arkivanov.decompose.navigationevent.NavigationEventPriority
 import com.arkivanov.decompose.navigationevent.child
@@ -142,7 +147,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         navigationEventDispatcher.setState(lifecycleState = lifecycleState)
     }
 
-    private fun DecomposeLifecycleRegistry.setState(lifecycleState: ActiveLifecycleState) {
+    private fun LifecycleRegistry.setState(lifecycleState: ActiveLifecycleState) {
         when (lifecycleState) {
             ActiveLifecycleState.CREATED -> moveToCreated()
             ActiveLifecycleState.STARTED -> moveToStarted()
@@ -162,7 +167,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
         configuration: C,
         savedState: SerializableContainer?,
     ): Item.Created<T> {
-        val componentLifecycleRegistry = DecomposeLifecycleRegistry()
+        val componentLifecycleRegistry = LifecycleRegistry()
         val mergedLifecycle = mergedLifecycle(componentContext.lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
         val viewModelStore = retainedInstance.map[configuration] ?: ViewModelStore()
@@ -211,7 +216,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
 
         class Created<out T : Any>(
             override val instance: T,
-            val lifecycleRegistry: DecomposeLifecycleRegistry,
+            val lifecycleRegistry: LifecycleRegistry,
             val stateKeeperDispatcher: StateKeeperDispatcher,
             val viewModelStore: ViewModelStore,
             val navigationEventDispatcher: ChildNavigationEventDispatcher,

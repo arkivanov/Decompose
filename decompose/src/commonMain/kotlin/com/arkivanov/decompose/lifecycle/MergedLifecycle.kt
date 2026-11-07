@@ -8,10 +8,10 @@ import com.arkivanov.decompose.InternalDecomposeApi
 @InternalDecomposeApi
 fun mergedLifecycle(lifecycle1: Lifecycle, lifecycle2: Lifecycle): Lifecycle {
     if (lifecycle1.isDestroyed || lifecycle2.isDestroyed) {
-        return DecomposeLifecycleRegistry(initialState = State.DESTROYED)
+        return LifecycleRegistry(state = State.DESTROYED)
     }
 
-    val registry = DecomposeLifecycleRegistry()
+    val registry = LifecycleRegistry()
     var state1 = State.INITIALIZED
     var state2 = State.INITIALIZED
 
