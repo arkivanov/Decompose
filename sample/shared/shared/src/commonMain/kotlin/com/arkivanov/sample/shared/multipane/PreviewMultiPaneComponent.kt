@@ -2,8 +2,8 @@ package com.arkivanov.sample.shared.multipane
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.router.panels.ChildPanels
 import com.arkivanov.decompose.router.panels.ChildPanelsMode
 import com.arkivanov.decompose.router.webhistory.WebNavigationOwner
@@ -19,7 +19,7 @@ import com.arkivanov.sample.shared.multipane.list.PreviewArticleListComponent
 class PreviewMultiPaneComponent(
     isMultiPane: Boolean = false,
 ) : MultiPaneComponent,
-    ComponentContext by DefaultComponentContext(),
+    ComponentContext by HostComponentContext(),
     WebNavigationOwner.NoOp {
 
     override val panels: Value<ChildPanels<Any, ArticleListComponent, Any, ArticleDetailsComponent, Any, ArticleAuthorComponent>> =

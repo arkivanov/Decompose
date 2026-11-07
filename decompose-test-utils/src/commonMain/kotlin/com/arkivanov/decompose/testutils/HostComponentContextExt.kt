@@ -13,7 +13,7 @@ fun HostComponentContext.recreate(isConfigurationChange: Boolean = false): HostC
         lifecycle.moveToCreated()
     }
 
-    val newStateKeeper = stateKeeper.recreate(isConfigurationChange = isConfigurationChange)
+    val savedState = stateKeeper.saveAndRestoreState(isConfigurationChange = isConfigurationChange)
 
     if (!isConfigurationChange) {
         viewModelStore.clear()
@@ -25,7 +25,7 @@ fun HostComponentContext.recreate(isConfigurationChange: Boolean = false): HostC
 
     return HostComponentContext(
         lifecycleState = oldLifecycleState,
-        stateKeeper = newStateKeeper,
+        savedState = savedState,
         viewModelStore = newViewModelStore,
     )
 }

@@ -2,6 +2,7 @@ package com.arkivanov.decompose.testutils
 
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import kotlinx.serialization.json.Json
@@ -29,8 +30,11 @@ inline fun <reified T> T.serializeAndDeserialize(): T {
 
 fun StateKeeperDispatcher.recreate(isConfigurationChange: Boolean = false): StateKeeperDispatcher =
     StateKeeperDispatcher(
-        savedState = save().let { if (isConfigurationChange) it else it.serializeAndDeserialize() },
+        savedState = saveAndRestoreState(isConfigurationChange = isConfigurationChange),
     )
+
+fun StateKeeperDispatcher.saveAndRestoreState(isConfigurationChange: Boolean = false): SerializableContainer =
+    save().let { if (isConfigurationChange) it else it.serializeAndDeserialize() }
 
 operator fun <T : Any> Value<T>.getValue(thisRef: Any?, property: KProperty<*>): T = value
 
