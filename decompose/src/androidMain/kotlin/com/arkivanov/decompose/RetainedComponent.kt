@@ -247,7 +247,7 @@ private class RetainedComponentHolder<out T : Any>(
 
     val component: T =
         factory(
-            DefaultComponentContext(
+            ComponentContext(
                 lifecycle = lifecycle,
                 stateKeeper = stateKeeper,
                 viewModelStore = viewModelStore,

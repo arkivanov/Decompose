@@ -22,7 +22,7 @@ import kotlin.test.assertTrue
 class ApplicationLifecycleTest {
 
     private val platform = TestPlatform()
-    private val lifecycle = ApplicationLifecycle(platform = platform)
+    private val lifecycle = LifecycleRegistry().attachToApplication(platform)
 
     @Test
     fun WHEN_WillEnterForeground_notification_THEN_state_STARTED() {
@@ -123,14 +123,14 @@ class ApplicationLifecycleTest {
 
     @Test
     fun GIVEN_state_INITIALIZED_WHEN_destroy_THEN_state_DESTROYED() {
-        lifecycle.destroy()
+        lifecycle.moveToDestroyed()
 
         assertEquals(Lifecycle.State.DESTROYED, lifecycle.currentState)
     }
 
     @Test
     fun GIVEN_state_INITIALIZED_WHEN_destroy_THEN_observers_removed() {
-        lifecycle.destroy()
+        lifecycle.moveToDestroyed()
 
         platform.assertNotificationObserversEmpty()
     }
@@ -139,7 +139,7 @@ class ApplicationLifecycleTest {
     fun GIVEN_state_RESUMED_WHEN_destroy_THEN_state_DESTROYED() {
         postNotification(UIApplicationDidBecomeActiveNotification)
 
-        lifecycle.destroy()
+        lifecycle.moveToDestroyed()
 
         assertEquals(Lifecycle.State.DESTROYED, lifecycle.currentState)
     }
@@ -148,7 +148,7 @@ class ApplicationLifecycleTest {
     fun GIVEN_state_RESUMED_WHEN_destroy_THEN_observers_removed() {
         postNotification(UIApplicationDidBecomeActiveNotification)
 
-        lifecycle.destroy()
+        lifecycle.moveToDestroyed()
 
         platform.assertNotificationObserversEmpty()
     }
@@ -157,7 +157,7 @@ class ApplicationLifecycleTest {
     fun GIVEN_state_STATED_WHEN_destroy_THEN_state_DESTROYED() {
         postNotification(UIApplicationWillEnterForegroundNotification)
 
-        lifecycle.destroy()
+        lifecycle.moveToDestroyed()
 
         assertEquals(Lifecycle.State.DESTROYED, lifecycle.currentState)
     }
@@ -166,7 +166,7 @@ class ApplicationLifecycleTest {
     fun GIVEN_state_STATED_WHEN_destroy_THEN_observers_removed() {
         postNotification(UIApplicationWillEnterForegroundNotification)
 
-        lifecycle.destroy()
+        lifecycle.moveToDestroyed()
 
         platform.assertNotificationObserversEmpty()
     }
@@ -176,7 +176,7 @@ class ApplicationLifecycleTest {
         postNotification(UIApplicationWillEnterForegroundNotification)
         postNotification(UIApplicationDidEnterBackgroundNotification)
 
-        lifecycle.destroy()
+        lifecycle.moveToDestroyed()
 
         assertEquals(Lifecycle.State.DESTROYED, lifecycle.currentState)
     }
@@ -186,7 +186,7 @@ class ApplicationLifecycleTest {
         postNotification(UIApplicationWillEnterForegroundNotification)
         postNotification(UIApplicationDidEnterBackgroundNotification)
 
-        lifecycle.destroy()
+        lifecycle.moveToDestroyed()
 
         platform.assertNotificationObserversEmpty()
     }
@@ -254,7 +254,7 @@ class ApplicationLifecycleTest {
         platform.postNotification(name = name)
     }
 
-    private class TestPlatform : ApplicationLifecycle.Platform {
+    private class TestPlatform : ApplicationLifecyclePlatform {
         private val notificationObservers = HashMap<NSObjectProtocol, Pair<NSNotificationName, (NSNotification?) -> Unit>>()
         private val mainQueue = ArrayList<() -> Unit>()
         override var applicationState: UIApplicationState = UIApplicationStateActive

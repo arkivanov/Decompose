@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.defaultComponentContext
+import com.arkivanov.decompose.componentContext
 import com.arkivanov.decompose.extensions.android.DefaultViewContext
 import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootComponent
@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         val root =
             DefaultRootComponent(
-                componentContext = defaultComponentContext(),
+                componentContext = componentContext(),
             )
 
         when (mode) {

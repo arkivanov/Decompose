@@ -12,9 +12,12 @@ import com.arkivanov.essenty.statekeeper.stateKeeper
 import kotlinx.serialization.builtins.serializer
 
 /**
- * Creates a [DefaultComponentContext] and attaches it to the receiver [T] (e.g., an [Activity][android.app.Activity]).
- * The receiver [T] must implement the following AndroidX interfaces:
+ * Creates a new instance of [ComponentContext] and attaches it to the
+ * host [T] (e.g., an [Activity][android.app.Activity]).
+ * The host [T] must implement the following AndroidX interfaces:
  * [SavedStateRegistryOwner], [NavigationEventDispatcherOwner], [ViewModelStoreOwner], [LifecycleOwner].
+ *
+ * There must be only one instance of [ComponentContext] per host [T].
  *
  * @param discardSavedState a flag indicating whether any previously saved state should be discarded or not,
  * default value is `false`. Can be useful for handling deep links in `onCreate`, so that the navigation state
@@ -22,22 +25,24 @@ import kotlinx.serialization.builtins.serializer
  * @param isStateSavingAllowed called before saving the state. When `true` then the state will be saved,
  * otherwise it won't. Default value is `true`.
  */
-fun <T> T.defaultComponentContext(
+fun <T> T.componentContext(
     discardSavedState: Boolean = false,
     isStateSavingAllowed: () -> Boolean = { true },
-): DefaultComponentContext
+): ComponentContext
     where T : SavedStateRegistryOwner,
           T : NavigationEventDispatcherOwner,
           T : ViewModelStoreOwner,
           T : LifecycleOwner =
-    defaultComponentContextInternal(
+    componentContextInternal(
         navigationEventDispatcher = navigationEventDispatcher,
         discardSavedState = discardSavedState,
         isStateSavingAllowed = isStateSavingAllowed,
     )
 
 /**
- * Creates a [DefaultComponentContext] and attaches it to this [Fragment].
+ * Creates a new instance of [ComponentContext] and attaches it to this [Fragment].
+ *
+ * There must be only one instance of [ComponentContext] per host [T].
  *
  * @param navigationEventDispatcher an optional [NavigationEventDispatcher] for navigation event handling,
  * or `null` if navigation event handling is not required. For a [Fragment][androidx.fragment.app.Fragment],
@@ -48,23 +53,25 @@ fun <T> T.defaultComponentContext(
  * @param isStateSavingAllowed called before saving the state. When `true` then the state will be saved,
  * otherwise it won't. Default value is `true`.
  */
-fun Fragment.defaultComponentContext(
+fun Fragment.componentContext(
     navigationEventDispatcher: NavigationEventDispatcher?,
     discardSavedState: Boolean = false,
     isStateSavingAllowed: () -> Boolean = { true },
-): DefaultComponentContext =
-    defaultComponentContextInternal(
+): ComponentContext =
+    componentContextInternal(
         navigationEventDispatcher = navigationEventDispatcher?.child(lifecycle = lifecycle),
         discardSavedState = discardSavedState,
         isStateSavingAllowed = isStateSavingAllowed,
     )
 
 /**
- * Creates a [DefaultComponentContext] from the AndroidX dependencies obtained from the receiver [T].
- * The receiver [T] must implement the following AndroidX interfaces:
+ * Creates a new instance of [ComponentContext] from the AndroidX dependencies obtained from the host [T].
+ * The host [T] must implement the following AndroidX interfaces:
  * [SavedStateRegistryOwner], [ViewModelStoreOwner], [LifecycleOwner].
- * Use this overload when the receiver does not implement [NavigationEventDispatcherOwner]
+ * Use this overload when the host does not implement [NavigationEventDispatcherOwner]
  * (for example, a [Fragment][androidx.fragment.app.Fragment]).
+ *
+ * There must be only one instance of [ComponentContext] per host [T].
  *
  * @param navigationEventDispatcher an optional [NavigationEventDispatcher] for navigation event handling,
  * or `null` if navigation event handling is not required. For a [Fragment][androidx.fragment.app.Fragment],
@@ -75,20 +82,20 @@ fun Fragment.defaultComponentContext(
  * @param isStateSavingAllowed called before saving the state. When `true` then the state will be saved,
  * otherwise it won't.
  */
-private fun <T> T.defaultComponentContextInternal(
+private fun <T> T.componentContextInternal(
     navigationEventDispatcher: NavigationEventDispatcher?,
     discardSavedState: Boolean,
     isStateSavingAllowed: () -> Boolean,
-): DefaultComponentContext where T : SavedStateRegistryOwner, T : ViewModelStoreOwner, T : LifecycleOwner {
+): ComponentContext where T : SavedStateRegistryOwner, T : ViewModelStoreOwner, T : LifecycleOwner {
     val stateKeeper = stateKeeper(discardSavedState = discardSavedState, isSavingAllowed = isStateSavingAllowed)
     val marker = stateKeeper.consume(key = KEY_STATE_MARKER, strategy = String.serializer())
     stateKeeper.register(key = KEY_STATE_MARKER, strategy = String.serializer()) { "marker" }
 
-    return DefaultComponentContext(
+    return ComponentContext(
         lifecycle = lifecycle,
         stateKeeper = stateKeeper,
         viewModelStore = viewModelStore.child(key = "decompose.DefaultComponentContextViewModelStore", recreate = marker == null),
-        navigationEventDispatcher = navigationEventDispatcher,
+        navigationEventDispatcher = navigationEventDispatcher ?: NavigationEventDispatcher(),
     )
 }
 

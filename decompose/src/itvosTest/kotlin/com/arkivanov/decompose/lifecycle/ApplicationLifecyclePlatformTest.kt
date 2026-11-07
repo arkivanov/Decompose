@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
 class ApplicationLifecyclePlatformTest {
 
     private val notificationName = UIApplicationWillEnterForegroundNotification
-    private val platform = ApplicationLifecycle.DefaultPlatform
+    private val platform = DefaultApplicationLifecyclePlatform
 
     @Test
     fun WHEN_addObserver_and_notification_posted_THEN_notification_received() {
