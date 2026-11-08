@@ -93,6 +93,28 @@ class PredictiveBackGestureTest {
     }
 
     @Test
+    fun GIVEN_gesture_started_WHEN_multiple_progressPredictiveBack_in_one_frame_THEN_gesture_progressed() {
+        var stack by mutableStateOf(stack("1", "2"))
+        val animation = DefaultStackAnimation(onBack = { stack = stack.dropLast() })
+
+        composeRule.setContent {
+            animation(stack, Modifier) {
+                Text(text = it.configuration)
+            }
+        }
+
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        composeRule.waitForIdle()
+
+        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.7F))
+        composeRule.waitForIdle()
+
+        composeRule.onNodeWithText("1").assertTestTagToRootExists(enterTestTag(progress = 0.7F))
+        composeRule.onNodeWithText("2").assertTestTagToRootExists(exitTestTag(progress = 0.7F))
+    }
+
+    @Test
     fun GIVEN_gesture_started_WHEN_back_THEN_gesture_finished_and_stack_popped() {
         var stack by mutableStateOf(stack("1", "2"))
         val animation = DefaultStackAnimation(onBack = { stack = stack.dropLast() })
@@ -431,6 +453,45 @@ class PredictiveBackGestureTest {
         composeRule.waitForIdle()
 
         assertFalse(values.any { it < 1F })
+    }
+
+    @Test
+    fun GIVEN_three_children_in_stack_and_gesture_progressed_in_one_frame_WHEN_predictive_back_finished_THEN_previous_child_animated_after_pop() {
+        var stack by mutableStateOf(stack("1", "2", "3"))
+        val values = ArrayList<Float>()
+
+        val animation =
+            DefaultStackAnimation(
+                onBack = {
+                    values.clear()
+                    stack = stack.dropLast()
+                }
+            )
+
+
+        composeRule.setContent {
+            animation(stack, Modifier) {
+                val float by transition.animateFloat { state ->
+                    when (state) {
+                        EnterExitState.PreEnter -> 0F
+                        EnterExitState.Visible -> 1F
+                        EnterExitState.PostExit -> 0F
+                    }
+                }
+
+                if (it.configuration == "2") {
+                    values += float
+                }
+            }
+        }
+
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        composeRule.waitForIdle()
+        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        backDispatcher.back()
+        composeRule.waitForIdle()
+
+        assertTrue(values.any { it < 1F })
     }
 
     @Test
