@@ -1,12 +1,10 @@
 package com.arkivanov.sample.app
 
 import androidx.lifecycle.LifecycleRegistry
-import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.lifecycle.LifecycleRegistry
+import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.lifecycle.doOnDestroy
 import com.arkivanov.decompose.lifecycle.moveToCreated
-import com.arkivanov.decompose.lifecycle.moveToDestroyed
 import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.router.webhistory.withWebHistory
 import com.arkivanov.sample.shared.Url
@@ -21,18 +19,17 @@ import web.events.EventType
 
 @OptIn(ExperimentalDecomposeApi::class)
 fun main() {
-    var lifecycle: LifecycleRegistry? = null
-
     val root =
-        withWebHistory(schemaVersion = "1") { stateKeeper, deepLink ->
-            lifecycle?.moveToDestroyed()
-            lifecycle = LifecycleRegistry()
-
+        withWebHistory(
+            schemaVersion = "1",
+            createComponentContext = { savedState -> HostComponentContext(savedState = savedState) },
+            destroyComponentContext = HostComponentContext::destroy,
+        ) { ctx, deepLink ->
             DefaultRootComponent(
-                componentContext = DefaultComponentContext(lifecycle = lifecycle, stateKeeper = stateKeeper),
+                componentContext = ctx,
                 deepLinkUrl = deepLink?.let(::Url),
             ).also {
-                lifecycle.attachToDocument()
+                ctx.lifecycle.attachToDocument()
             }
         }.value // TODO: Observe
 

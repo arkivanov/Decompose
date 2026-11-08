@@ -20,11 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
-import com.arkivanov.decompose.lifecycle.LifecycleRegistry
-import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import com.arkivanov.sample.shared.readSerializableContainer
 import com.arkivanov.sample.shared.root.DefaultRootComponent
 import com.arkivanov.sample.shared.root.RootContent
@@ -41,16 +39,12 @@ private const val SAVED_STATE_FILE_NAME = "saved_state.dat"
 fun main() {
     overrideSchedulers(main = Dispatchers.Main::asScheduler)
 
-    val lifecycle = LifecycleRegistry()
-    val stateKeeper = StateKeeperDispatcher(File(SAVED_STATE_FILE_NAME).readSerializableContainer())
+    val componentContext = HostComponentContext(savedState = File(SAVED_STATE_FILE_NAME).readSerializableContainer())
 
     val root =
         runOnUiThread {
             DefaultRootComponent(
-                componentContext = DefaultComponentContext(
-                    lifecycle = lifecycle,
-                    stateKeeper = stateKeeper,
-                ),
+                componentContext = componentContext,
             )
         }
 
@@ -64,7 +58,7 @@ fun main() {
             title = "Decompose Sample"
         ) {
             LifecycleController(
-                lifecycleRegistry = lifecycle,
+                lifecycleRegistry = componentContext.lifecycle,
                 windowState = windowState,
                 windowInfo = LocalWindowInfo.current,
             )
@@ -73,7 +67,7 @@ fun main() {
 
             if (isCloseRequested) {
                 SaveStateDialog(
-                    onSaveState = { stateKeeper.save().writeToFile(File(SAVED_STATE_FILE_NAME)) },
+                    onSaveState = { componentContext.stateKeeper.save().writeToFile(File(SAVED_STATE_FILE_NAME)) },
                     onExitApplication = ::exitApplication,
                     onDismiss = { isCloseRequested = false },
                 )

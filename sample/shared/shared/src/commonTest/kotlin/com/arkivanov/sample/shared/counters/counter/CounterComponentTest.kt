@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModelStore
 import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.router.slot.child
-import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
+import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.badoo.reaktive.test.scheduler.TestScheduler
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,6 +16,7 @@ import kotlin.test.assertTrue
 class CounterComponentTest {
 
     private val tickScheduler = TestScheduler()
+    private lateinit var ctx: HostComponentContext
     private lateinit var component: CounterComponent
     private val model get() = component.model.value
 
@@ -78,12 +79,10 @@ class CounterComponentTest {
 
     @Test
     fun WHEN_recreated_and_state_saved_THEN_text_not_changed() {
-        var stateKeeper = StateKeeperDispatcher()
-        createComponent(stateKeeper = stateKeeper)
+        createComponent()
         tick(n = 1)
 
-        stateKeeper = StateKeeperDispatcher(savedState = stateKeeper.save())
-        createComponent(stateKeeper = stateKeeper)
+        createComponent(savedState = ctx.stateKeeper.save())
 
         assertEquals("001", model.text)
     }
@@ -145,14 +144,14 @@ class CounterComponentTest {
     }
 
     private fun createComponent(
-        stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(),
+        savedState: SerializableContainer? = null,
         viewModelStore: ViewModelStore = ViewModelStore(),
         title: String = "",
         isBackEnabled: Boolean = false,
         onNext: () -> Unit = {},
         onPrev: () -> Unit = {},
     ) {
-        val ctx = HostComponentContext(stateKeeper = stateKeeper, viewModelStore = viewModelStore)
+        ctx = HostComponentContext(savedState = savedState, viewModelStore = viewModelStore)
 
         component =
             DefaultCounterComponent(
