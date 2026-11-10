@@ -15,7 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import com.arkivanov.decompose.Child
@@ -253,18 +252,17 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             val currentState = state
             if (currentState is State.Idle) {
                 val childScope = parentScope + Job(parentScope.coroutineContext[Job])
-                state = State.Starting(backEvent, childScope)
+                state = State.Started(backEvent, childScope)
             } else if (currentState is State.Cancelling) {
                 currentState.scope.cancel()
                 val newScope = parentScope + Job(parentScope.coroutineContext[Job])
-                state = State.Starting(currentState.lastBackEvent, newScope)
+                state = State.Started(currentState.lastBackEvent, newScope)
                 onBackProgressed(currentState.lastBackEvent)
             }
         }
 
         override fun onBackProgressed(backEvent: BackEvent) {
             startIfNeeded()
-            (state as? State.Started)?.lastBackEvent = backEvent
             val currentState = state as? State.Progress ?: return
             currentState.backEvent = backEvent
 
@@ -274,11 +272,10 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         }
 
         private fun startIfNeeded() {
-            val startingState = state as? State.Starting ?: return
-            val scope = startingState.scope
-            val initialBackEvent = startingState.initialBackEvent
-            val animationHandler = AnimationHandler(animatable = predictiveBackParams.animatable(initialBackEvent))
-            state = State.Started(lastBackEvent = initialBackEvent, scope = scope)
+            val currentState = state as? State.Started ?: return
+            val backEvent = currentState.initialBackEvent
+            val animationHandler = AnimationHandler(animatable = predictiveBackParams.animatable(backEvent))
+            state = State.Progress(animationHandler, currentState.initialBackEvent, currentState.scope)
             val exitChild = stack.active
             val enterChild = stack.backStack.last()
 
@@ -303,11 +300,8 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                 )
             )
 
-            scope.launch {
-                withFrameNanos {} // Wait for Compose to start rendering
-                val startedState = state as? State.Started ?: return@launch
-                state = State.Progress(backEvent = startedState.lastBackEvent, scope = scope, animationHandler = animationHandler)
-                animationHandler.progress(startedState.lastBackEvent)
+            currentState.scope.launch {
+                animationHandler.progress(backEvent)
             }
         }
 
@@ -315,15 +309,9 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             when (val currentState = state) {
                 is State.Idle -> Unit // no-op
 
-                is State.Starting -> {
-                    currentState.scope.cancel()
-                    state = State.Idle
-                }
-
                 is State.Started -> {
-                    state = State.Idle
-                    setItems(getAnimationItems(newStack = stack))
                     currentState.scope.cancel()
+                    state = State.Idle
                 }
 
                 is State.Progress -> {
@@ -348,21 +336,14 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                     predictiveBackParams.onBack()
                 }
 
-                is State.Starting -> {
-                    currentState.scope.cancel()
-                    state = State.Idle
-                    predictiveBackParams.onBack()
-                }
-
                 is State.Started -> {
-                    state = State.Idle
-                    setItems(getAnimationItems(newStack = stack))
                     currentState.scope.cancel()
+                    state = State.Idle
                     predictiveBackParams.onBack()
                 }
 
                 is State.Progress -> {
-                    state = State.Finishing
+                    state = State.Finishing(currentState.backEvent, currentState.scope)
 
                     currentState.scope.launch {
                         currentState.animationHandler.finish()
@@ -387,10 +368,9 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
     private sealed interface State {
         data object Idle : State
-        class Starting(val initialBackEvent: BackEvent, val scope: CoroutineScope) : State
-        class Started(var lastBackEvent: BackEvent, val scope: CoroutineScope) : State
+        class Started(val initialBackEvent: BackEvent, val scope: CoroutineScope) : State
         class Progress(val animationHandler: AnimationHandler, var backEvent: BackEvent, val scope: CoroutineScope) : State
-        data object Finishing : State
+        class Finishing(val lastBackEvent: BackEvent, val scope: CoroutineScope) : State
         class Cancelling(val lastBackEvent: BackEvent, val scope: CoroutineScope) : State
     }
 
