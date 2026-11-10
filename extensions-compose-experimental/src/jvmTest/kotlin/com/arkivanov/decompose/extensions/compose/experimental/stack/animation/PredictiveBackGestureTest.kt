@@ -3,6 +3,7 @@ package com.arkivanov.decompose.extensions.compose.experimental.stack.animation
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.material.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,6 +17,7 @@ import com.arkivanov.decompose.extensions.compose.experimental.animateFloat
 import com.arkivanov.decompose.extensions.compose.experimental.assertTestTagToRootDoesNotExist
 import com.arkivanov.decompose.extensions.compose.experimental.assertTestTagToRootExists
 import com.arkivanov.decompose.extensions.compose.experimental.stack.dropLast
+import com.arkivanov.decompose.extensions.compose.stack.animation.Direction
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.PredictiveBackAnimatable
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.essenty.backhandler.BackDispatcher
@@ -622,6 +624,103 @@ class PredictiveBackGestureTest {
         composeRule.onNodeWithText("2").assertDoesNotExist()
     }
 
+    @Test
+    fun GIVEN_gesture_progressed_WHEN_cancelled_and_restarted_THEN_animatable_created_with_last_known_progress() {
+        var stack by mutableStateOf(stack("1", "2"))
+        var animatable: TestAnimatable? = null
+
+        val animation =
+            DefaultStackAnimation(
+                predictiveBackAnimatable = {
+                    animatable = TestAnimatable(initialBackEvent = it, cancel = suspendForever())
+                    animatable
+                },
+                onBack = { stack = stack.dropLast() },
+            )
+
+        composeRule.setContent {
+            animation(stack, Modifier) {
+                Text(text = it.configuration)
+            }
+        }
+
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        composeRule.waitForIdle()
+        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        composeRule.waitForIdle()
+
+        backDispatcher.cancelPredictiveBack()
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        composeRule.waitForIdle()
+
+        assertEquals(0.5F, animatable?.initialBackEvent?.progress)
+    }
+
+    @Test
+    fun GIVEN_gesture_progressed_WHEN_cancelled_and_restarted_THEN_gesture_restarted_and_stack_unchanged() {
+        var stack by mutableStateOf(stack("1", "2"))
+
+        val animation =
+            DefaultStackAnimation(
+                predictiveBackAnimatable = { TestAnimatable(initialBackEvent = it, cancel = suspendForever()) },
+                onBack = { stack = stack.dropLast() },
+            )
+
+        composeRule.setContent {
+            animation(stack, Modifier) {
+                Text(text = it.configuration)
+            }
+        }
+
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        composeRule.waitForIdle()
+        backDispatcher.progressPredictiveBack(BackEvent(progress = 0.5F))
+        composeRule.waitForIdle()
+
+        backDispatcher.cancelPredictiveBack()
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        composeRule.waitForIdle()
+
+        assertEquals(stack("1", "2"), stack)
+        composeRule.onNodeWithText("1").assertTestTagToRootExists(enterTestTag(progress = 0F))
+        composeRule.onNodeWithText("2").assertTestTagToRootExists(exitTestTag(progress = 0F))
+    }
+
+    @Test
+    fun WHEN_gesture_started_progress_and_finished_in_the_same_frame_THEN_transitions_animated() {
+        var stack by mutableStateOf(stack("1", "2"))
+        val childDirections = HashMap<String, Direction?>()
+        val childAnimations = HashMap<String, Float>()
+
+        val anim =
+            DefaultStackAnimation(
+                predictiveBackAnimatable = { null },
+                onBack = { stack = stack.dropLast() },
+            )
+
+        composeRule.setContent {
+            anim(stack = stack, modifier = Modifier) {
+                val animationValue by transition.animateFloat(durationMillis = 1000)
+
+                LaunchedEffect(stackAnimationDirection, animationValue) {
+                    childDirections[it.configuration] = stackAnimationDirection
+                    childAnimations[it.configuration] = animationValue
+                }
+            }
+        }
+        composeRule.waitForIdle()
+
+        backDispatcher.startPredictiveBack(BackEvent(progress = 0F))
+        backDispatcher.progressPredictiveBack(BackEvent(progress = 0F))
+        backDispatcher.back()
+        composeRule.mainClock.advanceTimeBy(500L)
+
+        assertEquals(Direction.ENTER_BACK, childDirections["1"])
+        assertEquals(expected = 0.5F, actual = childAnimations["1"] ?: -1F, absoluteTolerance = 0.05F)
+        assertEquals(Direction.EXIT_FRONT, childDirections["2"])
+        assertEquals(expected = 0.5F, actual = childAnimations["2"] ?: -1F, absoluteTolerance = 0.05F)
+    }
+
     private fun DefaultStackAnimation(
         predictiveBackAnimatable: (initialBackEvent: BackEvent) -> PredictiveBackAnimatable? = ::TestAnimatable,
         animator: StackAnimator? = null,
@@ -667,7 +766,7 @@ class PredictiveBackGestureTest {
     }
 
     private class TestAnimatable(
-        initialBackEvent: BackEvent,
+        val initialBackEvent: BackEvent,
         private val finish: suspend () -> Unit = {},
         private val cancel: suspend () -> Unit = {},
     ) : PredictiveBackAnimatable {
