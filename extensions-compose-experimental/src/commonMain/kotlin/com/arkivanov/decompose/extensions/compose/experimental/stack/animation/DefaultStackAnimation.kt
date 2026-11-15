@@ -358,7 +358,6 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
                     currentState.scope.launch {
                         currentState.animationHandler.finish()
-                        state = State.Idle
                         setItems(getAnimationItems(newStack = stack.dropLast()))
                         predictiveBackParams.onBack()
                         currentState.scope.cancel()
