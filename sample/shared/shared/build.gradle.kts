@@ -67,6 +67,7 @@ kotlin {
             api(deps.androidx.lifecycle.lifecycleRuntime)
             api(deps.androidx.navigationEvent.navigationEvent)
             api(deps.essenty.stateKeeper)
+            implementation(deps.androidx.lifecycle.lifecycleViewModelSavedState) // FIXME: remove
             implementation(deps.reaktive.reaktive)
             implementation(deps.jetbrains.kotlinx.kotlinxSerializationJson)
         }

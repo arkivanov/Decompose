@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
 
 internal fun ViewModelStore.child(key: String, recreate: Boolean = false): ViewModelStore =
-    getOrCreate(key, ::ChildViewModelStoreHolder)
+    getOrCreate(key) { ChildViewModelStoreHolder() }
         .apply {
             if (recreate) {
                 recreate()

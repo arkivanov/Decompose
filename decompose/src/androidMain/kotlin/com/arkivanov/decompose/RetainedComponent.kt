@@ -5,13 +5,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
 import androidx.savedstate.SavedStateRegistryOwner
-import com.arkivanov.decompose.instancekeeper.viewModel
+import com.arkivanov.decompose.instancekeeper.retainedCloseable
 import com.arkivanov.decompose.lifecycle.addObserver
 import com.arkivanov.decompose.lifecycle.moveToCreated
 import com.arkivanov.decompose.lifecycle.moveToDestroyed
@@ -143,7 +142,7 @@ internal fun <T : Any, O> O.retainedComponent(
     val discardRetainedInstance = stateKeeper.consume(key = KEY_STATE_MARKER, strategy = Boolean.serializer()) == null
     stateKeeper.register(key = KEY_STATE_MARKER, strategy = Boolean.serializer()) { true }
 
-    val retainedComponentHolders = viewModel(key = "decompose.RetainedComponentHolders", factory = ::RetainedComponentHolders)
+    val retainedComponentHolders = retainedCloseable(key = "decompose.RetainedComponentHolders", factory = ::RetainedComponentHolders)
 
     if (discardRetainedInstance) {
         retainedComponentHolders.map.remove(key = key)?.also { holder ->
@@ -214,10 +213,10 @@ internal fun <T : Any, O> O.retainedComponent(
 
 private const val KEY_STATE_MARKER = "RetainedComponent_state_marker"
 
-private class RetainedComponentHolders : ViewModel() {
+private class RetainedComponentHolders : AutoCloseable {
     val map: MutableMap<Any, RetainedComponentHolder<*>> = HashMap()
 
-    override fun onCleared() {
+    override fun close() {
         map.values.forEach { it.onDestroy() }
     }
 }

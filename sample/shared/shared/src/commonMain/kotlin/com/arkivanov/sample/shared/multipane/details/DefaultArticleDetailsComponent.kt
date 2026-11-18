@@ -1,6 +1,10 @@
 package com.arkivanov.sample.shared.multipane.details
 
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.createSavedStateHandle
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.instancekeeper.viewModel
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
@@ -11,6 +15,18 @@ import com.arkivanov.sample.shared.multipane.details.ArticleDetailsComponent.Art
 import com.arkivanov.sample.shared.multipane.details.ArticleDetailsComponent.Model
 import com.badoo.reaktive.disposable.scope.DisposableScope
 import com.badoo.reaktive.observable.Observable
+
+class MyViewModel(
+    private val savedStateHandle: SavedStateHandle,
+) : ViewModel() {
+    init {
+        println("MyTest: created")
+    }
+
+    override fun onCleared() {
+        println("MyTest: onCleared")
+    }
+}
 
 internal class DefaultArticleDetailsComponent(
     componentContext: ComponentContext,
@@ -30,6 +46,9 @@ internal class DefaultArticleDetailsComponent(
         )
 
     override val models: Value<Model> = _models
+
+    private val vm = viewModel<MyViewModel> { MyViewModel(createSavedStateHandle()) }
+
 
     init {
         isToolbarVisible.subscribeScoped { isVisible ->

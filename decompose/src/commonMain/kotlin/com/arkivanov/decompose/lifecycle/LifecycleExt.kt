@@ -2,8 +2,10 @@ package com.arkivanov.decompose.lifecycle
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 
 /**
  * Creates a [DefaultLifecycleObserver] with the provided callbacks.
@@ -223,3 +225,11 @@ inline fun LifecycleOwner.doOnDestroy(crossinline block: () -> Unit) {
 }
 
 internal val Lifecycle.isDestroyed: Boolean get() = currentState == Lifecycle.State.DESTROYED
+
+internal fun Lifecycle.attach(registry: LifecycleRegistry) {
+    if (isDestroyed) {
+        registry.moveToDestroyed()
+    } else {
+        addObserver(LifecycleEventObserver { _, event -> registry.moveTo(event.targetState) })
+    }
+}
