@@ -2,9 +2,13 @@ package com.arkivanov.decompose
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.SavedStateViewModelFactory
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
+import androidx.savedstate.SavedStateRegistry
 import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.LifecycleRegistryOwner
 import com.arkivanov.decompose.lifecycle.moveToDestroyed
@@ -60,6 +64,9 @@ class HostComponentContext(
 
     override val lifecycle: LifecycleRegistry = LifecycleRegistry(lifecycleState)
     override val stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(savedState)
+    override val savedStateRegistry: SavedStateRegistry by savedStateRegistry()
+    override val defaultViewModelProviderFactory: ViewModelProvider.Factory by lazy(::SavedStateViewModelFactory)
+    override val defaultViewModelCreationExtras: CreationExtras by mutableCreationExtras()
     override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::ComponentContext)
 
     val navigationEventInput: DirectNavigationEventInput = navigationEventDispatcher.addDirectInput()
