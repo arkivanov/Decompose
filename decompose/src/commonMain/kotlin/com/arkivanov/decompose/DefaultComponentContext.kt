@@ -6,6 +6,7 @@ import com.arkivanov.essenty.backhandler.BackHandler
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.InstanceKeeperDispatcher
 import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
@@ -24,6 +25,13 @@ class DefaultComponentContext(
     override val instanceKeeper: InstanceKeeper = instanceKeeper ?: InstanceKeeperDispatcher().attachTo(lifecycle)
     override val backHandler: BackHandler = backHandler ?: BackDispatcher()
     override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
+
+    constructor() : this(
+        lifecycle = LifecycleRegistry(),
+        stateKeeper = null,
+        instanceKeeper = null,
+        backHandler = null,
+    )
 
     constructor(lifecycle: Lifecycle) : this(
         lifecycle = lifecycle,
