@@ -3,6 +3,7 @@ package com.arkivanov.decompose.extensions.compose.stack.animation
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.material.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,12 +14,12 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.navigationevent.NavigationEvent
 import androidx.navigationevent.NavigationEventDispatcher
 import com.arkivanov.decompose.Child
-import com.arkivanov.decompose.navigationevent.addDirectInput
 import com.arkivanov.decompose.extensions.compose.animateFloat
 import com.arkivanov.decompose.extensions.compose.assertTestTagToRootDoesNotExist
 import com.arkivanov.decompose.extensions.compose.assertTestTagToRootExists
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.PredictiveBackAnimatable
 import com.arkivanov.decompose.extensions.compose.stack.dropLast
+import com.arkivanov.decompose.navigationevent.addDirectInput
 import com.arkivanov.decompose.router.stack.ChildStack
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.junit.Rule
@@ -622,6 +623,103 @@ class PredictiveBackGestureTest {
         composeRule.onNodeWithText("2").assertDoesNotExist()
     }
 
+    @Test
+    fun GIVEN_gesture_progressed_WHEN_cancelled_and_restarted_THEN_animatable_created_with_last_known_progress() {
+        var stack by mutableStateOf(stack("1", "2"))
+        var animatable: TestAnimatable? = null
+
+        val animation =
+            DefaultStackAnimation(
+                predictiveBackAnimatable = {
+                    animatable = TestAnimatable(initialNavigationEvent = it, cancel = suspendForever())
+                    animatable
+                },
+                onBack = { stack = stack.dropLast() },
+            )
+
+        composeRule.setContent {
+            animation(stack, Modifier) {
+                Text(text = it.configuration)
+            }
+        }
+
+        input.backStarted(NavigationEvent(progress = 0F))
+        composeRule.waitForIdle()
+        input.backProgressed(NavigationEvent(progress = 0.5F))
+        composeRule.waitForIdle()
+
+        input.backCancelled()
+        input.backStarted(NavigationEvent(progress = 0F))
+        composeRule.waitForIdle()
+
+        assertEquals(0.5F, animatable?.initialNavigationEvent?.progress)
+    }
+
+    @Test
+    fun GIVEN_gesture_progressed_WHEN_cancelled_and_restarted_THEN_gesture_restarted_and_stack_unchanged() {
+        var stack by mutableStateOf(stack("1", "2"))
+
+        val animation =
+            DefaultStackAnimation(
+                predictiveBackAnimatable = { TestAnimatable(initialNavigationEvent = it, cancel = suspendForever()) },
+                onBack = { stack = stack.dropLast() },
+            )
+
+        composeRule.setContent {
+            animation(stack, Modifier) {
+                Text(text = it.configuration)
+            }
+        }
+
+        input.backStarted(NavigationEvent(progress = 0F))
+        composeRule.waitForIdle()
+        input.backProgressed(NavigationEvent(progress = 0.5F))
+        composeRule.waitForIdle()
+
+        input.backCancelled()
+        input.backStarted(NavigationEvent(progress = 0F))
+        composeRule.waitForIdle()
+
+        assertEquals(stack("1", "2"), stack)
+        composeRule.onNodeWithText("1").assertTestTagToRootExists(enterTestTag(progress = 0F))
+        composeRule.onNodeWithText("2").assertTestTagToRootExists(exitTestTag(progress = 0F))
+    }
+
+    @Test
+    fun WHEN_gesture_started_progress_and_finished_in_the_same_frame_THEN_transitions_animated() {
+        var stack by mutableStateOf(stack("1", "2"))
+        val childDirections = HashMap<String, Direction?>()
+        val childAnimations = HashMap<String, Float>()
+
+        val anim =
+            DefaultStackAnimation(
+                predictiveBackAnimatable = { null },
+                onBack = { stack = stack.dropLast() },
+            )
+
+        composeRule.setContent {
+            anim(stack = stack, modifier = Modifier) {
+                val animationValue by transition.animateFloat(durationMillis = 1000)
+
+                LaunchedEffect(stackAnimationDirection, animationValue) {
+                    childDirections[it.configuration] = stackAnimationDirection
+                    childAnimations[it.configuration] = animationValue
+                }
+            }
+        }
+        composeRule.waitForIdle()
+
+        input.backStarted(NavigationEvent(progress = 0F))
+        input.backProgressed(NavigationEvent(progress = 0F))
+        input.backCompleted()
+        composeRule.mainClock.advanceTimeBy(500L)
+
+        assertEquals(Direction.ENTER_BACK, childDirections["1"])
+        assertEquals(expected = 0.5F, actual = childAnimations["1"] ?: -1F, absoluteTolerance = 0.05F)
+        assertEquals(Direction.EXIT_FRONT, childDirections["2"])
+        assertEquals(expected = 0.5F, actual = childAnimations["2"] ?: -1F, absoluteTolerance = 0.05F)
+    }
+
     private fun DefaultStackAnimation(
         predictiveBackAnimatable: (initialNavigationEvent: NavigationEvent) -> PredictiveBackAnimatable? = ::TestAnimatable,
         animator: StackAnimator? = null,
@@ -638,6 +736,51 @@ class PredictiveBackGestureTest {
             },
             selector = { _, _, _, _ -> animator },
         )
+
+    @Test
+    fun GIVEN_gesture_finished_and_onBack_called_and_animation_not_recomposed_yet_WHEN_gesture_started_THEN_animatable_not_created() {
+        var stack by mutableStateOf(stack("1", "2"))
+        var predictiveBackAnimatableCallCount = 0
+        var onBackCalled = false
+
+        val animation =
+            DefaultStackAnimation(
+                predictiveBackAnimatable = { initialNavigationEvent ->
+                    predictiveBackAnimatableCallCount++
+                    TestAnimatable(initialNavigationEvent = initialNavigationEvent)
+                },
+                onBack = {
+                    onBackCalled = true
+                    stack = stack.dropLast()
+                },
+            )
+
+        composeRule.setContent {
+            animation(stack, Modifier) {
+                Text(text = it.configuration)
+            }
+        }
+
+        input.backStarted(NavigationEvent(progress = 0F))
+        composeRule.waitForIdle()
+        input.backProgressed(NavigationEvent(progress = 0.5F))
+        composeRule.waitForIdle()
+        input.backCompleted()
+
+        repeat(5) {
+            if (!onBackCalled) {
+                composeRule.mainClock.advanceTimeByFrame()
+            }
+        }
+        assertTrue(onBackCalled)
+
+        predictiveBackAnimatableCallCount = 0
+
+        input.backStarted(NavigationEvent(progress = 0F))
+        input.backProgressed(NavigationEvent(progress = 0.5F))
+
+        assertEquals(0, predictiveBackAnimatableCallCount)
+    }
 
     private fun stack(configs: List<String>): ChildStack<String, String> =
         ChildStack(
@@ -667,7 +810,7 @@ class PredictiveBackGestureTest {
     }
 
     private class TestAnimatable(
-        initialNavigationEvent: NavigationEvent,
+        val initialNavigationEvent: NavigationEvent,
         private val finish: suspend () -> Unit = {},
         private val cancel: suspend () -> Unit = {},
     ) : PredictiveBackAnimatable {
