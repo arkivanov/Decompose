@@ -32,6 +32,7 @@ kotlin {
 
     setupSourceSets {
         val android by bundle()
+        val nonAndroid by bundle()
         val darwin by bundle()
         val itvos by bundle()
         val js by bundle()
@@ -40,8 +41,10 @@ kotlin {
         val web by bundle()
         val linux by bundle()
 
-        (darwin) dependsOn common
+        darwin dependsOn common
+        nonAndroid dependsOn common
         nonWeb dependsOn common
+        (allSet - android) dependsOn nonAndroid
         (allSet - js - wasmJs) dependsOn nonWeb
         web dependsOn common
         (js + wasmJs) dependsOn web
@@ -62,6 +65,7 @@ kotlin {
             api(deps.androidx.lifecycle.lifecycleCommon)
             api(deps.androidx.lifecycle.lifecycleRuntime)
             api(deps.androidx.lifecycle.lifecycleViewModel)
+            api(deps.androidx.savedState.savedState)
             api(deps.androidx.navigationEvent.navigationEvent)
             api(deps.jetbrains.kotlinx.kotlinxSerializationCore)
         }

@@ -100,7 +100,7 @@ public abstract interface annotation class com/arkivanov/decompose/ExperimentalD
 public abstract interface annotation class com/arkivanov/decompose/FaultyDecomposeApi : java/lang/annotation/Annotation {
 }
 
-public abstract interface class com/arkivanov/decompose/GenericComponentContext : androidx/lifecycle/LifecycleOwner, androidx/lifecycle/ViewModelStoreOwner, androidx/navigationevent/NavigationEventDispatcherOwner, com/arkivanov/decompose/ComponentContextFactoryOwner, com/arkivanov/essenty/statekeeper/StateKeeperOwner {
+public abstract interface class com/arkivanov/decompose/GenericComponentContext : androidx/lifecycle/LifecycleOwner, androidx/lifecycle/ViewModelStoreOwner, androidx/navigationevent/NavigationEventDispatcherOwner, androidx/savedstate/SavedStateRegistryOwner, com/arkivanov/decompose/ComponentContextFactoryOwner, com/arkivanov/essenty/statekeeper/StateKeeperOwner {
 }
 
 public final class com/arkivanov/decompose/HostComponentContext : com/arkivanov/decompose/ComponentContext, com/arkivanov/decompose/lifecycle/LifecycleRegistryOwner, com/arkivanov/decompose/statekeeper/StateKeeperDispatcherOwner {
@@ -114,6 +114,7 @@ public final class com/arkivanov/decompose/HostComponentContext : com/arkivanov/
 	public fun getLifecycle ()Landroidx/lifecycle/LifecycleRegistry;
 	public fun getNavigationEventDispatcher ()Landroidx/navigationevent/NavigationEventDispatcher;
 	public final fun getNavigationEventInput ()Landroidx/navigationevent/DirectNavigationEventInput;
+	public fun getSavedStateRegistry ()Landroidx/savedstate/SavedStateRegistry;
 	public synthetic fun getStateKeeper ()Lcom/arkivanov/essenty/statekeeper/StateKeeper;
 	public fun getStateKeeper ()Lcom/arkivanov/essenty/statekeeper/StateKeeperDispatcher;
 	public fun getViewModelStore ()Landroidx/lifecycle/ViewModelStore;

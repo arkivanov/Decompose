@@ -35,9 +35,9 @@ androidx.loader:loader:1.0.0
 androidx.navigationevent:navigationevent-android:1.2.0-alpha04
 androidx.navigationevent:navigationevent:1.2.0-alpha04
 androidx.profileinstaller:profileinstaller:1.4.0
-androidx.savedstate:savedstate-android:1.4.0
-androidx.savedstate:savedstate-ktx:1.4.0
-androidx.savedstate:savedstate:1.4.0
+androidx.savedstate:savedstate-android:1.5.0
+androidx.savedstate:savedstate-ktx:1.5.0
+androidx.savedstate:savedstate:1.5.0
 androidx.startup:startup-runtime:1.1.1
 androidx.tracing:tracing-android:2.0.0
 androidx.tracing:tracing:2.0.0
@@ -48,12 +48,6 @@ com.arkivanov.essenty:state-keeper:2.7.1
 com.arkivanov.essenty:utils-internal-android:2.7.1
 com.arkivanov.essenty:utils-internal:2.7.1
 com.google.guava:listenablefuture:1.0
-org.jetbrains.androidx.lifecycle:lifecycle-common-jvm:2.11.0
-org.jetbrains.androidx.lifecycle:lifecycle-common:2.11.0
-org.jetbrains.androidx.lifecycle:lifecycle-runtime-android:2.11.0
-org.jetbrains.androidx.lifecycle:lifecycle-runtime:2.11.0
-org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-android:2.11.0
-org.jetbrains.androidx.lifecycle:lifecycle-viewmodel:2.11.0
 org.jetbrains.kotlin:kotlin-stdlib:2.3.21
 org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0
 org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.9.0

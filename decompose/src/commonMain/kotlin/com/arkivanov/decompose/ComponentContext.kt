@@ -1,9 +1,22 @@
 package com.arkivanov.decompose
 
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigationevent.NavigationEventDispatcher
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
+import androidx.savedstate.SavedStateRegistryOwner
+import androidx.savedstate.savedState
+import com.arkivanov.decompose.lifecycle.LifecycleRegistry
+import com.arkivanov.decompose.lifecycle.attach
+import com.arkivanov.decompose.savedstate.SavedStateSerializer
+import com.arkivanov.essenty.statekeeper.ExperimentalStateKeeperApi
 import com.arkivanov.essenty.statekeeper.StateKeeper
+import com.arkivanov.essenty.statekeeper.StateKeeperOwner
+import com.arkivanov.essenty.statekeeper.saveable
 
 /**
  * A default component context interface provided by Decompose.
@@ -41,5 +54,29 @@ private class DefaultComponentContext(
     override val navigationEventDispatcher: NavigationEventDispatcher,
 ) : ComponentContext {
 
+    override val savedStateRegistry: SavedStateRegistry by savedStateRegistry()
     override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
 }
+
+internal fun <T> T.savedStateRegistry(): Lazy<SavedStateRegistry> where T : LifecycleOwner, T : StateKeeperOwner, T : ViewModelStoreOwner =
+    lazy {
+        @OptIn(ExperimentalStateKeeperApi::class)
+        val owner by saveable(
+            serializer = SavedStateSerializer,
+            state = { savedState().also(it.controller::performSave) },
+            key = "decompose.SavedStateRegistry",
+            init = { savedState ->
+                object : LifecycleOwner, ViewModelStoreOwner by this, SavedStateRegistryOwner {
+                    override val lifecycle: LifecycleRegistry = LifecycleRegistry()
+                    val controller: SavedStateRegistryController = SavedStateRegistryController.create(this)
+                    override val savedStateRegistry: SavedStateRegistry by controller::savedStateRegistry
+                }.apply {
+                    controller.performAttach()
+                    controller.performRestore(savedState)
+                    this@savedStateRegistry.lifecycle.attach(lifecycle)
+                }
+            },
+        )
+
+        owner.savedStateRegistry
+    }
