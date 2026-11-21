@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.navigationevent.NavigationEvent
@@ -29,7 +30,9 @@ import com.arkivanov.decompose.extensions.compose.stack.awaitAll
 import com.arkivanov.decompose.extensions.compose.stack.dropLast
 import com.arkivanov.decompose.extensions.compose.stack.size
 import com.arkivanov.decompose.router.stack.ChildStack
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -142,6 +145,10 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         val transition = rememberTransition(item.transitionState)
         val isTransitionIdle = item.transitionState.isIdle()
 
+        LaunchedEffect(item.transitionComposed) {
+            item.transitionComposed?.complete(Unit)
+        }
+
         if (isTransitionIdle) {
             LaunchedEffect(Unit) {
                 onFinished()
@@ -235,6 +242,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
         direction: Direction,
         transitionState: TransitionState<EnterExitState>,
         otherChild: Child.Created<C, T>,
+        transitionComposed: CompletableDeferred<Unit>? = null,
         isPredictiveBack: Boolean = false,
         predictiveBackAnimator: StackAnimator? = null,
     ): AnimationItem<C, T> =
@@ -242,6 +250,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
             child = child,
             direction = direction,
             transitionState = transitionState,
+            transitionComposed = transitionComposed,
             animator = predictiveBackAnimator ?: selector(child, otherChild, direction, isPredictiveBack),
         )
 
@@ -264,7 +273,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                 currentState.scope.cancel()
                 val newScope = parentScope + Job(parentScope.coroutineContext[Job])
                 state = State.Started(currentState.lastBackEvent, newScope)
-                onBackProgressed(currentState.lastBackEvent)
+                onBackProgressed(event)
             }
         }
 
@@ -293,6 +302,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                         direction = Direction.ENTER_BACK,
                         transitionState = animationHandler.enterTransitionState,
                         otherChild = exitChild,
+                        transitionComposed = animationHandler.enterTransitionComposed,
                         isPredictiveBack = true,
                         predictiveBackAnimator = animationHandler.animatable?.let { anim -> SimpleStackAnimator { anim.enterModifier } },
                     ),
@@ -301,6 +311,7 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
                         direction = Direction.EXIT_FRONT,
                         transitionState = animationHandler.exitTransitionState,
                         otherChild = enterChild,
+                        transitionComposed = animationHandler.exitTransitionComposed,
                         isPredictiveBack = true,
                         predictiveBackAnimator = animationHandler.animatable?.let { anim -> SimpleStackAnimator { anim.exitModifier } },
                     ),
@@ -354,7 +365,6 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
                     currentState.scope.launch {
                         currentState.animationHandler.finish()
-                        state = State.Idle
                         setItems(getAnimationItems(newStack = stack.dropLast()))
                         onBack()
                         currentState.scope.cancel()
@@ -384,7 +394,11 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
     private class AnimationHandler(
         val animatable: PredictiveBackAnimatable?,
     ) {
+
+        val exitTransitionComposed: CompletableDeferred<Unit> = CompletableDeferred()
         val exitTransitionState: SeekableTransitionState<EnterExitState> = SeekableTransitionState(EnterExitState.Visible)
+
+        val enterTransitionComposed: CompletableDeferred<Unit> = CompletableDeferred()
         val enterTransitionState: SeekableTransitionState<EnterExitState> = SeekableTransitionState(EnterExitState.PreEnter)
 
         suspend fun progress(backEvent: NavigationEvent) {
@@ -409,10 +423,25 @@ internal class DefaultStackAnimation<C : Any, T : Any>(
 
         suspend fun finish() {
             awaitAll(
-                { exitTransitionState.animateTo(EnterExitState.PostExit) },
-                { enterTransitionState.animateTo(EnterExitState.Visible) },
+                {
+                    exitTransitionComposed.awaitCompletionForAFewFrames()
+                    exitTransitionState.animateTo(EnterExitState.PostExit)
+                },
+                {
+                    enterTransitionComposed.awaitCompletionForAFewFrames()
+                    enterTransitionState.animateTo(EnterExitState.Visible)
+                },
                 { animatable?.finish() },
             )
+        }
+
+        // Wait a few frames for the SeekableTransitionState to receive its Transition
+        private suspend fun Deferred<*>.awaitCompletionForAFewFrames() {
+            repeat(3) {
+                if (!isCompleted) {
+                    withFrameNanos {}
+                }
+            }
         }
     }
 }
@@ -435,6 +464,7 @@ private data class AnimationItem<out C : Any, out T : Any>(
     val child: Child.Created<C, T>,
     val direction: Direction,
     val transitionState: TransitionState<EnterExitState>,
+    val transitionComposed: CompletableDeferred<Unit>? = null,
     val animator: StackAnimator? = null,
 )
 
