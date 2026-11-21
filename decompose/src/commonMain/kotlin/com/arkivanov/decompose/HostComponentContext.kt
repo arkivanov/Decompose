@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
+import androidx.savedstate.SavedStateRegistry
 import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.LifecycleRegistryOwner
 import com.arkivanov.decompose.lifecycle.moveToDestroyed
@@ -60,6 +61,7 @@ class HostComponentContext(
 
     override val lifecycle: LifecycleRegistry = LifecycleRegistry(lifecycleState)
     override val stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(savedState)
+    override val savedStateRegistry: SavedStateRegistry by savedStateRegistry()
     override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::ComponentContext)
 
     val navigationEventInput: DirectNavigationEventInput = navigationEventDispatcher.addDirectInput()

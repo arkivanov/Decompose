@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
 import androidx.savedstate.SavedStateRegistryOwner
-import com.arkivanov.decompose.instancekeeper.viewModel
+import com.arkivanov.decompose.instancekeeper.getOrCreate
 import com.arkivanov.decompose.lifecycle.addObserver
 import com.arkivanov.decompose.lifecycle.moveToCreated
 import com.arkivanov.decompose.lifecycle.moveToDestroyed
@@ -143,7 +143,7 @@ internal fun <T : Any, O> O.retainedComponent(
     val discardRetainedInstance = stateKeeper.consume(key = KEY_STATE_MARKER, strategy = Boolean.serializer()) == null
     stateKeeper.register(key = KEY_STATE_MARKER, strategy = Boolean.serializer()) { true }
 
-    val retainedComponentHolders = viewModel(key = "decompose.RetainedComponentHolders", factory = ::RetainedComponentHolders)
+    val retainedComponentHolders = viewModelStore.getOrCreate("decompose.RetainedComponentHolders", ::RetainedComponentHolders)
 
     if (discardRetainedInstance) {
         retainedComponentHolders.map.remove(key = key)?.also { holder ->
