@@ -1,6 +1,6 @@
 package com.arkivanov.decompose
 
-import com.arkivanov.decompose.instancekeeper.getOrCreate
+import com.arkivanov.decompose.viewmodel.getOrCreate
 import com.arkivanov.decompose.navigationevent.addDirectInput
 import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.TestViewModel

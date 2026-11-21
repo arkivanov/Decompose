@@ -5,19 +5,24 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.plus
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
 import androidx.savedstate.SavedStateRegistryOwner
-import com.arkivanov.decompose.instancekeeper.getOrCreate
 import com.arkivanov.decompose.lifecycle.addObserver
 import com.arkivanov.decompose.lifecycle.moveToCreated
 import com.arkivanov.decompose.lifecycle.moveToDestroyed
 import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.lifecycle.moveToStarted
 import com.arkivanov.decompose.navigationevent.ForwardingNavigationEventInput
+import com.arkivanov.decompose.viewmodel.ViewModelStoreHost
+import com.arkivanov.decompose.viewmodel.getOrCreate
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 import com.arkivanov.essenty.statekeeper.stateKeeper
@@ -30,6 +35,12 @@ import kotlinx.serialization.builtins.serializer
  * Please pay attention when supplying dependencies to the component to avoid leaking the `Activity`.
  *
  * @param key a key of the component, must be unique within the `Activity`.
+ * @param viewModelFactory a provider of default [ViewModelProvider.Factory] for creating `ViewModel` instances.
+ * Used when a `ViewModel` is being created without passing a specific factory. Default is [SavedStateViewModelFactory].
+ * The provider function is remembered when [retainedComponent] is called the first time and then retained.
+ * Pay attention not to leak any Activity-scoped objects.
+ * @param viewModelCreationExtras a provider of additional `ViewModel` [CreationExtras]. Default is [CreationExtras.Empty].
+ * Pay attention not to leak any Activity-scoped objects.
  * @param handleNavigationEvents a flag that determines whether the component handles navigation events
  * from the `Activity`'s [NavigationEventDispatcher], default is `true`.
  * @param discardSavedState a flag indicating whether any previously saved state should be discarded or not,
@@ -38,9 +49,12 @@ import kotlinx.serialization.builtins.serializer
  * @param isStateSavingAllowed called before saving the state. When `true` then the state will be saved,
  * otherwise it won't. Default value is `true`.
  * @param factory a function that returns a new instance of the component.
+ * Called only once on first component creation. Pay attention not to leak any Activity-scoped objects.
  */
 inline fun <reified T : Any> ComponentActivity.retainedComponent(
     key: String = "RootRetainedComponent",
+    noinline viewModelFactory: () -> ViewModelProvider.Factory = ::SavedStateViewModelFactory,
+    noinline viewModelCreationExtras: () -> CreationExtras = { CreationExtras.Empty },
     handleNavigationEvents: Boolean = true,
     discardSavedState: Boolean = false,
     noinline isStateSavingAllowed: () -> Boolean = { true },
@@ -49,6 +63,8 @@ inline fun <reified T : Any> ComponentActivity.retainedComponent(
     retainedComponent(
         cast = { it as T },
         key = key,
+        viewModelFactory = viewModelFactory,
+        viewModelCreationExtras = viewModelCreationExtras,
         handleNavigationEvents = handleNavigationEvents,
         discardSavedState = discardSavedState,
         isStateSavingAllowed = isStateSavingAllowed,
@@ -59,6 +75,8 @@ inline fun <reified T : Any> ComponentActivity.retainedComponent(
 internal fun <T : Any> ComponentActivity.retainedComponent(
     cast: (Any) -> T,
     key: String,
+    viewModelFactory: () -> ViewModelProvider.Factory,
+    viewModelCreationExtras: () -> CreationExtras,
     handleNavigationEvents: Boolean,
     discardSavedState: Boolean,
     isStateSavingAllowed: () -> Boolean,
@@ -67,6 +85,8 @@ internal fun <T : Any> ComponentActivity.retainedComponent(
     retainedComponent(
         cast = cast,
         key = key,
+        viewModelFactory = viewModelFactory,
+        viewModelCreationExtras = viewModelCreationExtras,
         navigationEventDispatcher = if (handleNavigationEvents) navigationEventDispatcher else null,
         discardSavedState = discardSavedState,
         isStateSavingAllowed = isStateSavingAllowed,
@@ -81,6 +101,13 @@ internal fun <T : Any> ComponentActivity.retainedComponent(
  * Please pay attention when supplying dependencies to the component to avoid leaking the `Fragment`.
  *
  * @param key a key of the component, must be unique within the `Fragment`.
+ * @param viewModelFactory a provider of default [ViewModelProvider.Factory] for creating `ViewModel` instances.
+ * Used when a `ViewModel` is being created without passing a specific factory.
+ * The provider function is remembered when [retainedComponent] is called the first time and then retained.
+ * Pay attention not to leak any Fragment-scoped objects.
+ * Default is [SavedStateViewModelFactory].
+ * @param viewModelCreationExtras a provider of additional `ViewModel` [CreationExtras]. Default is [CreationExtras.Empty].
+ * Pay attention not to leak any Fragment-scoped objects.
  * @param handleNavigationEvents a flag that determines whether the component handles navigation events
  * from the host `Activity`'s [NavigationEventDispatcher], default is `true`.
  * @param discardSavedState a flag indicating whether any previously saved state should be discarded or not,
@@ -89,9 +116,12 @@ internal fun <T : Any> ComponentActivity.retainedComponent(
  * @param isStateSavingAllowed called before saving the state. When `true` then the state will be saved,
  * otherwise it won't. Default value is `true`.
  * @param factory a function that returns a new instance of the component.
+ * Called only once on first component creation. Pay attention not to leak any Fragment or Activity scoped objects.
  */
 inline fun <reified T : Any> Fragment.retainedComponent(
     key: String = "RootRetainedComponent",
+    noinline viewModelFactory: () -> ViewModelProvider.Factory = ::SavedStateViewModelFactory,
+    noinline viewModelCreationExtras: () -> CreationExtras = { CreationExtras.Empty },
     handleNavigationEvents: Boolean = true,
     discardSavedState: Boolean = false,
     noinline isStateSavingAllowed: () -> Boolean = { true },
@@ -100,6 +130,8 @@ inline fun <reified T : Any> Fragment.retainedComponent(
     retainedComponent(
         cast = { it as T },
         key = key,
+        viewModelFactory = viewModelFactory,
+        viewModelCreationExtras = viewModelCreationExtras,
         handleNavigationEvents = handleNavigationEvents,
         discardSavedState = discardSavedState,
         isStateSavingAllowed = isStateSavingAllowed,
@@ -110,6 +142,8 @@ inline fun <reified T : Any> Fragment.retainedComponent(
 internal fun <T : Any> Fragment.retainedComponent(
     cast: (Any) -> T,
     key: String,
+    viewModelFactory: () -> ViewModelProvider.Factory,
+    viewModelCreationExtras: () -> CreationExtras,
     handleNavigationEvents: Boolean,
     discardSavedState: Boolean,
     isStateSavingAllowed: () -> Boolean,
@@ -118,6 +152,8 @@ internal fun <T : Any> Fragment.retainedComponent(
     retainedComponent(
         cast = cast,
         key = key,
+        viewModelFactory = viewModelFactory,
+        viewModelCreationExtras = viewModelCreationExtras,
         navigationEventDispatcher = if (handleNavigationEvents) requireActivity().navigationEventDispatcher else null,
         discardSavedState = discardSavedState,
         isStateSavingAllowed = isStateSavingAllowed,
@@ -128,6 +164,8 @@ internal fun <T : Any> Fragment.retainedComponent(
 internal fun <T : Any, O> O.retainedComponent(
     cast: (Any) -> T,
     key: String,
+    viewModelFactory: () -> ViewModelProvider.Factory,
+    viewModelCreationExtras: () -> CreationExtras,
     navigationEventDispatcher: NavigationEventDispatcher?,
     discardSavedState: Boolean,
     isStateSavingAllowed: () -> Boolean,
@@ -156,9 +194,13 @@ internal fun <T : Any, O> O.retainedComponent(
         retainedComponentHolders.map.getOrPut(key = key) {
             RetainedComponentHolder(
                 savedState = stateKeeper.consume(key = key, strategy = SerializableContainer.serializer()),
+                viewModelFactory = viewModelFactory,
+                viewModelCreationExtras = { baseViewModelCreationExtras() + viewModelCreationExtras() },
                 factory = factory,
             )
         }
+
+    holder.viewModelCreationExtras = { baseViewModelCreationExtras() + viewModelCreationExtras() }
 
     lifecycle.addObserver(
         onCreate = {
@@ -224,6 +266,8 @@ private class RetainedComponentHolders : ViewModel() {
 
 private class RetainedComponentHolder<out T : Any>(
     savedState: SerializableContainer?,
+    viewModelFactory: () -> ViewModelProvider.Factory,
+    var viewModelCreationExtras: () -> CreationExtras,
     factory: (ComponentContext) -> T,
 ) : LifecycleOwner {
     override val lifecycle: LifecycleRegistry = LifecycleRegistry(this)
@@ -250,7 +294,11 @@ private class RetainedComponentHolder<out T : Any>(
             ComponentContext(
                 lifecycle = lifecycle,
                 stateKeeper = stateKeeper,
-                viewModelStore = viewModelStore,
+                viewModelStoreHost = ViewModelStoreHost(
+                    store = viewModelStore,
+                    factory = viewModelFactory,
+                    extras = { viewModelCreationExtras() },
+                ),
                 navigationEventDispatcher = navigationEventDispatcher,
             )
         )

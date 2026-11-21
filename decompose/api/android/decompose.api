@@ -55,15 +55,20 @@ public final class com/arkivanov/decompose/ChildContextLifecycle {
 public abstract interface class com/arkivanov/decompose/ComponentContext : com/arkivanov/decompose/GenericComponentContext {
 }
 
+public final class com/arkivanov/decompose/ComponentContext$DefaultImpls {
+	public static fun getDefaultViewModelCreationExtras (Lcom/arkivanov/decompose/ComponentContext;)Landroidx/lifecycle/viewmodel/CreationExtras;
+	public static fun getDefaultViewModelProviderFactory (Lcom/arkivanov/decompose/ComponentContext;)Landroidx/lifecycle/ViewModelProvider$Factory;
+}
+
 public final class com/arkivanov/decompose/ComponentContextBuilderKt {
-	public static final fun componentContext (Landroidx/fragment/app/Fragment;Landroidx/navigationevent/NavigationEventDispatcher;ZLkotlin/jvm/functions/Function0;)Lcom/arkivanov/decompose/ComponentContext;
-	public static final fun componentContext (Landroidx/savedstate/SavedStateRegistryOwner;ZLkotlin/jvm/functions/Function0;)Lcom/arkivanov/decompose/ComponentContext;
-	public static synthetic fun componentContext$default (Landroidx/fragment/app/Fragment;Landroidx/navigationevent/NavigationEventDispatcher;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/arkivanov/decompose/ComponentContext;
-	public static synthetic fun componentContext$default (Landroidx/savedstate/SavedStateRegistryOwner;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/arkivanov/decompose/ComponentContext;
+	public static final fun componentContext (Landroidx/fragment/app/Fragment;Lkotlin/jvm/functions/Function0;ZLkotlin/jvm/functions/Function0;Landroidx/navigationevent/NavigationEventDispatcher;)Lcom/arkivanov/decompose/ComponentContext;
+	public static final fun componentContext (Landroidx/savedstate/SavedStateRegistryOwner;Lkotlin/jvm/functions/Function0;ZLkotlin/jvm/functions/Function0;)Lcom/arkivanov/decompose/ComponentContext;
+	public static synthetic fun componentContext$default (Landroidx/fragment/app/Fragment;Lkotlin/jvm/functions/Function0;ZLkotlin/jvm/functions/Function0;Landroidx/navigationevent/NavigationEventDispatcher;ILjava/lang/Object;)Lcom/arkivanov/decompose/ComponentContext;
+	public static synthetic fun componentContext$default (Landroidx/savedstate/SavedStateRegistryOwner;Lkotlin/jvm/functions/Function0;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/arkivanov/decompose/ComponentContext;
 }
 
 public abstract interface class com/arkivanov/decompose/ComponentContextFactory {
-	public abstract fun invoke (Landroidx/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Landroidx/lifecycle/ViewModelStore;Landroidx/navigationevent/NavigationEventDispatcher;)Ljava/lang/Object;
+	public abstract fun invoke (Landroidx/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/decompose/viewmodel/ViewModelStoreHost;Landroidx/navigationevent/NavigationEventDispatcher;)Ljava/lang/Object;
 }
 
 public abstract interface class com/arkivanov/decompose/ComponentContextFactoryOwner {
@@ -71,7 +76,7 @@ public abstract interface class com/arkivanov/decompose/ComponentContextFactoryO
 }
 
 public final class com/arkivanov/decompose/ComponentContextKt {
-	public static final fun ComponentContext (Landroidx/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Landroidx/lifecycle/ViewModelStore;Landroidx/navigationevent/NavigationEventDispatcher;)Lcom/arkivanov/decompose/ComponentContext;
+	public static final fun ComponentContext (Landroidx/lifecycle/Lifecycle;Lcom/arkivanov/essenty/statekeeper/StateKeeper;Lcom/arkivanov/decompose/viewmodel/ViewModelStoreHost;Landroidx/navigationevent/NavigationEventDispatcher;)Lcom/arkivanov/decompose/ComponentContext;
 }
 
 public final class com/arkivanov/decompose/DecomposeSettings {
@@ -113,7 +118,12 @@ public abstract interface annotation class com/arkivanov/decompose/ExperimentalD
 public abstract interface annotation class com/arkivanov/decompose/FaultyDecomposeApi : java/lang/annotation/Annotation {
 }
 
-public abstract interface class com/arkivanov/decompose/GenericComponentContext : androidx/lifecycle/LifecycleOwner, androidx/lifecycle/ViewModelStoreOwner, androidx/navigationevent/NavigationEventDispatcherOwner, androidx/savedstate/SavedStateRegistryOwner, com/arkivanov/decompose/ComponentContextFactoryOwner, com/arkivanov/essenty/statekeeper/StateKeeperOwner {
+public abstract interface class com/arkivanov/decompose/GenericComponentContext : androidx/lifecycle/HasDefaultViewModelProviderFactory, androidx/lifecycle/LifecycleOwner, androidx/lifecycle/ViewModelStoreOwner, androidx/navigationevent/NavigationEventDispatcherOwner, androidx/savedstate/SavedStateRegistryOwner, com/arkivanov/decompose/ComponentContextFactoryOwner, com/arkivanov/essenty/statekeeper/StateKeeperOwner {
+}
+
+public final class com/arkivanov/decompose/GenericComponentContext$DefaultImpls {
+	public static fun getDefaultViewModelCreationExtras (Lcom/arkivanov/decompose/GenericComponentContext;)Landroidx/lifecycle/viewmodel/CreationExtras;
+	public static fun getDefaultViewModelProviderFactory (Lcom/arkivanov/decompose/GenericComponentContext;)Landroidx/lifecycle/ViewModelProvider$Factory;
 }
 
 public final class com/arkivanov/decompose/HandleDeepLinkDefaults {
@@ -121,13 +131,15 @@ public final class com/arkivanov/decompose/HandleDeepLinkDefaults {
 	public final fun shouldRestartInNewTask (Landroid/app/Activity;)Z
 }
 
-public final class com/arkivanov/decompose/HostComponentContext : com/arkivanov/decompose/ComponentContext, com/arkivanov/decompose/lifecycle/LifecycleRegistryOwner, com/arkivanov/decompose/statekeeper/StateKeeperDispatcherOwner {
+public final class com/arkivanov/decompose/HostComponentContext : androidx/lifecycle/HasDefaultViewModelProviderFactory, androidx/lifecycle/ViewModelStoreOwner, com/arkivanov/decompose/ComponentContext, com/arkivanov/decompose/lifecycle/LifecycleRegistryOwner, com/arkivanov/decompose/statekeeper/StateKeeperDispatcherOwner {
 	public fun <init> ()V
-	public fun <init> (Landroidx/lifecycle/Lifecycle$State;Lcom/arkivanov/essenty/statekeeper/SerializableContainer;Landroidx/lifecycle/ViewModelStore;Landroidx/navigationevent/NavigationEventDispatcher;)V
-	public synthetic fun <init> (Landroidx/lifecycle/Lifecycle$State;Lcom/arkivanov/essenty/statekeeper/SerializableContainer;Landroidx/lifecycle/ViewModelStore;Landroidx/navigationevent/NavigationEventDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroidx/lifecycle/Lifecycle$State;Lcom/arkivanov/essenty/statekeeper/SerializableContainer;Lcom/arkivanov/decompose/viewmodel/ViewModelStoreHost;Landroidx/navigationevent/NavigationEventDispatcher;)V
+	public synthetic fun <init> (Landroidx/lifecycle/Lifecycle$State;Lcom/arkivanov/essenty/statekeeper/SerializableContainer;Lcom/arkivanov/decompose/viewmodel/ViewModelStoreHost;Landroidx/navigationevent/NavigationEventDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Lcom/arkivanov/essenty/statekeeper/SerializableContainer;)V
 	public final fun destroy ()V
 	public fun getComponentContextFactory ()Lcom/arkivanov/decompose/ComponentContextFactory;
+	public fun getDefaultViewModelCreationExtras ()Landroidx/lifecycle/viewmodel/CreationExtras;
+	public fun getDefaultViewModelProviderFactory ()Landroidx/lifecycle/ViewModelProvider$Factory;
 	public synthetic fun getLifecycle ()Landroidx/lifecycle/Lifecycle;
 	public fun getLifecycle ()Landroidx/lifecycle/LifecycleRegistry;
 	public fun getNavigationEventDispatcher ()Landroidx/navigationevent/NavigationEventDispatcher;
@@ -142,13 +154,8 @@ public abstract interface annotation class com/arkivanov/decompose/InternalDecom
 }
 
 public final class com/arkivanov/decompose/RetainedComponentKt {
-	public static final fun retainedComponent (Landroidx/activity/ComponentActivity;Lkotlin/jvm/functions/Function1;Ljava/lang/String;ZZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final fun retainedComponent (Landroidx/fragment/app/Fragment;Lkotlin/jvm/functions/Function1;Ljava/lang/String;ZZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-}
-
-public final class com/arkivanov/decompose/instancekeeper/ViewModelStoreExtKt {
-	public static final fun getOrCreateCloseable (Landroidx/lifecycle/ViewModelStore;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Ljava/lang/AutoCloseable;
-	public static final fun retainedCloseable (Landroidx/lifecycle/ViewModelStoreOwner;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Ljava/lang/AutoCloseable;
+	public static final fun retainedComponent (Landroidx/activity/ComponentActivity;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;ZZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun retainedComponent (Landroidx/fragment/app/Fragment;Lkotlin/jvm/functions/Function1;Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;ZZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
 public final class com/arkivanov/decompose/lifecycle/LifecycleExtKt {
@@ -833,5 +840,21 @@ public final class com/arkivanov/decompose/value/ValueExtKt {
 
 public final class com/arkivanov/decompose/value/operator/MapKt {
 	public static final fun map (Lcom/arkivanov/decompose/value/Value;Lkotlin/jvm/functions/Function1;)Lcom/arkivanov/decompose/value/Value;
+}
+
+public final class com/arkivanov/decompose/viewmodel/ViewModelStoreExtKt {
+	public static final fun getOrCreateCloseable (Landroidx/lifecycle/ViewModelStore;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Ljava/lang/AutoCloseable;
+	public static final fun retainedCloseable (Landroidx/lifecycle/ViewModelStoreOwner;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Ljava/lang/AutoCloseable;
+	public static final fun viewModel (Landroidx/lifecycle/ViewModelStoreOwner;Lkotlin/reflect/KClass;Ljava/lang/String;Landroidx/lifecycle/ViewModelProvider$Factory;Landroidx/lifecycle/viewmodel/CreationExtras;)Landroidx/lifecycle/ViewModel;
+	public static synthetic fun viewModel$default (Landroidx/lifecycle/ViewModelStoreOwner;Lkotlin/reflect/KClass;Ljava/lang/String;Landroidx/lifecycle/ViewModelProvider$Factory;Landroidx/lifecycle/viewmodel/CreationExtras;ILjava/lang/Object;)Landroidx/lifecycle/ViewModel;
+}
+
+public final class com/arkivanov/decompose/viewmodel/ViewModelStoreHost : androidx/lifecycle/HasDefaultViewModelProviderFactory, androidx/lifecycle/ViewModelStoreOwner {
+	public fun <init> ()V
+	public fun <init> (Landroidx/lifecycle/ViewModelStore;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (Landroidx/lifecycle/ViewModelStore;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getDefaultViewModelCreationExtras ()Landroidx/lifecycle/viewmodel/CreationExtras;
+	public fun getDefaultViewModelProviderFactory ()Landroidx/lifecycle/ViewModelProvider$Factory;
+	public fun getViewModelStore ()Landroidx/lifecycle/ViewModelStore;
 }
 

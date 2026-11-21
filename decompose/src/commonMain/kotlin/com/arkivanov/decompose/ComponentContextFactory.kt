@@ -1,8 +1,8 @@
 package com.arkivanov.decompose
 
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelStore
 import androidx.navigationevent.NavigationEventDispatcher
+import com.arkivanov.decompose.viewmodel.ViewModelStoreHost
 import com.arkivanov.essenty.statekeeper.StateKeeper
 
 /**
@@ -17,13 +17,13 @@ fun interface ComponentContextFactory<out T : Any> {
      *
      * @param lifecycle a [Lifecycle] for the new component context.
      * @param stateKeeper a [StateKeeper] for the new component context.
-     * @param viewModelStore a [ViewModelStore] for the new component context.
+     * @param viewModelStoreHost a [ViewModelStoreHost] for the new component context.
      * @param navigationEventDispatcher a [NavigationEventDispatcher] for the new component context.
      */
     operator fun invoke(
         lifecycle: Lifecycle,
         stateKeeper: StateKeeper,
-        viewModelStore: ViewModelStore,
+        viewModelStoreHost: ViewModelStoreHost,
         navigationEventDispatcher: NavigationEventDispatcher,
     ): T
 }

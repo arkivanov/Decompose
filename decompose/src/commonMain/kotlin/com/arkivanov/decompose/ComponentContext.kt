@@ -1,10 +1,15 @@
 package com.arkivanov.decompose
 
+import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
+import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.enableSavedStateHandles
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import androidx.navigationevent.NavigationEventDispatcher
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
@@ -13,6 +18,7 @@ import androidx.savedstate.savedState
 import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.attach
 import com.arkivanov.decompose.savedstate.SavedStateSerializer
+import com.arkivanov.decompose.viewmodel.ViewModelStoreHost
 import com.arkivanov.essenty.statekeeper.ExperimentalStateKeeperApi
 import com.arkivanov.essenty.statekeeper.StateKeeper
 import com.arkivanov.essenty.statekeeper.StateKeeperOwner
@@ -37,26 +43,35 @@ interface ComponentContext : GenericComponentContext<ComponentContext>
 fun ComponentContext(
     lifecycle: Lifecycle,
     stateKeeper: StateKeeper,
-    viewModelStore: ViewModelStore,
+    viewModelStoreHost: ViewModelStoreHost,
     navigationEventDispatcher: NavigationEventDispatcher,
 ): ComponentContext =
     DefaultComponentContext(
         lifecycle = lifecycle,
         stateKeeper = stateKeeper,
-        viewModelStore = viewModelStore,
+        viewModelStoreHost = viewModelStoreHost,
         navigationEventDispatcher = navigationEventDispatcher,
     )
 
 private class DefaultComponentContext(
     override val lifecycle: Lifecycle,
     override val stateKeeper: StateKeeper,
-    override val viewModelStore: ViewModelStore,
+    private val viewModelStoreHost: ViewModelStoreHost,
     override val navigationEventDispatcher: NavigationEventDispatcher,
-) : ComponentContext {
+) : ComponentContext,
+    ViewModelStoreOwner by viewModelStoreHost,
+    HasDefaultViewModelProviderFactory by viewModelStoreHost {
 
     override val savedStateRegistry: SavedStateRegistry by savedStateRegistry()
+    override val defaultViewModelCreationExtras: CreationExtras get() = creationExtras(viewModelStoreHost.defaultViewModelCreationExtras)
     override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::DefaultComponentContext)
 }
+
+internal fun <T> T.creationExtras(initial: CreationExtras): CreationExtras where T : SavedStateRegistryOwner, T : ViewModelStoreOwner =
+    MutableCreationExtras(initial).also { extras ->
+        extras[SAVED_STATE_REGISTRY_OWNER_KEY] = this
+        extras[VIEW_MODEL_STORE_OWNER_KEY] = this
+    }
 
 internal fun <T> T.savedStateRegistry(): Lazy<SavedStateRegistry> where T : LifecycleOwner, T : StateKeeperOwner, T : ViewModelStoreOwner =
     lazy {
@@ -73,6 +88,7 @@ internal fun <T> T.savedStateRegistry(): Lazy<SavedStateRegistry> where T : Life
                 }.apply {
                     controller.performAttach()
                     controller.performRestore(savedState)
+                    enableSavedStateHandles()
                     this@savedStateRegistry.lifecycle.attach(lifecycle)
                 }
             },

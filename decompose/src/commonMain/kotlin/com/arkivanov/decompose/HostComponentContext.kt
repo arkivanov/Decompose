@@ -1,8 +1,11 @@
 package com.arkivanov.decompose
 
+import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigationevent.DirectNavigationEventInput
 import androidx.navigationevent.NavigationEventDispatcher
 import androidx.savedstate.SavedStateRegistry
@@ -11,6 +14,7 @@ import com.arkivanov.decompose.lifecycle.LifecycleRegistryOwner
 import com.arkivanov.decompose.lifecycle.moveToDestroyed
 import com.arkivanov.decompose.navigationevent.addDirectInput
 import com.arkivanov.decompose.statekeeper.StateKeeperDispatcherOwner
+import com.arkivanov.decompose.viewmodel.ViewModelStoreHost
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
@@ -37,31 +41,28 @@ import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 class HostComponentContext(
     lifecycleState: Lifecycle.State = Lifecycle.State.INITIALIZED,
     savedState: SerializableContainer? = null,
-    override val viewModelStore: ViewModelStore = ViewModelStore(),
+    private val viewModelStoreHost: ViewModelStoreHost = ViewModelStoreHost(),
     override val navigationEventDispatcher: NavigationEventDispatcher = NavigationEventDispatcher()
-) : ComponentContext, LifecycleRegistryOwner, StateKeeperDispatcherOwner {
+) : ComponentContext,
+    LifecycleRegistryOwner,
+    StateKeeperDispatcherOwner,
+    ViewModelStoreOwner by viewModelStoreHost,
+    HasDefaultViewModelProviderFactory by viewModelStoreHost {
 
     /**
      * Convenience constructor for calling from Swift.
      */
-    constructor() : this(
-        lifecycleState = Lifecycle.State.INITIALIZED,
-        savedState = null,
-        viewModelStore = ViewModelStore(),
-    )
+    constructor() : this(lifecycleState = Lifecycle.State.INITIALIZED)
 
     /**
      * Convenience constructor for calling from Swift.
      */
-    constructor(savedState: SerializableContainer?) : this(
-        lifecycleState = Lifecycle.State.INITIALIZED,
-        savedState = savedState,
-        viewModelStore = ViewModelStore(),
-    )
+    constructor(savedState: SerializableContainer?) : this(lifecycleState = Lifecycle.State.INITIALIZED, savedState = savedState)
 
     override val lifecycle: LifecycleRegistry = LifecycleRegistry(lifecycleState)
     override val stateKeeper: StateKeeperDispatcher = StateKeeperDispatcher(savedState)
     override val savedStateRegistry: SavedStateRegistry by savedStateRegistry()
+    override val defaultViewModelCreationExtras: CreationExtras get() = creationExtras(viewModelStoreHost.defaultViewModelCreationExtras)
     override val componentContextFactory: ComponentContextFactory<ComponentContext> = ComponentContextFactory(::ComponentContext)
 
     val navigationEventInput: DirectNavigationEventInput = navigationEventDispatcher.addDirectInput()

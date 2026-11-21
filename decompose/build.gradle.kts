@@ -65,6 +65,7 @@ kotlin {
             api(deps.androidx.lifecycle.lifecycleCommon)
             api(deps.androidx.lifecycle.lifecycleRuntime)
             api(deps.androidx.lifecycle.lifecycleViewModel)
+            api(deps.androidx.lifecycle.lifecycleViewModelSavedState)
             api(deps.androidx.savedState.savedState)
             api(deps.androidx.navigationEvent.navigationEvent)
             api(deps.jetbrains.kotlinx.kotlinxSerializationCore)

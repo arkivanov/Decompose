@@ -1,7 +1,7 @@
 package com.arkivanov.decompose.router.items
 
 import com.arkivanov.decompose.HostComponentContext
-import com.arkivanov.decompose.instancekeeper.getOrCreate
+import com.arkivanov.decompose.viewmodel.getOrCreate
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.TestViewModel
 import com.arkivanov.decompose.router.items.Items.ActiveLifecycleState

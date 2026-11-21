@@ -4,7 +4,7 @@ import androidx.lifecycle.Lifecycle
 import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.HostComponentContext
-import com.arkivanov.decompose.instancekeeper.getOrCreate
+import com.arkivanov.decompose.viewmodel.getOrCreate
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.TestViewModel
 import com.arkivanov.decompose.testutils.consume

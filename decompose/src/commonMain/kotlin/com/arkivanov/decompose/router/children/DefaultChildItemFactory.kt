@@ -1,21 +1,23 @@
 package com.arkivanov.decompose.router.children
 
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelStore
-import androidx.navigationevent.NavigationEventDispatcher
-import com.arkivanov.decompose.ComponentContextFactory
+import com.arkivanov.decompose.GenericComponentContext
 import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.mergedLifecycle
+import com.arkivanov.decompose.navigationevent.NavigationEventPriority
+import com.arkivanov.decompose.navigationevent.child
 import com.arkivanov.decompose.navigationevent.childNavigationEventDispatcher
+import com.arkivanov.decompose.viewmodel.viewModelStoreHost
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
-internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
-    private val contextFactory: ComponentContextFactory<Ctx>,
-    private val lifecycle: Lifecycle,
-    private val navigationEventDispatcher: NavigationEventDispatcher,
+internal class DefaultChildItemFactory<out Ctx : GenericComponentContext<Ctx>, C : Any, out T : Any>(
+    private val componentContext: Ctx,
     private val childFactory: (configuration: C, Ctx) -> T,
 ) : ChildItemFactory<C, T> {
+
+    private val childNavigationEventDispatcher =
+        componentContext.navigationEventDispatcher.child(priority = NavigationEventPriority.Overlay)
 
     override fun invoke(
         configuration: C,
@@ -24,18 +26,18 @@ internal class DefaultChildItemFactory<out Ctx : Any, C : Any, out T : Any>(
         viewModelStore: ViewModelStore?,
     ): ChildItem.Created<C, T> {
         val componentLifecycleRegistry = LifecycleRegistry()
-        val mergedLifecycle = mergedLifecycle(lifecycle, componentLifecycleRegistry)
+        val mergedLifecycle = mergedLifecycle(componentContext.lifecycle, componentLifecycleRegistry)
         val stateKeeperDispatcher = StateKeeperDispatcher(savedState)
         val viewModelStore = viewModelStore ?: ViewModelStore()
-        val navigationEventDispatcher = navigationEventDispatcher.childNavigationEventDispatcher()
+        val navigationEventDispatcher = childNavigationEventDispatcher.childNavigationEventDispatcher()
 
         val component =
             childFactory(
                 configuration,
-                contextFactory(
+                componentContext.componentContextFactory(
                     lifecycle = mergedLifecycle,
                     stateKeeper = stateKeeperDispatcher,
-                    viewModelStore = viewModelStore,
+                    viewModelStoreHost = componentContext.viewModelStoreHost(store = viewModelStore),
                     navigationEventDispatcher = navigationEventDispatcher.dispatcher,
                 )
             )

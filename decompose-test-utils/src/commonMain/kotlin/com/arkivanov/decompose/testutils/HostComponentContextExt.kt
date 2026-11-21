@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelStore
 import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.lifecycle.moveToCreated
 import com.arkivanov.decompose.lifecycle.moveToDestroyed
+import com.arkivanov.decompose.viewmodel.ViewModelStoreHost
 
 fun HostComponentContext.recreate(isConfigurationChange: Boolean = false): HostComponentContext {
     val oldLifecycleState = lifecycle.currentState
@@ -26,6 +27,10 @@ fun HostComponentContext.recreate(isConfigurationChange: Boolean = false): HostC
     return HostComponentContext(
         lifecycleState = oldLifecycleState,
         savedState = savedState,
-        viewModelStore = newViewModelStore,
+        viewModelStoreHost = ViewModelStoreHost(
+            store = newViewModelStore,
+            factory = this::defaultViewModelProviderFactory,
+            extras = this::defaultViewModelCreationExtras,
+        ),
     )
 }

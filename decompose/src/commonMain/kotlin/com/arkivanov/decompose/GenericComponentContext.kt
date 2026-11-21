@@ -1,5 +1,6 @@
 package com.arkivanov.decompose
 
+import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigationevent.NavigationEventDispatcherOwner
@@ -8,13 +9,15 @@ import com.arkivanov.essenty.statekeeper.StateKeeperOwner
 
 /**
  * A generic component context that extends [LifecycleOwner], [StateKeeperOwner],
- * [ViewModelStoreOwner], [SavedStateRegistryOwner], and [NavigationEventDispatcherOwner] interfaces,
+ * [ViewModelStoreOwner], [HasDefaultViewModelProviderFactory], [SavedStateRegistryOwner],
+ * and [NavigationEventDispatcherOwner] interfaces,
  * and also able to create new instances of itself via [ComponentContextFactory].
  */
 interface GenericComponentContext<out T : Any> :
     LifecycleOwner,
     StateKeeperOwner,
-    ViewModelStoreOwner, // TODO: Add HasDefaultViewModelProviderFactory after supporting SavedStateRegistryOwner
+    ViewModelStoreOwner,
+    HasDefaultViewModelProviderFactory,
     SavedStateRegistryOwner,
     NavigationEventDispatcherOwner,
     ComponentContextFactoryOwner<T>

@@ -1,7 +1,11 @@
 package com.arkivanov.decompose
 
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.createSavedStateHandle
 import androidx.savedstate.SavedState
+import com.arkivanov.decompose.viewmodel.viewModel
 import com.arkivanov.decompose.testutils.recreate
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -86,5 +90,39 @@ class HostComponentContextSavedStateTest {
         assertEquals("value", data.value)
     }
 
+    @Test
+    fun GIVEN_ViewModel_with_SavedStateHandle_WHEN_context_recreated_and_saved_state_consumed_THEN_state_restored() {
+        var ctx = HostComponentContext(lifecycleState = Lifecycle.State.RESUMED)
+
+        var vm = ctx.viewModel { MyViewModel(createSavedStateHandle()) }
+        vm.savedStateHandle["data"] = Data("value")
+
+        ctx = ctx.recreate(isConfigurationChange = false)
+        vm = ctx.viewModel { MyViewModel(createSavedStateHandle()) }
+
+        val data = vm.savedStateHandle.get<Data>("data")
+
+        assertNotNull(data)
+        assertEquals("value", data.value)
+    }
+
+    @Test
+    fun GIVEN_ViewModel_with_SavedStateHandle_in_child_context_WHEN_context_recreated_and_saved_state_consumed_THEN_state_restored() {
+        var ctx = HostComponentContext(lifecycleState = Lifecycle.State.RESUMED)
+
+        var vm = ctx.childContext(key = "child").viewModel { MyViewModel(createSavedStateHandle()) }
+        vm.savedStateHandle["data"] = Data("value")
+
+        ctx = ctx.recreate(isConfigurationChange = false)
+        vm = ctx.childContext(key = "child").viewModel { MyViewModel(createSavedStateHandle()) }
+
+        val data = vm.savedStateHandle.get<Data>("data")
+
+        assertNotNull(data)
+        assertEquals("value", data.value)
+    }
+
     class Data(val value: String) : Serializable
+
+    private class MyViewModel(val savedStateHandle: SavedStateHandle) : ViewModel()
 }

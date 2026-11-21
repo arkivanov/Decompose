@@ -2,7 +2,7 @@ package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.HostComponentContext
-import com.arkivanov.decompose.instancekeeper.getOrCreate
+import com.arkivanov.decompose.viewmodel.getOrCreate
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.router.TestViewModel
 import com.arkivanov.decompose.router.children.ChildNavState.Status.CREATED

@@ -1,7 +1,7 @@
 package com.arkivanov.sample.shared.cards.card
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.instancekeeper.retainedCloseable
+import com.arkivanov.decompose.viewmodel.retainedCloseable
 import com.arkivanov.decompose.lifecycle.addObserver
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
