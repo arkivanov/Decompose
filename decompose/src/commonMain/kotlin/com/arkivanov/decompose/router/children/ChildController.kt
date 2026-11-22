@@ -4,7 +4,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
 import com.arkivanov.decompose.GenericComponentContext
-import com.arkivanov.decompose.instancekeeper.retainedCloseable
 import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.mergedLifecycle
 import com.arkivanov.decompose.lifecycle.moveToCreated
@@ -15,6 +14,8 @@ import com.arkivanov.decompose.navigationevent.ChildNavigationEventDispatcher
 import com.arkivanov.decompose.navigationevent.NavigationEventPriority
 import com.arkivanov.decompose.navigationevent.child
 import com.arkivanov.decompose.navigationevent.childNavigationEventDispatcher
+import com.arkivanov.decompose.viewmodel.retainedCloseable
+import com.arkivanov.decompose.viewmodel.viewModelStoreHost
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.arkivanov.essenty.statekeeper.StateKeeperDispatcher
 
@@ -179,7 +180,7 @@ internal class ChildController<C : Any, out T : Any, out Ctx : GenericComponentC
                 componentContext.componentContextFactory(
                     lifecycle = mergedLifecycle,
                     stateKeeper = stateKeeperDispatcher,
-                    viewModelStore = viewModelStore,
+                    viewModelStoreHost = componentContext.viewModelStoreHost(store = viewModelStore),
                     navigationEventDispatcher = navigationEventDispatcher.dispatcher,
                 )
             )

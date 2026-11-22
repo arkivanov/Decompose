@@ -71,6 +71,7 @@ androidx-navigationEvent-navigationEvent = { group = "androidx.navigationevent",
 androidx-lifecycle-lifecycleCommon = { group = "androidx.lifecycle", name = "lifecycle-common", version.ref = "androidxLifecycle" }
 androidx-lifecycle-lifecycleRuntime = { group = "androidx.lifecycle", name = "lifecycle-runtime", version.ref = "androidxLifecycle" }
 androidx-lifecycle-lifecycleViewModel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidxLifecycle" }
+androidx-lifecycle-lifecycleViewModelSavedState = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "androidxLifecycle" }
 androidx-savedState-savedState = { group = "androidx.savedstate", name = "savedstate", version.ref = "androidxSavedState" }
 
 dropbox-dependencyGuard = { group = "com.dropbox.dependency-guard", name = "dependency-guard", version.ref = "dependencyGuard" }

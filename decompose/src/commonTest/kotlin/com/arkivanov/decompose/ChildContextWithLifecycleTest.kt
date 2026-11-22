@@ -1,7 +1,7 @@
 package com.arkivanov.decompose
 
 import androidx.lifecycle.Lifecycle
-import com.arkivanov.decompose.instancekeeper.getOrCreate
+import com.arkivanov.decompose.viewmodel.getOrCreate
 import com.arkivanov.decompose.lifecycle.moveToDestroyed
 import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.lifecycle.resumed

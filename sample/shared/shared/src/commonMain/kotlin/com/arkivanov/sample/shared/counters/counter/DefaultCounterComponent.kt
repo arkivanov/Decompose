@@ -1,7 +1,7 @@
 package com.arkivanov.sample.shared.counters.counter
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.instancekeeper.retainedCloseable
+import com.arkivanov.decompose.viewmodel.retainedCloseable
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate

@@ -1,11 +1,16 @@
 package com.arkivanov.decompose
 
-import com.arkivanov.decompose.instancekeeper.getOrCreate
+import androidx.lifecycle.SavedStateViewModelFactory
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.CreationExtras.Key
 import com.arkivanov.decompose.navigationevent.addDirectInput
 import com.arkivanov.decompose.navigationevent.addHandler
 import com.arkivanov.decompose.router.TestViewModel
 import com.arkivanov.decompose.testutils.consume
 import com.arkivanov.decompose.testutils.register
+import com.arkivanov.decompose.viewmodel.getOrCreate
+import com.arkivanov.decompose.viewmodel.viewModel
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import kotlin.test.Test
@@ -219,17 +224,66 @@ class RetainedComponentSingleTest {
         assertFalse(isCalled)
     }
 
+    @Test
+    fun GIVEN_created_with_CreationExtras_WHEN_ViewModel_created_THEN_extra_provided() {
+        // given
+        val ctx = TestOwner().retainedComponent(viewModelCreationExtras = CreationExtras { set(StringKey, "extra") })
+
+        // when
+        val vm = ctx.viewModel { TestViewModel(value = get(StringKey)) }
+
+        // then
+        assertEquals("extra", vm.value)
+    }
+
+    @Test
+    fun GIVEN_created_with_CreationExtras_and_child_context_created_WHEN_ViewModel_created_THEN_extra_provided() {
+        // given
+        val ctx = TestOwner().retainedComponent(viewModelCreationExtras = CreationExtras { set(StringKey, "extra") })
+        val childCtx = ctx.childContext(key = "child")
+
+        // when
+        val vm = childCtx.viewModel { TestViewModel(value = get(StringKey)) }
+
+        // then
+        assertEquals("extra", vm.value)
+    }
+
+    @Test
+    fun GIVEN_recreated_WHEN_ViewModel_created_THEN_new_CreationExtras_used() {
+        // given
+        var owner = TestOwner()
+        owner.retainedComponent(viewModelCreationExtras = CreationExtras { set(StringKey, "extra1") })
+        owner = owner.recreate(isChangingConfigurations = true)
+        val ctx2 = owner.retainedComponent(viewModelCreationExtras = CreationExtras { set(StringKey, "extra2") })
+
+        // when
+        val vm = ctx2.viewModel { TestViewModel(value = get(StringKey)) }
+
+        // then
+        assertEquals("extra2", vm.value)
+    }
+
     private fun TestOwner.retainedComponent(
+        viewModelCreationExtras: CreationExtras = CreationExtras.Empty,
         discardSavedState: Boolean = false,
         isStateSavingAllowed: () -> Boolean = { true },
     ): ComponentContext =
         retainedComponent(
             cast = { it as ComponentContext },
             key = "key",
+            viewModelFactory = ::SavedStateViewModelFactory,
+            viewModelCreationExtras = { viewModelCreationExtras },
             navigationEventDispatcher = navigationEventDispatcher,
             discardSavedState = discardSavedState,
             isStateSavingAllowed = isStateSavingAllowed,
             isChangingConfigurations = { isChangingConfigurations },
             factory = { it },
         )
+
+    private companion object {
+        private val StringKey: Key<String> = CreationExtras.Companion.Key()
+    }
+
+    private class TestViewModel(val value: String?) : ViewModel()
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModelStore
 import com.arkivanov.decompose.HostComponentContext
 import com.arkivanov.decompose.lifecycle.moveToResumed
 import com.arkivanov.decompose.router.slot.child
+import com.arkivanov.decompose.viewmodel.ViewModelStoreHost
 import com.arkivanov.essenty.statekeeper.SerializableContainer
 import com.badoo.reaktive.test.scheduler.TestScheduler
 import kotlin.test.Test
@@ -151,7 +152,7 @@ class CounterComponentTest {
         onNext: () -> Unit = {},
         onPrev: () -> Unit = {},
     ) {
-        ctx = HostComponentContext(savedState = savedState, viewModelStore = viewModelStore)
+        ctx = HostComponentContext(savedState = savedState, viewModelStoreHost = ViewModelStoreHost(viewModelStore))
 
         component =
             DefaultCounterComponent(

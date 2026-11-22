@@ -1,7 +1,6 @@
 package com.arkivanov.decompose
 
 import androidx.lifecycle.Lifecycle
-import com.arkivanov.decompose.instancekeeper.child
 import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.mergedLifecycle
 import com.arkivanov.decompose.lifecycle.moveToCreated
@@ -10,6 +9,8 @@ import com.arkivanov.decompose.lifecycle.moveToStarted
 import com.arkivanov.decompose.navigationevent.NavigationEventPriority
 import com.arkivanov.decompose.navigationevent.child
 import com.arkivanov.decompose.statekeeper.child
+import com.arkivanov.decompose.viewmodel.child
+import com.arkivanov.decompose.viewmodel.viewModelStoreHost
 
 /**
  * Creates a new instance of child [ComponentContext] of type [Ctx] and attaches it to the parent (`this`) component context.
@@ -33,7 +34,7 @@ fun <Ctx : GenericComponentContext<Ctx>> Ctx.childContext(
     componentContextFactory(
         lifecycle = if (maxLifecycle == null) this.lifecycle else mergedLifecycle(this.lifecycle, maxLifecycle.lifecycle),
         stateKeeper = stateKeeper.child(key),
-        viewModelStore = viewModelStore.child(key),
+        viewModelStoreHost = viewModelStoreHost(store = viewModelStore.child(key)),
         navigationEventDispatcher = navigationEventDispatcher.child(
             lifecycle = maxLifecycle?.lifecycle,
             priority = navigationEventPriority

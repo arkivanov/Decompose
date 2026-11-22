@@ -2,7 +2,7 @@ package com.arkivanov.decompose.router.children
 
 import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.HostComponentContext
-import com.arkivanov.decompose.instancekeeper.getOrCreate
+import com.arkivanov.decompose.viewmodel.getOrCreate
 import com.arkivanov.decompose.lifecycle.doOnDestroy
 import com.arkivanov.decompose.lifecycle.moveToDestroyed
 import com.arkivanov.decompose.lifecycle.resumed

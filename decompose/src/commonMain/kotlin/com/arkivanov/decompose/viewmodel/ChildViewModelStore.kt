@@ -1,4 +1,4 @@
-package com.arkivanov.decompose.instancekeeper
+package com.arkivanov.decompose.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore

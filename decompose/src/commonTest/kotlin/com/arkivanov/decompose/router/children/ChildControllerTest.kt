@@ -7,7 +7,7 @@ import com.arkivanov.decompose.TestBackHandler
 import com.arkivanov.decompose.TestBackHandler.Event
 import com.arkivanov.decompose.assertEvents
 import com.arkivanov.decompose.assertNoEvents
-import com.arkivanov.decompose.instancekeeper.getOrCreate
+import com.arkivanov.decompose.viewmodel.getOrCreate
 import com.arkivanov.decompose.lifecycle.TestLifecycleObserver
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addHandler

@@ -11,7 +11,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DecomposeSettings
 import com.arkivanov.decompose.DelicateDecomposeApi
 import com.arkivanov.decompose.HostComponentContext
-import com.arkivanov.decompose.instancekeeper.getOrCreate
+import com.arkivanov.decompose.viewmodel.getOrCreate
 import com.arkivanov.decompose.lifecycle.TestLifecycleObserver
 import com.arkivanov.decompose.lifecycle.resumed
 import com.arkivanov.decompose.navigationevent.addHandler
