@@ -26,6 +26,16 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build -Dsplit_targets
+      - name: Upload build reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build-reports
+          path: |
+            **/build/reports/
+            **/build/test-results/
+          if-no-files-found: ignore
+          retention-days: 14
   macos-build:
     name: Build on macOS
     runs-on: macos-15
@@ -41,6 +51,16 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build -Dsplit_targets
+      - name: Upload build reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-build-reports
+          path: |
+            **/build/reports/
+            **/build/test-results/
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Build iOS sample
         run: xcodebuild -project sample/app-ios/app-ios.xcodeproj -scheme app-ios -sdk iphonesimulator -arch arm64 build
       - name: Build iOS Compose sample
