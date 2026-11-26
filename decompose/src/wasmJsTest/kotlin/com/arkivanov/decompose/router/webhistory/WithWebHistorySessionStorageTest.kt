@@ -5,12 +5,15 @@ import kotlinx.browser.document
 import kotlinx.browser.sessionStorage
 import kotlinx.browser.window
 import kotlinx.serialization.builtins.serializer
+import org.w3c.dom.PageTransitionEvent
+import org.w3c.dom.PageTransitionEventInit
 import org.w3c.dom.get
 import kotlin.js.ExperimentalWasmJsInterop
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 @OptIn(ExperimentalWasmJsInterop::class)
@@ -36,6 +39,8 @@ class WithWebHistorySessionStorageTest {
         }
 
         window.onbeforeunload = null
+        window.onpagehide = null
+        window.onpageshow = null
         sessionStorage.clear()
         initialHref?.let { window.history.replaceState(data = null, title = "", url = it) }
     }
@@ -123,6 +128,26 @@ class WithWebHistorySessionStorageTest {
 
         assertNull(restoredValue)
         assertEquals(window.location.href, receivedDeepLink)
+        assertNull(sessionStorage["decompose_saved_state"])
+        assertNull(sessionStorage["decompose_saved_url"])
+    }
+
+    @Test
+    fun WHEN_pageshow_persisted_dispatched_THEN_session_storage_cleared() {
+        if (isNodeJs()) {
+            return
+        }
+
+        withWebHistory(schemaVersion = "1") { stateKeeper, _ ->
+            stateKeeper.register(key = "key", strategy = String.serializer()) { "saved-value" }
+            TestWebNavigationOwner(TestWebNavigation(initialHistory = listOf(1)))
+        }
+
+        window.dispatchEvent(PageTransitionEvent("pagehide"))
+        assertNotNull(sessionStorage["decompose_saved_state"])
+        assertNotNull(sessionStorage["decompose_saved_url"])
+
+        window.dispatchEvent(PageTransitionEvent("pageshow", PageTransitionEventInit(persisted = true)))
         assertNull(sessionStorage["decompose_saved_state"])
         assertNull(sessionStorage["decompose_saved_url"])
     }

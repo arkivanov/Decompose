@@ -50,11 +50,15 @@ fun <T : WebNavigationOwner> withWebHistory(
     schemaVersion: String?,
     block: (StateKeeper, deepLink: String?) -> T,
 ): Value<T> {
+    fun clearSavedState() {
+        sessionStorage.removeItem(KEY_SAVED_STATE)
+        sessionStorage.removeItem(KEY_SAVED_URL)
+    }
+
     val savedUrl = sessionStorage[KEY_SAVED_URL]
     val isNewUrl = window.location.href != savedUrl
     val savedState = sessionStorage[KEY_SAVED_STATE]?.takeUnless { isNewUrl }?.let(::JsonString)?.decodeSavedState(version = schemaVersion)
-    sessionStorage.removeItem(KEY_SAVED_STATE)
-    sessionStorage.removeItem(KEY_SAVED_URL)
+    clearSavedState()
     var stateKeeper = StateKeeperDispatcher(savedState = savedState)
 
     fun saveState() {
@@ -71,6 +75,14 @@ fun <T : WebNavigationOwner> withWebHistory(
     window.onpagehide =
         {
             saveState()
+            null
+        }
+
+    window.onpageshow =
+        { event ->
+            if (event.persisted) {
+                clearSavedState()
+            }
             null
         }
 
