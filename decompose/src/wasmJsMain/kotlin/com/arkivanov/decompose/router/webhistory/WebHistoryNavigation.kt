@@ -57,10 +57,20 @@ fun <T : WebNavigationOwner> withWebHistory(
     sessionStorage.removeItem(KEY_SAVED_URL)
     var stateKeeper = StateKeeperDispatcher(savedState = savedState)
 
+    fun saveState() {
+        sessionStorage[KEY_SAVED_STATE] = stateKeeper.saveState(version = schemaVersion).value
+        sessionStorage[KEY_SAVED_URL] = window.location.href
+    }
+
     window.onbeforeunload =
         {
-            sessionStorage[KEY_SAVED_STATE] = stateKeeper.saveState(version = schemaVersion).value
-            sessionStorage[KEY_SAVED_URL] = window.location.href
+            saveState()
+            null
+        }
+
+    window.onpagehide =
+        {
+            saveState()
             null
         }
 
