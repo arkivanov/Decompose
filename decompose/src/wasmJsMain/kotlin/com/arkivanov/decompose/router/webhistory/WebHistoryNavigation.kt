@@ -55,10 +55,20 @@ fun <T : WebNavigationOwner> withWebHistory(
     val savedState = sessionStorage[KEY_SAVED_STATE]?.takeUnless { isNewUrl }?.let(::JsonString)?.decodeSavedState(version = schemaVersion)
     var stateKeeper = StateKeeperDispatcher(savedState = savedState)
 
+    fun saveState() {
+        sessionStorage[KEY_SAVED_STATE] = stateKeeper.saveState(version = schemaVersion).value
+        sessionStorage[KEY_SAVED_URL] = window.location.href
+    }
+
     window.onbeforeunload =
         {
-            sessionStorage[KEY_SAVED_STATE] = stateKeeper.saveState(version = schemaVersion).value
-            sessionStorage[KEY_SAVED_URL] = window.location.href
+            saveState()
+            null
+        }
+
+    window.onpagehide =
+        {
+            saveState()
             null
         }
 
